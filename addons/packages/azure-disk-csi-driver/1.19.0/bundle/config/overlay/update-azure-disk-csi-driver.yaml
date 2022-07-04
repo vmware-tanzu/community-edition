@@ -1,0 +1,41 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "csi-azuredisk-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.azureDiskCSIDriver.namespace
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "csi-snapshot-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.azureDiskCSIDriver.namespace
+
+#@overlay/match expects="0+",by=overlay.subset({"kind":"DaemonSet"})
+---
+kind: DaemonSet
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.azureDiskCSIDriver.namespace
+
+#@ service_accounts = overlay.subset({"kind": "ServiceAccount"})
+#@ roles = overlay.subset({"kind": "Role"})
+#@ cluster_role = overlay.subset({"kind": "ClusterRole"})
+#@ role_bindings = overlay.subset({"kind": "RoleBinding"})
+#@ services = overlay.subset({"kind": "Service"})
+#@overlay/match by=overlay.or_op(service_accounts, cluster_role, roles, role_bindings, services), expects=11
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ values.azureDiskCSIDriver.namespace
+
+#@ crb=overlay.subset({"kind":"ClusterRoleBinding"})
+#@overlay/match by=overlay.or_op(crb), expects=8
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "kube-system"})
+- kind: ServiceAccount
+  namespace: #@ values.azureDiskCSIDriver.namespace

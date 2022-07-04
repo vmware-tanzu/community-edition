@@ -70,5 +70,7 @@ images:
       - resolved:
           tag: v5.0.1
           url: mcr.microsoft.com/oss/kubernetes-csi/snapshot-controller:v5.0.1
+      - preresolved:
+          url: mcr.microsoft.com/oss/kubernetes-csi/snapshot-controller@sha256:8c3fc3c2667004ad6bbdf723bb64c5da66a5cb8b11d4ee59b67179b686223b13
   image: mcr.microsoft.com/oss/kubernetes-csi/snapshot-controller@sha256:8c3fc3c2667004ad6bbdf723bb64c5da66a5cb8b11d4ee59b67179b686223b13
 kind: ImagesLock

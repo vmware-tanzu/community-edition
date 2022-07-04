@@ -1,0 +1,74 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: azure-disk-csi-driver.community.tanzu.vmware.com.1.19.0
+spec:
+  refName: azure-disk-csi-driver.community.tanzu.vmware.com
+  version: 1.19.0
+  releaseNotes: "azure-disk-csi-driver 1.19.0 https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases/tag/v1.19.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/azure-disk-csi-driver@sha256:62dc0e1444d5515bfb83f5b3e41ac367b133f72d8cfa99fc5a0f268147938e82
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for azure disk csi driver
+      properties:
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
+        azureDiskCSIDriver:
+          namespace:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The namespace in which azure disk csi driver is deployed
+            default: kube-system
