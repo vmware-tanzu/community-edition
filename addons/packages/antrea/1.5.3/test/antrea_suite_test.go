@@ -44,10 +44,10 @@ type AntreaConfig struct {
 				PortRange string `yaml:"portRange"`
 			} `yaml:"nodePortLocal"`
 			FlowExporter struct {
-				Address           string `yaml:"address"`
+				CollectorAddress  string `yaml:"collectorAddress"`
 				PollInterval      string `yaml:"pollInterval"`
-				ExportTimeout     string `yaml:"exportTimeout"`
-				IdleExportTimeout string `yaml:"idleExportTimeout"`
+				ActiveFlowTimeout string `yaml:"activeFlowTimeout"`
+				IdleFlowTimeout   string `yaml:"idleFlowTimeout"`
 			} `yaml:"flowExporter"`
 			KubeAPIServerOverride   string   `yaml:"kubeAPIServerOverride,omitempty"`
 			TransportInterface      string   `yaml:"transportInterface,omitempty"`

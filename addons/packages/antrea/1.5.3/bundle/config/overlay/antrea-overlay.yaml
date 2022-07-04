@@ -151,7 +151,7 @@ serviceCIDRv6: #@ values.antrea.config.serviceCIDRv6
 #! "udp" protocols. "tls" is used for securing communication between flow exporter and
 #! flow aggregator.
 #@ if/end values.antrea.config.featureGates.FlowExporter:
-flowCollectorAddr: #@ values.antrea.config.flowExporter.address
+flowCollectorAddr: #@ values.antrea.config.flowExporter.collectorAddress
 
 #! Provide flow poll interval as a duration string. This determines how often the flow exporter dumps connections from the conntrack module.
 #! Flow poll interval should be greater than or equal to 1s (one second).
@@ -165,14 +165,14 @@ flowPollInterval: #@ values.antrea.config.flowExporter.pollInterval
 #! time since the last export event is equal to the value of this timeout.
 #! Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 #@ if/end values.antrea.config.featureGates.FlowExporter:
-activeFlowExportTimeout: #@ values.antrea.config.flowExporter.exportTimeout
+activeFlowExportTimeout: #@ values.antrea.config.flowExporter.activeFlowTimeout
 
 #! Provide the idle flow export timeout, which is the timeout after which a flow
 #! record is sent to the collector for idle flows. A flow is considered idle if no
 #! packet matching this flow has been observed since the last export event.
 #! Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 #@ if/end values.antrea.config.featureGates.FlowExporter:
-idleFlowExportTimeout:  #@ values.antrea.config.flowExporter.idleExportTimeout
+idleFlowExportTimeout:  #@ values.antrea.config.flowExporter.idleFlowTimeout
 
 nodePortLocal:
 #@ if values.antrea.config.featureGates.NodePortLocal:

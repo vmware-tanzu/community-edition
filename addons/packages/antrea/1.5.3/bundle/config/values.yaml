@@ -24,10 +24,10 @@ antrea:
       skipServices: []
       proxyLoadBalancerIPs: false
     flowExporter:
-      address: "flow-aggregator.flow-aggregator.svc:4739:tls"
+      collectorAddress: "flow-aggregator.flow-aggregator.svc:4739:tls"
       pollInterval: "5s"
-      exportTimeout: "30s"
-      idleExportTimeout: "15s"
+      activeFlowTimeout: "30s"
+      idleFlowTimeout: "15s"
     kubeAPIServerOverride: null
     transportInterface: null
     transportInterfaceCIDRs: []
