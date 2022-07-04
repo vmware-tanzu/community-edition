@@ -8,7 +8,7 @@ directories:
         git:
           url: https://github.com/kubernetes-sigs/azuredisk-csi-driver.git
           ref: 538a8ce
-          tags: 
+          tags:
           - "v1.19.0"
         includePaths:
           - deploy/v1.19.0/csi-azuredisk-driver.yaml
@@ -17,5 +17,5 @@ directories:
           - deploy/v1.19.0/rbac-csi-azuredisk-node.yaml
           - deploy/v1.19.0/csi-azuredisk-node.yaml
           - deploy/v1.19.0/crd-csi-snapshot.yaml
-          - deploy/v1.19.0/rbac-csi-snapshot-controller.yaml 
+          - deploy/v1.19.0/rbac-csi-snapshot-controller.yaml
           - deploy/v1.19.0/csi-snapshot-controller.yaml

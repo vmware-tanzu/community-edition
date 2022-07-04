@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/azure-disk-csi-driver@sha256:62dc0e1444d5515bfb83f5b3e41ac367b133f72d8cfa99fc5a0f268147938e82
+            image: projects.registry.vmware.com/tce/azure-disk-csi-driver@sha256:c9d8887756e6cf6658c884442d6492fb76a5ccd95bf13824a5394b54f6abbe2a
       template:
         - ytt:
             paths:
