@@ -21,6 +21,22 @@ spec:
           description: fluent-bit Kubernetes configuration.
           properties:
             daemonset:
+              env:
+                type: array
+                description: List of environment variables to set in the fluent-bit container.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      default: ""
+                    value:
+                      type: string
+                      default: ""
+                    valueFrom:
+                      nullable: true
+                      default: null
+                default: null
               type: object
               description: fluent-bit deployment related configuration
               properties:
@@ -76,7 +92,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/fluent-bit@sha256:63e2e7d8c1467054a422b0cce28afc20f91f2836bb67957a7346f365e4041df7
+            image: projects.registry.vmware.com/tce/fluent-bit@sha256:3a30581fb9392ac47a5617421806a67dd3018d927a59fa1dc4fd3ac4d3dc3542
       template:
         - ytt:
             paths:

@@ -1,7 +1,7 @@
 apiVersion: imgpkg.carvel.dev/v1alpha1
 kind: Bundle
 metadata:
-  name: fluent-bit
+  name: gatekeeper
 authors:
 - name: Anil Kodali
   email: akodali@vmware.com

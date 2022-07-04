@@ -149,3 +149,4 @@ fluent_bit:
     #!   memory: 128Mi
     podAnnotations: { }
     podLabels: { }
+    env: []

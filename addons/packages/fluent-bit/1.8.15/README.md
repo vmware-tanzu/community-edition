@@ -46,6 +46,7 @@ of Fluent Bit are available, the addon's configuration is intentionally a lightw
 |`fluent_bit.daemonset.resources`|Optional|resource limits and/or requests for the `fluent-bit` container within the daemonset's pods  |
 |`fluent_bit.daemonset.podAnnotations`|Optional|metadata annotations for the daemonset pods|
 |`fluent_bit.daemonset.podLabels`|Optional|metadata labels for the daemonset pods|
+|`fluent_bit.daemonset.env`|Optional|Environment variables for the daemonset pods|
 
 ## Usage Example
 

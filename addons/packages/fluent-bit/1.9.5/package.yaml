@@ -24,6 +24,22 @@ spec:
               type: object
               description: fluent-bit deployment related configuration
               properties:
+                env:
+                  type: array
+                  description: List of environment variables to set in the fluent-bit container.
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        default: ""
+                      value:
+                        type: string
+                        default: ""
+                      valueFrom:
+                        nullable: true
+                        default: null
+                  default: null
                 resources:
                   type: object
                   description: fluent-bit containers resource requirements (See Kubernetes OpenAPI Specification io.k8s.api.core.v1.ResourceRequirements)
@@ -76,7 +92,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/fluent-bit@sha256:cfb63eb04cf0e14caf72d0332093c44f79adc3827d2f38e6893085f8f8a7e639
+            image: projects.registry.vmware.com/tce/fluent-bit@sha256:a1b00fe28dc89736d416e9267ee139e7cd2b6748755aebec068adfe4fc192dd8
       template:
         - ytt:
             paths:

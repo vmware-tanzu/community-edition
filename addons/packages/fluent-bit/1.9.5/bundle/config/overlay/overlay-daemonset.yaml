@@ -16,3 +16,5 @@ spec:
         - name: fluent-bit
           #@overlay/replace
           resources: #@ data.values.fluent_bit.daemonset.resources
+          #@ if/end data.values.fluent_bit.daemonset.env:
+          env: #@ data.values.fluent_bit.daemonset.env
