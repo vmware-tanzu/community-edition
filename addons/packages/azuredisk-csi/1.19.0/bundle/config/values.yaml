@@ -1,0 +1,33 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+azureCSI:
+  tlsThumbprint: ""
+  namespace: kube-system
+  clusterName: null
+  server: null
+  datacenter: null
+  publicNetwork: null
+  username: null
+  password: null
+  region: null
+  zone: null
+  insecureFlag: True
+  useTopologyCategories: false
+  provisionTimeout: 15s
+  attachTimeout: 600s
+  resizerTimeout: 240s
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+  deployment_replicas: 2
+  windows_support: false

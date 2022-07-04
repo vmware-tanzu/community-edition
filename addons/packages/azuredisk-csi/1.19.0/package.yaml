@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: azuredisk-csi.community.tanzu.vmware.com.1.19.0
+spec:
+  refName: azuredisk-csi.community.tanzu.vmware.com
+  version: 1.19.0
+  releaseNotes: "azuredisk version 1.19.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:f6024c0625e6b315e1ef4e80c2ac02a996b79129420c52ab995d510c8abd408d
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
