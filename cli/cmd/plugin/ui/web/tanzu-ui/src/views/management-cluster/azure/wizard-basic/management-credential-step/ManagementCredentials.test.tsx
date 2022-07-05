@@ -63,7 +63,7 @@ describe('ManagementCredential component', () => {
         });
     });
 
-    it('should contain all Auzre Environment', async () => {
+    it('should contain all Azure Environment', async () => {
         render(<ManagementCredentials />);
         for (let i = 0; i < azureEnvironment.length; i++) {
             const profileEl = screen.getByText(azureEnvironment[i]);
