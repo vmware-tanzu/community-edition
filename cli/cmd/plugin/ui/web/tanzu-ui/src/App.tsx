@@ -1,27 +1,29 @@
 // React imports
 import React, { useContext, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import ContextualHelp from './shared/components/ContextualHelp/ContextualHelp';
+import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
 
 // App imports
-import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
-import { NavRoutes } from './shared/constants/NavRoutes.constants';
-import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
-import { Store } from './state-management/stores/Store';
-import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
-import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
-import GettingStarted from './views/getting-started/GettingStarted';
 import HeaderBar from './shared/components/HeaderBar/HeaderBar';
+import SideNavigation from './shared/components/SideNavigation/SideNavigation';
+import { NavRoutes } from './shared/constants/NavRoutes.constants';
+import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
+import { ContextualHelpActions } from './state-management/actions/Ui.actions';
+import { Store } from './state-management/stores/Store';
+import GettingStarted from './views/getting-started/GettingStarted';
+import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
+import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
+import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
 import ManagementClusterInventory from './views/management-cluster/ManagementClusterInventory';
 import ManagementClusterSelectProvider from './views/management-cluster/ManagementClusterSelectProvider';
-import SideNavigation from './shared/components/SideNavigation/SideNavigation';
-import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
 import VsphereManagementCluster from './views/management-cluster/vsphere/VsphereManagementCluster';
+import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
+import UnmanagedClusterWizard from './views/unmanaged-cluster/UnmanagedClusterWizard';
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterInventory from './views/workload-cluster/WorkloadClusterInventory';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
-import UnmanagedClusterWizard from './views/unmanaged-cluster/UnmanagedClusterWizard';
-
 function App() {
     const { dispatch } = useContext(Store);
     const location = useLocation();
@@ -40,6 +42,11 @@ function App() {
                 payload: {
                     value: currentPath,
                 },
+            });
+            const contexualHelpConfig = ContextualHelpUtils.determineContextualHelpContent(currentPath as NavRoutes);
+            dispatch({
+                type: ContextualHelpActions.UpdateContextualHelpContext,
+                payload: contexualHelpConfig,
             });
         }
     }, [currentPath]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -62,7 +69,10 @@ function App() {
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation />
                 <div cds-layout="vertical align:stretch" id="main" className="overflow-y-scroll">
-                    <div cds-layout="grid gap:md gap@md:lg p:lg p@sm:lg p-y@lg:lg container:fill container:left cols:12">
+                    <div cds-layout="horizontal align:right align:shrink p:xxs">
+                        <ContextualHelp />
+                    </div>
+                    <div cds-layout="grid gap:md gap@md:lg p-x:lg p-b:lg container:fill container:left cols:12">
                         <Routes>
                             <Route path={NavRoutes.AWS} element={<AwsManagementCluster />} />
                             <Route path={NavRoutes.AZURE} element={<AzureManagementCluster />} />

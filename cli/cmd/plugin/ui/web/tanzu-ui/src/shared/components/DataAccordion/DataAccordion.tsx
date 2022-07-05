@@ -10,14 +10,20 @@ function DataAccordionItem({ title, content }: { title: string; content: string 
     return (
         <li className={`data-accordion-item ${state.active ? 'active' : ''}`}>
             <button
-                cds-layout="p:lg horizontal"
                 className="data-accordion-item-header w-full"
+                cds-layout="p-y:lg grid horizontal"
                 onClick={() => dispatch({ type: DataAccordionActions.ToggleAccordion })}
             >
-                <p cds-text={state.active ? 'subsection bold' : 'subsection'} className="data-accordion-item-header-title">
+                <div
+                    className="data-accordion-item-header-title"
+                    cds-layout="col:11"
+                    cds-text={state.active ? 'subsection bold' : 'subsection'}
+                >
                     {title}
-                </p>
-                <CdsIcon cds-layout="align:right" shape="angle" className={state.active ? 'angle-down' : 'angle-right'}></CdsIcon>
+                </div>
+                <div cds-layout="col:1 align:right" className="data-accordion-item-header-title-icon">
+                    <CdsIcon shape="angle" className={state.active ? 'angle-down' : 'angle-right'}></CdsIcon>
+                </div>
             </button>
             <div className={`data-accordion-item-content-wrapper ${state.active ? 'open' : ''}`}>
                 <p cds-text="body" className="data-accordion-item-content" dangerouslySetInnerHTML={{ __html: content }}></p>

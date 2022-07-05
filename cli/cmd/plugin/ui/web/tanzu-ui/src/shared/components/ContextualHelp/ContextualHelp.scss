@@ -1,3 +1,5 @@
+@import '../../../../src/scss/animations/slide-left';
+
 .contextual-help-container {
     .container {
         .search::placeholder {
@@ -15,6 +17,7 @@
                 position: relative;
 
                 .contextual-help-img {
+                    @include slide-left;
                     position: absolute;
                     width: 20rem;
                     top: 0.25rem;

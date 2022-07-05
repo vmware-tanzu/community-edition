@@ -1,16 +1,13 @@
 import { DrawerEvents } from '../Drawer/Drawer.interface';
 import { DrawerState } from '../Drawer/Drawer.store';
-export interface ContextualHelpProps {
-    title: string;
-    keywords: string[];
-}
+import { ContextualHelpState } from './ContextualHelp.store';
 
 export interface SearchProps {
     value?: string;
     onSearch: (value: string) => void;
 }
 
-export interface ContextualHelpContentProps extends ContextualHelpProps, DrawerEvents, DrawerState {}
+export interface ContextualHelpContentProps extends ContextualHelpState, DrawerEvents, DrawerState {}
 
 export interface ContextualHelpData {
     topicTitle: string;

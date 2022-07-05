@@ -1,0 +1,12 @@
+@mixin slide-right {
+    animation: 0.5s slide-right;
+
+    @keyframes slide-right {
+        from {
+            width: $PANEL_WIDTH;
+        }
+        to {
+            width: 0%;
+        }
+    }
+}
