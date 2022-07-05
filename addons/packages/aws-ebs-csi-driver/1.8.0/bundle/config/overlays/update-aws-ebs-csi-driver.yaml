@@ -13,12 +13,21 @@ spec:
   template:
     spec:
       #@overlay/replace
-      nodeSelector:
-        node-role.kubernetes.io/master: ""
       tolerations:
       - key: node-role.kubernetes.io/master
-        operator: Exists
         effect: NoSchedule
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+      affinity:
+        nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+            - matchExpressions:
+                - key: node-role.kubernetes.io/master
+                  operator: Exists
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "snapshot-controller"}})
 ---
@@ -31,13 +40,22 @@ spec:
   template:
     spec:
       #@overlay/match missing_ok=True
-      nodeSelector:
-        node-role.kubernetes.io/master: ""
+      affinity:
+        nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+            - matchExpressions:
+                - key: node-role.kubernetes.io/master
+                  operator: Exists
       #@overlay/match missing_ok=True
       tolerations:
       - key: node-role.kubernetes.io/master
-        operator: Exists
         effect: NoSchedule
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
 
 #@overlay/match by=overlay.subset({"kind":"PodDisruptionBudget","metadata":{"name": "ebs-csi-controller"}})
 ---
