@@ -11,7 +11,7 @@ function DataAccordionItem({ title, content }: { title: string; content: string 
         <li className={`data-accordion-item ${state.active ? 'active' : ''}`}>
             <button
                 className="data-accordion-item-header w-full"
-                cds-layout="p:lg grid horizontal"
+                cds-layout="p-y:lg grid horizontal"
                 onClick={() => dispatch({ type: DataAccordionActions.ToggleAccordion })}
             >
                 <div

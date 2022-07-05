@@ -3,6 +3,7 @@ import { ContextualHelpState } from './ContextualHelp.store';
 
 const enum ContextTitle {
     TanzuCommunityEdition = 'Tanzu Community Edition',
+    TanzuClusters = 'Tanzu Clusters',
     GettingStarted = 'Getting Started',
     ManagementClusters = 'Management Clusters',
     WorkloadClusters = 'Workload Clusters',
@@ -14,20 +15,20 @@ const enum ContextTitle {
 }
 
 const welcomePage: ContextualHelpState = {
-    externalLink: 'http://tanzucommunityedition.io',
+    externalLink: 'https://tanzucommunityedition.io/resources',
     keywords: ['tce-welcome'],
     title: {
         contextTitle: ContextTitle.TanzuCommunityEdition,
-        pageTitle: 'Welcome to Tanzu',
+        pageTitle: ContextTitle.TanzuCommunityEdition,
     },
 };
 
 const gettingStartedPage: ContextualHelpState = {
-    externalLink: 'http://tanzucommunityedition.io',
+    externalLink: 'https://tanzucommunityedition.io/docs/',
     keywords: ['tce-getting-started'],
     title: {
         contextTitle: ContextTitle.GettingStarted,
-        pageTitle: ContextTitle.GettingStarted,
+        pageTitle: ContextTitle.TanzuClusters,
     },
 };
 
