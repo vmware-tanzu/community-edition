@@ -252,7 +252,6 @@ If SSH is enabled on the vCenter Server Appliance, you can use SSH and OpenSSL t
    ```sh
    # This command on any operating system with govc. The last line of the output contains the SHA1 thumbprint.
    govc about.cert
-   
    # On MacOS/Linux you can directly extract the SHA1 thumbprint when jq is installed on your system
    govc about.cert -k -json | jq -r .ThumbprintSHA1
    ```
