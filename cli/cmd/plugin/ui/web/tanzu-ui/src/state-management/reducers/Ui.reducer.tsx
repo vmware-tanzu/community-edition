@@ -1,7 +1,8 @@
 // App imports
-import { TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY } from '../actions/Ui.actions';
+import { ContextualHelpState } from '../../shared/components/ContextualHelp/ContextualHelp.store';
 import { Action, DynamicCategoryToggleAction } from '../../shared/types/types';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
+import { ContextualHelpActions, TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY } from '../actions/Ui.actions';
 
 export const STORE_SECTION_UI = 'ui';
 
@@ -9,6 +10,7 @@ interface UIState {
     isDeployInProgress: boolean;
     navExpanded: boolean;
     wcCcCategoryExpanded: { [category: string]: boolean };
+    contextualHelp: ContextualHelpState;
 }
 
 function uiReducer(state: UIState, action: Action) {
@@ -26,6 +28,9 @@ function uiReducer(state: UIState, action: Action) {
             newState['wcCcCategoryExpanded'] = createStateToggleCategory(state.wcCcCategoryExpanded, action as DynamicCategoryToggleAction);
             console.log('APP UI:', newState);
             break;
+        case ContextualHelpActions.UpdateContextualHelpContext:
+            newState.contextualHelp = action.payload;
+            break;
     }
     return newState;
 }
@@ -33,7 +38,7 @@ function uiReducer(state: UIState, action: Action) {
 export const uiReducerDescriptor = {
     name: 'generic ui reducer',
     reducer: uiReducer,
-    actionTypes: [TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY],
+    actionTypes: [TOGGLE_APP_STATUS, TOGGLE_NAV, TOGGLE_WC_CC_CATEGORY, ContextualHelpActions.UpdateContextualHelpContext],
     storeSection: STORE_SECTION_UI,
 } as ReducerDescriptor;
 
