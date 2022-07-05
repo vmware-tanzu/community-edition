@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Library imports
@@ -20,10 +20,6 @@ function UnmanagedClusterWizard() {
 
     // temp local variable for testing advanced settings, will be refactored
     const [useBasicSettings, setUseBasicSettings] = useState<boolean>(true);
-
-    const changeSettings = () => {
-        setUseBasicSettings((prev) => !prev);
-    };
 
     return (
         <UmcProvider>
@@ -55,7 +51,7 @@ function UnmanagedClusterWizard() {
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Simple configuration</div>
-                    <CdsButton action="outline" cds-layout="align:right" size="sm" onclick={changeSettings}>
+                    <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => setUseBasicSettings(!useBasicSettings)}>
                         Use Advanced Configuration
                     </CdsButton>
                 </div>
@@ -69,7 +65,7 @@ function UnmanagedClusterWizard() {
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Advanced configuration</div>
-                    <CdsButton action="outline" cds-layout="align:right" size="sm" onclick={changeSettings}>
+                    <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => setUseBasicSettings(!useBasicSettings)}>
                         Use Simple Configuration
                     </CdsButton>
                 </div>
