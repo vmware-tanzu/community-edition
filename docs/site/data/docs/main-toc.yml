@@ -95,10 +95,10 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Work with Packages
-          url: /package-management
         - page: Create a Package
           url: /package-creation-step-by-step
+        - page: Work with Packages
+          url: /package-management
         - package:
             displayName: App Toolkit
             name: app-toolkit
@@ -151,6 +151,8 @@ toc:
             name: fluent-bit
             versions:
                 - 1.7.5
+                - 1.8.15
+                - 1.9.5
         - package:
             displayName: Fluxcd Helm Controller
             name: fluxcd-helm-controller
