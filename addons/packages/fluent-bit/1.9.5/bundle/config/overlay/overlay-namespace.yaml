@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata": {"name": "fluent-bit"}})
+---
+metadata:
+  name: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"metadata":{"namespace": "fluent-bit"}}), expects=3
+---
+metadata:
+  namespace: #@ data.values.namespace
+
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding"})
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "fluent-bit"})
+- kind: ServiceAccount
+  namespace: #@ data.values.namespace

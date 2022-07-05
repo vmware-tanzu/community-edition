@@ -1,0 +1,10 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: fluent-bit
+authors:
+- name: XiaoShuangGuo
+  email: gxiaoshuang@vmware.com
+websites:
+- url: https://fluentbit.io/
+- url: https://github.com/fluent/fluent-bit/
