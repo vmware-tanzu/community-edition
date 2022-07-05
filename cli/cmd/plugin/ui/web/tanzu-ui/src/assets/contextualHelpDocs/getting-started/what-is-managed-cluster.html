@@ -1,0 +1,20 @@
+<!--
+topicTitle: What is Managed Cluster ?
+topicIds: [tce-getting-started]
+-->
+
+<p>
+    Managed clusters is a deployment model that features 1 management cluster and N workload cluster(s). The management cluster provides
+    management and operations for Tanzu. It runs Cluster-API which is used to manage workload clusters and multi-cluster services. The
+    workload cluster(s) are where developer’s workloads run.
+</p>
+<p>
+    When you create a management cluster, a bootstrap cluster is created on your local machine. This is a Kind based cluster, which runs via
+    Docker. The bootstrap cluster creates a management cluster on your specified provider. The information for how to manage clusters in the
+    target environment is then pivoted into the management cluster. At this point, the local bootstrap cluster is deleted.
+</p>
+
+<p>
+    The management cluster can now create workload clusters. The workload cluster is deployed by the management cluster. The workload
+    cluster is used to run your application workloads. The workload cluster is deployed using the Tanzu CLI.
+</p>

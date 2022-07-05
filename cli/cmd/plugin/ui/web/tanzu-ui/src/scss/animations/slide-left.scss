@@ -1,0 +1,12 @@
+@mixin slide-left {
+    animation: 0.5s slide-left;
+
+    @keyframes slide-left {
+        from {
+            width: 0%;
+        }
+        to {
+            width: 20rem;
+        }
+    }
+}

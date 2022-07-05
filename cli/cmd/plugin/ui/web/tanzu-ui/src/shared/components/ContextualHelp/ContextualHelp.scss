@@ -1,3 +1,5 @@
+@import '../../../../src/scss/animations/slide-left';
+
 .contextual-help-container {
     .container {
         .search::placeholder {
@@ -11,10 +13,13 @@
         footer {
             min-height: 15rem;
 
+
+
             .footer-image {
                 position: relative;
 
                 .contextual-help-img {
+                    @include slide-left;
                     position: absolute;
                     width: 20rem;
                     top: 0.25rem;
