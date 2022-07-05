@@ -25,10 +25,10 @@ The following configuration values can be set to customize the antrea installati
 | `antrea.config.antreaProxy.nodePortAddresses`    | Optional          | Specifies the host IPv4/IPv6 addresses for NodePort                                                           |
 | `antrea.config.antreaProxy.skipServices`         | Optional          | List of Services which should be ignored by AntreaProxy                                                       |
 | `antrea.config.antreaProxy.proxyLoadBalancerIPs` | Optional          | Load-balance traffic destined to the External IPs of LoadBalancer services. Default: false                    |
-| `antrea.config.flowExporter.address`             | Optional          | Provide the IPFIX collector address as a string. Default: `flow-aggregator.flow-aggregator.svc:4739:tls`      |
+| `antrea.config.flowExporter.collectorAddress`    | Optional          | Provide the IPFIX collector address as a string. Default: `flow-aggregator.flow-aggregator.svc:4739:tls`      |
 | `antrea.config.flowExporter.pollInterval`        | Optional          | Provide flow poll interval as a duration string. Default: `5s`                                                |
-| `antrea.config.flowExporter.activeTimeout`       | Optional          | Provide the active flow export timeout. Default: `30s`                                                        |
-| `antrea.config.flowExporter.idleTimeout`         | Optional          | Provide the idle flow export timeout. Default: `15s`                                                          |
+| `antrea.config.flowExporter.activeFlowTimeout`   | Optional          | Provide the active flow export timeout. Default: `30s`                                                        |
+| `antrea.config.flowExporter.idleFlowTimeout`     | Optional          | Provide the idle flow export timeout. Default: `15s`                                                          |
 | `antrea.config.kubeAPIServerOverride`            | Optional          | Provide the address of Kubernetes apiserver. Default: nil                                                     |
 | `antrea.config.transportInterface`               | Optional          | The name of the interface on Node which is used for tunneling or routing the traffic. Default: empty          |
 | `antrea.config.transportInterfaceCIDRs`          | Optional          | The network CIDRs of the interface on Node which is used for tunneling or routing the traffic. Default: empty |
