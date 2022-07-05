@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -21,7 +21,7 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../../state-management/actions/Resources.actions';
-import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
+import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
 
@@ -45,7 +45,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
     const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
+    const [osImages, setOsImages] = useState<VSphereVirtualMachine[]>([]);
     const [osImageMessage, setOsImageMessage] = useState<string>('');
+    const [serverNameAtBlur, setServerNameAtBlur] = useState<string>('');
     const [thumbprint, setThumbprint] = useState('');
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
@@ -60,7 +62,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         handleSubmit,
         setValue,
         formState: { errors },
-        getValues,
     } = methods;
 
     const errDataCenter = () => connected && errors[VSPHERE_FIELDS.DATACENTER];
@@ -69,25 +70,35 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
     const errDataCenterMsg = () => errors[VSPHERE_FIELDS.DATACENTER]?.message || '';
 
-    const clearOsImages = (oldDatacenter: string | undefined) => {
-        if (oldDatacenter) {
-            vsphereDispatch({
-                type: VSPHERE_DELETE_RESOURCES,
-                resourceName: 'osImages',
-                datacenter: oldDatacenter,
-            } as VsphereResourceAction);
-        }
-    };
+    const verifyVsphereThumbprint = useCallback(
+        (serverName: string) => {
+            function isValidServerName(serverName: string): boolean {
+                return (
+                    isValidFqdn(serverName) ||
+                    (ipFamily === IPFAMILIES.IPv6 && isValidIp6(serverName)) ||
+                    (ipFamily === IPFAMILIES.IPv4 && isValidIp4(serverName))
+                );
+            }
 
-    const clearDatacenters = () => {
-        setDatacenters([]); // important to clear data centers before clearing os images, or os image error msg will be set
-        if (selectedDatacenter) {
-            clearOsImages(selectedDatacenter);
-        }
-        setSelectedDatacenter('');
-        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.DATACENTER, '', currentStep, errors);
-        delete errors[VSPHERE_FIELDS.DATACENTER];
-    };
+            function doThumbprintCheck(serverName: string) {
+                setThumbprintServer(serverName);
+                VsphereService.getVsphereThumbprint(serverName).then(
+                    (response) => {
+                        console.log(`thumbprint response: ${JSON.stringify(response)}`);
+                        setThumbprint(response.thumbprint || '');
+                    },
+                    (reasonRejected) => {
+                        setThumbprintErrorMessage(`Unable to obtain thumbprint: ${reasonRejected.message}`);
+                    }
+                );
+            }
+
+            if (isValidServerName(serverName)) {
+                doThumbprintCheck(serverName);
+            }
+        },
+        [ipFamily]
+    );
 
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = event.target.name as VSPHERE_FIELDS;
@@ -103,15 +114,13 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     const handleDatacenterChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const oldSelectedDatacenter = selectedDatacenter;
         const newSelectedDatacenter = event.target.value;
         handleFieldChange(event);
         setSelectedDatacenter(newSelectedDatacenter);
+        setOsImages([]);
+        setOsImageMessage('');
         if (newSelectedDatacenter) {
-            retrieveOsImages(newSelectedDatacenter, oldSelectedDatacenter);
-        } else {
-            // clear values related to (possible) previous datacenter selection
-            clearOsImages(oldSelectedDatacenter);
+            retrieveOsImages(newSelectedDatacenter);
         }
     };
 
@@ -123,7 +132,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     const handleCredentialsFieldBlur = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === VSPHERE_FIELDS.SERVERNAME) {
-            verifyVsphereThumbprint(event.target.value);
+            setServerNameAtBlur(event.target.value);
         }
     };
 
@@ -148,6 +157,12 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         if (canContinue() && goToStep && currentStep && submitForm) {
             goToStep(currentStep + 1);
             submitForm(currentStep);
+            vsphereDispatch({
+                type: VSPHERE_ADD_RESOURCES,
+                datacenter: selectedDatacenter,
+                resourceName: 'osImages',
+                payload: osImages,
+            } as VsphereResourceAction);
         }
     };
 
@@ -183,29 +198,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     };
 
-    const isValidServerName = (serverName: string): boolean => {
-        return (
-            isValidFqdn(serverName) ||
-            (ipFamily === IPFAMILIES.IPv6 && isValidIp6(serverName)) ||
-            (ipFamily === IPFAMILIES.IPv4 && isValidIp4(serverName))
-        );
-    };
-
-    const verifyVsphereThumbprint = (serverName: string) => {
-        if (isValidServerName(serverName)) {
-            setThumbprintServer(serverName);
-            VsphereService.getVsphereThumbprint(serverName).then(
-                (response) => {
-                    console.log(`thumbprint response: ${JSON.stringify(response)}`);
-                    setThumbprint(response.thumbprint || '');
-                },
-                (reasonRejected) => {
-                    setThumbprintErrorMessage(`Unable to obtain thumbprint: ${reasonRejected.message}`);
-                }
-            );
-        }
-    };
-
     const handleConnect = () => {
         setConnectionErrorMessage('');
         setConnection(false);
@@ -213,7 +205,10 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        clearDatacenters();
+        setSelectedDatacenter('');
+        setDatacenters([]);
+        setOsImages([]);
+        setOsImageMessage('');
         if (connected) {
             setLoadingDatacenters(true);
             VsphereService.getVSphereDatacenters().then((datacenters) => {
@@ -225,18 +220,22 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         }
     }, [connected, clearDatacenters]);
 
+    // NOTE: this effect is primarily used to get the server thumbprint when the server name change happens (on blur, not every
+    // time the user types a character!). However, there is a special case where the user typed in a server name that was erroneous
+    // (so we did not get an SSL thumbprint), but by changing the IP FAMILY, the server name has become valid (without actually changing
+    // value). So now we want to get the thumbprint of the now-valid server. This is taken care of by having verifyVsphereThumbprint in
+    // the dependencies list, because that function is re-assigned whenever ipFamily changes, which will trigger this effect.
     useEffect(() => {
-        // If the user has entered a value for the server name, its validity will change when the IP family selection changes.
-        // To make sure the user sees that reflected in the UI, we reset the value (to the same thing) and ask the framework to validate
-        const existingServerValue = getValues(VSPHERE_FIELDS.SERVERNAME);
-        if (existingServerValue) {
-            setValue(VSPHERE_FIELDS.SERVERNAME, existingServerValue, { shouldTouch: true, shouldValidate: true });
+        setThumbprint('');
+        setThumbprintErrorMessage('');
+        if (serverNameAtBlur) {
+            // If the user has already entered a value for the server name, its validity may change when the IP family selection changes.
+            // To make sure the user sees that newly-valid or newly-invalid status reflected in the UI,
+            // we reset the value (to the same thing) and ask the framework to validate
+            setValue(VSPHERE_FIELDS.SERVERNAME, serverNameAtBlur, { shouldTouch: true, shouldValidate: true });
+            verifyVsphereThumbprint(serverNameAtBlur);
         }
-        // There is a special case where the user typed in a server name that was erroneous (so we did not get SSL thumbprint),
-        // but by changing the IP FAMILY, the server name has become valid (without actually changing value). So now we want to get the
-        // thumbprint of the now-valid server
-        verifyVsphereThumbprint(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME]);
-    }, [ipFamily]);
+    }, [setValue, serverNameAtBlur, verifyVsphereThumbprint]);
 
     return (
         <>
@@ -408,7 +407,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </div>
                 </div>
                 <div cds-layout="col:6">
-                    {osImageMessage && (
+                    {connected && selectedDatacenter && osImageMessage && (
                         <div>
                             <div className="error-text">Unable to use this Datacenter unless changes are made</div>
                             <br />
@@ -424,18 +423,13 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function retrieveOsImages(newDatacenter: string | undefined, prevDatacenter: string | undefined) {
-        clearOsImages(prevDatacenter);
-
-        if (newDatacenter) {
-            VsphereService.getVSphereOsImages(newDatacenter).then((osImages) => {
-                vsphereDispatch({
-                    type: VSPHERE_ADD_RESOURCES,
-                    datacenter: newDatacenter,
-                    resourceName: 'osImages',
-                    payload: osImages,
-                } as VsphereResourceAction);
-                const { msg, nImages, nTemplates } = analyzeOsImages(newDatacenter, 'URL', osImages);
+    function retrieveOsImages(datacenter: string | undefined) {
+        setOsImages([]);
+        if (datacenter) {
+            VsphereService.getVSphereOsImages(datacenter).then((fetchedOsImages) => {
+                setOsImages(fetchedOsImages);
+                // TODO: get good URL for how to convert OSImage to template
+                const { msg, nImages, nTemplates } = analyzeOsImages(datacenter, 'URL', fetchedOsImages);
                 setOsImageMessage(msg);
                 setSelectedDcHasTemplate(nTemplates > 0);
                 console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
@@ -444,6 +438,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
 
     function handleRecheckOsImages() {
-        retrieveOsImages(selectedDatacenter, selectedDatacenter);
+        retrieveOsImages(selectedDatacenter);
     }
 }

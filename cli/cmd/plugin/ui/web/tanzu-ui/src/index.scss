@@ -94,6 +94,15 @@ main {
     height: 100%;
 }
 
+.panel-slide-r-l-solid {
+    display: inline-block;
+    background-image: url('assets/panel-slide-r-l-solid.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+
 .mgmt-cluster-admins-img {
     display: inline-block;
     background-image: url('assets/admins-at-work.svg');

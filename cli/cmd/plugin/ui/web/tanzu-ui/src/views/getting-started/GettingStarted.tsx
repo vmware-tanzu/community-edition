@@ -3,14 +3,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Library imports
+import { blockIcon, ClarityIcons, computerIcon } from '@cds/core/icon';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, blockIcon, computerIcon } from '@cds/core/icon';
 
 // App imports
-import './GettingStarted.scss';
-import { AppFeature, featureAvailable } from '../../shared/services/AppConfiguration.service';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import { AppFeature, featureAvailable } from '../../shared/services/AppConfiguration.service';
+import './GettingStarted.scss';
 
 ClarityIcons.addIcons(blockIcon, computerIcon);
 
@@ -34,16 +34,6 @@ function GettingStarted() {
                             </p>
                             <p>From the Management Cluster, you will be able to create Workload Clusters.</p>
                         </div>
-                    </div>
-                    <div cds-layout="col@sm:4 col:4 horizontal align:right">
-                        <CdsButton
-                            action="flat"
-                            onClick={() => {
-                                window.open('http://tanzucommunityedition.io', '_blank');
-                            }}
-                        >
-                            Learn more about Tanzu&apos;s architecture
-                        </CdsButton>
                     </div>
                 </div>
 

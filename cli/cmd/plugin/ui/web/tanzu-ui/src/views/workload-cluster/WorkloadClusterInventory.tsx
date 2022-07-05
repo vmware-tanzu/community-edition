@@ -2,7 +2,6 @@
 import React from 'react';
 
 // Library imports
-import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
 function WorkloadClusterInventory() {
@@ -17,16 +16,6 @@ function WorkloadClusterInventory() {
                     <div cds-text="subsection" cds-layout="p-y:md">
                         Placeholder page for workload cluster inventory
                     </div>
-                </div>
-                <div cds-layout="col@sm:4 col:4 container:fill">
-                    <CdsButton
-                        action="flat"
-                        onClick={() => {
-                            window.open('https://tanzucommunityedition.io/docs/v0.11', '_blank');
-                        }}
-                    >
-                        Learn more about Workload Clusters
-                    </CdsButton>
                 </div>
             </div>
         </div>
