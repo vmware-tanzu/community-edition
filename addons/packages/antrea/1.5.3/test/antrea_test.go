@@ -294,10 +294,10 @@ tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_
 			BeforeEach(func() {
 				values, err = marshalAntreaConfig(fileValuesYaml, func(config *AntreaConfig) {
 					config.Antrea.Config.FeatureGates.FlowExporter = true
-					config.Antrea.Config.FlowExporter.Address = "0.0.0.0"
+					config.Antrea.Config.FlowExporter.CollectorAddress = "0.0.0.0"
 					config.Antrea.Config.FlowExporter.PollInterval = seconds
-					config.Antrea.Config.FlowExporter.ExportTimeout = seconds
-					config.Antrea.Config.FlowExporter.IdleExportTimeout = seconds
+					config.Antrea.Config.FlowExporter.ActiveFlowTimeout = seconds
+					config.Antrea.Config.FlowExporter.IdleFlowTimeout = seconds
 				})
 				Expect(err).NotTo(HaveOccurred())
 			})

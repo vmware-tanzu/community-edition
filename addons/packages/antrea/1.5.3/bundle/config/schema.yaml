@@ -51,13 +51,13 @@ antrea:
     #@schema/desc "FlowExporter related configuration options."
     flowExporter:
       #@schema/desc "Provide the IPFIX collector address as a string."
-      address: ""
+      collectorAddress: ""
       #@schema/desc "Provide flow poll interval as a duration string."
       pollInterval: ""
       #@schema/desc "Provide the active flow export timeout."
-      exportTimeout: ""
+      activeFlowTimeout: ""
       #@schema/desc "Provide the idle flow export timeout."
-      idleExportTimeout: ""
+      idleFlowTimeout: ""
     #@schema/desc "Provide the address of Kubernetes apiserver."
     #@schema/nullable
     kubeAPIServerOverride: ""

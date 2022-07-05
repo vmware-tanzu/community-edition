@@ -13,7 +13,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/antrea@sha256:9bd34d18dc3a518c72c66e83c4ac5944f008c331aeb5d5893a8470c8e06bfa9b
+          image: projects.registry.vmware.com/tce/antrea@sha256:b38e93eddad79473bffe135854952c1166dfe7352493a63206021ecaf038943b
       template:
       - ytt:
           paths:
@@ -137,7 +137,7 @@ spec:
                   additionalProperties: false
                   description: FlowExporter related configuration options.
                   properties:
-                    address:
+                    collectorAddress:
                       type: string
                       description: Provide the IPFIX collector address as a string.
                       default: ""
@@ -145,11 +145,11 @@ spec:
                       type: string
                       description: Provide flow poll interval as a duration string.
                       default: ""
-                    exportTimeout:
+                    activeFlowTimeout:
                       type: string
                       description: Provide the active flow export timeout.
                       default: ""
-                    idleExportTimeout:
+                    idleFlowTimeout:
                       type: string
                       description: Provide the idle flow export timeout.
                       default: ""
