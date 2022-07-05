@@ -173,19 +173,19 @@ After you create the role and user you must assign the user and their role to th
 
 In the **Hosts and Clusters**, **VMs and Templates**, **Storage**, and **Networking** views, right-click the objects that your Tanzu Community Edition deployment will use, select **Add Permission**, and assign the `tce-user`  with the `TCE` role to each object.
 
-   * Hosts and Clusters
-     * The root vCenter Server object
-     * The Datacenter and all of the Host and Cluster folders, from the Datacenter object down to the cluster that manages the Tanzu Community Edition deployment
-     * Target hosts and clusters
-     * Target resource pools, with propagate to children selected
-   * VMs and Templates
-     * The deployed Tanzu Community Edition base image templates
-     * Target VM and Template folders, with propagate to children selected
-     * Storage
-     * Datastores and all storage folders, from the Datacenter object down to the datastores that will be used for Tanzu Community Edition deployments
-   * Networking
-     * Networks or distributed port groups to which clusters will be assigned
-     * Distributed switches
+* Hosts and Clusters
+  * The root vCenter Server object
+  * The Datacenter and all of the Host and Cluster folders, from the Datacenter object down to the cluster that manages the Tanzu Community Edition deployment
+  * Target hosts and clusters
+  * Target resource pools, with propagate to children selected
+* VMs and Templates
+  * The deployed Tanzu Community Edition base image templates
+  * Target VM and Template folders, with propagate to children selected
+  * Storage
+  * Datastores and all storage folders, from the Datacenter object down to the datastores that will be used for Tanzu Community Edition deployments
+* Networking
+  * Networks or distributed port groups to which clusters will be assigned
+  * Distributed switches
 
 #### Option 2: Assigning permissions to Inventory Objects using GOVC
 
@@ -249,16 +249,15 @@ If SSH is enabled on the vCenter Server Appliance, you can use SSH and OpenSSL t
 
 1. Use govc to extract the thumbprint information from the vCenter Server Appliance remotely.
 
-```sh
-# This command on any operating system with govc. The last line of the output contains the SHA1 thumbprint.
-govc about.cert
-
-# On MacOS/Linux you can directly extract the SHA1 thumbprint when jq is installed on your system
-govc about.cert -k -json | jq -r .ThumbprintSHA1
-```
+   ```sh
+   # This command on any operating system with govc. The last line of the output contains the SHA1 thumbprint.
+   govc about.cert
+   
+   # On MacOS/Linux you can directly extract the SHA1 thumbprint when jq is installed on your system
+   govc about.cert -k -json | jq -r .ThumbprintSHA1
+   ```
 
 2. Copy the certificate thumbprint so that you can verify it when you deploy a management cluster.
-
 
 ### Platform Services Controller
 
