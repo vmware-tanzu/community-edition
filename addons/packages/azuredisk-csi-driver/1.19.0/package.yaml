@@ -1,18 +1,18 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: azure-disk-csi-driver.community.tanzu.vmware.com.1.19.0
+  name: azuredisk-csi-driver.community.tanzu.vmware.com.1.19.0
 spec:
-  refName: azure-disk-csi-driver.community.tanzu.vmware.com
+  refName: azuredisk-csi-driver.community.tanzu.vmware.com
   version: 1.19.0
-  releaseNotes: "azure-disk-csi-driver 1.19.0 https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases/tag/v1.19.0"
+  releaseNotes: "azuredisk-csi-driver 1.19.0 https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases/tag/v1.19.0"
   licenses:
     - "Apache 2.0"
   template:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/azure-disk-csi-driver@sha256:c9d8887756e6cf6658c884442d6492fb76a5ccd95bf13824a5394b54f6abbe2a
+            image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:a4afa7b7ee5ef5517581fc7d2351518c88c4431c83c597c6be9762247b154782
       template:
         - ytt:
             paths:

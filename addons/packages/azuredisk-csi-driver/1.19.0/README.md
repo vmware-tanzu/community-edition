@@ -1,6 +1,6 @@
 # Azure Disk CSI Driver
 
-This package provides cloud storage interface driver using [azure-disk-csi-driver](https://github.com/kubernetes-sigs/azuredisk-csi-driver).
+This package provides cloud storage interface driver using [azuredisk-csi-driver](https://github.com/kubernetes-sigs/azuredisk-csi-driver).
 
 ## Supported Providers
 
@@ -12,7 +12,7 @@ The following tables shows the providers this package can work with.
 
 ## Configuration
 
-The following configuration values can be set to customize the azure-disk-csi-driver installation.
+The following configuration values can be set to customize the azuredisk-csi-driver installation.
 
 ### Global
 
@@ -24,7 +24,7 @@ The following configuration values can be set to customize the azure-disk-csi-dr
 | `deployment.rollingUpdate.maxSurge` | Optional | The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy. Defaults to null. |
 | `daemonset.updateStrategy` | Optional | The update strategy of daemonsets to overwrite. Defaults to null. |
 
-### azure-disk-csi-driver Configuration
+### azuredisk-csi-driver Configuration
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
