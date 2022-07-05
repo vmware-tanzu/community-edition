@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
-import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import TceLogoAndTitle from '../../assets/tce-logo-and-title.svg';
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import RolloverBanner from './RolloverBanner/RolloverBanner';
 import './Welcome.scss';
 
@@ -16,16 +16,6 @@ const Welcome: React.FC = () => {
         <>
             <div cds-layout="vertical col:8 ">
                 <img src={TceLogoAndTitle} className="title-image " alt="tce logo" />
-            </div>
-            <div cds-layout="col:4 align:right horizontal">
-                <CdsButton
-                    action="flat"
-                    onClick={() => {
-                        window.open('http://tanzucommunityedition.io', '_blank');
-                    }}
-                >
-                    Learn more at tanzucommunityedition.io
-                </CdsButton>
             </div>
             <div cds-layout="vertical gap:lg col:8">
                 <div cds-text="subsection">

@@ -6,6 +6,7 @@ import { StoreDispatch } from '../../shared/types/types';
 import azureReducer from '../reducers/Wizard.reducer';
 import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 import { AzureCloud } from '../../shared/constants/App.constants';
+import { AZURE_DEFAULT_VALUES } from '../../shared/constants/defaults/azure.defaults';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
@@ -16,6 +17,8 @@ const initialState = {
         AZURE_ENVIRONMENT: AzureCloud.PUBLIC,
         REGION: '',
         SSH_PUBLIC_KEY: '',
+        NODE_PROFILE: '',
+        ...AZURE_DEFAULT_VALUES,
     },
 };
 

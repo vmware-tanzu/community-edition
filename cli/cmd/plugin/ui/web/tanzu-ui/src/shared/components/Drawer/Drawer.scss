@@ -1,20 +1,33 @@
 $PANEL_WIDTH: 20rem;
 
-.drawer-container {
+@import "../../../../src/scss/animations/slide-left";
+@import "../../../../src/scss/animations/slide-right";
+
+@mixin zero-top-bottom-left-right {
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.drawer-container {
+    @include zero-top-bottom-left-right;
+
     height: 100%;
     overflow: hidden;
     z-index: 200;
 
+    .mask {
+        z-index: -1;
+        background-color: var(--cds-alias-object-opacity-300);
+    }
+
     .drawer-content {
-        width: 0;
         background: var(--cds-global-color-blue-700);
         color: var(--cds-global-color-white);
         top: 0;
-        right: 0;
+        width: 0;
+        z-index: 200;
 
         .drawer-header {
             .icon {
@@ -26,26 +39,36 @@ $PANEL_WIDTH: 20rem;
             }
         }
     }
-}
 
-.drawer-container.open {
-    position: absolute;
-
-    .drawer-content {
+    &.open {
         position: absolute;
-        width: $PANEL_WIDTH;
+
+        .drawer-content {
+            position: absolute;
+            width: $PANEL_WIDTH;
+        }
+
+        &.right {
+            .drawer-content {
+                right: 0;
+                @include slide-left;
+            }
+        }
+
+        &.left {
+            .drawer-content {
+                left: 0;
+                @include slide-left;
+            }
+        }
     }
 
-    .mask {
-        background-color: var(--cds-alias-object-opacity-300);
-    }
-}
-
-.drawer-container.pinned {
-    position: fixed;
-    width: 0;
-
-    .drawer-content {
+    &.pinned {
         position: fixed;
+        width: 0;
+
+        .drawer-content {
+            position: fixed;
+        }
     }
 }

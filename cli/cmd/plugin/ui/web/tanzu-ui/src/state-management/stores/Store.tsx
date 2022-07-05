@@ -22,6 +22,14 @@ const initialState = {
             text: '',
             status: 'success',
         },
+        contextualHelp: {
+            title: {
+                contextTitle: null,
+                pageTitle: null,
+            },
+            keywords: [],
+            externalLink: null,
+        },
     },
     [STORE_SECTION_DEPLOYMENT]: {
         // TODO: convert to list of deployments; should be updated when deployment started
