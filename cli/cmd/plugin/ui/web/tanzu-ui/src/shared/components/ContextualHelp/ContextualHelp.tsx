@@ -1,22 +1,24 @@
+import './ContextualHelp.scss';
+
 import { ClarityIcons, popOutIcon, searchIcon, viewColumnsIcon } from '@cds/core/icon';
+import { ContextualHelpContentProps, ContextualHelpData, SearchProps } from './ContextualHelp.interface';
+import { DrawerActions, drawerReducer, initialState } from '../Drawer/Drawer.store';
+import React, { useContext, useEffect, useMemo, useReducer } from 'react';
+
 import { CdsButton } from '@cds/react/button';
 import { CdsControlAction } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsInput } from '@cds/react/input';
-import Fuse from 'fuse.js';
-import React, { useContext, useEffect, useMemo, useReducer } from 'react';
-import helpDocs from '../../../assets/contextualHelpDocs/data.json';
-import fuseIndex from '../../../assets/contextualHelpDocs/fuse-index.json';
-import { STORE_SECTION_UI } from '../../../state-management/reducers/Ui.reducer';
-import { Store } from '../../../state-management/stores/Store';
-import useFuseSearch from '../../hooks/UseFuseSearch';
+import { ContextualHelpState } from './ContextualHelp.store';
 import DataAccordion from '../DataAccordion/DataAccordion';
 import { DataAccordionConfig } from '../DataAccordion/DataAccordion.interface';
 import Drawer from '../Drawer/Drawer';
-import { DrawerActions, drawerReducer, initialState } from '../Drawer/Drawer.store';
-import { ContextualHelpContentProps, ContextualHelpData, SearchProps } from './ContextualHelp.interface';
-import './ContextualHelp.scss';
-import { ContextualHelpState } from './ContextualHelp.store';
+import Fuse from 'fuse.js';
+import { STORE_SECTION_UI } from '../../../state-management/reducers/Ui.reducer';
+import { Store } from '../../../state-management/stores/Store';
+import fuseIndex from '../../../assets/contextualHelpDocs/fuse-index.json';
+import helpDocs from '../../../assets/contextualHelpDocs/data.json';
+import useFuseSearch from '../../hooks/UseFuseSearch';
 
 ClarityIcons.addIcons(viewColumnsIcon, searchIcon, popOutIcon);
 
