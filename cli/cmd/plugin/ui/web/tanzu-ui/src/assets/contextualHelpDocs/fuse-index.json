@@ -1,1 +1,57 @@
-{"keys":[{"path":["topicTitle"],"id":"topicTitle","weight":1,"src":"topicTitle","getFn":null},{"path":["topicIds"],"id":"topicIds","weight":1,"src":"topicIds","getFn":null},{"path":["topicDescription"],"id":"topicDescription","weight":1,"src":"topicDescription","getFn":null}],"records":[{"i":0,"$":{"0":{"v":"Demo help topic","n":0.577},"1":[{"v":"demo","i":0,"n":1}]}},{"i":1,"$":{"0":{"v":"Docker Daemon prerequisite","n":0.577},"1":[{"v":"tce-getting-started","i":1,"n":1},{"v":"tce-welcome","i":0,"n":1}]}},{"i":2,"$":{"0":{"v":"Managed Clusters","n":0.707},"1":[{"v":"tce-getting-started","i":1,"n":1},{"v":"tce-welcome","i":0,"n":1}]}},{"i":3,"$":{"0":{"v":"Management Clusters","n":0.707},"1":[{"v":"tce-getting-started","i":0,"n":1}]}},{"i":4,"$":{"0":{"v":"Planning your Deployment","n":0.577},"1":[{"v":"tce-getting-started","i":0,"n":1}]}},{"i":5,"$":{"0":{"v":"Supported Infrastructure providers","n":0.577},"1":[{"v":"tce-getting-started","i":1,"n":1},{"v":"tce-welcome","i":0,"n":1}]}},{"i":6,"$":{"0":{"v":"Tanzu Packages","n":0.707},"1":[{"v":"tce-welcome","i":0,"n":1}]}},{"i":7,"$":{"0":{"v":"Troubleshooting cluster creation","n":0.577},"1":[{"v":"tce-getting-started","i":0,"n":1}]}},{"i":8,"$":{"0":{"v":"Unmanaged Clusters","n":0.707},"1":[{"v":"tce-getting-started","i":1,"n":1},{"v":"tce-welcome","i":0,"n":1}]}},{"i":9,"$":{"0":{"v":"Workload Clusters","n":0.707},"1":[{"v":"tce-getting-started","i":0,"n":1}]}}]}
+{
+    "keys": [
+        { "path": ["topicTitle"], "id": "topicTitle", "weight": 1, "src": "topicTitle", "getFn": null },
+        { "path": ["topicIds"], "id": "topicIds", "weight": 1, "src": "topicIds", "getFn": null },
+        { "path": ["topicDescription"], "id": "topicDescription", "weight": 1, "src": "topicDescription", "getFn": null }
+    ],
+    "records": [
+        { "i": 0, "$": { "0": { "v": "Demo help topic", "n": 0.577 }, "1": [{ "v": "demo", "i": 0, "n": 1 }] } },
+        {
+            "i": 1,
+            "$": {
+                "0": { "v": "Docker Daemon prerequisite", "n": 0.577 },
+                "1": [
+                    { "v": "tce-getting-started", "i": 1, "n": 1 },
+                    { "v": "tce-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        {
+            "i": 2,
+            "$": {
+                "0": { "v": "Managed Clusters", "n": 0.707 },
+                "1": [
+                    { "v": "tce-getting-started", "i": 1, "n": 1 },
+                    { "v": "tce-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        { "i": 3, "$": { "0": { "v": "Management Clusters", "n": 0.707 }, "1": [{ "v": "tce-getting-started", "i": 0, "n": 1 }] } },
+        {
+            "i": 4,
+            "$": {
+                "0": { "v": "Supported Infrastructure providers", "n": 0.577 },
+                "1": [
+                    { "v": "tce-getting-started", "i": 1, "n": 1 },
+                    { "v": "tce-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        { "i": 5, "$": { "0": { "v": "Tanzu Packages", "n": 0.707 }, "1": [{ "v": "tce-welcome", "i": 0, "n": 1 }] } },
+        {
+            "i": 6,
+            "$": { "0": { "v": "Troubleshooting cluster creation", "n": 0.577 }, "1": [{ "v": "tce-getting-started", "i": 0, "n": 1 }] }
+        },
+        {
+            "i": 7,
+            "$": {
+                "0": { "v": "Unmanaged Clusters", "n": 0.707 },
+                "1": [
+                    { "v": "tce-getting-started", "i": 1, "n": 1 },
+                    { "v": "tce-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        { "i": 8, "$": { "0": { "v": "Workload Clusters", "n": 0.707 }, "1": [{ "v": "tce-getting-started", "i": 0, "n": 1 }] } }
+    ]
+}
