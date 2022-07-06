@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:a4afa7b7ee5ef5517581fc7d2351518c88c4431c83c597c6be9762247b154782
+            image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:f7f03d29bd959b718fcd4f61a345a68e0d83a12eec3b59908a762394cee6e912
       template:
         - ytt:
             paths:
@@ -72,3 +72,27 @@ spec:
             deprecated: true
             description: The namespace in which azure disk csi driver is deployed
             default: kube-system
+          http_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The HTTP proxy to use for network traffic
+            default: ""
+          https_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The HTTPS proxy to use for network traffic
+            default: ""
+          no_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+            default: ""
+          deployment_replicas:
+            type: integer
+            nullable: true
+            deprecated: true
+            description: The number of replicas of csi-azuredisk-controller and csi-snapshot-controller deployment
+            default: 3

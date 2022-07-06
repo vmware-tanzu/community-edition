@@ -29,6 +29,10 @@ The following configuration values can be set to customize the azuredisk-csi-dri
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `azureDiskCSIDriver.namespace` | Required | The namespace of the Kubernetes cluster in cluster ID. Default value is `kube-system`. |
+| `azureDiskCSIDriver.http_proxy`                     | Optional          | The HTTP proxy to use for network traffic                                                                                                                                                         |
+| `azureDiskCSIDriver.https_proxy`                    | Optional          | The HTTPS proxy to use for network traffic                                                                                                                                                        |
+| `azureDiskCSIDriver.no_proxy`                       | Optional          | A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+| `azureDiskCSIDriver.deployment_replicas` | Optional | The number of replicas of csi-azuredisk-controller and csi-snapshot-controller deployment. Default: `3`. |
 
 ## What This Package Does
 

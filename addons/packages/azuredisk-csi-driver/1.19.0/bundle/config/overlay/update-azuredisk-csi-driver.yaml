@@ -7,12 +7,46 @@
 metadata:
   #@overlay/match missing_ok=True
   namespace: #@ data.values.azureDiskCSIDriver.namespace
+spec:
+  #@overlay/match
+  replicas: #@ values.azureDiskCSIDriver.deployment_replicas
+  template:
+    spec:
+      containers:
+        #@ if values.azureDiskCSIDriver.http_proxy != "" :
+        #@overlay/match by=overlay.or_op(overlay.subset({"name": "azuredisk"}), overlay.subset({"name": "csi-provisioner"}), overlay.subset({"name": "csi-attacher"}), overlay.subset({"name": "csi-resizer"})), expects=4
+        - env:
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.azureDiskCSIDriver.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.azureDiskCSIDriver.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.azureDiskCSIDriver.no_proxy
+        #@ end
 
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "csi-snapshot-controller"}})
 ---
 metadata:
   #@overlay/match missing_ok=True
   namespace: #@ data.values.azureDiskCSIDriver.namespace
+spec:
+  #@overlay/match
+  replicas: #@ values.azureDiskCSIDriver.deployment_replicas
+  template:
+    spec:
+      containers:
+        #@ if values.azureDiskCSIDriver.http_proxy != "" :
+        #@overlay/append
+        - env:
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.azureDiskCSIDriver.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.azureDiskCSIDriver.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.azureDiskCSIDriver.no_proxy
+        #@ end
 
 #@overlay/match expects="0+",by=overlay.subset({"kind":"DaemonSet"})
 ---
@@ -20,6 +54,21 @@ kind: DaemonSet
 metadata:
   #@overlay/match missing_ok=True
   namespace: #@ data.values.azureDiskCSIDriver.namespace
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.or_op(overlay.subset({"name": "azuredisk"}), overlay.subset({"name": "node-driver-registrar"})), expects=2
+        - env:
+            #@ if values.azureDiskCSIDriver.http_proxy != "" :
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.azureDiskCSIDriver.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.azureDiskCSIDriver.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.azureDiskCSIDriver.no_proxy
+            #@ end
 
 #@ service_accounts = overlay.subset({"kind": "ServiceAccount"})
 #@ roles = overlay.subset({"kind": "Role"})
