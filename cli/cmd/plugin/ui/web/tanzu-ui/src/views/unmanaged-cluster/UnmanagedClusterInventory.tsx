@@ -77,7 +77,7 @@ function UnmanagedClusterInventory() {
                     </CdsAlertGroup>
                     {hasUnmanagedClusters() ? UnmanagedClustersSection() : NoUnmanagedClustersSection()}
                 </div>
-                <div cds-layout="col@sm:4 col:4 container:fill">{LearnMore()}</div>
+                <div cds-layout="col@sm:4 col:4 container:fill"></div>
                 {renderConfirmDeleteModal()}
             </div>
         </div>

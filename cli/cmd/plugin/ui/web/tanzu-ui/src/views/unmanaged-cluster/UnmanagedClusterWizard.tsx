@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Library imports
@@ -21,10 +21,6 @@ function UnmanagedClusterWizard() {
     // temp local variable for testing advanced settings, will be refactored
     const [useBasicSettings, setUseBasicSettings] = useState<boolean>(true);
 
-    const changeSettings = () => {
-        setUseBasicSettings((prev) => !prev);
-    };
-
     return (
         <UmcProvider>
             <div cds-layout="grid col:12">
@@ -37,7 +33,7 @@ function UnmanagedClusterWizard() {
                             <span cds-text="title">Create Unmanaged Cluster</span>
                         </div>
                     </div>
-                    <div cds-layout="vertical align:stretch">{RenderWizardSettings()}</div>
+                    <div cds-layout="vertical align:stretch">{RenderBasicAdvanced()}</div>
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
@@ -46,8 +42,12 @@ function UnmanagedClusterWizard() {
         </UmcProvider>
     );
 
-    function RenderWizardSettings() {
+    function RenderBasicAdvanced() {
         return useBasicSettings ? UnmanagedBasicSetting() : UnmanagedAdvancedSetting();
+    }
+
+    function toggleBasicAdvanced() {
+        setUseBasicSettings(!useBasicSettings);
     }
 
     function UnmanagedBasicSetting() {
@@ -55,7 +55,7 @@ function UnmanagedClusterWizard() {
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Simple configuration</div>
-                    <CdsButton action="outline" cds-layout="align:right" size="sm" onclick={changeSettings}>
+                    <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => toggleBasicAdvanced()}>
                         Use Advanced Configuration
                     </CdsButton>
                 </div>
@@ -69,7 +69,7 @@ function UnmanagedClusterWizard() {
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Advanced configuration</div>
-                    <CdsButton action="outline" cds-layout="align:right" size="sm" onclick={changeSettings}>
+                    <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => setUseBasicSettings(!useBasicSettings)}>
                         Use Simple Configuration
                     </CdsButton>
                 </div>

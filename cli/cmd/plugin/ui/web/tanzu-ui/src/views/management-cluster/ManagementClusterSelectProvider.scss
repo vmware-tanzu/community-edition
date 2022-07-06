@@ -1,19 +1,17 @@
 .management-cluster-landing-container {
-    .title {
-        font-size: var(--cds-global-typography-font-size-7);
-    }
-    .sub-title {
-        font-size: 22px;
-    }
     .card-container {
-        box-shadow: 1px 3px 2px black;
-
-        &:hover {
+        &:hover,
+        &:focus {
+            --border: var(--cds-alias-object-border-width-100, 0.0625rem) solid var(--cds-global-color-blue-400);
             cursor: pointer;
+        }
+        &:active {
+            --background: var(--cds-alias-object-container-background-shade);
         }
     }
     .logo-name {
         white-space: nowrap;
-        color: var(--cds-global-color-slate-50);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }

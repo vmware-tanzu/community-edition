@@ -14,7 +14,15 @@ const initialState = {
         // Cluster Settings advanced
         CONTROL_PLANE_NODES_COUNT: '1',
         WORKER_NODES_COUNT: '0',
-        CLUSTER_PROVIDER: '',
+        CLUSTER_PROVIDER: 'CALICO',
+
+        // Cluster Network Settings
+        IP_ADDRESS: '127.0.0.1',
+        HOST_PORT_MAPPING: '80',
+        NODE_PORT_MAPPING: '80',
+        CLUSTER_SERVICE_CIDR: '100.64.0.0/13',
+        CLUSTER_POD_CIDR: '100.96.0.0/11',
+        CLUSTER_PROTOCOL: 'tcp',
     },
 };
 
