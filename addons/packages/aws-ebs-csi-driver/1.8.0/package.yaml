@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/aws-ebs-csi-driver@sha256:ae1ddee032549ccc03bdbe6dec5aa9a07cc717061de197ff561c84d17af79d15
+            image: projects.registry.vmware.com/tce/aws-ebs-csi-driver@sha256:321ba7e90c916e40eeb3b6db20f5d85f0f112cb71475a0a606ac7467342b22c3
       template:
         - ytt:
             paths:
@@ -72,3 +72,27 @@ spec:
             deprecated: true
             description: The namespace in which aws ebs csi driver is deployed
             default: kube-system
+          http_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The HTTP proxy to use for network traffic
+            default: ""
+          https_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The HTTPS proxy to use for network traffic
+            default: ""
+          no_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+            default: ""
+          deployment_replicas:
+            type: integer
+            nullable: true
+            deprecated: true
+            description: The number of replicas of aws-ebs-csi-controller and snapshot-controller deployment
+            default: 3

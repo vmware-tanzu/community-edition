@@ -29,6 +29,10 @@ The following configuration values can be set to customize the aws-ebs-csi-drive
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `awsEBSCSIDriver.namespace` | Required | The namespace of the Kubernetes cluster in cluster ID. Default value is `kube-system`. |
+| `awsEBSCSIDriver.http_proxy`                     | Optional          | The HTTP proxy to use for network traffic                                                                                                                                                         |
+| `awsEBSCSIDriver.https_proxy`                    | Optional          | The HTTPS proxy to use for network traffic                                                                                                                                                        |
+| `awsEBSCSIDriver.no_proxy`                       | Optional          | A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+| `awsEBSCSIDriver.deployment_replicas` | Optional | The number of replicas of aws-ebs-csi-controller and snapshot-controller deployment. Default: `3`. |
 
 ## What This Package Does
 

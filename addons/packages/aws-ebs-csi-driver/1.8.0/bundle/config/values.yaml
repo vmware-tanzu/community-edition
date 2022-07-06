@@ -12,3 +12,7 @@ daemonset:
   updateStrategy: null
 awsEBSCSIDriver:
   namespace: kube-system
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+  deployment_replicas: 3
