@@ -27,3 +27,7 @@ awsEBSCSIDriver:
   #@schema/desc "The namespace in which aws ebs csi driver is deployed"
   #@schema/nullable
   namespace: kube-system
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+  deployment_replicas: 3
