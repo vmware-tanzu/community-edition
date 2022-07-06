@@ -71,7 +71,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     function ClusterName() {
         return (
             <div>
-                <CdsInput>
+                <CdsInput layout="vertical">
                     <label cds-layout="p-b:xs" cds-text="section">
                         Cluster name
                     </label>
