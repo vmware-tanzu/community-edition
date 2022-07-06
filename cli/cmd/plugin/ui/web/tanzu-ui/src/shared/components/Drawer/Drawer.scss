@@ -1,7 +1,7 @@
 $PANEL_WIDTH: 20rem;
 
-@import '../../../../src/scss/animations/slide-left';
-@import '../../../../src/scss/animations/slide-right';
+@import "../../../../src/scss/animations/slide-left";
+@import "../../../../src/scss/animations/slide-right";
 
 @mixin zero-top-bottom-left-right {
     top: 0;

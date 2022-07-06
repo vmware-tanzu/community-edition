@@ -176,7 +176,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             {...register(UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR)}
                             placeholder="CLUSTER SERVICE CIDR"
                             onChange={handleFieldChange}
-                            defaultValue="100.64.0.0/13"
+                            defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR}
                         ></input>
                         {errors['CLUSTER_SERVICE_CIDR'] && (
                             <CdsControlMessage status="error">{errors['CLUSTER_SERVICE_CIDR'].message}</CdsControlMessage>
@@ -192,7 +192,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             {...register(UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR)}
                             placeholder="Cluster POD CIDR"
                             onChange={handleFieldChange}
-                            defaultValue={'100.96.0.0/11'}
+                            defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_POD_CIDR}
                         ></input>
                         {errors['CLUSTER_POD_CIDR'] && (
                             <CdsControlMessage status="error">{errors['CLUSTER_POD_CIDR'].message}</CdsControlMessage>
