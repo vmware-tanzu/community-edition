@@ -218,7 +218,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         } else {
             setLoadingDatacenters(false);
         }
-    }, [connected, clearDatacenters]);
+    }, [connected]);
 
     // NOTE: this effect is primarily used to get the server thumbprint when the server name change happens (on blur, not every
     // time the user types a character!). However, there is a special case where the user typed in a server name that was erroneous

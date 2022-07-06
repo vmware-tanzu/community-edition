@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useContext } from 'react';
 
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
@@ -16,7 +16,9 @@ import * as yup from 'yup';
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { isValidCidr, isValidIp } from '../../../../shared/validations/Validation.service';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -41,18 +43,18 @@ const unmanagedClusterNetworkSettingStepFormSchema = yup
         [UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR]: yup
             .string()
             .nullable()
-            .required('Please enter a CIDER for your cluster service')
-            .test('', 'Cluster name must contain only lower case letters and hyphen', (value) => value !== null && isValidCidr(value)),
+            .required('Please enter a CIDR for your cluster service')
+            .test('', 'Must be valid CIDR', (value) => value !== null && isValidCidr(value)),
         [UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR]: yup
             .string()
             .nullable()
             .required('Please enter a CIDER for your cluster pod')
-            .test('', 'Cluster name must contain only lower case letters and hyphen', (value) => value !== null && isValidCidr(value)),
+            .test('', 'Must be valid CIDR', (value) => value !== null && isValidCidr(value)),
         [UNMANAGED_NETWORK_FIELDS.IP_ADDRESS]: yup
             .string()
             .nullable()
-            .required('Please enter a CIDER for your cluster pod')
-            .test('', 'Cluster name must contain only lower case letters and hyphen', (value) => value !== null && isValidIp(value)),
+            .required('Please enter an IP Address for your cluster pod')
+            .test('', 'Must be valid IP Address', (value) => value !== null && isValidIp(value)),
     })
     .required();
 
@@ -89,6 +91,8 @@ const unmanagedClusterProtocol = [
 function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     const { handleValueChange, currentStep } = props;
 
+    const { umcState } = useContext(UmcStore);
+
     const {
         register,
         formState: { errors },
@@ -100,43 +104,19 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         }
     };
 
-    const [ipAddress, setIpAddress] = useState('127.0.0.1');
-
-    const handleIpAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
-        }
-        setIpAddress(event.target.value);
-    };
-
-    const [hostPort, setHostPort] = useState('80');
-
-    const handleHostPortChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
-        }
-        setHostPort(event.target.value);
-    };
-
-    const [nodePort, setNodePort] = useState('80');
-
-    const handleNodeChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
-        }
-        setNodePort(event.target.value);
-    };
-
-    const [selectedProvider, setSelectedProvider] = useState('CALICO');
+    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER);
 
     const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedProvider(event.target.value);
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, 'CLUSTER_PROVIDER', event.target.value, currentStep, errors);
+        }
     };
 
-    const [selectedProtocol, setSelectedProtocol] = useState('tcp');
-
     const handleProtocolChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedProtocol(event.target.value);
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, 'CLUSTER_PROTOCOL', event.target.value, currentStep, errors);
+        }
     };
 
     return (
@@ -210,7 +190,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         </label>
                         <input
                             {...register(UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR)}
-                            placeholder="Cluster Pod CIDR"
+                            placeholder="Cluster POD CIDR"
                             onChange={handleFieldChange}
                             defaultValue={'100.96.0.0/11'}
                         ></input>
@@ -224,11 +204,11 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     }
 
     function NodeHostPortMapping() {
-        //to refactor in the future const errorNodeHost = errors[UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING];
+        //TODO: refactor in the future const errorNodeHost = errors[UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING];
         return (
             <div cds-layout="grid">
                 <div cds-layout="col:10">
-                    <label cds-layout="p-t:sm">
+                    <label cds-text="body extrabold" cds-layout="p-t:sm" slot="label">
                         Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                     </label>
                     <div cds-layout="grid gap:sm p-y:md">
@@ -237,8 +217,8 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             <input
                                 {...register(UNMANAGED_NETWORK_FIELDS.IP_ADDRESS)}
                                 placeholder="127.0.0.1"
-                                onChange={handleIpAddressChange}
-                                defaultValue={'127.0.0.1'}
+                                onChange={handleFieldChange}
+                                defaultValue={umcState[STORE_SECTION_FORM].IP_ADDRESS}
                             ></input>
                         </CdsInput>
                         <CdsInput layout="vertical" control-width="shrink" cds-layout="col:2">
@@ -246,8 +226,8 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             <input
                                 {...register(UNMANAGED_NETWORK_FIELDS.HOST_PORT_MAPPING)}
                                 placeholder="80"
-                                onChange={handleHostPortChange}
-                                defaultValue={'80'}
+                                onChange={handleFieldChange}
+                                defaultValue={umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}
                             ></input>
                         </CdsInput>
                         <CdsInput layout="vertical" control-width="shrink" cds-layout="col:2">
@@ -255,8 +235,8 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             <input
                                 {...register(UNMANAGED_NETWORK_FIELDS.NODE_PORT_MAPPING)}
                                 placeholder="80"
-                                onChange={handleNodeChange}
-                                defaultValue={'80'}
+                                onChange={handleFieldChange}
+                                defaultValue={umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}
                             ></input>
                         </CdsInput>
                         <CdsSelect cds-layout="align:shrink" onChange={handleProtocolChange}>
@@ -272,7 +252,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             </select>
                         </CdsSelect>
                     </div>
-                    <CdsControlMessage>{`${ipAddress}/${hostPort}/${nodePort}/${selectedProtocol}`}</CdsControlMessage>
+                    <CdsControlMessage>{`${umcState[STORE_SECTION_FORM].IP_ADDRESS}/${umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}/${umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}/${umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL}`}</CdsControlMessage>
                 </div>
             </div>
         );

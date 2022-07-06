@@ -33,7 +33,7 @@ function UnmanagedClusterWizard() {
                             <span cds-text="title">Create Unmanaged Cluster</span>
                         </div>
                     </div>
-                    <div cds-layout="vertical align:stretch">{RenderWizardSettings()}</div>
+                    <div cds-layout="vertical align:stretch">{RenderBasicAdvanced()}</div>
                 </div>
                 <div cds-layout="col:4" className="image-container">
                     <div className="mgmt-cluster-admins-img"></div>
@@ -42,8 +42,12 @@ function UnmanagedClusterWizard() {
         </UmcProvider>
     );
 
-    function RenderWizardSettings() {
+    function RenderBasicAdvanced() {
         return useBasicSettings ? UnmanagedBasicSetting() : UnmanagedAdvancedSetting();
+    }
+
+    function toggleBasicAdvanced() {
+        setUseBasicSettings(!useBasicSettings);
     }
 
     function UnmanagedBasicSetting() {
@@ -51,7 +55,7 @@ function UnmanagedClusterWizard() {
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Simple configuration</div>
-                    <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => setUseBasicSettings(!useBasicSettings)}>
+                    <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => toggleBasicAdvanced()}>
                         Use Advanced Configuration
                     </CdsButton>
                 </div>

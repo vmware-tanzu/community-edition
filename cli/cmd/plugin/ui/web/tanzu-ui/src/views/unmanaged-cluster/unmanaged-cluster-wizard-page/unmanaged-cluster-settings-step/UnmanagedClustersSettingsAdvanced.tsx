@@ -15,6 +15,7 @@ import * as yup from 'yup';
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
