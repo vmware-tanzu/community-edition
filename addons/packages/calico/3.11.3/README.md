@@ -1,28 +1,77 @@
-# calico Package
+# Calico Package
 
 This package provides networking and network security solution for containers using [calico](https://www.projectcalico.org/).
 
-## Components
+## Installation
 
-## Configuration
+As a primary CNI option, like Antrea, the Calico package is installed automatically during cluster creation.
+
+## Options
 
 The following configuration values can be set to customize the calico installation.
 
-### Global
+### Package configuration values
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy calico. |
-| `infraProvider` | Required | The cloud provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
-| `ipFamily` | Optional | The IP family calico should be configured with. Defaults to `ipv4` One of: `ipv4`, `ipv6`, `ipv4,ipv6` (IPv4-primary dualstack), or `ipv6,ipv4` (IPv6-primary dualstack) |
+#### Global
 
-### calico Configuration
+| Value | Required/Optional | Default | Description |
+|-------|-------------------|---------|-------------|
+| `infraProvider` | Required | `vsphere` | The infrastructure provider in use. One of: `aws`, `azure`, `vsphere`, `docker`. |
+| `ipFamily` | Optional | `null` | The IP family calico should be configured with. Defaults to `ipv4`. One of: `ipv4`, `ipv6`, `ipv4,ipv6` (IPv4-primary dualstack), or `ipv6,ipv4` (IPv6-primary dualstack). |
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `calico.config.clusterCIDR` | Optional | The pod network CIDR. Default value is `192.168.0.0/16`. |
-| `calico.config.vethMTU` | Optional | MTU size. Default is `1440`. |
+#### Calico Configuration
+
+| Value | Required/Optional |  Default | Description |
+|-------|-------------------|----------|-------------|
+| `calico.config.clusterCIDR` | Optional | `192.168.0.0/16` | The pod network CIDR. Default value is `192.168.0.0/16`. |
+| `calico.config.vethMTU` | Optional | `"1440"` | MTU size. Default is `1440`. |
+
+### Application configuration values
+
+No available options to configure.
+
+#### Multi-cloud configuration steps
+
+Set `infraProvider` to one of `aws`, `azure`, `vsphere`, `docker` to specify the infrastructure provider.
+
+## What This Package Does
+
+Calico is an open source networking and network security solution for containers, virtual machines, and native host-based workloads.
+
+## Components
+
+* Calico Custom Resources
+* Calico DaemonSet
+* Calico ServiceAccount
+* Calico ClusterRole
+* Calico ClusterRoleBinding
+* Calico Deployment
+* Calico ConfigMap
+
+### Supported Providers
+
+The following table shows the providers this package can work with.
+
+| AWS  |  Azure  | vSphere  | Docker |
+|:---:|:---:|:---:|:---:|
+| ✅  |  ✅  | ✅  | ✅ |
+
+## Files
+
+Here is an example of the package configuration file [values.yaml](bundle/config/values.yaml).
+
+## Package Limitations
+
+As a core package, Calico should be installed automatically during cluster creation. No manual installation required, especially on a cluster who already has CNI.
 
 ## Usage Example
 
-To learn more about how to use calico refer to [calico documentation](https://docs.projectcalico.org/about/about-calico)
+To learn more about how to use calico refer to [calico documentation](https://docs.projectcalico.org/about/about-calico).
+
+## Troubleshooting
+
+To learn more about how to troubleshoot calico installation and operation refer to [calico documentation](https://docs.projectcalico.org/about/about-calico).
+
+## Additional Documentation
+
+See the [calico documentation](https://docs.projectcalico.org/about/about-calico) for more information.
