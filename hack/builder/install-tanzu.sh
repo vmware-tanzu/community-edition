@@ -68,7 +68,7 @@ fi
  #Only do an install if the environments to build contain the current host OS.
  #The tanzu-framework `build-install-cli-all` target always uses the current host OS, and if that's not being built it will fail.
 if [[ "$ENVS" == *"${GOHOSTOS}-${GOHOSTARCH}"* ]]; then
-    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} make install-cli
+    BUILD_SHA=${BUILD_SHA} BUILD_VERSION=${FRAMEWORK_BUILD_VERSION} TCE_BUILD_VERSION=${TCE_BUILD_VERSION}  make install-cli
 
     if [ "${FORCE_UPDATE_PLUGIN}" == "true" ] ||
       [ ! -d "${XDG_CONFIG_HOME}/tanzu-plugins" ] && [ -d "${TCE_SCRATCH_DIR}/tanzu-framework/build" ]; then
