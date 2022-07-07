@@ -5,53 +5,130 @@
         { "path": ["topicDescription"], "id": "topicDescription", "weight": 1, "src": "topicDescription", "getFn": null }
     ],
     "records": [
-        { "i": 0, "$": { "0": { "v": "Demo help topic", "n": 0.577 }, "1": [{ "v": "demo", "i": 0, "n": 1 }] } },
+        {
+            "i": 0,
+            "$": {
+                "0": { "v": "Access local and kubectl-based Logs", "n": 0.447 },
+                "1": [{ "v": "ctx-management-clusters", "i": 0, "n": 1 }]
+            }
+        },
         {
             "i": 1,
             "$": {
-                "0": { "v": "Docker Daemon prerequisite", "n": 0.577 },
-                "1": [
-                    { "v": "tce-getting-started", "i": 1, "n": 1 },
-                    { "v": "tce-welcome", "i": 0, "n": 1 }
-                ]
+                "0": { "v": "Cleanup after an unsuccessful management deployment", "n": 0.408 },
+                "1": [{ "v": "ctx-management-clusters", "i": 0, "n": 1 }]
             }
         },
         {
             "i": 2,
+            "$": { "0": { "v": "Connect to Cluster Nodes with SSH", "n": 0.408 }, "1": [{ "v": "ctx-workload-clusters", "i": 0, "n": 1 }] }
+        },
+        {
+            "i": 3,
+            "$": {
+                "0": { "v": "Docker Daemon prerequisite", "n": 0.577 },
+                "1": [
+                    { "v": "ctx-unmanaged-clusters", "i": 3, "n": 1 },
+                    { "v": "ctx-management-clusters", "i": 2, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 1, "n": 1 },
+                    { "v": "ctx-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        {
+            "i": 4,
+            "$": { "0": { "v": "Limitations with Unmanaged Clusters", "n": 0.5 }, "1": [{ "v": "ctx-unmanaged-clusters", "i": 0, "n": 1 }] }
+        },
+        {
+            "i": 5,
             "$": {
                 "0": { "v": "Managed Clusters", "n": 0.707 },
                 "1": [
-                    { "v": "tce-getting-started", "i": 1, "n": 1 },
-                    { "v": "tce-welcome", "i": 0, "n": 1 }
+                    { "v": "ctx-workload-clusters", "i": 2, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 1, "n": 1 },
+                    { "v": "ctx-welcome", "i": 0, "n": 1 }
                 ]
             }
         },
-        { "i": 3, "$": { "0": { "v": "Management Clusters", "n": 0.707 }, "1": [{ "v": "tce-getting-started", "i": 0, "n": 1 }] } },
-        {
-            "i": 4,
-            "$": {
-                "0": { "v": "Supported Infrastructure providers", "n": 0.577 },
-                "1": [
-                    { "v": "tce-getting-started", "i": 1, "n": 1 },
-                    { "v": "tce-welcome", "i": 0, "n": 1 }
-                ]
-            }
-        },
-        { "i": 5, "$": { "0": { "v": "Tanzu Packages", "n": 0.707 }, "1": [{ "v": "tce-welcome", "i": 0, "n": 1 }] } },
         {
             "i": 6,
-            "$": { "0": { "v": "Troubleshooting cluster creation", "n": 0.577 }, "1": [{ "v": "tce-getting-started", "i": 0, "n": 1 }] }
+            "$": {
+                "0": { "v": "Management Clusters", "n": 0.707 },
+                "1": [
+                    { "v": "ctx-management-clusters", "i": 1, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 0, "n": 1 }
+                ]
+            }
         },
         {
             "i": 7,
             "$": {
-                "0": { "v": "Unmanaged Clusters", "n": 0.707 },
+                "0": { "v": "Persistent Volumes with Storage Classes", "n": 0.447 },
+                "1": [{ "v": "ctx-workload-clusters", "i": 0, "n": 1 }]
+            }
+        },
+        {
+            "i": 8,
+            "$": { "0": { "v": "Scale Management Cluster", "n": 0.577 }, "1": [{ "v": "ctx-management-clusters", "i": 0, "n": 1 }] }
+        },
+        { "i": 9, "$": { "0": { "v": "Scale Workload Clusters", "n": 0.577 }, "1": [{ "v": "ctx-workload-clusters", "i": 0, "n": 1 }] } },
+        {
+            "i": 10,
+            "$": { "0": { "v": "Secure automated Ingress on AWS", "n": 0.447 }, "1": [{ "v": "ctx-workload-clusters", "i": 0, "n": 1 }] }
+        },
+        {
+            "i": 11,
+            "$": {
+                "0": { "v": "Supported Infrastructure providers", "n": 0.577 },
                 "1": [
-                    { "v": "tce-getting-started", "i": 1, "n": 1 },
-                    { "v": "tce-welcome", "i": 0, "n": 1 }
+                    { "v": "ctx-management-clusters", "i": 2, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 1, "n": 1 },
+                    { "v": "ctx-welcome", "i": 0, "n": 1 }
                 ]
             }
         },
-        { "i": 8, "$": { "0": { "v": "Workload Clusters", "n": 0.707 }, "1": [{ "v": "tce-getting-started", "i": 0, "n": 1 }] } }
+        {
+            "i": 12,
+            "$": {
+                "0": { "v": "Tanzu Packages", "n": 0.707 },
+                "1": [
+                    { "v": "ctx-unmanaged-clusters", "i": 2, "n": 1 },
+                    { "v": "ctx-workload-clusters", "i": 1, "n": 1 },
+                    { "v": "ctx-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        {
+            "i": 13,
+            "$": {
+                "0": { "v": "Troubleshoot Clusters with Tanzu Diagnostics", "n": 0.447 },
+                "1": [{ "v": "ctx-management-clusters", "i": 0, "n": 1 }]
+            }
+        },
+        {
+            "i": 14,
+            "$": { "0": { "v": "Troubleshooting cluster creation", "n": 0.577 }, "1": [{ "v": "ctx-getting-started", "i": 0, "n": 1 }] }
+        },
+        {
+            "i": 15,
+            "$": {
+                "0": { "v": "Unmanaged Clusters", "n": 0.707 },
+                "1": [
+                    { "v": "ctx-unmanaged-clusters", "i": 2, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 1, "n": 1 },
+                    { "v": "ctx-welcome", "i": 0, "n": 1 }
+                ]
+            }
+        },
+        {
+            "i": 16,
+            "$": {
+                "0": { "v": "Workload Clusters", "n": 0.707 },
+                "1": [
+                    { "v": "ctx-workload-clusters", "i": 1, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 0, "n": 1 }
+                ]
+            }
+        }
     ]
 }

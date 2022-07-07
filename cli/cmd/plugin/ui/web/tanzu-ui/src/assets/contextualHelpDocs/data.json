@@ -1,48 +1,88 @@
 {
     "data": [
         {
-            "topicTitle": "Demo help topic",
-            "topicIds": ["demo"],
-            "htmlContent": "\n\n<p>\n\n    This is paragraph content. Lorem ipsum dolor sit amet, consectetur\n    adipiscing elit. Morbi fermentum dui ac sapien mattis cursus. Aliquam nec\n    tortor urna. Quisque lacinia augue et luctus ornare. Proin vel velit\n    ligula.\n\n</p>"
+            "topicTitle": "Access local and kubectl-based Logs",
+            "topicIds": ["ctx-management-clusters"],
+            "htmlContent": "\n\n<p>\n    Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging\n    installation issues. The plugin (based on the Crash-Diagnostics project) can automatically collect diagnostics data from either the\n    bootstrap, management, unmanaged, or a workload cluster (or all four) using the tanzu diagnostics collect command. Learn more about\n    Tanzu Diagnostics\n</p>\n\n<p>\n    When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand\n    what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about\n    potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish\n    successfully, use the diagnostics plugin to collect logs and cluster information.\n</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/v0.12/tanzu-diagnostics/\" target=\"_blank\">\n    Learn more about Tanzu Diagnostics</a\n>\n"
+        },
+        {
+            "topicTitle": "Cleanup after an unsuccessful management deployment",
+            "topicIds": ["ctx-management-clusters"],
+            "htmlContent": "\n\n<p>\n    Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging\n    installation issues. The plugin (based on the Crash-Diagnostics project) can automatically collect diagnostics data from either the\n    bootstrap, management, unmanaged, or a workload cluster (or all four) using the tanzu diagnostics collect command. Learn more about\n    Tanzu Diagnostics\n</p>\n\n<p>\n    When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand\n    what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about\n    potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish\n    successfully, use the diagnostics plugin to collect logs and cluster information.\n</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/v0.12/tanzu-diagnostics/\" target=\"_blank\">\n    Learn more about Tanzu Diagnostics</a\n>\n"
+        },
+        {
+            "topicTitle": "Connect to Cluster Nodes with SSH",
+            "topicIds": ["ctx-workload-clusters"],
+            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a\n>\n"
         },
         {
             "topicTitle": "Docker Daemon prerequisite",
-            "topicIds": ["tce-welcome", "tce-getting-started"],
+            "topicIds": ["ctx-welcome", "ctx-getting-started", "ctx-management-clusters", "ctx-unmanaged-clusters"],
             "htmlContent": "\n<p>\n    Ensure your Docker engine is installed and has adequate resources. The minimum requirements with no other containers running are: 6 GB\n    of RAM and 4 CPUs.\n</p>\n<p>\n    Linux: Run docker system info <br />\n    Mac: Select Settings > Resources > Advanced\n</p>\n\n<p>\n    Bootstrapping a cluster to Docker from a Windows bootstrap machine is currently experimental, for more information, see\n    <a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/v0.12/ref-windows-capd/\" target=\"_blank\"\n        >Docker-based Clusters on Windows.\n    </a>\n</p>\n\n<a\n    style=\"color: white\"\n    href=\"https://tanzucommunityedition.io/docs/v0.12/support-matrix/#support-matrix-summary-for-operating-system-and-infrastructure-provider\"\n    target=\"_blank\"\n>\n    View the Support Matrix for supported operating systems and infrastructure providers.\n</a>\n"
         },
         {
+            "topicTitle": "Limitations with Unmanaged Clusters",
+            "topicIds": ["ctx-unmanaged-clusters"],
+            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a\n>\n"
+        },
+        {
             "topicTitle": "Managed Clusters",
-            "topicIds": ["tce-welcome", "tce-getting-started"],
+            "topicIds": ["ctx-welcome", "ctx-getting-started", "ctx-workload-clusters"],
             "htmlContent": "\n\n<p>\n    Managed clusters are deployed and managed by a Tanzu management cluster. This is the primary deployment model for clusters in the Tanzu\n    ecosystem and is recommended for production scenarios. To bootstrap managed clusters, you first need a management cluster. When creating\n    a management cluster, a bootstrap cluster is created locally and is used to then create the management cluster.\n</p>\n\n<p>\n    Once the management cluster has been created, the bootstrap cluster will perform a move (aka pivot) of all management objects to the\n    management cluster. From this point forward, the management cluster is responsible for managing itself and any new clusters you create.\n    These new clusters, managed by the management cluster, are referred to as workload clusters.\n</p>\n"
         },
         {
             "topicTitle": "Management Clusters",
-            "topicIds": ["tce-getting-started"],
-            "htmlContent": "\n\n<p>\n    The management cluster provides management and operations for Tanzu. It runs Cluster-API which is used to manage workload clusters and\n    multi-cluster services. The workload cluster(s) are where developer’s workloads run. </p>\n</p>\n\n<p>\n    When you create a management cluster, a bootstrap\n    cluster is created on your local machine. This is a <a  style=\"color:white\" href=\"https://kind.sigs.k8s.io/\" target=\"_blank\"> Kind</a> based cluster, which runs via Docker. The bootstrap cluster creates a\n    management cluster on your specified provider. The information for how to manage clusters in the target environment is then pivoted into\n    the management cluster. At this point, the local bootstrap cluster is deleted.\n</p>"
+            "topicIds": ["ctx-getting-started", "ctx-management-clusters"],
+            "htmlContent": "\n\n<p>\n    The management cluster provides management and operations for Tanzu. It runs Cluster-API which is used to manage workload clusters and\n    multi-cluster services. The workload cluster(s) are where developer’s workloads run.\n</p>\n\n<p>\n    When you create a management cluster, a bootstrap cluster is created on your local machine. This is a\n    <a style=\"color: white\" href=\"https://kind.sigs.k8s.io/\" target=\"_blank\"> Kind</a> based cluster, which runs via Docker. The bootstrap\n    cluster creates a management cluster on your specified provider. The information for how to manage clusters in the target environment is\n    then pivoted into the management cluster. At this point, the local bootstrap cluster is deleted.\n</p>\n"
+        },
+        {
+            "topicTitle": "Persistent Volumes with Storage Classes",
+            "topicIds": ["ctx-workload-clusters"],
+            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a\n>\n"
+        },
+        {
+            "topicTitle": "Scale Management Cluster",
+            "topicIds": ["ctx-management-clusters"],
+            "htmlContent": "\n\n<p>\n    Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging\n    installation issues. The plugin (based on the Crash-Diagnostics project) can automatically collect diagnostics data from either the\n    bootstrap, management, unmanaged, or a workload cluster (or all four) using the tanzu diagnostics collect command. Learn more about\n    Tanzu Diagnostics\n</p>\n\n<p>\n    When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand\n    what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about\n    potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish\n    successfully, use the diagnostics plugin to collect logs and cluster information.\n</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/v0.12/tanzu-diagnostics/\" target=\"_blank\">\n    Learn more about Tanzu Diagnostics</a\n>\n"
+        },
+        {
+            "topicTitle": "Scale Workload Clusters",
+            "topicIds": ["ctx-workload-clusters"],
+            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a\n>\n"
+        },
+        {
+            "topicTitle": "Secure automated Ingress on AWS",
+            "topicIds": ["ctx-workload-clusters"],
+            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a\n>\n"
         },
         {
             "topicTitle": "Supported Infrastructure providers",
-            "topicIds": ["tce-welcome", "tce-getting-started"],
+            "topicIds": ["ctx-welcome", "ctx-getting-started", "ctx-management-clusters"],
             "htmlContent": "\n\n<p>The following infrastructure providers are supported: Amazone Web Services, Docker, Microsoft Azure, VMware vSphere.</p>\n\n<p>Tanzu Community Edition supports the following Kubernetes versions: 1.21.2, 1.20.8, 1.19.12</p>\n\n<a\n    style=\"color: white\"\n    href=\"https://tanzucommunityedition.io/docs/v0.12/support-matrix/#support-matrix-summary-for-operating-system-and-infrastructure-provider\"\n    target=\"_blank\"\n>\n    View the Support Matrix for supported operating systems and infrastructure providers.\n</a>\n"
         },
         {
             "topicTitle": "Tanzu Packages",
-            "topicIds": ["tce-welcome"],
-            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a>\n"
+            "topicIds": ["ctx-welcome", "ctx-workload-clusters", "ctx-unmanaged-clusters"],
+            "htmlContent": "\n\n<p>\n    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu\n    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable\n    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.\n</p>\n\n<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters\" target=\"_blank\"\n    >Learn more about managing Tanzu Packages.</a\n>\n"
+        },
+        {
+            "topicTitle": "Troubleshoot Clusters with Tanzu Diagnostics",
+            "topicIds": ["ctx-management-clusters"],
+            "htmlContent": "\n\n<p>\n    Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging\n    installation issues. The plugin (based on the Crash-Diagnostics project) can automatically collect diagnostics data from either the\n    bootstrap, management, unmanaged, or a workload cluster (or all four) using the tanzu diagnostics collect command. Learn more about\n    Tanzu Diagnostics\n</p>\n\n<p>\n    When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand\n    what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about\n    potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish\n    successfully, use the diagnostics plugin to collect logs and cluster information.\n</p>\n\n<a style=\"color: white\" href=\"https://tanzucommunityedition.io/docs/v0.12/tanzu-diagnostics/\" target=\"_blank\">\n    Learn more about Tanzu Diagnostics</a\n>\n"
         },
         {
             "topicTitle": "Troubleshooting cluster creation",
-            "topicIds": ["tce-getting-started"],
+            "topicIds": ["ctx-getting-started"],
             "htmlContent": "\n\n<p>If your bootstrap cluster fails to pivot to a management cluster by hanging or returning an error similar to the following:</p>\n\n<code\n    >Error: unable to set up management cluster: unable to wait for cluster and get the cluster kubeconfig: error waiting for cluster to be\n    provisioned (this may take a few minutes): cluster creation failed, reason:'NatGatewaysReconciliationFailed', message:'3 of 8 completed'\n</code>\n\n<p>Access the pod log for your respective provider to identify the problem.</p>\n\n<p>\n    ## For AWS <br />\n    <code>\n        docker exec &lt;CONTAINER_ID&gt; kubectl logs --namespace capa-system --selector\n        cluster.x-k8s.io/provider=infrastructure-aws,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf\n    </code>\n</p>\n<p>\n    ## For Azure <br />\n    <code>\n        docker exec &lt;CONTAINER_ID&gt; kubectl logs --namespace capz-system --selector\n        cluster.x-k8s.io/provider=infrastructure-azure,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf\n    </code>\n</p>\n<p>\n    ## For Docker <br />\n    <code>\n        docker exec &lt;CONTAINER_ID&gt; kubectl logs --namespace capd-system --selector\n        cluster.x-k8s.io/provider=infrastructure-docker,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf\n    </code>\n</p>\n<p>\n    ## For vSphere <br />\n    <code>\n        docker exec &lt;CONTAINER_ID&gt; kubectl logs --namespace capv-system --selector\n        cluster.x-k8s.io/provider=infrastructure-vsphere,control-plane=controller-manager -c manager --kubeconfig /etc/kubernetes/admin.conf\n    </code>\n</p>\n"
         },
         {
             "topicTitle": "Unmanaged Clusters",
-            "topicIds": ["tce-welcome", "tce-getting-started"],
+            "topicIds": ["ctx-welcome", "ctx-getting-started", "ctx-unmanaged-clusters"],
             "htmlContent": "\n\n<p>\n    An unmanaged cluster offers a single node, local workstation cluster suitable for a development/test environment. It requires minimal\n    local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu Community Edition package\n    repository is automatically installed when you deploy an unmanaged cluster.\n</p>\n"
         },
         {
             "topicTitle": "Workload Clusters",
-            "topicIds": ["tce-getting-started"],
+            "topicIds": ["ctx-getting-started", "ctx-workload-clusters"],
             "htmlContent": "\n\n<p>\n    After you deploy the management cluster, you can deploy a workload cluster. The workload cluster is deployed by the management cluster.\n    The workload cluster is used to run your application workloads. The workload cluster is deployed using the Tanzu CLI.\n</p>\n\n<p>A management cluster is required in order to view workload clusters.</p>\n"
         }
     ]
