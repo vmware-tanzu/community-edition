@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 // Library imports
 import { CdsCard } from '@cds/react/card';
-import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, cloudIcon } from '@cds/core/icon';
 
 // App imports
