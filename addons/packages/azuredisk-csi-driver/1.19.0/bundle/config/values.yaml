@@ -1,0 +1,18 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+azureDiskCSIDriver:
+  namespace: kube-system
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+  deployment_replicas: 3
