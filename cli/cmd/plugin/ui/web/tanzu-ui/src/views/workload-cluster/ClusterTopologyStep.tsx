@@ -1,13 +1,12 @@
 //React imports
 import React, { ChangeEvent, useContext } from 'react';
 import { CdsButton } from '@cds/react/button';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { CdsControlMessage } from '@cds/react/forms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CdsInput } from '@cds/react/input';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
