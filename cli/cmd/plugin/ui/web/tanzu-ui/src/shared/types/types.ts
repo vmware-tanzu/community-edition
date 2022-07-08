@@ -18,7 +18,6 @@ export interface DynamicFormAction extends FormAction {
 }
 export interface VsphereResourceAction extends Action {
     resourceName: string;
-    datacenter: string;
 }
 export interface DynamicCategoryToggleAction extends Action {
     category: string;
