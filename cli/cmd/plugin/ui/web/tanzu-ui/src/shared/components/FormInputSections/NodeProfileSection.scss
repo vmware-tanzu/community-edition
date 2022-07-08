@@ -1,0 +1,17 @@
+.cluster-node-instance-container {
+    .radio-message {
+        font-size: var(--cds-global-typography-font-size-0);
+        position: absolute;
+        top: 25px;
+        width: 383px;
+        white-space: normal;
+    }
+    .node-icon {
+        position: absolute;
+        left: -40px;
+        top: -4px;
+        &.selected {
+            color: var(--cds-global-color-blue-300);
+        }
+    }
+}
