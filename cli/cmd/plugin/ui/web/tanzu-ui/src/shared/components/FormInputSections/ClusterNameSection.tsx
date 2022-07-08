@@ -5,9 +5,9 @@ import { FieldError, FieldErrors, RegisterOptions, UseFormRegisterReturn } from 
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import * as yup from 'yup';
-import { isK8sCompliantString } from '../../validations/Validation.service';
+// App imports
 import './ClusterNameSection.scss';
-import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
+import { isK8sCompliantString } from '../../validations/Validation.service';
 
 /**
  * addClusterNameValidation takes a "yup" schema object and returns a new "yup" schema object with the field added,
@@ -24,7 +24,7 @@ export function addClusterNameValidation(field: string, yupObject: any): any {
             .required('Please enter a name for your cluster')
             .test(
                 '',
-                'The cluster name should contain only lower case letters and hyphens',
+                'The cluster name should contain only lower case alphanumeric characters and hyphens, beginning and ending with a non-hyphen',
                 (value) => value !== null && isK8sCompliantString(value)
             ),
     };
@@ -74,7 +74,7 @@ export function ClusterNameSection(
                 Cluster name can only contain lowercase alphanumeric characters and dashes.
             </div>
             <div className="description" cds-layout="m-t:sm">
-                You will use this cluster name when using the Tanzu CLI and kubectl utilities.
+                You will reference this cluster name when using the Tanzu CLI and kubectl utilities.
             </div>
         </div>
     );

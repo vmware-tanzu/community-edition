@@ -45,7 +45,7 @@ function InstanceTypeInList(field: string, instance: NodeInstanceType, register:
     );
 }
 
-const DEFAULT_PROMPT = 'Select a node instance type';
+const DEFAULT_PROMPT = 'Select a node profile';
 
 export function NodeInstanceTypeSection(
     field: string,
