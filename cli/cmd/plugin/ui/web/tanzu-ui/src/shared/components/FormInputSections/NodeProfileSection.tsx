@@ -23,8 +23,8 @@ export interface NodeInstanceType {
  * @param field - the name of the field for the node instance id
  * @param yupObject - the yup schema object
  */
-export function addNodeInstanceTypeValidation(field: string, yupObject: any): any {
-    return { ...yupObject, [field]: yup.string().nullable().required('Please select an instance type for your cluster nodes') };
+export function nodeInstanceTypeValidation() {
+    return yup.string().nullable().required('Please select an instance type for your cluster nodes');
 }
 
 function InstanceTypeInList(field: string, instance: NodeInstanceType, register: any, selectedInstanceId?: string) {

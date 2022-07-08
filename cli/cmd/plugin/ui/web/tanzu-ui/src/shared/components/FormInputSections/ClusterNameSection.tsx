@@ -15,19 +15,16 @@ import { isK8sCompliantString } from '../../validations/Validation.service';
  * @param field - the name of the field for the cluster name
  * @param yupObject - the yup schema object
  */
-export function addClusterNameValidation(field: string, yupObject: any): any {
-    return {
-        ...yupObject,
-        [field]: yup
-            .string()
-            .nullable()
-            .required('Please enter a name for your cluster')
-            .test(
-                '',
-                'The cluster name should contain only lower case alphanumeric characters and hyphens, beginning and ending with a non-hyphen',
-                (value) => value !== null && isK8sCompliantString(value)
-            ),
-    };
+export function clusterNameValidation() {
+    return yup
+        .string()
+        .nullable()
+        .required('Please enter a name for your cluster')
+        .test(
+            '',
+            'The cluster name should contain only lower case alphanumeric characters and hyphens, beginning and ending with a non-hyphen',
+            (value) => value !== null && isK8sCompliantString(value)
+        );
 }
 
 // NOTE: design choice is for the clusterNameChange callback to have two parameters: the changed cluster name AND the field name.
