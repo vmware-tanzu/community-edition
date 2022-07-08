@@ -1,7 +1,7 @@
 //React imports
 import React, { ChangeEvent, useContext } from 'react';
 import { CdsButton } from '@cds/react/button';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { CdsControlMessage } from '@cds/react/forms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports

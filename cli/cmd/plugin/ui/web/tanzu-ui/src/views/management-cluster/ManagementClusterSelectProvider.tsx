@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 // Library imports
 import { CdsCard } from '@cds/react/card';
-import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, cloudIcon } from '@cds/core/icon';
 
 // App imports
@@ -39,11 +38,10 @@ const ManagementClusterSelectProvider: React.FC = () => {
     return (
         <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:12 grid">
             <div cds-layout="vertical col:8 gap:lg">
-                <div cds-text="title">
-                    <CdsIcon cds-layout="m-r:sm" shape="cloud" size="xl" className="icon-blue"></CdsIcon>
+                <div cds-text="title" cds-layout="m-t:md">
                     Management Cluster
                 </div>
-                <div cds-text="subsection" cds-layout="p-y:md">
+                <div cds-text="body" cds-layout="p-y:md">
                     Managed Clusters is a deployment model that features one management cluster and multiple workload clusters. The
                     management cluster provides management and operations for Tanzu. It runs Cluster-API which is used to manage workload
                     clusters and multi-cluster services. The workload clusters are where developer’s workloads run.
@@ -55,12 +53,14 @@ const ManagementClusterSelectProvider: React.FC = () => {
                             <CdsCard
                                 className="card-container"
                                 aria-labelledby="containerOfCards1"
+                                tabIndex={0}
                                 key={index}
                                 cds-layout="vertical"
                                 onClick={() => navigate(card.path)}
+                                onKeyPress={(e) => (e.key === 'Enter' ? navigate(card.path) : '')}
                             >
                                 <div className={card.imgClass} cds-layout="vertical p:xl p-b:lg">
-                                    <div cds-layout="align:horizontal-center p-t:lg" className="logo-name" cds-text="body light">
+                                    <div cds-layout="align:horizontal-center p-t:xl m-t:md" className="logo-name" cds-text="section">
                                         {card.name}
                                     </div>
                                 </div>
