@@ -134,6 +134,49 @@ spec:
                   type: string
                   description: AWS secret key. When provided along with the aws.accessKey, a Secret will be created and referenced in the external-dns Deployment.
                   default: ""
+        azure:
+          type: object
+          additionalProperties: false
+          nullable: true
+          description: Azure configuration. Package will create azure.json Secret, Volume, and VolumeMount with supplied values.
+          properties:
+            aadClientId:
+              type: string
+              nullable: true
+              description: AAD Client ID
+              default: null
+            aadClientSecret:
+              type: string
+              nullable: true
+              description: AAD Client Secret
+              default: null
+            cloud:
+              type: string
+              nullable: true
+              description: Cloud
+              default: null
+            resourceGroup:
+              type: string
+              description: Resource Group
+              default: ""
+            subscriptionId:
+              type: string
+              description: Subscription ID
+              default: ""
+            tenantId:
+              type: string
+              description: Tenant ID
+              default: ""
+            useManagedIdentityExtension:
+              type: boolean
+              nullable: true
+              description: Use manaaged identity extension
+              default: null
+            userAssignedIdentityID:
+              type: string
+              nullable: true
+              description: User Assigned Identity ID
+              default: null
   capacityRequirementsDescription: "No specific capacity requirements."
   licenses:
     - "Apache 2.0"

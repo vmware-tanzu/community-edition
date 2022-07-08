@@ -75,3 +75,28 @@ aws:
     accessKey: ""
     #@schema/desc "AWS secret key. When provided along with the aws.accessKey, a Secret will be created and referenced in the external-dns Deployment."
     secretKey: ""
+
+#@schema/desc "Azure configuration. Package will create azure.json Secret, Volume, and VolumeMount with supplied values."
+#@schema/nullable
+azure:
+  #@schema/desc "AAD Client ID"
+  #@schema/nullable
+  aadClientId: ""
+  #@schema/desc "AAD Client Secret"
+  #@schema/nullable
+  aadClientSecret: ""
+  #@schema/desc "Cloud"
+  #@schema/nullable
+  cloud: ""
+  #@schema/desc "Resource Group"
+  resourceGroup: ""
+  #@schema/desc "Subscription ID"
+  subscriptionId: ""
+  #@schema/desc "Tenant ID"
+  tenantId: ""
+  #@schema/desc "Use manaaged identity extension"
+  #@schema/nullable
+  useManagedIdentityExtension: false
+  #@schema/desc "User Assigned Identity ID"
+  #@schema/nullable
+  userAssignedIdentityID: ""
