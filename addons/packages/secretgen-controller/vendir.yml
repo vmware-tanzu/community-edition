@@ -9,5 +9,3 @@ directories:
           slug: vmware-tanzu/carvel-secretgen-controller
           tag: v0.10.3
           assetNames: ["package.yml"]
-          checksums:
-            package.yml: 0fdcfbaff66b5bbfea0cef9b261c60552417ee008c5cb852e7604e5ea9215605
