@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { FieldError } from 'react-hook-form';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 // App imports
-import './NodeInstanceTypeSection.scss';
+import './NodeProfileSection.scss';
 
 export interface NodeInstanceType {
     id: string;
@@ -47,7 +47,7 @@ function InstanceTypeInList(field: string, instance: NodeInstanceType, register:
 
 const DEFAULT_PROMPT = 'Select a node profile';
 
-export function NodeInstanceTypeSection(
+export function NodeProfileSection(
     field: string,
     nodeInstanceTypes: NodeInstanceType[],
     errors: { [key: string]: FieldError | undefined },

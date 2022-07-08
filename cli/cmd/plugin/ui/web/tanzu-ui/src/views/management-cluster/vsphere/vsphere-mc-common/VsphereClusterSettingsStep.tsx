@@ -12,8 +12,8 @@ import { addClusterNameValidation, ClusterNameSection } from '../../../../shared
 import {
     addNodeInstanceTypeValidation,
     NodeInstanceType,
-    NodeInstanceTypeSection,
-} from '../../../../shared/components/FormInputSections/NodeInstanceTypeSection';
+    NodeProfileSection,
+} from '../../../../shared/components/FormInputSections/NodeProfileSection';
 import { getResource } from '../../../providers/vsphere/VsphereResources.reducer';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
@@ -115,7 +115,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                         {ClusterNameSection(VSPHERE_FIELDS.CLUSTERNAME, errors, register, onClusterNameChange, 'my-vsphere-cluster')}
                     </div>
                     <div cds-layout="col:6" key="instance-type-section">
-                        {NodeInstanceTypeSection(
+                        {NodeProfileSection(
                             VSPHERE_FIELDS.INSTANCETYPE,
                             nodeInstanceTypes,
                             errors,
