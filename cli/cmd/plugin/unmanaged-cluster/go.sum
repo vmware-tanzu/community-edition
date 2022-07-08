@@ -1206,8 +1206,8 @@ github.com/vmware-tanzu/carvel-kbld v0.34.0 h1:j9R5mr0uFC/446RVa9x88H0ivly56rgUa
 github.com/vmware-tanzu/carvel-kbld v0.34.0/go.mod h1:pkeqGT5wKZT9NgFYbZbUa6YNafgJOZtaIKBgExBdcOI=
 github.com/vmware-tanzu/carvel-vendir v0.24.0/go.mod h1:Ls3P88J5x+i6ruw/gXgo3brIOGyfGqyzUCAofOuXRFc=
 github.com/vmware-tanzu/carvel-vendir v0.27.0/go.mod h1:PJiUiNTKLH5iSphBdGteECXQ9LOyNM2hx+BRFSB4PzE=
-github.com/vmware-tanzu/carvel-vendir v0.28.0 h1:uYnblLP2WvzIrX65xM8TqZE0zIRxoFhoVYKYXkOAUEQ=
-github.com/vmware-tanzu/carvel-vendir v0.28.0/go.mod h1:qFV2/3Cu584fhG2wXodoIm8KhX1wKHRFavBiRjK/Ly0=
+github.com/vmware-tanzu/carvel-vendir v0.28.1 h1:aU0gO47d9uU2R5YdQBH4ylFlBLLnjlzhDxjPStA6Cbo=
+github.com/vmware-tanzu/carvel-vendir v0.28.1/go.mod h1:qFV2/3Cu584fhG2wXodoIm8KhX1wKHRFavBiRjK/Ly0=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/willf/bitset v1.1.11-0.20200630133818-d5bec3311243/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/willf/bitset v1.1.11/go.mod h1:83CECat5yLh5zVOf4P1ErAgKA5UDvKtgyUABdr3+MjI=
