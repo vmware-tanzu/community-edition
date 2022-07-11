@@ -157,8 +157,8 @@ function VmTemplateSection(
     const fieldError = errors[field];
     return (
         <div cds-layout="m:lg">
-            <CdsSelect layout="vertical">
-                <label>VM Template</label>
+            <CdsSelect layout="vertical" controlWidth="shrink">
+                <label>OS Image</label>
                 <select {...register(VSPHERE_FIELDS.VMTEMPLATE)} onChange={handleOsImageSelect}>
                     <option />
                     {osImages.map((dc) => (
@@ -201,7 +201,7 @@ function SshKeySection(
 function createYupSchemaObject() {
     return {
         [VSPHERE_FIELDS.SSHKEY]: yupStringRequired('Please enter an SSH key'),
-        [VSPHERE_FIELDS.VMTEMPLATE]: yupStringRequired('Please select a VM template'),
+        [VSPHERE_FIELDS.VMTEMPLATE]: yupStringRequired('Please select an OS image'),
         [VSPHERE_FIELDS.INSTANCETYPE]: nodeInstanceTypeValidation(),
         [VSPHERE_FIELDS.CLUSTERNAME]: clusterNameValidation(),
     };
