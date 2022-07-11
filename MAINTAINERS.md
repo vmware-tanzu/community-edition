@@ -7,7 +7,6 @@
 | Nicholas Seemiller | [seemiller](https://github.com/seemiller) | [VMware](https://www.github.com/vmware/) |
 | Sean McGinnis | [stmcginnis](https://github.com/stmcginnis) | [VMware](https://www.github.com/vmware/) |
 | David vonThenen | [dvonthenen](https://github.com/dvonthenen) | [VMware](https://www.github.com/vmware/) |
-| John McBride | [jpmcb](https://github.com/jpmcb) | [VMware](https://www.github.com/vmware/) |
 | Vladimir Vivien | [vladimirvivien](https://github.com/vladimirvivien) | [VMware](https://www.github.com/vmware/) |
 
 ## Emeritus Maintainers
@@ -16,6 +15,7 @@
 * Michael Michael
 * Nolan Brubaker [nrb](https://github.com/nrb)
 * Josh Rosso [joshrosso](https://github.com/joshrosso)
+* John McBride [jpmcb](https://github.com/jpmcb)
 
 ## Tanzu Community Edition Core Contributors and Stakeholders
 
