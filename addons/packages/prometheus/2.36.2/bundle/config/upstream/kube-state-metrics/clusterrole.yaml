@@ -70,7 +70,7 @@ rules:
       - list
       - watch
   - apiGroups:
-    - storage.k8s.io
+      - storage.k8s.io
     resources:
       - storageclasses
       - volumeattachments
@@ -105,3 +105,18 @@ rules:
       - podsecuritypolicies
     verbs:
       - use
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+      - ingresses
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - list
+      - watch
