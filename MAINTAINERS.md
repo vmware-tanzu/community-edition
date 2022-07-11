@@ -4,7 +4,6 @@
 
 | Maintainer | GitHub ID | Affiliation |
 |------------|-----------|-------------|
-| Josh Rosso | [joshrosso](https://github.com/joshrosso) | [VMware](https://www.github.com/vmware/) |
 | Nicholas Seemiller | [seemiller](https://github.com/seemiller) | [VMware](https://www.github.com/vmware/) |
 | Sean McGinnis | [stmcginnis](https://github.com/stmcginnis) | [VMware](https://www.github.com/vmware/) |
 | David vonThenen | [dvonthenen](https://github.com/dvonthenen) | [VMware](https://www.github.com/vmware/) |
@@ -16,6 +15,7 @@
 * Alexander Brand [alexbrand](https://github.com/alexbrand)
 * Michael Michael
 * Nolan Brubaker [nrb](https://github.com/nrb)
+* Josh Rosso [joshrosso](https://github.com/joshrosso)
 
 ## Tanzu Community Edition Core Contributors and Stakeholders
 
