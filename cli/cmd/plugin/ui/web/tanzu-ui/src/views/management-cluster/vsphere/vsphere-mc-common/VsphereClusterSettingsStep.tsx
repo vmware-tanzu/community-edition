@@ -4,13 +4,15 @@ import { FieldError, FieldErrors, RegisterOptions, SubmitHandler, useForm, UseFo
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons } from '@cds/core/icon';
 import { CdsButton } from '@cds/react/button';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsSelect } from '@cds/react/select';
+import { CdsTextarea } from '@cds/react/textarea';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
-import { addClusterNameValidation, ClusterNameSection } from '../../../../shared/components/FormInputSections/ClusterNameSection';
+import { clusterNameValidation, ClusterNameSection } from '../../../../shared/components/FormInputSections/ClusterNameSection';
 import {
-    addNodeInstanceTypeValidation,
+    nodeInstanceTypeValidation,
     NodeInstanceType,
     NodeProfileSection,
 } from '../../../../shared/components/FormInputSections/NodeProfileSection';
@@ -45,24 +47,27 @@ const nodeInstanceTypes: NodeInstanceType[] = [
 ];
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon);
 
+type VSPHERE_CLUSTER_SETTING_STEP_FIELDS =
+    | VSPHERE_FIELDS.CLUSTERNAME
+    | VSPHERE_FIELDS.INSTANCETYPE
+    | VSPHERE_FIELDS.SSHKEY
+    | VSPHERE_FIELDS.VMTEMPLATE;
+
 interface VsphereClusterSettingFormInputs {
     [VSPHERE_FIELDS.CLUSTERNAME]: string;
     [VSPHERE_FIELDS.INSTANCETYPE]: string;
+    [VSPHERE_FIELDS.SSHKEY]: string;
+    [VSPHERE_FIELDS.VMTEMPLATE]: string;
 }
 
 export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm, handleValueChange } = props;
     const { vsphereState } = useContext(VsphereStore);
 
-    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(
-        vsphereState[VSPHERE_FIELDS.INSTANCETYPE] || nodeInstanceTypes[0].id
-    );
     const osImages = (getResource('osImages', vsphereState) || []) as VSphereVirtualMachine[];
     const osTemplates = osImages.filter((osImage) => osImage.isTemplate);
 
-    let yupSchemaObject = addNodeInstanceTypeValidation(VSPHERE_FIELDS.INSTANCETYPE, {});
-    yupSchemaObject = addClusterNameValidation(VSPHERE_FIELDS.CLUSTERNAME, yupSchemaObject);
-    const vsphereClusterSettingsFormSchema = yup.object(yupSchemaObject).required();
+    const vsphereClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<VsphereClusterSettingFormInputs>({
         resolver: yupResolver(vsphereClusterSettingsFormSchema),
     });
@@ -73,6 +78,13 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         register,
         setValue,
     } = methods;
+
+    let initialSelectedInstanceTypeId = vsphereState[VSPHERE_FIELDS.INSTANCETYPE];
+    if (!initialSelectedInstanceTypeId) {
+        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
+        setValue(VSPHERE_FIELDS.INSTANCETYPE, initialSelectedInstanceTypeId);
+    }
+    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
     const canContinue = (): boolean => {
         return Object.keys(errors).length === 0;
@@ -85,32 +97,27 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         }
     };
 
-    const onClusterNameChange = (clusterName: string) => {
+    const onFieldChange = (data: string, field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.CLUSTERNAME, clusterName, currentStep, errors);
-            setValue(VSPHERE_FIELDS.CLUSTERNAME, clusterName, { shouldValidate: true });
+            handleValueChange(INPUT_CHANGE, field, data, currentStep, errors);
+            setValue(field, data, { shouldValidate: true });
         }
+    };
+
+    const onClusterNameChange = (clusterName: string) => {
+        onFieldChange(clusterName, VSPHERE_FIELDS.CLUSTERNAME);
     };
 
     const onInstanceTypeChange = (instanceType: string) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.INSTANCETYPE, instanceType, currentStep, errors);
-            setValue(VSPHERE_FIELDS.INSTANCETYPE, instanceType, { shouldValidate: true });
-        }
+        onFieldChange(instanceType, VSPHERE_FIELDS.INSTANCETYPE);
         setSelectedInstanceTypeId(instanceType);
-    };
-
-    const onOsImageChange = (osImage: string) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.OSIMAGE, osImage, currentStep, errors);
-        }
     };
 
     return (
         <div>
             <div className="wizard-content-container">
                 <h2 cds-layout="m-t:lg">vSphere Management Cluster Settings</h2>
-                <div cds-layout="grid gap:xxl" key="section-holder">
+                <div cds-layout="grid gap:m" key="section-holder">
                     <div cds-layout="col:6" key="cluster-name-section">
                         {ClusterNameSection(VSPHERE_FIELDS.CLUSTERNAME, errors, register, onClusterNameChange, 'my-vsphere-cluster')}
                     </div>
@@ -124,38 +131,82 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                             selectedInstanceTypeId
                         )}
                     </div>
+                    <div cds-layout="col:12">
+                        {VmTemplateSection(VSPHERE_FIELDS.VMTEMPLATE, osTemplates, errors, register, onFieldChange)}
+                    </div>
+                    <div cds-layout="col:12">{SshKeySection(VSPHERE_FIELDS.SSHKEY, errors, register, onFieldChange)}</div>
                 </div>
-                <div cds-layout="col:12">{OsImageSection(VSPHERE_FIELDS.OSIMAGE, osTemplates, errors, register, onOsImageChange)}</div>
+                <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                    NEXT
+                </CdsButton>
             </div>
-            <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                NEXT
-            </CdsButton>
         </div>
     );
 }
 
-function OsImageSection(
-    field: string,
+function VmTemplateSection(
+    field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS,
     osImages: VSphereVirtualMachine[],
     errors: { [key: string]: FieldError | undefined },
     register: any,
-    onOsImageSelected: (osImage: string) => void
+    onOsImageSelected: (osImage: string, field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS) => void
 ) {
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-        onOsImageSelected(event.target.value || '');
+        onOsImageSelected(event.target.value || '', field);
     };
+    const fieldError = errors[field];
     return (
-        <div>
-            {' '}
-            <CdsSelect layout="vertical" controlWidth="shrink">
-                <label cds-layout="p-b:xs">VM Template</label>
-                <select {...register(VSPHERE_FIELDS.OSIMAGE)} onChange={handleOsImageSelect}>
+        <div cds-layout="m:lg">
+            <CdsSelect layout="vertical">
+                <label>VM Template</label>
+                <select {...register(VSPHERE_FIELDS.VMTEMPLATE)} onChange={handleOsImageSelect}>
                     <option />
                     {osImages.map((dc) => (
                         <option key={dc.moid}>{dc.name}</option>
                     ))}
                 </select>
             </CdsSelect>
+            {fieldError && (
+                <div>
+                    &nbsp;<CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>
+                </div>
+            )}
         </div>
     );
+}
+
+function SshKeySection(
+    field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS,
+    errors: { [key: string]: FieldError | undefined },
+    register: any,
+    onSshKeyEntered: (sshKey: string, field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS) => void
+) {
+    const handleSshKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
+        onSshKeyEntered(event.target.value || '', field);
+    };
+    const fieldError = errors[field];
+    return (
+        <div cds-layout="m:lg">
+            <CdsFormGroup layout="vertical">
+                <CdsTextarea layout="vertical">
+                    <label>SSH key</label>
+                    <textarea {...register(field)} onChange={handleSshKeyChange}></textarea>
+                    {fieldError && <CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>}
+                </CdsTextarea>
+            </CdsFormGroup>
+        </div>
+    );
+}
+
+function createYupSchemaObject() {
+    return {
+        [VSPHERE_FIELDS.SSHKEY]: yupStringRequired('Please enter an SSH key'),
+        [VSPHERE_FIELDS.VMTEMPLATE]: yupStringRequired('Please select a VM template'),
+        [VSPHERE_FIELDS.INSTANCETYPE]: nodeInstanceTypeValidation(),
+        [VSPHERE_FIELDS.CLUSTERNAME]: clusterNameValidation(),
+    };
+}
+
+function yupStringRequired(errorMessage: string) {
+    return yup.string().nullable().required(errorMessage);
 }

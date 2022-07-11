@@ -8,7 +8,8 @@ export enum VSPHERE_FIELDS {
     USETHUMBPRINT = 'useThumbprint',
     CLUSTERNAME = 'clusterName',
     INSTANCETYPE = 'instanceType',
-    OSIMAGE = 'osImage',
+    VMTEMPLATE = 'vmTemplate',
+    SSHKEY = 'sshKey',
 }
 
 /* eslint-disable no-unused-vars */
