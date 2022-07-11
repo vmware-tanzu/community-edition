@@ -4,7 +4,7 @@
 package kubeconfig
 
 import (
-	"sigs.k8s.io/kind/pkg/errors"
+	"fmt"
 )
 
 // KINDClusterKey identifies kind clusters in kubeconfig files
@@ -16,13 +16,13 @@ func KINDClusterKey(clusterName string) string {
 // our expectations, namely on the number of entries
 func checkKubeadmExpectations(cfg *Config) error {
 	if len(cfg.Clusters) != 1 {
-		return errors.Errorf("kubeadm KUBECONFIG should have one cluster, but read %d", len(cfg.Clusters))
+		return fmt.Errorf("kubeadm KUBECONFIG should have one cluster, but read %d", len(cfg.Clusters))
 	}
 	if len(cfg.Users) != 1 {
-		return errors.Errorf("kubeadm KUBECONFIG should have one user, but read %d", len(cfg.Users))
+		return fmt.Errorf("kubeadm KUBECONFIG should have one user, but read %d", len(cfg.Users))
 	}
 	if len(cfg.Contexts) != 1 {
-		return errors.Errorf("kubeadm KUBECONFIG should have one context, but read %d", len(cfg.Contexts))
+		return fmt.Errorf("kubeadm KUBECONFIG should have one context, but read %d", len(cfg.Contexts))
 	}
 	return nil
 }

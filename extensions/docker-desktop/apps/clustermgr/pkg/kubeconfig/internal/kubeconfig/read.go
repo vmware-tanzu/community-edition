@@ -4,11 +4,11 @@
 package kubeconfig
 
 import (
+	"fmt"
 	"io"
 	"os"
 
 	yaml "gopkg.in/yaml.v3"
-	"sigs.k8s.io/kind/pkg/errors"
 )
 
 // KINDFromRawKubeadm returns a kind kubeconfig derived from the raw kubeadm kubeconfig,
@@ -56,17 +56,17 @@ func read(configPath string) (*Config, error) {
 	if os.IsNotExist(err) {
 		return &Config{}, nil
 	} else if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to open %s: %v", configPath, err)
 	}
 
 	// otherwise read in and deserialize
 	cfg := &Config{}
 	rawExisting, err := io.ReadAll(f)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to read %s: %v", configPath, err)
 	}
 	if err := yaml.Unmarshal(rawExisting, cfg); err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to unmarshal %s: %v", configPath, err)
 	}
 
 	return cfg, nil

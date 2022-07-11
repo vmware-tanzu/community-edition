@@ -1,0 +1,143 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: metrics-server.community.tanzu.vmware.com.0.6.1
+spec:
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for metrics-server
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which metrics-server is deployed
+          default: kube-system
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
+        metricsServer:
+          type: object
+          additionalProperties: false
+          properties:
+            namespace:
+              type: string
+              nullable: true
+              description: The namespace value used by older templates, will be overwriten if top level namespace is present, kept for backward compatibility
+              default: null
+            createNamespace:
+              type: boolean
+              description: Whether to create namespace specified for metrics-server
+              default: true
+            config:
+              type: object
+              additionalProperties: false
+              properties:
+                securePort:
+                  type: integer
+                  description: The HTTPS secure port used by metrics-server
+                  default: 4443
+                updateStrategy:
+                  type: string
+                  description: The update strategy of the metrics-server deployment
+                  default: RollingUpdate
+                args:
+                  type: array
+                  description: Arguments passed into metrics-server container
+                  items:
+                    type: string
+                    default: ""
+                  default: []
+                probe:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    failureThreshold:
+                      type: integer
+                      description: Probe failureThreshold of metrics-server deployment
+                      default: 3
+                    periodSeconds:
+                      type: integer
+                      description: Probe period of metrics-server deployment
+                      default: 10
+                apiServiceInsecureTLS:
+                  type: boolean
+                  description: Whether to enable insecure TLS for metrics-server api service
+                  default: true
+                tolerations:
+                  nullable: true
+                  description: Metrics-server deployment tolerations
+                  default: []
+            image:
+              type: object
+              additionalProperties: false
+              properties:
+                repository:
+                  type: string
+                  description: The repository of metrics-server image
+                  default: ""
+                name:
+                  type: string
+                  description: The path of image
+                  default: ""
+                tag:
+                  type: string
+                  description: The image tag
+                  default: ""
+                pullPolicy:
+                  type: string
+                  description: The pull policy of image
+                  default: IfNotPresent
+  refName: metrics-server.community.tanzu.vmware.com
+  version: 0.6.1
+  releaseNotes: metrics-server 0.6.1 https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.6.1
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/metrics-server@sha256:e4c3082180db55b540854b3370b7c3649c1955deb37f0e7fc8485e3a23a478aa
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}

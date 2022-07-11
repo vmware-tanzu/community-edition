@@ -4,12 +4,12 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/juju/fslock"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -41,7 +41,7 @@ func GetFileLockWithTimeOut(lockPath string, lockDuration time.Duration) (*fsloc
 	}
 
 	if err := lock.LockWithTimeout(lockDuration); err != nil {
-		return &fslock.Lock{}, errors.Wrap(err, "failed to acquire a lock with timeout")
+		return &fslock.Lock{}, fmt.Errorf("failed to acquire lock %s with timeout: %v", lockPath, err)
 	}
 	return lock, nil
 }

@@ -28,6 +28,22 @@ spec:
                   type: integer
                   description: Number of grafana replicas.
                   default: 1
+                updateStrategy:
+                  type: string
+                  description: The type of grafana upgrage strategy (RollingUpdate/Recreate)
+                  default: Recreate
+                rollingUpdate:
+                  type: object
+                  description: Grafana rollingupdate configuration when strategy is RollingUpdate, It is only work when updateStrategy has been setted RollingUpdate.
+                  properties:
+                    maxUnavailable:
+                      type: integer
+                      description:  Specifies the maximum number of Pods that can be unavailable during the update process.
+                      default: null
+                    maxSurge:
+                      type: integer
+                      description:  Specifies the maximum number of Pods that can be created over the desired number of Pods.
+                      default: null
                 containers:
                   type: object
                   description: Grafana container configuration.
@@ -178,7 +194,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/grafana@sha256:ee7ce32854599e30cc3d637e0612f2360565bb004156e74532cefd7e785f2285
+            image: projects.registry.vmware.com/tce/grafana@sha256:f6094bac66668a2cdb1796b4d7a888472fa5adf341824118db16480dfe47ec91
       template:
         - ytt:
             paths:

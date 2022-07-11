@@ -1,0 +1,76 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: gcr.io/k8s-staging-sig-storage/snapshot-controller:v6.0.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v6.0.1
+          url: gcr.io/k8s-staging-sig-storage/snapshot-controller:v6.0.1
+      - preresolved:
+          url: gcr.io/k8s-staging-sig-storage/snapshot-controller@sha256:a49993c3325b4bb010e52b8e661ebc62b9d45ebceae6e432d3ee637a4833bae7
+  image: gcr.io/k8s-staging-sig-storage/snapshot-controller@sha256:a49993c3325b4bb010e52b8e661ebc62b9d45ebceae6e432d3ee637a4833bae7
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/provider-aws/aws-ebs-csi-driver:v1.8.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.8.0
+          url: k8s.gcr.io/provider-aws/aws-ebs-csi-driver:v1.8.0
+      - preresolved:
+          url: k8s.gcr.io/provider-aws/aws-ebs-csi-driver@sha256:2727c4ba96b420f6280107daaf4a40a5de5f7241a1b70052056a5016dff05b2f
+  image: k8s.gcr.io/provider-aws/aws-ebs-csi-driver@sha256:2727c4ba96b420f6280107daaf4a40a5de5f7241a1b70052056a5016dff05b2f
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.4.0
+          url: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
+  image: k8s.gcr.io/sig-storage/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.5.1
+          url: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
+  image: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-provisioner:v3.1.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.1.0
+          url: k8s.gcr.io/sig-storage/csi-provisioner:v3.1.0
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-provisioner@sha256:122bfb8c1edabb3c0edd63f06523e6940d958d19b3957dc7b1d6f81e9f1f6119
+  image: k8s.gcr.io/sig-storage/csi-provisioner@sha256:122bfb8c1edabb3c0edd63f06523e6940d958d19b3957dc7b1d6f81e9f1f6119
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-resizer:v1.4.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.4.0
+          url: k8s.gcr.io/sig-storage/csi-resizer:v1.4.0
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-resizer@sha256:9ebbf9f023e7b41ccee3d52afe39a89e3ddacdbb69269d583abfc25847cfd9e4
+  image: k8s.gcr.io/sig-storage/csi-resizer@sha256:9ebbf9f023e7b41ccee3d52afe39a89e3ddacdbb69269d583abfc25847cfd9e4
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-snapshotter:v6.0.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v6.0.1
+          url: k8s.gcr.io/sig-storage/csi-snapshotter:v6.0.1
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-snapshotter@sha256:ad16874e2140256a809cada2b4ac3d931d5b73b0bee23ed0f8d60bdd778cfec2
+  image: k8s.gcr.io/sig-storage/csi-snapshotter@sha256:ad16874e2140256a809cada2b4ac3d931d5b73b0bee23ed0f8d60bdd778cfec2
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/sig-storage/livenessprobe:v2.5.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.5.0
+          url: k8s.gcr.io/sig-storage/livenessprobe:v2.5.0
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/livenessprobe@sha256:44d8275b3f145bc290fd57cb00de2d713b5e72d2e827d8c5555f8ddb40bf3f02
+  image: k8s.gcr.io/sig-storage/livenessprobe@sha256:44d8275b3f145bc290fd57cb00de2d713b5e72d2e827d8c5555f8ddb40bf3f02
+kind: ImagesLock

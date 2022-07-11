@@ -36,23 +36,33 @@ tanzu package install whereabouts --package-name whereabouts.community.tanzu.vmw
 
 The following configuration values can be set to customize the Whereabouts installation.
 
-### Global
+### Package configuration values
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy Whereabouts components. Default: kube-system |
+#### Global
 
-### Whereabouts Configuration
+| Value | Required/Optional | Default | Description |
+|-------|-------------------|---------|-------------|
+| `namespace` | Optional | `kube-system` | The namespace in which to deploy Whereabouts components |
 
-| Value | Required/Optional | Description |
-|-------|-------------------|-------------|
-| `whereabouts.config.resources.limits.cpu` | Optional | The limits for CPU resources of Whereabouts DaemonSet  |
-| `whereabouts.config.resources.limits.memory` | Optional | The limits for memory resources of Whereabouts DaemonSet  |
-| `whereabouts.config.resources.requests.cpu` | Optional | The requests for CPU resources of Whereabouts DaemonSet  |
-| `whereabouts.config.resources.requests.memory` | Optional | The requests for memory resources of Whereabouts DaemonSet  |
-| `ip_reconciler.config.schedule` | Optional | The schedule of ip-reconciler CronJob. Default: \*/5 \* \* \* \*  |
-| `ip_reconciler.config.resources.requests.cpu` | Optional | The requests for memory resources of ip-reconciler CronJob  |
-| `ip_reconciler.config.resources.requests.memory` | Optional | The requests for memory resources of ip-reconciler CronJob  |
+#### Whereabouts Configuration
+
+| Value | Required/Optional | Default | Description |
+|-------|-------------------|---------|-------------|
+| `whereabouts.config.resources.limits.cpu` | Optional | `100m` | The limits for CPU resources of Whereabouts DaemonSet  |
+| `whereabouts.config.resources.limits.memory` | Optional | `50Mi` | The limits for memory resources of Whereabouts DaemonSet  |
+| `whereabouts.config.resources.requests.cpu` | Optional | `100m` | The requests for CPU resources of Whereabouts DaemonSet  |
+| `whereabouts.config.resources.requests.memory` | Optional | `50Mi` | The requests for memory resources of Whereabouts DaemonSet  |
+| `ip_reconciler.config.schedule` | Optional | `"*/5 * * * *"` | The schedule of ip-reconciler CronJob |
+| `ip_reconciler.config.resources.requests.cpu` | Optional | `100m` | The requests for memory resources of ip-reconciler CronJob  |
+| `ip_reconciler.config.resources.requests.memory` | Optional | `50Mi` | The requests for memory resources of ip-reconciler CronJob  |
+
+### Application configuration values
+
+No available options to configure.
+
+#### Multi-cloud configuration steps
+
+There are currently no configuration steps necessary for installation of the Whereabouts package to any provider.
 
 ## What This Package Does
 
@@ -68,7 +78,7 @@ Whereabouts can be used for both IPv4 & IPv6 addressing.
 * Whereabouts ClusterRoleBinding
 * Whereabouts ip-reconciler Cronjob
 
-## Supported Providers
+### Supported Providers
 
 The following table shows the providers this package can work with.
 
@@ -147,3 +157,11 @@ It shows you how to attach a second network interface to a pod with an IP addres
     ```bash
     kubectl exec {your-pod} -- ip a
     ```
+
+## Troubleshooting
+
+Not applicable.
+
+## Additional Documentation
+
+See the [Whereabouts documentation](https://github.com/k8snetworkplumbingwg/whereabouts) for more information.

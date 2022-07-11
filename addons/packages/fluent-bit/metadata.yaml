@@ -9,9 +9,7 @@ spec:
   shortDescription: "Fluent Bit is a fast Log Processor and Forwarder"
   providerName: VMware
   maintainers:
-    - name: Anil Kodali
-    - name: John McBride
-    - name: Luke Winikates
+    - name: XiaoShuang Guo
   categories:
     - "fluent-bit"
     - "logging"

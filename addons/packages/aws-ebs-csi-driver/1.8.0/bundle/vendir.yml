@@ -1,0 +1,12 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+- path: config/upstream
+  contents:
+  - path: aws-ebs-csi-driver.yaml
+    manual: {}
+  - path: crd-csi-snapshot.yaml
+    manual: {}
+  - path: csi-snapshot-controller.yaml
+    manual: {}

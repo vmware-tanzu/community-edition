@@ -1,0 +1,131 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "ebs-csi-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+spec:
+  #@overlay/match
+  replicas: #@ values.awsEBSCSIDriver.deployment_replicas
+  template:
+    spec:
+      containers:
+        #@ if values.awsEBSCSIDriver.http_proxy != "" :
+        #@overlay/match by=overlay.or_op(overlay.subset({"name": "ebs-plugin"}), overlay.subset({"name": "csi-provisioner"}), overlay.subset({"name": "csi-attacher"}), overlay.subset({"name": "csi-resizer"})), expects=4
+        - env:
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.awsEBSCSIDriver.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.awsEBSCSIDriver.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.awsEBSCSIDriver.no_proxy
+        #@ end
+      #@overlay/match missing_ok=True
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+      #@overlay/match missing_ok=True
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+            - matchExpressions:
+                - key: node-role.kubernetes.io/master
+                  operator: Exists
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "snapshot-controller"}})
+---
+kind: Deployment
+metadata:
+  name: snapshot-controller
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+spec:
+  #@overlay/match
+  replicas: #@ values.awsEBSCSIDriver.deployment_replicas
+  template:
+    spec:
+      containers:
+        #@ if values.awsEBSCSIDriver.http_proxy != "" :
+        #@overlay/append
+        - env:
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.awsEBSCSIDriver.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.awsEBSCSIDriver.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.awsEBSCSIDriver.no_proxy
+        #@ end
+      #@overlay/match missing_ok=True
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+            - matchExpressions:
+                - key: node-role.kubernetes.io/master
+                  operator: Exists
+      #@overlay/match missing_ok=True
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+
+#@overlay/match by=overlay.subset({"kind":"PodDisruptionBudget","metadata":{"name": "ebs-csi-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+
+#@overlay/match expects="0+",by=overlay.subset({"kind":"DaemonSet"})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.or_op(overlay.subset({"name": "ebs-plugin"}), overlay.subset({"name": "node-driver-registrar"})), expects=2
+        - env:
+            #@ if values.awsEBSCSIDriver.http_proxy != "" :
+            #@overlay/append
+            - name: "HTTP_PROXY"
+              value: #@ values.awsEBSCSIDriver.http_proxy
+            - name: "HTTPS_PROXY"
+              value: #@ values.awsEBSCSIDriver.https_proxy
+            - name: "NO_PROXY"
+              value: #@ values.awsEBSCSIDriver.no_proxy
+            #@ end
+
+#@ service_accounts = overlay.subset({"kind": "ServiceAccount"})
+#@ roles = overlay.subset({"kind": "Role"})
+#@ cluster_role = overlay.subset({"kind": "ClusterRole"})
+#@ role_bindings = overlay.subset({"kind": "RoleBinding"})
+#@ services = overlay.subset({"kind": "Service"})
+#@overlay/match by=overlay.or_op(service_accounts, cluster_role, roles, role_bindings, services), expects=11
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ values.awsEBSCSIDriver.namespace
+
+#@ crb=overlay.subset({"kind":"ClusterRoleBinding"})
+#@overlay/match by=overlay.or_op(crb), expects=6
+---
+subjects:
+#@overlay/match by=overlay.subset({"namespace": "kube-system"})
+- kind: ServiceAccount
+  namespace: #@ values.awsEBSCSIDriver.namespace

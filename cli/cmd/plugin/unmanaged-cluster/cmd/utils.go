@@ -4,6 +4,7 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 	"runtime"
 	"strconv"
@@ -113,3 +114,14 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 
 var helpTemplate = `
 {{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
+
+// checkSingleClusterArg validates that a single cluster name was passed
+func checkSingleClusterArg(cmd *cobra.Command, args []string) error {
+	if len(args) < 1 {
+		return errors.New("must specify a cluster name")
+	}
+	if len(args) > 1 {
+		return errors.New("only a single cluster name should be specified")
+	}
+	return nil
+}

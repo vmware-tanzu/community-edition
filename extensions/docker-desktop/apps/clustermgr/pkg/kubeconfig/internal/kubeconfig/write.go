@@ -4,10 +4,9 @@
 package kubeconfig
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
-
-	"sigs.k8s.io/kind/pkg/errors"
 )
 
 // write writes cfg to configPath
@@ -21,11 +20,11 @@ func write(cfg *Config, configPath string) error {
 	dir := filepath.Dir(configPath)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		if err = os.MkdirAll(dir, 0755); err != nil {
-			return errors.Wrap(err, "failed to create directory for KUBECONFIG")
+			return fmt.Errorf("failed to create directory %s for kubeconfig: %v", dir, err)
 		}
 	}
 	if err := os.WriteFile(configPath, encoded, 0600); err != nil {
-		return errors.Wrap(err, "failed to write KUBECONFIG")
+		return fmt.Errorf("failed to write kubeconfig to %s: %v", configPath, err)
 	}
 	return nil
 }

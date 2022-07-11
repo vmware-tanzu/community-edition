@@ -5,6 +5,7 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -72,7 +73,15 @@ var CreateCmd = &cobra.Command{
 	Short: "Create an unmanaged cluster",
 	Long:  createDesc,
 	Run:   create,
-	Args:  cobra.MaximumNArgs(1),
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 1 {
+			return errors.New("only a single cluster name should be specified")
+		}
+		if len(args) == 0 && co.clusterConfigFile == "" && co.existingClusterKubeconfig == "" {
+			return errors.New("must specify a cluster name or configuration file")
+		}
+		return nil
+	},
 }
 
 var co = createUnmanagedOpts{}

@@ -191,6 +191,15 @@ img.float-right {
   }
 }
 
+img.float-left {
+  display: block;
+  margin-bottom: 20px;
+  @include breakpoint(small-up) {
+    float: left;
+    margin: 0 40px 20px 0;
+  }
+}
+
 .bg-grid {
   &.bg-top {
     background: url(/img/bg-grid-fade.svg) top right no-repeat;
@@ -266,6 +275,9 @@ table {
     justify-content: space-between;
   }
 }
+.d-none {
+  display: none !important;
+}
 
 // helpers
 .hairline-top {
@@ -276,4 +288,10 @@ table {
 
 .semibold {
   font-family: $metropolis-semibold;
+}
+
+hr {
+  border-color: lighten($grey, 20%);
+  border-style: solid;
+  border-width: 1px 0 0 0;
 }

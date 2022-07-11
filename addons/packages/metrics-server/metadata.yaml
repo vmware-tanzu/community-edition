@@ -8,7 +8,7 @@ spec:
   shortDescription: "Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines."
   providerName: VMware
   maintainers:
-    - name: Lucheng Bao
+    - name: Guanpeng Gao
   categories:
     - "observability"
     - "metrics-server"

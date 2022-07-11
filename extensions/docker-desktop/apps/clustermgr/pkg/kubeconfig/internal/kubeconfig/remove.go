@@ -4,9 +4,8 @@
 package kubeconfig
 
 import (
+	"fmt"
 	"os"
-
-	"sigs.k8s.io/kind/pkg/errors"
 )
 
 // RemoveKIND removes the kind cluster kindClusterName from the KUBECONFIG
@@ -17,7 +16,7 @@ func RemoveKIND(kindClusterName, explicitPath string) error {
 		if err := func(configPath string) error {
 			// lock before modifying
 			if err := lockFile(configPath); err != nil {
-				return errors.Wrap(err, "failed to lock config file")
+				return fmt.Errorf("failed to lock %s: %v", configPath, err)
 			}
 			defer func(configPath string) {
 				_ = unlockFile(configPath)
@@ -26,7 +25,7 @@ func RemoveKIND(kindClusterName, explicitPath string) error {
 			// read in existing
 			existing, err := read(configPath)
 			if err != nil {
-				return errors.Wrap(err, "failed to read kubeconfig to remove KIND entry")
+				return fmt.Errorf("failed to get kubeconfig from %s to remove KIND entry: %v", configPath, err)
 			}
 
 			// remove the kind cluster from the config

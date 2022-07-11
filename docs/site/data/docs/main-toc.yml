@@ -145,11 +145,14 @@ toc:
             versions:
                 - 0.8.0
                 - 0.10.0
+                - 0.11.0
         - package:
             displayName: Fluent Bit
             name: fluent-bit
             versions:
                 - 1.7.5
+                - 1.8.15
+                - 1.9.5
         - package:
             displayName: Fluxcd Helm Controller
             name: fluxcd-helm-controller
@@ -227,6 +230,7 @@ toc:
             name: prometheus
             versions:
                 - 2.27.0
+                - 2.36.2
         - package:
             displayName: Velero
             name: velero

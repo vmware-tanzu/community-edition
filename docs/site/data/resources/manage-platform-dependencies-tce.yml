@@ -1,0 +1,9 @@
+title: "Manage Platform Dependencies with Tanzu Community Edition"
+link: https://tanzu.vmware.com/developer/workshops/lab-tce-dependencies
+type: workshop
+level: getting-started
+order: 211
+new: false
+use_case_number:
+  - 1
+use_case_order: 209

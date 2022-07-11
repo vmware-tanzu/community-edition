@@ -1,0 +1,98 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: aws-ebs-csi-driver.community.tanzu.vmware.com.1.8.0
+spec:
+  refName: aws-ebs-csi-driver.community.tanzu.vmware.com
+  version: 1.8.0
+  releaseNotes: "aws-ebs-csi-driver 1.8.0 https://github.com/kubernetes-sigs/aws-ebs-csi-driver/releases/tag/v1.8.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/aws-ebs-csi-driver@sha256:ae4bf75be395f9a00f65c6a0fabb764b4bc7da74262169dcb503ef91706378c9
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for aws ebs csi driver
+      properties:
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
+        awsEBSCSIDriver:
+          namespace:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The namespace in which aws ebs csi driver is deployed
+            default: kube-system
+          http_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The HTTP proxy to use for network traffic
+            default: ""
+          https_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: The HTTPS proxy to use for network traffic
+            default: ""
+          no_proxy:
+            type: string
+            nullable: true
+            deprecated: true
+            description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+            default: ""
+          deployment_replicas:
+            type: integer
+            nullable: true
+            deprecated: true
+            description: The number of replicas of aws-ebs-csi-controller and snapshot-controller deployment
+            default: 3

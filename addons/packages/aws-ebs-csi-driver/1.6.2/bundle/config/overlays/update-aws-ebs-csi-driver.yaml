@@ -1,0 +1,51 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "ebs-csi-controller"}})
+---
+kind: Deployment
+metadata:
+  name: ebs-csi-controller
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+spec:
+  template:
+    spec:
+      #@overlay/replace
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+
+#@overlay/match by=overlay.subset({"kind":"PodDisruptionBudget","metadata":{"name": "ebs-csi-controller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+
+#@overlay/match expects="0+",by=overlay.subset({"kind":"DaemonSet"})
+---
+kind: DaemonSet
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.awsEBSCSIDriver.namespace
+
+#@ service_accounts = overlay.subset({"kind": "ServiceAccount"})
+#@ roles = overlay.subset({"kind": "Role"})
+#@ role_bindings = overlay.subset({"kind": "RoleBinding"})
+#@ services = overlay.subset({"kind": "Service"})
+
+#@overlay/match by=overlay.or_op(service_accounts, roles, role_bindings, services), expects=2
+---
+metadata:
+  namespace: #@ values.awsEBSCSIDriver.namespace
+
+#@overlay/match by=overlay.or_op(overlay.subset({"kind": "ClusterRoleBinding"}), overlay.subset({"kind": "RoleBinding"})), expects=5
+---
+subjects:
+  #@overlay/match by="kind"
+  - kind: ServiceAccount
+    namespace: #@ values.awsEBSCSIDriver.namespace

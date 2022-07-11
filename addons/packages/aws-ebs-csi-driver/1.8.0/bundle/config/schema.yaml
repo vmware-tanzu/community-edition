@@ -1,0 +1,40 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for aws-ebs-csi-driver"
+---
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
+deployment:
+  #@schema/desc "Update strategy of deployments"
+  #@schema/nullable
+  updateStrategy: ""
+  rollingUpdate:
+    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxUnavailable: 1
+    #@schema/desc "The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxSurge: 0
+daemonset:
+  #@schema/desc "Update strategy of daemonsets"
+  #@schema/nullable
+  updateStrategy: ""
+#@schema/desc "Configurations for aws-ebs-csi-driver"
+awsEBSCSIDriver:
+  #@schema/deprecated "Kept for backward compatibility"
+  #@schema/desc "The namespace in which aws ebs csi driver is deployed"
+  #@schema/nullable
+  namespace: kube-system
+  #@schema/desc "The HTTP proxy to use for network traffic"
+  #@schema/nullable
+  http_proxy: ""
+  #@schema/desc "The HTTPS proxy to use for network traffic"
+  #@schema/nullable
+  https_proxy: ""
+  #@schema/desc "A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy"
+  #@schema/nullable
+  no_proxy: ""
+  #@schema/desc "The number of replicas of aws-ebs-csi-controller and snapshot-controller deployment"
+  deployment_replicas: 3

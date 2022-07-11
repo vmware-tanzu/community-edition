@@ -5,9 +5,9 @@ package kubeconfig
 
 import (
 	"bytes"
+	"fmt"
 
 	yaml "gopkg.in/yaml.v3"
-	"sigs.k8s.io/kind/pkg/errors"
 	kubeyaml "sigs.k8s.io/yaml"
 )
 
@@ -17,7 +17,7 @@ func Encode(cfg *Config) ([]byte, error) {
 	// so we're not using that to marshal
 	encoded, err := yaml.Marshal(cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to encode KUBECONFIG")
+		return nil, fmt.Errorf("failed to encode kubeconfig: %w", err)
 	}
 
 	// normalize with kubernetes's yaml library
@@ -25,7 +25,7 @@ func Encode(cfg *Config) ([]byte, error) {
 	// modifying kubeconfig files, which is nice to have
 	encoded, err = normYaml(encoded)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to normalize KUBECONFIG encoding")
+		return nil, fmt.Errorf("failed to normalize kubeconfig: %w", err)
 	}
 
 	return encoded, nil
