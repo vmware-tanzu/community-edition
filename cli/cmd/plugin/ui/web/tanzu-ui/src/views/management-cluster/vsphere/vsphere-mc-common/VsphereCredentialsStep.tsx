@@ -41,6 +41,15 @@ type VSPHERE_CREDENTIALS_STEP_FIELDS =
     | VSPHERE_FIELDS.USERNAME
     | VSPHERE_FIELDS.USETHUMBPRINT;
 
+enum VSPHERE_CREDENTIALS_STEP_FIELDS {
+    SERVERNAME = 'serverName',
+    USERNAME = 'userName',
+    PASSWORD = 'password',
+    DATACENTER = 'datacenter',
+    IPFAMILY = 'ipFamily',
+    USETHUMBPRINT = 'useThumbprint',
+}
+
 const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
 
 export function VsphereCredentialsStep(props: Partial<StepProps>) {
@@ -114,7 +123,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             handleValueChange(INPUT_CHANGE, fieldName, value, currentStep, errors);
             setValue(fieldName, value, { shouldValidate: true });
         }
-        if (fieldName === VSPHERE_FIELDS.SERVERNAME) {
+        if (fieldName === VSPHERE_CREDENTIALS_STEP_FIELDS.SERVERNAME) {
             setThumbprint('');
             setThumbprintErrorMessage('');
         }
@@ -306,9 +315,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             <div cds-layout="col:8 p-t:xxs">
                 <CdsFormGroup layout="vertical-inline" control-width="shrink">
                     <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
-                        {CredentialsField('vSphere server', VSPHERE_FIELDS.SERVERNAME, 'vSphere server')}
-                        {CredentialsField('Username', VSPHERE_FIELDS.USERNAME, 'username')}
-                        {CredentialsField('Password', VSPHERE_FIELDS.PASSWORD, 'password', true)}
+                        {CredentialsField('vSphere server', VSPHERE_CREDENTIALS_STEP_FIELDS.SERVERNAME, 'vSphere server')}
+                        {CredentialsField('Username', VSPHERE_CREDENTIALS_STEP_FIELDS.USERNAME, 'username')}
+                        {CredentialsField('Password', VSPHERE_CREDENTIALS_STEP_FIELDS.PASSWORD, 'password', true)}
                     </div>
                 </CdsFormGroup>
             </div>

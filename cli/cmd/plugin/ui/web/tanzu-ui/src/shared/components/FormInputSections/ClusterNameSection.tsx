@@ -15,6 +15,7 @@ import { isK8sCompliantString } from '../../validations/Validation.service';
  * @param field - the name of the field for the cluster name
  * @param yupObject - the yup schema object
  */
+
 export function clusterNameValidation() {
     return yup
         .string()
