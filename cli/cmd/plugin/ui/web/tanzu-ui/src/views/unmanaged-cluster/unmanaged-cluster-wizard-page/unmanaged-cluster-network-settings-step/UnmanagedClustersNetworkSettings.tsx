@@ -28,6 +28,7 @@ enum UNMANAGED_NETWORK_FIELDS {
     IP_ADDRESS = 'IP_ADDRESS',
     HOST_PORT_MAPPING = 'HOST_PORT_MAPPING',
     NODE_PORT_MAPPING = 'NODE_PORT_MAPPING',
+    NODE_TO_HOST_PORT_MAPPING = 'NODE_TO_HOST_PORT_MAPPING',
 }
 
 interface FormInputs {
@@ -35,6 +36,7 @@ interface FormInputs {
     [UNMANAGED_NETWORK_FIELDS.HOST_PORT_MAPPING]: string;
     [UNMANAGED_NETWORK_FIELDS.NODE_PORT_MAPPING]: string;
     [UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR]: string;
+    [UNMANAGED_NETWORK_FIELDS.NODE_TO_HOST_PORT_MAPPING]: string;
     [UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR]: string;
 }
 
@@ -92,6 +94,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     const { handleValueChange, currentStep } = props;
 
     const { umcState } = useContext(UmcStore);
+
+    const combinedNodeToHostPortMapping = `${umcState[STORE_SECTION_FORM].IP_ADDRESS}/${umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}:${umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}/${umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL}`;
+    umcState[STORE_SECTION_FORM].NODE_TO_HOST_PORT_MAPPING = combinedNodeToHostPortMapping;
 
     const {
         register,
@@ -222,21 +227,21 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             ></input>
                         </CdsInput>
                         <CdsInput layout="vertical" control-width="shrink" cds-layout="col:2">
-                            <label>Host Port</label>
-                            <input
-                                {...register(UNMANAGED_NETWORK_FIELDS.HOST_PORT_MAPPING)}
-                                placeholder="80"
-                                onChange={handleFieldChange}
-                                defaultValue={umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}
-                            ></input>
-                        </CdsInput>
-                        <CdsInput layout="vertical" control-width="shrink" cds-layout="col:2">
                             <label>Node Port</label>
                             <input
                                 {...register(UNMANAGED_NETWORK_FIELDS.NODE_PORT_MAPPING)}
                                 placeholder="80"
                                 onChange={handleFieldChange}
                                 defaultValue={umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}
+                            ></input>
+                        </CdsInput>
+                        <CdsInput layout="vertical" control-width="shrink" cds-layout="col:2">
+                            <label>Host Port</label>
+                            <input
+                                {...register(UNMANAGED_NETWORK_FIELDS.HOST_PORT_MAPPING)}
+                                placeholder="80"
+                                onChange={handleFieldChange}
+                                defaultValue={umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}
                             ></input>
                         </CdsInput>
                         <CdsSelect cds-layout="align:shrink" onChange={handleProtocolChange}>
@@ -252,7 +257,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             </select>
                         </CdsSelect>
                     </div>
-                    <CdsControlMessage>{`${umcState[STORE_SECTION_FORM].IP_ADDRESS}/${umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}/${umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}/${umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL}`}</CdsControlMessage>
+                    <CdsControlMessage>{umcState[STORE_SECTION_FORM].NODE_TO_HOST_PORT_MAPPING}</CdsControlMessage>
                 </div>
             </div>
         );
