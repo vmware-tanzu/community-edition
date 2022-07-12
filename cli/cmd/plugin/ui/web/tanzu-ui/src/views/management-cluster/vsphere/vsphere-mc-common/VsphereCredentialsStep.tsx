@@ -60,7 +60,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
     const [useThumbprint, setUseThumbprint] = useState(true);
-    const [ipFamily, setIpFamily] = useState(vsphereState[VSPHERE_FIELDS.IPFAMILY] || IP_FAMILIES.IPv4);
+    const [ipFamily, setIpFamily] = useState(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.IPFAMILY] || IP_FAMILIES.IPv4);
     const [selectedDcHasTemplate, setSelectedDcHasTemplate] = useState<boolean>(false);
     const methods = useForm<VsphereCredentialsStepInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
