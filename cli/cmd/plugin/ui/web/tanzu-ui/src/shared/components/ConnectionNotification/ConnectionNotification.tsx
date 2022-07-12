@@ -4,32 +4,39 @@ import React from 'react';
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 // App imports
 import '../../../../src/scss/utils.scss';
+import { AlertStatusTypes } from '@cds/core/alert';
 
-export function ConnectionNotification(
-    connected: boolean,
-    connectedMessage: string,
-    connecting: boolean,
-    connectingMessage: string,
-    errorMessage?: string
-) {
+export enum CONNECTION_STATUS {
+    DISCONNECTED,
+    CONNECTED,
+    CONNECTING,
+    ERROR,
+}
+
+const connectionStatusToAlertStatus = {
+    [CONNECTION_STATUS.CONNECTED]: 'success',
+    [CONNECTION_STATUS.CONNECTING]: 'loading',
+    [CONNECTION_STATUS.DISCONNECTED]: 'neutral',
+    [CONNECTION_STATUS.ERROR]: 'danger',
+};
+
+// NOTE: there SHOULD NOT be a need to have CONNECTING as a separate case below, but the Clarity CdsAlertGroup does not repaint
+// correctly without it.
+export function ConnectionNotification(status: CONNECTION_STATUS, message: string) {
+    const alertStatus = (connectionStatusToAlertStatus[status] || 'neutral') as AlertStatusTypes;
     return (
         <div>
-            {connected && (
-                <CdsAlertGroup status="success" aria-label={connectedMessage}>
-                    <CdsAlert>{connectedMessage}</CdsAlert>
+            {status !== CONNECTION_STATUS.DISCONNECTED && status !== CONNECTION_STATUS.CONNECTING && (
+                <CdsAlertGroup status={alertStatus} aria-label={message}>
+                    <CdsAlert>{message}</CdsAlert>
                 </CdsAlertGroup>
             )}
-            {connecting && (
-                <CdsAlertGroup status="loading" aria-label={connectedMessage}>
-                    <CdsAlert>{connectingMessage}</CdsAlert>
+            {status === CONNECTION_STATUS.CONNECTING && (
+                <CdsAlertGroup status={alertStatus} aria-label={message}>
+                    <CdsAlert>{message}</CdsAlert>
                 </CdsAlertGroup>
             )}
-            {!connected && errorMessage && (
-                <CdsAlertGroup status="danger">
-                    <CdsAlert>{errorMessage}</CdsAlert>
-                </CdsAlertGroup>
-            )}
-            {!connected && !connecting && !errorMessage && (
+            {status === CONNECTION_STATUS.DISCONNECTED && (
                 <div className="hide-me">
                     <CdsAlertGroup status="neutral">
                         <CdsAlert>&nbsp;</CdsAlert>
