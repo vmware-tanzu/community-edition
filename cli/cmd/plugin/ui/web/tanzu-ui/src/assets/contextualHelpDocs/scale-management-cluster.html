@@ -4,19 +4,40 @@ topicIds: [ctx-management-clusters]
 -->
 
 <p>
-    Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging
-    installation issues. The plugin (based on the Crash-Diagnostics project) can automatically collect diagnostics data from either the
-    bootstrap, management, unmanaged, or a workload cluster (or all four) using the tanzu diagnostics collect command. Learn more about
-    Tanzu Diagnostics
+    After you deploy a management cluster, you can scale it up or down by increasing or reducing the number of node VMs that it contains. To
+    scale a management cluster, use the tanzu cluster scale command with one or both of the following options:
 </p>
+
+<ul>
+    <li><code>--controlplane-machine-count</code> changes the number of management cluster control plane nodes.</li>
+
+    <li><code>--worker-machine-count</code> changes the number of management cluster worker nodes.</li>
+</ul>
 
 <p>
-    When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand
-    what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about
-    potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish
-    successfully, use the diagnostics plugin to collect logs and cluster information.
+    Because management clusters run in the tkg-system namespace rather than the default namespace, you must also specify the --namespace
+    option when you scale a management cluster.
 </p>
 
-<a style="color: white" href="https://tanzucommunityedition.io/docs/v0.12/tanzu-diagnostics/" target="_blank">
-    Learn more about Tanzu Diagnostics</a
->
+<ol>
+    <li>
+        Run tanzu login before you run tanzu cluster scale to check that the management cluster you wish to scale is the current context of
+        the Tanzu CLI.
+    </li>
+
+    <li>
+        To scale a production management cluster that you originally deployed with 3 control plane nodes and 5 worker nodes to 5 and 10
+        nodes respectively, run the following command:
+        <code>
+            tanzu cluster scale &lt;MANAGEMENT-CLUSTER-NAME&gt; --controlplane-machine-count 5 --worker-machine-count 10 --namespace
+            tkg-system
+        </code>
+    </li>
+</ol>
+
+<p>
+    If you initially deployed a development management cluster with one control plane node and you scale it up to 3 control plane nodes,
+    Tanzu Community Edition automatically enables stacked HA on the control plane.
+</p>
+
+<p><b> IMPORTANT: </b> Do not change context or edit the .kube-tkg/config file while Tanzu Community Edition operations are running.</p>

@@ -4,19 +4,22 @@ topicIds: [ctx-management-clusters]
 -->
 
 <p>
-    Tanzu Community Edition comes with a diagnostics CLI plugin that helps with the task of collecting diagnostics data when debugging
-    installation issues. The plugin (based on the Crash-Diagnostics project) can automatically collect diagnostics data from either the
-    bootstrap, management, unmanaged, or a workload cluster (or all four) using the tanzu diagnostics collect command. Learn more about
-    Tanzu Diagnostics
+    When a management cluster fails to deploy successfully (or partially deploys), it may leave orphaned objects in your bootstrap
+    environment.
 </p>
+
+<p>Clean the bootstrap environment prior to a subsequent attempt of redeploying the management cluster.</p>
+
+<p>If the management cluster got partially created, attempt to delete the resources for the failed cluster:</p>
+
+<p><code>tanzu management-cluster delete &lt;YOUR-CLUSTER-NAME&gt; </code></p>
+
+<p>Next, if the bootstrap cluster still exists, delete it:</p>
 
 <p>
-    When debugging a failed management cluster deployment, the kind bootstrap cluster is the key to being able to introspect and understand
-    what is happening. Any issues or errors that occur in the kind bootstrap cluster during bootstrapping will provide information about
-    potential problems in the final management cluster on the target provider. If the bootstrap process is stuck or did not finish
-    successfully, use the diagnostics plugin to collect logs and cluster information.
+    <code> kind get clusters tkg-kind-b4o9sn5948199qbgca8d</code>
 </p>
 
-<a style="color: white" href="https://tanzucommunityedition.io/docs/v0.12/tanzu-diagnostics/" target="_blank">
-    Learn more about Tanzu Diagnostics</a
->
+<code> kind delete cluster --name tkg-kind-b4o9sn5948199qbgca8d</code>
+
+<p>Use docker to stop and remove any running containers related to the bootstrap process</p>

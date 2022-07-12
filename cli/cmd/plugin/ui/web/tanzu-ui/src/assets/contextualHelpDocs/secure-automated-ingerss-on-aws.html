@@ -4,13 +4,33 @@ topicIds: [ctx-workload-clusters]
 -->
 
 <p>
-    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu
-    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable
-    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.
+    Now that you have provisioned workload clusters, it’s time to use it. If you want to deploy applications on this cluster you will need
+    some packages installed on it that will give you some capabilities to improve the usage experience of the cluster.
 </p>
 
-<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>
+<p>Install and properly configure the following Kubernetes services:</p>
 
-<a style="color: white" href="https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters" target="_blank"
-    >Learn more about managing Tanzu Packages.</a
->
+<ul>
+    <li>
+        <b>Ingress controller.</b> This is the entry point to your cluster. Requests will most likely be routed to applications running in
+        Kubernetes via an Ingress Controller.
+    </li>
+
+    <li>
+        <b>Certificate management.</b>
+        Because your services should be exposed using a secure transport (HTTPS), you need to generate TLS certificates that your ingress
+        controller will use to secure your application’s communication with the public.
+    </li>
+
+    <li>
+        <b>DNS management.</b>You want your applications to listen on a specific domain name, but you don’t know (or want) to learn how to
+        configure Route53 or your DNS provider. With automatic DNS management integration, your services will directly be exposed where you
+        expect them.
+    </li>
+</ul>
+
+<p>With these services deployed, it becomes easier to deploy an application on a cluster and access it through a named URL.</p>
+
+<a style="color: white" href="https://tanzucommunityedition.io/docs/v0.12/solutions-secure-ingress/" target="_blank">
+    View the full guide of Secure automated Ingress on AWS
+</a>

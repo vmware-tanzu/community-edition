@@ -107,7 +107,13 @@
         },
         {
             "i": 14,
-            "$": { "0": { "v": "Troubleshooting cluster creation", "n": 0.577 }, "1": [{ "v": "ctx-getting-started", "i": 0, "n": 1 }] }
+            "$": {
+                "0": { "v": "Troubleshooting cluster creation", "n": 0.577 },
+                "1": [
+                    { "v": "ctx-management-clusters", "i": 1, "n": 1 },
+                    { "v": "ctx-getting-started", "i": 0, "n": 1 }
+                ]
+            }
         },
         {
             "i": 15,

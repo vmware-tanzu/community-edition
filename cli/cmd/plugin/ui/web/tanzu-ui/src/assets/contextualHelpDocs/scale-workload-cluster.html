@@ -4,13 +4,22 @@ topicIds: [ctx-workload-clusters]
 -->
 
 <p>
-    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu
-    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable
-    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.
+    Cluster Autoscaler is a Kubernetes program that automatically scales Kubernetes clusters depending on the demands on the workload
+    clusters. For more information about Cluster Autoscaler, see the following documentation in GitHub:
 </p>
 
-<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>
+<ul>
+    <li><u> Cluster Autoscaler </u> introduction and documentation.</li>
+    <li><u> Frequently Asked Questions</u> about Cluster Autoscaler and how it relates to alternative autoscaling approaches.</li>
+    <li><u>Cluster Autoscaler on Cluster API</u>for information about cluster-api provider implementation for cluster autoscaler.</li>
+</ul>
 
-<a style="color: white" href="https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters" target="_blank"
-    >Learn more about managing Tanzu Packages.</a
->
+<p>
+    By default, Cluster Autoscaler is disabled. To enable Cluster Autoscaler in a workload cluster, set the ENABLE_AUTOSCALER to true and
+    set the AUTOSCALER_ options in the workload cluster configuration file or as environment variables before running tanzu cluster create
+    --file. Sample workload cluster template files are available here: <u>AWS, Azure, vSphere.</u>
+</p>
+
+<a style="color: white" href="https://tanzucommunityedition.io/docs/v0.12/scale-cluster/" target="_blank">
+    View more on scaling Workload Clusters
+</a>

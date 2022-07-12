@@ -3,14 +3,61 @@ topicTitle: Persistent Volumes with Storage Classes
 topicIds: [ctx-workload-clusters]
 -->
 
+<h4>Supported Storage Types</h4>
+
 <p>
-    Packages extend the functionality of Tanzu Community Edition. You can discover and deploy packages through the Tanzu CLI. A Tanzu
-    package is an aggregation of Kubernetes configurations, and its associated software container image, into a versioned and distributable
-    bundle, that can be deployed as an OCI container image. Packages are installed into a Tanzu cluster.
+    Tanzu Community Edition supports StorageClass objects for different storage types, provisioned by Kubernetes internal (“in-tree”) or
+    external (“out-of-tree”) plug-ins.
 </p>
 
-<p>Run tanzu package list in your terminal to view avaliable packages on an unmanaged cluster, or workload cluster.</p>
+<h4>Storage Types</h4>
 
-<a style="color: white" href="https://tanzucommunityedition.io/docs/main/architecture/#tanzu-clusters" target="_blank"
-    >Learn more about managing Tanzu Packages.</a
->
+<ul>
+    <li>vSphere Cloud Native Storage (CNS)</li>
+    <li>Amazon EBS</li>
+
+    <li>Azure Disk</li>
+
+    <li>iSCSI</li>
+
+    <li>NFS</li>
+</ul>
+
+<h4>Plug-in Locations</h4>
+
+<ul>
+    <li>
+        Kubernetes internal (“in-tree”) storage. - Ships with core Kubernetes; provider values are prefixed with kubernetes.io, e.g.
+        kubernetes.io/aws-ebs.
+    </li>
+
+    <li>
+        External (“out-of-tree”) storage. - Can be anywhere defined by provider value, e.g. csi.vsphere.vmware.com. - Follow the Container
+        Storage Interface (CSI) standard for external storage.
+    </li>
+</ul>
+
+<h4>Default Storage Classes</h4>
+
+<p>
+    Tanzu provides default StorageClass objects that let workload cluster users provision persistent storage on their infrastructure in a
+    turnkey environment, without needing StorageClass objects created by a cluster administrator.
+</p>
+
+<p>
+    The ENABLE_DEFAULT_STORAGE_CLASS variable is set to true by default in the cluster configuration file passed to --file option of tanzu
+    cluster create, to enable the default storage class for a workload cluster.
+</p>
+
+<ul>
+    <li>
+        <a style="color: white" href="https://tanzucommunityedition.io/docs/v0.12/storage/#default-storage-classes" target="_blank">
+            View Tanzu default Storage Class definitions</a
+        >
+    </li>
+    <li>
+        <a style="color: white" href="https://tanzucommunityedition.io/docs/v0.12/storage/#create-a-custom-storage-class" target="_blank">
+            Create a Custom Storage Class</a
+        >
+    </li>
+</ul>
