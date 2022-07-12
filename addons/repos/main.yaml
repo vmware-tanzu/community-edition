@@ -63,6 +63,7 @@ packages:
       - 2.2.3
       - 2.3.3
       - 2.4.2
+      - 2.5.3
   - name: knative-serving
     versions:
       - 0.22.0
