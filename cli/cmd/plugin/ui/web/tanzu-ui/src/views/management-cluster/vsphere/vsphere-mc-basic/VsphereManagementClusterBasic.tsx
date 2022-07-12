@@ -6,6 +6,7 @@ import { VSPHERE_MC_BASIC_TAB_NAMES } from './VsphereManagementClusterBasic.cons
 import { VsphereCredentialsStep } from '../vsphere-mc-common/VsphereCredentialsStep';
 import { VsphereClusterSettingsStep } from '../vsphere-mc-common/VsphereClusterSettingsStep';
 import { VsphereClusterResourcesStep } from '../vsphere-mc-common/VsphereClusterResourcesStep';
+import { VsphereLoadBalancerStep } from '../vsphere-mc-common/VsphereLoadBalancerStep';
 import { VsphereStore } from '../Store.vsphere.mc';
 
 function VsphereManagementClusterBasic() {
@@ -17,6 +18,7 @@ function VsphereManagementClusterBasic() {
         <Wizard tabNames={VSPHERE_MC_BASIC_TAB_NAMES} state={vsphereState} dispatch={vsphereDispatch}>
             <VsphereCredentialsStep />
             <VsphereClusterSettingsStep />
+            <VsphereLoadBalancerStep />
             <VsphereClusterResourcesStep />
         </Wizard>
     );
