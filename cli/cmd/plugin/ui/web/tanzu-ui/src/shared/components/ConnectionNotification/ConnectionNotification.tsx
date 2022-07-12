@@ -3,7 +3,7 @@ import React from 'react';
 // Library imports
 import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 // App imports
-import './ConnectionNotification.scss';
+import '../../../../src/scss/utils.scss';
 
 export function ConnectionNotification(
     connected: boolean,
