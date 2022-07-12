@@ -381,23 +381,40 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
+    // NOTE: because of the way the "disabled" attribute works, we have two functions to render the Datacenter CdsSelect control.
+    // Other more elegant solutions do not appear to work correctly.
+    function DatacenterSelectWithDatacenters() {
+        return (
+            <CdsSelect layout="vertical" controlWidth="shrink">
+                <label cds-layout="p-b:xs">Datacenter</label>
+                <select {...register(VSPHERE_FIELDS.DATACENTER)} onChange={handleDatacenterChange}>
+                    <option />
+                    {datacenters.map((dc) => (
+                        <option key={dc.moid}>{dc.name}</option>
+                    ))}
+                </select>
+            </CdsSelect>
+        );
+    }
+
+    function DatacenterSelectWithoutDatacenters() {
+        return (
+            <CdsSelect layout="vertical" controlWidth="shrink">
+                <label cds-layout="p-b:xs">Datacenter</label>
+                <select {...register(VSPHERE_FIELDS.DATACENTER)} disabled>
+                    <option />
+                </select>
+            </CdsSelect>
+        );
+    }
+
     function DatacenterSection() {
+        const hasDatacenters = datacenters && datacenters.length > 0;
         return (
             <div cds-layout="grid horizontal gap:md">
                 <div cds-layout="col:6">
-                    <CdsSelect layout="vertical" controlWidth="shrink">
-                        <label cds-layout="p-b:xs">Datacenter</label>
-                        <select
-                            {...register(VSPHERE_FIELDS.DATACENTER)}
-                            onChange={handleDatacenterChange}
-                            disabled={connectionStatus !== CONNECTION_STATUS.CONNECTED || !datacenters || datacenters.length === 0}
-                        >
-                            <option />
-                            {datacenters.map((dc) => (
-                                <option key={dc.moid}>{dc.name}</option>
-                            ))}
-                        </select>
-                    </CdsSelect>
+                    {hasDatacenters && DatacenterSelectWithDatacenters()}
+                    {!hasDatacenters && DatacenterSelectWithoutDatacenters()}
                     <div cds-layout="p-t:md">
                         {errNoDataCentersFound() && <CdsControlMessage status="error">No data centers found on server!</CdsControlMessage>}
                         {errDataCenter() && <CdsControlMessage status="error">{errDataCenterMsg()}</CdsControlMessage>}
