@@ -115,6 +115,25 @@ spec:
               nullable: true
               description: 'Annotations that can be set on the external-dns service account. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/'
               default: null
+        aws:
+          type: object
+          additionalProperties: false
+          nullable: true
+          description: AWS provider related configuration
+          properties:
+            credentials:
+              type: object
+              additionalProperties: false
+              nullable: true
+              properties:
+                accessKey:
+                  type: string
+                  description: AWS access key. When provided along with the aws.secretKey, a Secret will be created and referenced in the external-dns Deployment.
+                  default: ""
+                secretKey:
+                  type: string
+                  description: AWS secret key. When provided along with the aws.accessKey, a Secret will be created and referenced in the external-dns Deployment.
+                  default: ""
   capacityRequirementsDescription: "No specific capacity requirements."
   licenses:
     - "Apache 2.0"

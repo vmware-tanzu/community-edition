@@ -66,3 +66,12 @@ serviceaccount:
   #@schema/desc "Annotations that can be set on the external-dns service account. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
   #@schema/type any=True
   annotations: null
+#@schema/desc "AWS provider related configuration"
+#@schema/nullable
+aws:
+  #@schema/nullable
+  credentials:
+    #@schema/desc "AWS access key. When provided along with the aws.secretKey, a Secret will be created and referenced in the external-dns Deployment."
+    accessKey: ""
+    #@schema/desc "AWS secret key. When provided along with the aws.accessKey, a Secret will be created and referenced in the external-dns Deployment."
+    secretKey: ""
