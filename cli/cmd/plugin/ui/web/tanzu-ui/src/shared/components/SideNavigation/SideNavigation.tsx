@@ -86,7 +86,6 @@ function SideNavigation(this: any) {
                     </Link>
                 </CdsNavigationItem>
             )}
-            <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             {workloadClusterSupport && (
                 <CdsNavigationItem active={isActiveNavItem(NavRoutes.WORKLOAD_CLUSTER_WIZARD)}>
                     <Link cds-layout={navigationItemLinkLayout} to={NavRoutes.WORKLOAD_CLUSTER_WIZARD}>
@@ -95,12 +94,6 @@ function SideNavigation(this: any) {
                     </Link>
                 </CdsNavigationItem>
             )}
-            <CdsNavigationItem>
-                <Link cds-layout={navigationItemLinkLayout} to="/progress">
-                    <CdsIcon shape="deploy" size="sm"></CdsIcon>
-                    Deploy progress - temp
-                </Link>
-            </CdsNavigationItem>
             <CdsDivider cds-layout="p-y:sm"></CdsDivider>
             {/* TODO: Determine links for external pages */}
             <CdsNavigationItem>

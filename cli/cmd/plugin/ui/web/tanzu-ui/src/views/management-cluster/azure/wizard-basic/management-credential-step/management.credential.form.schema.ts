@@ -3,12 +3,12 @@ import * as yup from 'yup';
 
 export const managementCredentialFormSchema = yup
     .object({
-        TENANT_ID: yup.string().required(),
-        CLIENT_ID: yup.string().required(),
-        CLIENT_SECRET: yup.string().required(),
-        SUBSCRIPTION_ID: yup.string().required(),
-        AZURE_ENVIRONMENT: yup.string().required(),
-        REGION: yup.string().required(),
-        SSH_PUBLIC_KEY: yup.string().required(),
+        TENANT_ID: yup.string().required('Please enter a tenant ID'),
+        CLIENT_ID: yup.string().required('Please enter a client ID'),
+        CLIENT_SECRET: yup.string().required('Please enter a client secret'),
+        SUBSCRIPTION_ID: yup.string().required('Please enter a subscription ID'),
+        AZURE_ENVIRONMENT: yup.string().required('Please select an Azure environment'),
+        REGION: yup.string().required('Please select a region'),
+        SSH_PUBLIC_KEY: yup.string().required('Please enter an SSH public key'),
     })
     .required();

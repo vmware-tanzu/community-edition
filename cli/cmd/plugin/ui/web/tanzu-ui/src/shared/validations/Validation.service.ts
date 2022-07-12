@@ -94,6 +94,6 @@ export const isK8sCompliantString = (arg: string | undefined) => {
     if (!arg) {
         return false;
     }
-    const regexPattern = /^([a-z-]*)$/;
+    const regexPattern = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
     return regexPattern.test(arg);
 };
