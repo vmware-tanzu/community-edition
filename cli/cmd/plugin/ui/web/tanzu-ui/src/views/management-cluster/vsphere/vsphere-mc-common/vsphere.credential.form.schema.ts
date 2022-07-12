@@ -15,7 +15,7 @@ export function createSchema(ipFamily: IPFAMILIES) {
         .required();
 }
 
-function yupServerTest(ipFamily: IPFAMILIES): yup.StringSchema<string | undefined, AnyObject, string | undefined> {
+export function yupServerTest(ipFamily: IPFAMILIES): yup.StringSchema<string | undefined, AnyObject, string | undefined> {
     if (ipFamily === IPFAMILIES.IPv6) {
         return yup
             .string()
