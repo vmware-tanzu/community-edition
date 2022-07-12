@@ -95,10 +95,10 @@ toc:
           url: /ref-windows-capd
     - title: Packages
       subfolderitems:
-        - page: Create a Package
-          url: /package-creation-step-by-step
         - page: Work with Packages
           url: /package-management
+        - page: Create a Package
+          url: /package-creation-step-by-step
         - package:
             displayName: App Toolkit
             name: app-toolkit
@@ -190,6 +190,7 @@ toc:
                 - 2.2.3
                 - 2.3.3
                 - 2.4.2
+                - 2.5.3
         - package:
             displayName: Knative Serving
             name: knative-serving
