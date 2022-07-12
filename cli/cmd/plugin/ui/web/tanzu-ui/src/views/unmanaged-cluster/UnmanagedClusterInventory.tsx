@@ -10,16 +10,23 @@ import { CdsModal, CdsModalHeader, CdsModalActions, CdsModalContent } from '@cds
 
 // App imports
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
 import UnmanagedClusterCard from './UnmanagedClusterCard/UnmanagedClusterCard';
 import './UnmanagedClusterInventory.scss';
 
 function UnmanagedClusterInventory() {
+    const [notification, setNotification] = useState<Notification | null>(null);
     const [unmanagedClusters, setUnmanagedClusters] = useState<UnmanagedCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [clusterNameForDeletion, setClusterNameForDeletion] = useState<string>('');
     const navigate = useNavigate();
+
+    // sets notification to null to dismiss alert
+    function dismissAlert() {
+        setNotification(null);
+    }
 
     function retrieveUnmanagedClusters() {
         UnmanagedService.getUnmanagedClusters().then(
@@ -27,7 +34,10 @@ function UnmanagedClusterInventory() {
                 setUnmanagedClusters(data);
             },
             (err) => {
-                console.warn(`unmanaged clusters get api failed with error: ${err}`);
+                setNotification({
+                    status: NotificationStatus.DANGER,
+                    message: `Unable to retrieve Unmanaged Clusters: ${err}`,
+                } as Notification);
             }
         );
     }
@@ -53,14 +63,19 @@ function UnmanagedClusterInventory() {
         setShowDeleteModal(!showDeleteModal);
         UnmanagedService.deleteUnmanagedCluster(clusterName).then(
             () => {
-                console.log(`unmanaged cluster ${clusterName} has been deleted`);
+                setNotification({
+                    status: NotificationStatus.SUCCESS,
+                    message: `Successfully deleted cluster ${clusterName}`,
+                } as Notification);
                 retrieveUnmanagedClusters();
             },
             (err) => {
-                console.log(`unmanaged cluster delete api failed with error: ${err}`);
+                setNotification({
+                    status: NotificationStatus.DANGER,
+                    message: `Unable to delete Unmanaged Clusters ${clusterName}: ${err}`,
+                } as Notification);
             }
         );
-        // TODO: show alert confirming deletion of mgmt cluster or failure - requires shared alert component
     }
 
     return (
@@ -72,9 +87,7 @@ function UnmanagedClusterInventory() {
                         <CdsIcon shape="cluster"></CdsIcon>
                         create unmanaged cluster
                     </CdsButton>
-                    <CdsAlertGroup status="success">
-                        <CdsAlert>This is an alert with a status</CdsAlert>
-                    </CdsAlertGroup>
+                    <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     {hasUnmanagedClusters() ? UnmanagedClustersSection() : NoUnmanagedClustersSection()}
                 </div>
                 <div cds-layout="col@sm:4 col:4 container:fill"></div>

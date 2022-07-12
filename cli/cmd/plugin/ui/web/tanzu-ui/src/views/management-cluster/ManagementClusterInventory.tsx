@@ -13,67 +13,82 @@ import { ManagementCluster } from '../../swagger-api/models/ManagementCluster';
 import { ManagementService } from '../../swagger-api';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import './ManagementClusterInventory.scss';
+import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 
 function ManagementClusterInventory() {
+    const [notification, setNotification] = useState<Notification | null>(null);
     const [managementClusters, setManagementClusters] = useState<ManagementCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [clusterNameForDeletion, setClusterNameForDeletion] = useState<string>('');
 
     const navigate = useNavigate();
 
-    const retrieveManagementClusters = function () {
-        ManagementService.getMgmtClusters().then(
-            (data) => {
-                setManagementClusters(data);
-            },
-            (err) => {
-                console.warn(`management clusters get api failed with error: ${err}`);
-            }
-        );
-    };
+    // sets notification to null to dismiss alert
+    function dismissAlert() {
+        setNotification(null);
+    }
 
     // Retrieve management clusters list on page load
     useEffect(() => {
         retrieveManagementClusters();
     }, []);
 
+    function retrieveManagementClusters() {
+        ManagementService.getMgmtClusters().then(
+            (data) => {
+                setManagementClusters(data);
+            },
+            (err) => {
+                setNotification({
+                    status: NotificationStatus.DANGER,
+                    message: `Unable to retrieve Management Clusters: ${err}`,
+                } as Notification);
+            }
+        );
+    }
+
     // Helper function returns true if management clusters exist; otherwise returns false
-    const hasManagementClusters = function () {
+    function hasManagementClusters() {
         return managementClusters.length ? true : false;
-    };
+    }
 
     // Helper function to be passed to ManagementClusterCard components and leveraged for displaying confirm delete
     // modal window when user clicks Delete button. Takes cluster name as parameter for displaying this name in the
     // title and body of the modal window.
-    const showConfirmDeleteModal = function (clusterName?: string) {
+    function showConfirmDeleteModal(clusterName?: string) {
         if (!clusterName) {
             console.warn(`toggleConfirmDeleteModal expected a cluster name string; instead got ${clusterName}`);
             return;
         }
         setClusterNameForDeletion(clusterName);
         setShowDeleteModal(!showDeleteModal);
-    };
+    }
 
     // Handler function for confirmed delete action triggered in the modal window.
     // Calls delete API with cluster name, then retrieves updated list of management clusters.
     // TODO: test e2e as management cluster deletion may not be immediate, so we may have to use another mechanism
     // for updating management cluster list periodically
-    const deleteManagementCluster = function (clusterName: string) {
+    function deleteManagementCluster(clusterName: string) {
         setShowDeleteModal(!showDeleteModal);
         ManagementService.deleteMgmtCluster(clusterName).then(
             () => {
-                console.log(`management cluster ${clusterName} has been deleted`);
+                setNotification({
+                    status: NotificationStatus.SUCCESS,
+                    message: `Management Cluster ${clusterName} has been deleted`,
+                } as Notification);
                 retrieveManagementClusters();
             },
             (err) => {
-                console.log(`management cluster delete api failed with error: ${err}`);
+                setNotification({
+                    status: NotificationStatus.DANGER,
+                    message: `Unable to delete Management Cluster ${clusterName}: ${err}`,
+                } as Notification);
             }
         );
-        // TODO: show alert confirming deletion of mgmt cluster or failure - requires shared alert component
-    };
+    }
 
     // Returns modal window HTML markup if showDeleteModal state variable is set to true.
-    const renderConfirmDeleteModal = function () {
+    function renderConfirmDeleteModal() {
         if (!showDeleteModal) {
             return;
         }
@@ -112,10 +127,10 @@ function ManagementClusterInventory() {
                 </CdsModal>
             </>
         );
-    };
+    }
 
     // Returns view to be rendered when no management clusters are present.
-    const NoManagementClustersSection = function () {
+    function NoManagementClustersSection() {
         return (
             <>
                 <div
@@ -149,10 +164,10 @@ function ManagementClusterInventory() {
                 </div>
             </>
         );
-    };
+    }
 
     // Returns view to be rendered when management clusters are present.
-    const ManagementClustersSection = function () {
+    function ManagementClustersSection() {
         return (
             <>
                 <div cds-text="body">The following clusters were discovered on this workstation.</div>
@@ -174,7 +189,7 @@ function ManagementClusterInventory() {
                 })}
             </>
         );
-    };
+    }
 
     return (
         <>
@@ -184,6 +199,7 @@ function ManagementClusterInventory() {
                         <CdsIcon cds-layout="m-r:sm" shape="blocks-group" size="lg"></CdsIcon>
                         Management Clusters
                     </div>
+                    <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     {hasManagementClusters() ? ManagementClustersSection() : NoManagementClustersSection()}
                 </div>
                 <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
