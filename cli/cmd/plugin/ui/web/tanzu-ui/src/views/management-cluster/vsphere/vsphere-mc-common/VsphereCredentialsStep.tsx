@@ -20,12 +20,12 @@ import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validati
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
-import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../../state-management/actions/Resources.actions';
+import { VSPHERE_ADD_RESOURCES } from '../../../../state-management/actions/Resources.actions';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import { VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
 
-export interface FormInputs {
+export interface VsphereCredentialsStepInputs {
     [VSPHERE_FIELDS.DATACENTER]: string;
     [VSPHERE_FIELDS.IPFAMILY]: string;
     [VSPHERE_FIELDS.PASSWORD]: string;
@@ -33,6 +33,13 @@ export interface FormInputs {
     [VSPHERE_FIELDS.USERNAME]: string;
     [VSPHERE_FIELDS.USETHUMBPRINT]: boolean;
 }
+type VSPHERE_CREDENTIALS_STEP_FIELDS =
+    | VSPHERE_FIELDS.DATACENTER
+    | VSPHERE_FIELDS.IPFAMILY
+    | VSPHERE_FIELDS.PASSWORD
+    | VSPHERE_FIELDS.SERVERNAME
+    | VSPHERE_FIELDS.USERNAME
+    | VSPHERE_FIELDS.USETHUMBPRINT;
 
 const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
 
@@ -54,7 +61,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [useThumbprint, setUseThumbprint] = useState(true);
     const [ipFamily, setIpFamily] = useState(vsphereState[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
     const [selectedDcHasTemplate, setSelectedDcHasTemplate] = useState<boolean>(false);
-    const methods = useForm<FormInputs>({
+    const methods = useForm<VsphereCredentialsStepInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
     });
     const {
@@ -101,7 +108,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     );
 
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const fieldName = event.target.name as VSPHERE_FIELDS;
+        const fieldName = event.target.name as VSPHERE_CREDENTIALS_STEP_FIELDS;
         const value = event.target.value;
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, fieldName, value, currentStep, errors);
@@ -153,7 +160,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         return connected && selectedDcHasTemplate;
     };
 
-    const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    const onSubmit: SubmitHandler<VsphereCredentialsStepInputs> = (data) => {
         if (canContinue() && goToStep && currentStep && submitForm) {
             goToStep(currentStep + 1);
             submitForm(currentStep);
@@ -364,7 +371,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function CredentialsField(label: string, fieldName: VSPHERE_FIELDS, placeholder: string, isPassword = false) {
+    function CredentialsField(label: string, fieldName: VSPHERE_CREDENTIALS_STEP_FIELDS, placeholder: string, isPassword = false) {
         const err = errors[fieldName];
         return (
             <CdsInput layout="compact">

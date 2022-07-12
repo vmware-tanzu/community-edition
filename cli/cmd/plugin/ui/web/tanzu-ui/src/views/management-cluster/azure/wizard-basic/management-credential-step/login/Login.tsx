@@ -73,7 +73,7 @@ export default function Login(props: Props) {
                         <label>Client ID</label>
                         <input
                             {...register(AZURE_FIELDS.CLIENT_ID)}
-                            placeholder="Client Secret"
+                            placeholder="Client ID"
                             type="text"
                             onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(AZURE_FIELDS.CLIENT_ID, e.target.value)}
                             value={azureState[STORE_SECTION_FORM].CLIENT_ID}

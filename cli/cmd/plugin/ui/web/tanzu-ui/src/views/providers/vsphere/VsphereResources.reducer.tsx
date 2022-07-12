@@ -11,29 +11,24 @@ export const STORE_SECTION_VSPHERE_RESOURCES = 'resources';
 // to see state['dc-10']['osImages'] === [obj1, obj2, obj3]
 function vsphereResourcesReducer(state: any, action: VsphereResourceAction) {
     const newState = { ...state };
-    if (!action.datacenter) {
-        console.error(`vsphereResourcesReducer received action ${JSON.stringify(action)} which has no datacenter!`);
-        return newState;
-    }
     if (!action.resourceName) {
         console.error(`vsphereResourcesReducer received action ${JSON.stringify(action)} which has no resourceName!`);
         return newState;
     }
     if (action.type === VSPHERE_ADD_RESOURCES) {
-        if (!newState[action.datacenter]) {
-            newState[action.datacenter] = {};
-        }
-        newState[action.datacenter][action.resourceName] = action.payload;
+        newState[action.resourceName] = action.payload;
     } else if (action.type === VSPHERE_DELETE_RESOURCES) {
-        if (newState[action.datacenter]) {
-            delete newState[action.datacenter][action.resourceName];
-            if (Object.keys(newState[action.datacenter]).length === 0) {
-                delete newState[action.datacenter];
-            }
-        }
+        delete newState[action.resourceName];
     }
     console.log(`New resources state: ${JSON.stringify(newState)} after action ${JSON.stringify(action)}`);
     return newState;
+}
+
+export function getResource(resourceName: string, store: any) {
+    if (!store || !store[STORE_SECTION_VSPHERE_RESOURCES] || !resourceName) {
+        return undefined;
+    }
+    return store[STORE_SECTION_VSPHERE_RESOURCES][resourceName];
 }
 
 export const vsphereResourceReducerDescriptor = {

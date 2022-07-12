@@ -8,7 +8,7 @@ export function featureAvailable(feature: AppFeature): boolean {
         case AppFeature.UNMANAGED_CLUSTER_SUPPORT:
             return true;
         case AppFeature.WORKLOAD_CLUSTER_SUPPORT:
-            return true;
+            return false;
         default:
             return false;
     }
