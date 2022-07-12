@@ -6,6 +6,10 @@ export enum VSPHERE_FIELDS {
     DATACENTER = 'datacenter',
     IPFAMILY = 'ipFamily',
     USETHUMBPRINT = 'useThumbprint',
+    CLUSTERNAME = 'clusterName',
+    INSTANCETYPE = 'instanceType',
+    VMTEMPLATE = 'vmTemplate',
+    SSHKEY = 'sshKey',
 }
 
 /* eslint-disable no-unused-vars */

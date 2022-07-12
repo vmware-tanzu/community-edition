@@ -1,26 +1,26 @@
 //React imports
 import React, { ChangeEvent, useContext } from 'react';
 import { CdsButton } from '@cds/react/button';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { CdsControlMessage } from '@cds/react/forms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CdsInput } from '@cds/react/input';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
 // App imports
 import './WorkloadClusterWizard.scss';
 import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
-import { ClusterNameSection } from '../../shared/components/FormInputSections/ClusterNameInput';
+import { ClusterNameSection } from '../../shared/components/FormInputSections/ClusterNameSection';
 import { getSelectedManagementCluster } from './WorkloadClusterUtility';
 import { isK8sCompliantString } from '../../shared/validations/Validation.service';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
 import RadioButton from '../../shared/components/widgets/RadioButton';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { WcStore } from './Store.wc';
+import { VSPHERE_FIELDS } from '../management-cluster/vsphere/VsphereManagementCluster.constants';
 
 // NOTE: field names expected to start [category name]___ (because the Form reducer strips that to find the data path)
 // that way these field names match the ones in the ClusterAttributeStep and are stored with the same mechanism
@@ -109,6 +109,12 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         }
     };
 
+    const onClusterNameChange = (clusterName: string | undefined) => {
+        if (handleValueChange) {
+            handleValueChange(CCVAR_CHANGE, VSPHERE_FIELDS.CLUSTERNAME, clusterName, currentStep, errors, { clusterName: cluster.name });
+        }
+    };
+
     const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
         if (handleValueChange) {
             const value = evt.target.value;
@@ -125,7 +131,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
             <br />
             <div cds-layout="grid gap:xxl" key="section-holder">
                 <div cds-layout="col:6" key="cluster-name-section">
-                    {ClusterNameSection(FIELD_NAME_WORKLOAD_CLUSTER_NAME, errors, register, onValueChange)}
+                    {ClusterNameSection(VSPHERE_FIELDS.CLUSTERNAME, errors, register, onClusterNameChange)}
                 </div>
                 <div cds-layout="col:6" key="instance-type-section">
                     {WorkerNodeInstanceTypeSection(errors, register, onValueChange)}
