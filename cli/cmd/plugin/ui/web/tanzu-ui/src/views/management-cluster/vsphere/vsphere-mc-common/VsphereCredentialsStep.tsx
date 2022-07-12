@@ -13,9 +13,10 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import '../VsphereManagementCluster.scss';
 import { analyzeOsImages } from './VsphereOsImageUtil';
+import { ConnectionNotification } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { createSchema } from './vsphere.credential.form.schema';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
+import { IP_FAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
@@ -48,6 +49,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
 
     const [connected, setConnection] = useState(false);
+    const [connecting, setConnecting] = useState(false);
     const [connectionErrorMessage, setConnectionErrorMessage] = useState('');
     const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
@@ -59,7 +61,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
     const [useThumbprint, setUseThumbprint] = useState(true);
-    const [ipFamily, setIpFamily] = useState(vsphereState[VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4);
+    const [ipFamily, setIpFamily] = useState(vsphereState[VSPHERE_FIELDS.IPFAMILY] || IP_FAMILIES.IPv4);
     const [selectedDcHasTemplate, setSelectedDcHasTemplate] = useState<boolean>(false);
     const methods = useForm<VsphereCredentialsStepInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
@@ -82,8 +84,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             function isValidServerName(serverName: string): boolean {
                 return (
                     isValidFqdn(serverName) ||
-                    (ipFamily === IPFAMILIES.IPv6 && isValidIp6(serverName)) ||
-                    (ipFamily === IPFAMILIES.IPv4 && isValidIp4(serverName))
+                    (ipFamily === IP_FAMILIES.IPv6 && isValidIp6(serverName)) ||
+                    (ipFamily === IP_FAMILIES.IPv4 && isValidIp4(serverName))
                 );
             }
 
@@ -126,6 +128,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         setSelectedDatacenter(newSelectedDatacenter);
         setOsImages([]);
         setOsImageMessage('');
+        setSelectedDcHasTemplate(false);
         if (newSelectedDatacenter) {
             retrieveOsImages(newSelectedDatacenter);
         }
@@ -145,7 +148,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     // toggle the value of ipFamily
     const handleIpFamilyChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target['checked'] ? IPFAMILIES.IPv6 : IPFAMILIES.IPv4;
+        const newValue = event.target['checked'] ? IP_FAMILIES.IPv6 : IP_FAMILIES.IPv4;
         handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.IPFAMILY, newValue, currentStep, errors);
         setIpFamily(newValue);
     };
@@ -183,6 +186,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     const login = () => {
+        setConnecting(true);
         const vSphereCredentials = {
             username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
             host: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
@@ -190,19 +194,24 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             thumbprint: useThumbprint ? thumbprint : '',
             insecure: !useThumbprint,
         } as VSphereCredentials;
-        VsphereService.setVSphereEndpoint(vSphereCredentials).then(
-            () => {
-                setConnection(true);
-            },
-            (reason: any) => {
-                console.warn(`When trying to connect to the server, encountered error ${JSON.stringify(reason)}`);
-                let msg = 'Unable to connect to server! (See console for details.)';
-                if (reason?.status === SERVER_RESPONSE_BAD_CREDENTIALS) {
-                    msg = 'Incorrect username/password combination! Please try again. (See console for technical details.)';
+        // TODO: remove setTimeout(), which is just here to simulate a backend call delay
+        setTimeout(() => {
+            VsphereService.setVSphereEndpoint(vSphereCredentials).then(
+                () => {
+                    setConnecting(false);
+                    setConnection(true);
+                },
+                (reason: any) => {
+                    setConnecting(false);
+                    console.warn(`When trying to connect to the server, encountered error ${JSON.stringify(reason)}`);
+                    let msg = 'Unable to connect to server! (See console for details.)';
+                    if (reason?.status === SERVER_RESPONSE_BAD_CREDENTIALS) {
+                        msg = 'Incorrect username/password combination! Please try again. (See console for technical details.)';
+                    }
+                    setConnectionErrorMessage(msg);
                 }
-                setConnectionErrorMessage(msg);
-            }
-        );
+            );
+        }, 1600);
     };
 
     const handleConnect = () => {
@@ -253,7 +262,13 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     {IPFamilySection(ipFamily)}
                     {Credentials()}
                     {ThumbprintVerification()}
-                    {ConnectionSection(connectionDataEntered(), connected, connectionErrorMessage)}
+                    {ConnectionSection(
+                        vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
+                        connectionDataEntered(),
+                        connected,
+                        connecting,
+                        connectionErrorMessage
+                    )}
                 </div>
                 {DatacenterSection()}
                 <div>
@@ -287,7 +302,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function IPFamilySection(ipFam: IPFAMILIES) {
+    function IPFamilySection(ipFam: IP_FAMILIES) {
         return (
             <div cds-layout="col:4">
                 IP family (currently {ipFam})
@@ -338,33 +353,19 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function ConnectionSection(dataEntered: boolean, isConnected: boolean, errMessage: string) {
+    function ConnectionSection(server: string, dataEntered: boolean, isConnected: boolean, isConnecting: boolean, errMessage: string) {
         return (
             <div cds-layout="col:12">
                 <div cds-layout="grid align:vertical-center gap:md">
                     <div cds-layout="col:2">
                         <CdsButton onClick={handleConnect} disabled={isConnected || !dataEntered}>
                             <CdsIcon shape="connect" size="md"></CdsIcon>
-                            {isConnected ? 'CONNECTED' : 'CONNECT'}
+                            CONNECT
                         </CdsButton>
                     </div>
                     <div></div>
                     <div cds-layout="col:9 p-b:sm">
-                        {errMessage && (
-                            <div>
-                                <CdsControlMessage status="error">{errMessage}</CdsControlMessage>
-                            </div>
-                        )}
-                        {isConnected && (
-                            <div>
-                                <CdsControlMessage status="success">Connection established</CdsControlMessage>
-                            </div>
-                        )}
-                        {!errMessage && !isConnected && (
-                            <div>
-                                <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
-                            </div>
-                        )}
+                        {ConnectionNotification(connected, `Connected to ${server}`, connecting, `Connecting to ${server}`, errMessage)}
                     </div>
                 </div>
             </div>
@@ -432,6 +433,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function retrieveOsImages(datacenter: string | undefined) {
         setOsImages([]);
+        setSelectedDcHasTemplate(false);
         if (datacenter) {
             VsphereService.getVSphereOsImages(datacenter).then((fetchedOsImages) => {
                 setOsImages(fetchedOsImages);
