@@ -4,6 +4,7 @@ import { FieldError, FieldErrors, RegisterOptions, SubmitHandler, useForm, UseFo
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
@@ -12,7 +13,6 @@ import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions'
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { ENDPOINT_PROVIDER_IDS, ENDPOINT_PROVIDERS, IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
-import { CdsInput } from '@cds/react/input';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { yupServerTest } from './vsphere.credential.form.schema';
 
