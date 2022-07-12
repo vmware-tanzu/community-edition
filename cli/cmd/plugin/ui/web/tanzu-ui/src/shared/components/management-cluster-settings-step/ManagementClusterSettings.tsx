@@ -78,8 +78,10 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
         }
     };
     return (
-        <div className="cluster-settings-container" cds-layout="m:lg">
-            <h3>Management Cluster settings</h3>
+        <div className="cluster-settings-container" cds-layout="p:lg">
+            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                Management Cluster settings
+            </h2>
             <div cds-layout="grid gap:md">
                 <div cds-layout="col@sm:4">
                     <CdsInput>

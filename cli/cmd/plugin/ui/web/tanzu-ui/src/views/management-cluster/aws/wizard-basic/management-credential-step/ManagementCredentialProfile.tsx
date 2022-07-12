@@ -57,11 +57,21 @@ function ManagementCredentialProfile(props: Props) {
             </p>
             <p cds-layout="m-y:lg" className="description">
                 Don&apos;t have an AWS Credential profile? Credential profiles can be configured using the{' '}
-                <a href="/" className="text-blue">
+                <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials"
+                    className="text-blue"
+                >
                     AWS CLI
                 </a>
                 . More on{' '}
-                <a href="/" className="text-blue">
+                <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-precedence"
+                    className="text-blue"
+                >
                     AWS Credential profile.
                 </a>
             </p>

@@ -1,6 +1,7 @@
 .wizard-container {
-    border: 1px solid #0f171c;
+    border: 1px solid var(--cds-alias-object-container-border-color);
     border-top: none;
     overflow: hidden;
-    box-shadow: 0px 3px 0px #0f171c;
+    box-shadow: var(--cds-alias-object-shadow-100);
+    background-color: var(--cds-alias-object-container-background);
 }
