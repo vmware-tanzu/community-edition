@@ -39,8 +39,15 @@ spec:
           args: #@ data.values.deployment.args
           #@ if/end data.values.deployment.env:
           env: #@ data.values.deployment.env
-          #@ if/end data.values.deployment.securityContext:
+          #@ if data.values.deployment.securityContext:
           securityContext: #@ data.values.deployment.securityContext
+          #@ else:
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          #@ end
           #@ if/end data.values.deployment.volumeMounts:
           volumeMounts: #@ data.values.deployment.volumeMounts
       #@ if/end data.values.deployment.volumes:

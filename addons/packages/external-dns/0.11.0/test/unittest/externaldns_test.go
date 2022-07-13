@@ -69,9 +69,27 @@ var _ = Describe("External DNS Ytt Templates", func() {
 		It("does not configure optional keys", func() {
 			deploymentDoc := findDeploymentDoc(output)
 			Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.spec.containers[0].env"))
-			Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.spec.containers[0].securityContext"))
 			Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.spec.containers[0].volumeMounts"))
 			Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.spec.volumes"))
+		})
+
+		It("runs external-dns with limited privileges by default", func() {
+			output, err := renderWithDataValuesFixture("minimal-configuration.yaml")
+			Expect(err).NotTo(HaveOccurred())
+
+			deploymentDoc := findDeploymentDoc(output)
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].securityContext.runAsNonRoot",
+				"true",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem",
+				"true",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].securityContext.capabilities.drop[*]",
+				"ALL",
+			))
 		})
 	})
 
