@@ -9,6 +9,11 @@ set -o pipefail
 set -o xtrace
 set +x
 
+SUDO="sudo"
+if [[ "$EUID" -eq 0 ]]; then
+    SUDO=""
+fi
+
 debug="false"
 if [[ $# -eq 1 ]] && [[ "$1" == "-d" ]]; then
     debug="true"
@@ -88,7 +93,7 @@ if [[ -n "${TANZU_BIN_PATH}" ]]; then
   if [[ -n "${TANZU_BIN_PATH}" ]]; then
     # best effort, so just ignore errors
     echo "Unable to delete Tanzu CLI. Retrying using sudo."
-    sudo rm -f "${TANZU_BIN_PATH}" > /dev/null
+    ${SUDO} rm -f "${TANZU_BIN_PATH}" > /dev/null
   fi
 fi
 
@@ -101,7 +106,7 @@ if [[ ":${PATH}:" == *":$HOME/bin:"* && -d "${HOME}/bin" ]]; then
   install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}"
 else
   echo Installing tanzu cli to "${TANZU_BIN_PATH}/tanzu"
-  sudo install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}" || handle_sudo_failure
+  ${SUDO} install "${MY_DIR}/tanzu" "${TANZU_BIN_PATH}" || handle_sudo_failure
 fi
 echo
 

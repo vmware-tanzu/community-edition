@@ -9,6 +9,11 @@ set -o pipefail
 set -o xtrace
 set +x
 
+SUDO="sudo"
+if [[ "$EUID" -eq 0 ]]; then
+    SUDO=""
+fi
+
 debug="false"
 if [[ $# -eq 1 ]] && [[ "$1" == "-d" ]]; then
     debug="true"
@@ -80,7 +85,7 @@ if [[ -n "${TANZU_BIN_PATH}" ]]; then
 
   # best effort, so just ignore errors
   if [[ "${TANZU_BIN_PATH}" == *"/usr/local"* ]]; then
-    sudo rm -f "${TANZU_BIN_PATH}" > /dev/null
+    ${SUDO} rm -f "${TANZU_BIN_PATH}" > /dev/null
   else
     rm -f "${TANZU_BIN_PATH}" > /dev/null
   fi
