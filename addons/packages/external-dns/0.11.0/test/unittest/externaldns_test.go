@@ -11,12 +11,14 @@ import (
 	. "github.com/vmware-tanzu/community-edition/addons/packages/test/matchers"
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/ytt"
 
+	"github.com/vmware-labs/yaml-jsonpath/pkg/yamlpath"
+	"gopkg.in/yaml.v3"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("External DNS Ytt Templates", func() {
-
 	Context("Providing a minimal configuration", func() {
 		var output string
 
@@ -27,20 +29,41 @@ var _ = Describe("External DNS Ytt Templates", func() {
 		})
 
 		It("renders upstream yaml documents", func() {
-			Expect(FindDocsMatchingYAMLPath(output, map[string]string{".kind": "ClusterRole", ".metadata.name": "external-dns"})).To(HaveLen(1))
-			Expect(FindDocsMatchingYAMLPath(output, map[string]string{".kind": "ClusterRoleBinding", ".metadata.name": "external-dns-viewer"})).To(HaveLen(1))
-			Expect(FindDocsMatchingYAMLPath(output, map[string]string{".kind": "ServiceAccount", ".metadata.name": "external-dns"})).To(HaveLen(1))
+			Expect(FindDocsMatchingYAMLPath(output, map[string]string{
+				".kind":          "ClusterRole",
+				".metadata.name": "external-dns",
+			})).To(HaveLen(1))
+			Expect(FindDocsMatchingYAMLPath(output, map[string]string{
+				".kind":          "ClusterRoleBinding",
+				".metadata.name": "external-dns-viewer",
+			})).To(HaveLen(1))
+			Expect(FindDocsMatchingYAMLPath(output, map[string]string{
+				".kind":          "ServiceAccount",
+				".metadata.name": "external-dns",
+			})).To(HaveLen(1))
 		})
 
 		It("renders the default namespace", func() {
-			Expect(FindDocsMatchingYAMLPath(output, map[string]string{".kind": "Namespace", ".metadata.name": "external-dns"})).To(HaveLen(1))
+			Expect(FindDocsMatchingYAMLPath(output, map[string]string{
+				".kind":          "Namespace",
+				".metadata.name": "external-dns",
+			})).To(HaveLen(1))
 		})
 
 		It("renders the deployment.args", func() {
 			deploymentDoc := findDeploymentDoc(output)
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue(".spec.template.spec.containers[0].args[0]", "--source=ingress"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue(".spec.template.spec.containers[0].args[1]", "--source=contour-httpproxy"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue(".spec.template.spec.containers[0].args[2]", "--provider=rfc2136"))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				".spec.template.spec.containers[0].args[0]",
+				"--source=ingress",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				".spec.template.spec.containers[0].args[1]",
+				"--source=contour-httpproxy",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				".spec.template.spec.containers[0].args[2]",
+				"--provider=rfc2136",
+			))
 		})
 
 		It("does not configure optional keys", func() {
@@ -68,8 +91,14 @@ var _ = Describe("External DNS Ytt Templates", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			deploymentDoc := findDeploymentDoc(output)
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].env[0].name", "FOO"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].env[0].value", "bar"))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].env[0].name",
+				"FOO",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].env[0].value",
+				"bar",
+			))
 		})
 	})
 
@@ -77,11 +106,19 @@ var _ = Describe("External DNS Ytt Templates", func() {
 		It("renders a deployment with a custom security context", func() {
 			output, err := renderWithDataValuesFixture("deployment-security-context.yaml")
 			Expect(err).NotTo(HaveOccurred())
-
 			deploymentDoc := findDeploymentDoc(output)
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].securityContext.runAsUser", "1000"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].securityContext.runAsGroup", "2000"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation", "false"))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].securityContext.runAsUser",
+				"1000",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].securityContext.runAsGroup",
+				"2000",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation",
+				"false",
+			))
 		})
 	})
 
@@ -91,10 +128,22 @@ var _ = Describe("External DNS Ytt Templates", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			deploymentDoc := findDeploymentDoc(output)
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.volumes[0].name", "additional-volume"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.volumes[0].emptyDir", ""))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].volumeMounts[0].name", "additional-volume"))
-			Expect(deploymentDoc).To(HaveYAMLPathWithValue("$.spec.template.spec.containers[0].volumeMounts[0].mountPath", "/path/in/container"))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.volumes[0].name",
+				"additional-volume",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.volumes[0].emptyDir",
+				"",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].volumeMounts[0].name",
+				"additional-volume",
+			))
+			Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+				"$.spec.template.spec.containers[0].volumeMounts[0].mountPath",
+				"/path/in/container",
+			))
 		})
 	})
 
@@ -128,6 +177,7 @@ var _ = Describe("External DNS Ytt Templates", func() {
 			})
 		})
 	})
+
 	Describe("aws secrets", func() {
 		Describe("when not supplied", func() {
 			var output string
@@ -229,7 +279,222 @@ var _ = Describe("External DNS Ytt Templates", func() {
 			})
 		})
 	})
+
+	Describe("Azure credentials", func() {
+		var output string
+		Describe("when not provided", func() {
+			BeforeEach(func() {
+				var err error
+				output, err = renderWithDataValuesFixture("minimal-configuration.yaml")
+				Expect(err).NotTo(HaveOccurred())
+			})
+			It("does not add a Secret", func() {
+				secretDocs, err := FindDocsMatchingYAMLPath(
+					output,
+					map[string]string{".kind": "Secret"},
+				)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(secretDocs).To(BeEmpty())
+			})
+			It("does not add Volumes, VolumeMounts", func() {
+				deploymentDoc := findDeploymentDoc(output)
+				Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.spec.volumes"))
+				Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.spec.containers[0].volumeMounts"))
+			})
+		})
+		Describe("when provided", func() {
+			It("renders a Secret and updates the Deployment to ref the volume", func() {
+				var err error
+				output, err = renderWithDataValuesFixture("azure-configuration.yaml")
+				Expect(err).NotTo(HaveOccurred())
+				deploymentDoc := findDeploymentDoc(output)
+				Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+					"$.spec.template.spec.volumes[?(@.name=='azure-config-file')].secret.secretName",
+					"azure-config-file",
+				))
+				Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+					"$.spec.template.spec.containers[0].volumeMounts[?(@.name=='azure-config-file')].mountPath",
+					"/etc/kubernetes",
+				))
+				Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+					"$.spec.template.spec.containers[0].volumeMounts[?(@.name=='azure-config-file')].readOnly",
+					"true",
+				))
+
+				secretDocs, err := FindDocsMatchingYAMLPath(
+					output,
+					map[string]string{".kind": "Secret"},
+				)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(secretDocs).To(HaveLen(1))
+				secretName := valueAtYAMLPath(deploymentDoc, "$.spec.template.spec.volumes[?(@.name=='azure-config-file')].secret.secretName")
+				Expect(secretDocs[0]).To(HaveYAMLPathWithValue("$.metadata.name", secretName))
+				Expect(secretDocs[0]).To(HaveYAMLPathWithValue("$.metadata.namespace", "external-dns-azure"))
+				Expect(valueAtYAMLPath(secretDocs[0], "$.stringData['azure.json']")).To(MatchJSON(`{
+				  "cloud": "azure-cloud",
+				  "tenantId": "azure-tenant-id",
+				  "subscriptionId": "azure-subscription-id",
+				  "resourceGroup": "azure-resource-group",
+				  "aadClientId": "azure-aad-client-id",
+				  "aadClientSecret": "azure-aad-client-secret",
+				  "useManagedIdentityExtension": false,
+				  "userAssignedIdentityID": "azure-user-assigned-identity-id"
+				}`))
+			})
+
+			When("only the required fields are provided", func() {
+				It("renders a Secret that omits the optional fields", func() {
+					var err error
+					output, err = renderWithDataValuesFixture("azure-minimal-configuration.yaml")
+					Expect(err).NotTo(HaveOccurred())
+					secretDocs, err := FindDocsMatchingYAMLPath(
+						output,
+						map[string]string{".kind": "Secret"},
+					)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(secretDocs).To(HaveLen(1))
+					Expect(secretDocs[0]).To(HaveYAMLPathWithValue(
+						"$.metadata.name",
+						"azure-config-file",
+					))
+					Expect(valueAtYAMLPath(secretDocs[0], "$.stringData['azure.json']")).To(MatchJSON(`{
+					  "resourceGroup": "azure-resource-group",
+					  "subscriptionId": "azure-subscription-id",
+					  "tenantId": "azure-tenant-id",
+					  "aadClientId": "azure-aad-client-id",
+					  "aadClientSecret": "azure-aad-client-secret"
+					}`))
+				})
+			})
+			When("useManagedIdentityExtension is true", func() {
+				It("does not require aadClientId and aadClientSecret", func() {
+					values := []string{
+						`#@data/values`,
+						`---`,
+						`deployment:`,
+						`  args:`,
+						`    - --source=ingress`,
+						`    - --provider=azure`,
+						`azure:`,
+						`  subscriptionId: "azure-subscription-id"`,
+						`  resourceGroup: "azure-resource-group"`,
+						`  tenantId: "azure-tenant-id"`,
+						`  useManagedIdentityExtension: true`,
+					}
+					valuesYaml := strings.Join(values, "\n")
+					_, err := renderWithDataValuesInline(valuesYaml)
+					Expect(err).NotTo(HaveOccurred())
+				})
+			})
+			When("useManagedIdentityExtension is false or not specified", func() {
+				It("requires aadClientId", func() {
+					values := []string{
+						`#@data/values`,
+						`---`,
+						`deployment:`,
+						`  args:`,
+						`    - --source=ingress`,
+						`    - --provider=azure`,
+						`azure:`,
+						`  subscriptionId: "azure-subscription-id"`,
+						`  resourceGroup: "azure-resource-group"`,
+						`  tenantId: "azure-tenant-id"`,
+						`  aadClientSecret: "azure-aad-client-secret"`,
+					}
+					valuesYaml := strings.Join(values, "\n")
+					_, err := renderWithDataValuesInline(valuesYaml)
+					Expect(err).To(MatchError(ContainSubstring(
+						"aadClientId` must be specified if not using managed identity extension",
+					)))
+				})
+				It("requires aadClientSecret", func() {
+					values := []string{
+						`#@data/values`,
+						`---`,
+						`deployment:`,
+						`  args:`,
+						`    - --source=ingress`,
+						`    - --provider=azure`,
+						`azure:`,
+						`  subscriptionId: "azure-subscription-id"`,
+						`  resourceGroup: "azure-resource-group"`,
+						`  tenantId: "azure-tenant-id"`,
+						`  aadClientId: "azure-aad-client-id"`,
+					}
+					valuesYaml := strings.Join(values, "\n")
+					_, err := renderWithDataValuesInline(valuesYaml)
+					Expect(err).To(MatchError(ContainSubstring(
+						"aadClientSecret` must be specified if not using managed identity extension",
+					)))
+				})
+			})
+			When("the required fields are missing", func() {
+				It("returns an error when resourceGroup is not provided", func() {
+					values := []string{
+						`#@data/values`,
+						`---`,
+						`deployment:`,
+						`  args:`,
+						`    - --source=ingress`,
+						`    - --provider=azure`,
+						`azure:`,
+						`  subscriptionId: "azure-subscription-id"`,
+						`  tenantId: "azure-tenant-id"`,
+					}
+					valuesYaml := strings.Join(values, "\n")
+					_, err := renderWithDataValuesInline(valuesYaml)
+					Expect(err).To(MatchError(ContainSubstring("resourceGroup` must be specified")))
+				})
+				It("returns an error when tenantId is not provided", func() {
+					values := []string{
+						`#@data/values`,
+						`---`,
+						`deployment:`,
+						`  args:`,
+						`    - --source=ingress`,
+						`    - --provider=azure`,
+						`azure:`,
+						`  resourceGroup: "azure-resource-group"`,
+						`  subscriptionId: "azure-subscription-id"`,
+					}
+					valuesYaml := strings.Join(values, "\n")
+					_, err := renderWithDataValuesInline(valuesYaml)
+					Expect(err).To(MatchError(ContainSubstring("tenantId` must be specified")))
+				})
+				It("returns an error when subscriptionID is not provided", func() {
+					values := []string{
+						`#@data/values`,
+						`---`,
+						`deployment:`,
+						`  args:`,
+						`    - --source=ingress`,
+						`    - --provider=azure`,
+						`azure:`,
+						`  resourceGroup: "azure-resource-group"`,
+						`  tenantId: "azure-tenant-id"`,
+					}
+					valuesYaml := strings.Join(values, "\n")
+					_, err := renderWithDataValuesInline(valuesYaml)
+					Expect(err).To(MatchError(ContainSubstring("subscriptionId` must be specified")))
+				})
+			})
+		})
+	})
 })
+
+func valueAtYAMLPath(doc, yamlPath string) string {
+	var node yaml.Node
+	err := yaml.Unmarshal([]byte(doc), &node)
+	Expect(err).NotTo(HaveOccurred())
+
+	path, err := yamlpath.NewPath(yamlPath)
+	Expect(err).NotTo(HaveOccurred())
+
+	q, err := path.Find(&node)
+	Expect(err).NotTo(HaveOccurred())
+	Expect(q).To(HaveLen(1))
+	return q[0].Value
+}
 
 func renderWithDataValuesFixture(filename string) (string, error) {
 	workingDir, err := os.Getwd()
