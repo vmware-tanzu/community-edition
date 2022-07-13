@@ -1,29 +1,31 @@
+import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
+
+import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
 // React imports
 import React, { useContext, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import ContextualHelp from './shared/components/ContextualHelp/ContextualHelp';
-import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
 
-// App imports
-import DeployProgress from './shared/components/DeployProgress/DeployProgress';
-import HeaderBar from './shared/components/HeaderBar/HeaderBar';
-import SideNavigation from './shared/components/SideNavigation/SideNavigation';
-import { NavRoutes } from './shared/constants/NavRoutes.constants';
-import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
-import { ContextualHelpActions } from './state-management/actions/Ui.actions';
-import { Store } from './state-management/stores/Store';
-import GettingStarted from './views/getting-started/GettingStarted';
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
+import ContextualHelp from './shared/components/ContextualHelp/ContextualHelp';
+import { ContextualHelpActions } from './state-management/actions/Ui.actions';
+// App imports
+import DeployProgress from './shared/components/DeployProgress/DeployProgress';
 import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
+import GettingStarted from './views/getting-started/GettingStarted';
+import HeaderBar from './shared/components/HeaderBar/HeaderBar';
 import ManagementClusterInventory from './views/management-cluster/ManagementClusterInventory';
 import ManagementClusterSelectProvider from './views/management-cluster/ManagementClusterSelectProvider';
-import VsphereManagementCluster from './views/management-cluster/vsphere/VsphereManagementCluster';
+import { NavRoutes } from './shared/constants/NavRoutes.constants';
+import SideNavigation from './shared/components/SideNavigation/SideNavigation';
+import { Store } from './state-management/stores/Store';
 import UnmanagedClusterInventory from './views/unmanaged-cluster/UnmanagedClusterInventory';
 import UnmanagedClusterWizard from './views/unmanaged-cluster/UnmanagedClusterWizard';
+import VsphereManagementCluster from './views/management-cluster/vsphere/VsphereManagementCluster';
 import Welcome from './views/welcome/Welcome';
 import WorkloadClusterInventory from './views/workload-cluster/WorkloadClusterInventory';
 import WorkloadClusterWorkflow from './views/workload-cluster/WorkloadClusterWorkflow';
+
 function App() {
     const { dispatch } = useContext(Store);
     const location = useLocation();
@@ -69,7 +71,7 @@ function App() {
             <section cds-layout="horizontal align:vertical-stretch wrap:none">
                 <SideNavigation />
                 <div cds-layout="vertical align:stretch" id="main" className="overflow-y-scroll">
-                    <div cds-layout="horizontal align:right align:shrink p:xxs">
+                    <div cds-layout="horizontal align:right align:shrink p:xs">
                         <ContextualHelp />
                     </div>
                     <div cds-layout="grid gap:md gap@md:lg p-x:lg p-b:lg container:fill container:left cols:12">
