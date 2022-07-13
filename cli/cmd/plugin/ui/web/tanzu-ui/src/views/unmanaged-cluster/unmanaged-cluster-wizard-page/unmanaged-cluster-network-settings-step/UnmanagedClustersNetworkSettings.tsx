@@ -28,7 +28,6 @@ enum UNMANAGED_NETWORK_FIELDS {
     IP_ADDRESS = 'IP_ADDRESS',
     HOST_PORT_MAPPING = 'HOST_PORT_MAPPING',
     NODE_PORT_MAPPING = 'NODE_PORT_MAPPING',
-    NODE_TO_HOST_PORT_MAPPING = 'NODE_TO_HOST_PORT_MAPPING',
 }
 
 interface FormInputs {
@@ -36,7 +35,6 @@ interface FormInputs {
     [UNMANAGED_NETWORK_FIELDS.HOST_PORT_MAPPING]: string;
     [UNMANAGED_NETWORK_FIELDS.NODE_PORT_MAPPING]: string;
     [UNMANAGED_NETWORK_FIELDS.CLUSTER_SERVICE_CIDR]: string;
-    [UNMANAGED_NETWORK_FIELDS.NODE_TO_HOST_PORT_MAPPING]: string;
     [UNMANAGED_NETWORK_FIELDS.CLUSTER_POD_CIDR]: string;
 }
 
@@ -95,8 +93,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
 
     const { umcState } = useContext(UmcStore);
 
-    const combinedNodeToHostPortMapping = `${umcState[STORE_SECTION_FORM].IP_ADDRESS}/${umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}:${umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}/${umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL}`;
-    umcState[STORE_SECTION_FORM].NODE_TO_HOST_PORT_MAPPING = combinedNodeToHostPortMapping;
+    function combineNodeToHostPortMapping(ipAddress: string, nodePort: string, hostPort: string, protocol: string) {
+        return `${ipAddress}:${nodePort}:${hostPort}/${protocol}`;
+    }
 
     const {
         register,
@@ -257,7 +256,12 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             </select>
                         </CdsSelect>
                     </div>
-                    <CdsControlMessage>{umcState[STORE_SECTION_FORM].NODE_TO_HOST_PORT_MAPPING}</CdsControlMessage>
+                    {combineNodeToHostPortMapping(
+                        umcState[STORE_SECTION_FORM].IP_ADDRESS,
+                        umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING,
+                        umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING,
+                        umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL
+                    )}
                 </div>
             </div>
         );
