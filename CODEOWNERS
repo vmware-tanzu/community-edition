@@ -23,6 +23,9 @@ addons/packages/app-toolkit @vmware-tanzu/pkg-app-toolkit-owners
 ## Ownership of the aws-ebs-csi-driver package
 addons/packages/aws-ebs-csi-driver @vmware-tanzu/pkg-aws-ebs-csi-driver-owners
 
+## Ownership of the azuredisk-csi-driver package
+addons/packages/azuredisk-csi-driver @vmware-tanzu/pkg-azuredisk-csi-driver-owners
+
 ## Ownership of the calico package
 addons/packages/calico @vmware-tanzu/pkg-calico-owners
 
@@ -76,6 +79,9 @@ addons/packages/kpack @vmware-tanzu/pkg-kpack-owners
 
 ## Ownership of the kpack-dependencies package
 addons/packages/kpack-dependencies @vmware-tanzu/pkg-kpack-owners
+
+## Ownership of the kubeapps package
+addons/packages/kubeapps @vmware-tanzu/pkg-kubeapps-owners
 
 ## Ownership of the load-balancer-and-ingress-service package
 addons/packages/load-balancer-and-ingress-service @vmware-tanzu/pkg-load-balancer-and-ingress-service-owners

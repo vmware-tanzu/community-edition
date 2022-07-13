@@ -1,0 +1,53 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: bitnami/kube-state-metrics:2.5.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: 2.5.0
+          url: bitnami/kube-state-metrics:2.5.0
+  image: index.docker.io/bitnami/kube-state-metrics@sha256:ec924a2e04520abbb49d6204f54d52d9c4ba50cb44bc0031ef0daba443174954
+- annotations:
+    kbld.carvel.dev/id: gcr.io/cadvisor/cadvisor:v0.44.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.44.0
+          url: gcr.io/cadvisor/cadvisor:v0.44.0
+  image: gcr.io/cadvisor/cadvisor@sha256:ef1e224267584fc9cb8d189867f178598443c122d9068686f9c3898c735b711f
+- annotations:
+    kbld.carvel.dev/id: jimmidyson/configmap-reload:v0.7.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.7.1
+          url: jimmidyson/configmap-reload:v0.7.1
+  image: index.docker.io/jimmidyson/configmap-reload@sha256:9460ee0615c286576206fc5ed0d366dc1bab6707fdc5d647219d4bcdae983271
+- annotations:
+    kbld.carvel.dev/id: prom/alertmanager:v0.24.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.24.0
+          url: prom/alertmanager:v0.24.0
+  image: index.docker.io/prom/alertmanager@sha256:088464f949de8065b9da7dfce7302a633d700e9d598e2bebc03310712f083b31
+- annotations:
+    kbld.carvel.dev/id: prom/prometheus:v2.36.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.36.2
+          url: prom/prometheus:v2.36.2
+  image: index.docker.io/prom/prometheus@sha256:df0cd5887887ec393c1934c36c1977b69ef3693611932c3ddeae8b7a412059b9
+- annotations:
+    kbld.carvel.dev/id: prom/pushgateway:v1.4.3
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.4.3
+          url: prom/pushgateway:v1.4.3
+  image: index.docker.io/prom/pushgateway@sha256:3496e0f859434b60e6e6eccbc1dddf33adad9a9eb19592dc4ed4a4bf167a844d
+- annotations:
+    kbld.carvel.dev/id: quay.io/prometheus/node-exporter:v1.3.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.3.1
+          url: quay.io/prometheus/node-exporter:v1.3.1
+  image: quay.io/prometheus/node-exporter@sha256:f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
+kind: ImagesLock

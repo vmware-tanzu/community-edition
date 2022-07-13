@@ -21,9 +21,20 @@ daemonset:
   #@schema/desc "Update strategy of daemonsets"
   #@schema/nullable
   updateStrategy: ""
-#@schema/desc "Configurations for vsphere-cpi"
+#@schema/desc "Configurations for aws-ebs-csi-driver"
 awsEBSCSIDriver:
   #@schema/deprecated "Kept for backward compatibility"
   #@schema/desc "The namespace in which aws ebs csi driver is deployed"
   #@schema/nullable
   namespace: kube-system
+  #@schema/desc "The HTTP proxy to use for network traffic"
+  #@schema/nullable
+  http_proxy: ""
+  #@schema/desc "The HTTPS proxy to use for network traffic"
+  #@schema/nullable
+  https_proxy: ""
+  #@schema/desc "A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy"
+  #@schema/nullable
+  no_proxy: ""
+  #@schema/desc "The number of replicas of aws-ebs-csi-controller and snapshot-controller deployment"
+  deployment_replicas: 3

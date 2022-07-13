@@ -1,0 +1,296 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "harbor-registry"
+  labels:
+    app: "harbor"
+  namespace: harbor
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      level: info
+      fields:
+        service: registry
+    storage:
+      filesystem:
+        rootdirectory: /storage
+      cache:
+        layerinfo: redis
+      maintenance:
+        uploadpurging:
+          enabled: true
+          age: 168h
+          interval: 24h
+          dryrun: false
+      delete:
+        enabled: true
+      redirect:
+        disable: false
+    redis:
+      addr: harbor-redis:6379
+      db: 2
+      readtimeout: 10s
+      writetimeout: 10s
+      dialtimeout: 10s
+      pool:
+        maxidle: 100
+        maxactive: 500
+        idletimeout: 60s
+    http:
+      addr: :5443
+      relativeurls: false
+      tls:
+        certificate: /etc/harbor/ssl/registry/tls.crt
+        key: /etc/harbor/ssl/registry/tls.key
+        minimumtls: tls1.2
+      #! set via environment variable
+      #! secret: placeholder
+      debug:
+        addr: :8001
+        prometheus:
+          enabled: true
+          path: /metrics
+    auth:
+      htpasswd:
+        realm: harbor-registry-basic-realm
+        path: /etc/registry/passwd
+    validation:
+      disabled: true
+    compatibility:
+      schema1:
+        enabled: true
+  ctl-config.yml: |
+    ---
+    protocol: "https"
+    port: 8443
+    https_config:
+      cert: "/etc/harbor/ssl/registry/tls.crt"
+      key: "/etc/harbor/ssl/registry/tls.key"
+    log_level: info
+    registry_config: "/etc/registry/config.yml"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "harbor-registry"
+  labels:
+    app: "harbor"
+    component: registry
+  namespace: harbor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: registry
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: registry
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: registry
+          image: projects.registry.vmware.com/tce/harbor/registry-photon:v2.5.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              scheme: HTTPS
+              port: 5443
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              scheme: HTTPS
+              port: 5443
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          args: ["serve", "/etc/registry/config.yml"]
+          envFrom:
+            - secretRef:
+                name: "harbor-registry"
+          env:
+            - name: INTERNAL_TLS_ENABLED
+              value: "true"
+            - name: INTERNAL_TLS_KEY_PATH
+              value: /etc/harbor/ssl/registry/tls.key
+            - name: INTERNAL_TLS_CERT_PATH
+              value: /etc/harbor/ssl/registry/tls.crt
+            - name: INTERNAL_TLS_TRUST_CA_PATH
+              value: /etc/harbor/ssl/registry/ca.crt
+          ports:
+            - containerPort: 5443
+            - containerPort: 5001
+          volumeMounts:
+            - name: registry-data
+              mountPath: /storage
+              subPath:
+            - name: registry-htpasswd
+              mountPath: /etc/registry/passwd
+              subPath: passwd
+            - name: registry-config
+              mountPath: /etc/registry/config.yml
+              subPath: config.yml
+            - name: registry-internal-certs
+              mountPath: /etc/harbor/ssl/registry
+        - name: registryctl
+          image: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.5.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              scheme: HTTPS
+              port: 8443
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              scheme: HTTPS
+              port: 8443
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          envFrom:
+            - configMapRef:
+                name: "harbor-registryctl"
+            - secretRef:
+                name: "harbor-registry"
+            - secretRef:
+                name: "harbor-registryctl"
+          env:
+            - name: CORE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-core
+                  key: secret
+            - name: JOBSERVICE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-jobservice
+                  key: JOBSERVICE_SECRET
+            - name: INTERNAL_TLS_ENABLED
+              value: "true"
+            - name: INTERNAL_TLS_KEY_PATH
+              value: /etc/harbor/ssl/registry/tls.key
+            - name: INTERNAL_TLS_CERT_PATH
+              value: /etc/harbor/ssl/registry/tls.crt
+            - name: INTERNAL_TLS_TRUST_CA_PATH
+              value: /etc/harbor/ssl/registry/ca.crt
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: registry-data
+              mountPath: /storage
+              subPath:
+            - name: registry-config
+              mountPath: /etc/registry/config.yml
+              subPath: config.yml
+            - name: registry-config
+              mountPath: /etc/registryctl/config.yml
+              subPath: ctl-config.yml
+            - name: registry-internal-certs
+              mountPath: /etc/harbor/ssl/registry
+      volumes:
+        - name: registry-htpasswd
+          secret:
+            secretName: harbor-registry-htpasswd
+            items:
+              - key: REGISTRY_HTPASSWD
+                path: passwd
+        - name: registry-config
+          configMap:
+            name: "harbor-registry"
+        - name: registry-data
+          persistentVolumeClaim:
+            claimName: harbor-registry
+        - name: registry-internal-certs
+          secret:
+            secretName: harbor-registry-internal-tls
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: harbor-registry
+  labels:
+    app: "harbor"
+    component: registry
+  namespace: harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-registry"
+  labels:
+    app: "harbor"
+  namespace: harbor
+type: Opaque
+data:
+  REGISTRY_HTTP_SECRET: "dGhlLXNlY3JldC1vZi10aGUtcmVnaXN0cnk="
+  REGISTRY_REDIS_PASSWORD: ""
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-registry-htpasswd"
+  labels:
+    app: "harbor"
+  namespace: harbor
+type: Opaque
+data:
+  REGISTRY_HTPASSWD: "aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJhJDEwJEEySncyNjFyTjhwWFFpUC5Nd29UdE9OVGVva1hJSVdUUHlSMUx3NTJGWnRkQnQ4WkxxMjFL"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "harbor-registry"
+  labels:
+    app: "harbor"
+  namespace: harbor
+spec:
+  ports:
+    - name: https-registry
+      port: 5443
+    - name: https-controller
+      port: 8443
+    - name: https-metrics
+      port: 8001
+  selector:
+    app: "harbor"
+    component: registry
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "harbor-registryctl"
+  labels:
+    app: "harbor"
+  namespace: harbor
+data:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-registryctl"
+  labels:
+    app: "harbor"
+  namespace: harbor
+type: Opaque
+data:

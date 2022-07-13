@@ -12,3 +12,13 @@ directories:
           assetNames:
           - "package.yaml"
           - "README.md"
+  - path: 9.0.3
+    contents:
+      - path: .
+        githubRelease:
+          slug: vmware-tanzu/package-for-kubeapps
+          tag: v9.0.3
+          disableAutoChecksumValidation: true
+          assetNames:
+          - "package.yaml"
+          - "README.md"

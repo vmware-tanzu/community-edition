@@ -386,6 +386,24 @@ var _ = Describe("Contour Ytt Templates", func() {
 		Expect(deployment.Spec.Template.Spec.Containers[0].Args).ToNot(ContainElements(ContainSubstring("0.0.0.0")))
 	})
 
+	// To prevent issues with overlays accidentally modifying this.
+	// See this example fix: https://github.com/vmware-tanzu/community-edition/pull/4939.
+	It("contour container spec remains unchanged", func() {
+		Expect(err).NotTo(HaveOccurred())
+
+		docs := findDocsContainingLines(output, "kind: Deployment")
+		Expect(docs).To(HaveLen(1), "Contour Deployment not found")
+
+		deployment := unmarshalDeployment(docs[0])
+		Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
+		Expect(deployment.Spec.Template.Spec.Containers[0].Name).To(Equal("contour"))
+		Expect(deployment.Spec.Template.Spec.Containers[0].Command).To(ConsistOf("contour"))
+		Expect(deployment.Spec.Template.Spec.Containers[0].ImagePullPolicy).To(Equal(corev1.PullIfNotPresent))
+		Expect(deployment.Spec.Template.Spec.Containers[0].Ports).To(HaveLen(3))
+		Expect(deployment.Spec.Template.Spec.Containers[0].VolumeMounts).To(HaveLen(2))
+		Expect(deployment.Spec.Template.Spec.Containers[0].Env).To(HaveLen(2))
+	})
+
 	Context("Namespace set", func() {
 		BeforeEach(func() {
 			values = nonDefaultNamespace

@@ -41,9 +41,8 @@ var _ = Describe("AWS EBS CSI Driver Ytt Templates", func() {
 	})
 
 	disiredDeploymentToleration := corev1.Toleration{
-		Key:      "node-role.kubernetes.io/master",
-		Operator: "Exists",
-		Effect:   "NoSchedule",
+		Key:    "node-role.kubernetes.io/master",
+		Effect: "NoSchedule",
 	}
 
 	JustBeforeEach(func() {
@@ -56,10 +55,11 @@ var _ = Describe("AWS EBS CSI Driver Ytt Templates", func() {
 			Expect(err).NotTo(HaveOccurred())
 			ds := unmarshalDeployments(output)
 			for _, deployment := range ds {
-				tol := findDeploymentTolerationByKey(deployment.Spec.Template.Spec.Tolerations, disiredDeploymentToleration.Key)
-				Expect(tol).NotTo(BeNil())
-				Expect(tol.Operator).To(Equal(disiredDeploymentToleration.Operator))
-				Expect(tol.Effect).To(Equal(disiredDeploymentToleration.Effect))
+				if deployment.Name == "ebs-csi-controller" {
+					tol := findDeploymentTolerationByKey(deployment.Spec.Template.Spec.Tolerations, disiredDeploymentToleration.Key)
+					Expect(tol).NotTo(BeNil())
+					Expect(tol.Effect).To(Equal(disiredDeploymentToleration.Effect))
+				}
 			}
 		})
 	})

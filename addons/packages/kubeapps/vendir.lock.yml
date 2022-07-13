@@ -5,4 +5,9 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/package-for-kubeapps/releases/68308628
     path: .
   path: 8.1.7
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-kubeapps/releases/71075894
+    path: .
+  path: 9.0.3
 kind: LockConfig

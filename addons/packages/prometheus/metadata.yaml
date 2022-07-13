@@ -9,9 +9,7 @@ spec:
   shortDescription: "A time series database for your metrics"
   providerName: VMware
   maintainers:
-    - name: Anil Kodali
-    - name: John McBride
-    - name: Luke Winikates
+    - name: Ke Zhou
   categories:
     - "monitoring"
     - "observability"

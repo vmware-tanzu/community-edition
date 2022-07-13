@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: "kube-state-metrics"
+    app: prometheus
+  name: prometheus-kube-state-metrics
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      component: "kube-state-metrics"
+      app: prometheus
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: "kube-state-metrics"
+        app: prometheus
+    spec:
+      serviceAccountName: prometheus-kube-state-metrics
+      containers:
+        - name: prometheus-kube-state-metrics
+          image: "bitnami/kube-state-metrics:2.5.0"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - name: metrics
+              containerPort: 8080
+            - name: telemetry
+              containerPort: 8081
+          resources:
+            {}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      nodeSelector:
+        kubernetes.io/os: linux

@@ -151,6 +151,8 @@ toc:
             name: fluent-bit
             versions:
                 - 1.7.5
+                - 1.8.15
+                - 1.9.5
         - package:
             displayName: Fluxcd Helm Controller
             name: fluxcd-helm-controller
@@ -188,6 +190,7 @@ toc:
                 - 2.2.3
                 - 2.3.3
                 - 2.4.2
+                - 2.5.3
         - package:
             displayName: Knative Serving
             name: knative-serving
@@ -228,6 +231,7 @@ toc:
             name: prometheus
             versions:
                 - 2.27.0
+                - 2.36.2
         - package:
             displayName: Velero
             name: velero

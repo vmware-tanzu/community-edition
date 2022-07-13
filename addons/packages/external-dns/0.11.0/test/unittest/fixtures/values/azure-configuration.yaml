@@ -1,0 +1,22 @@
+#@data/values
+---
+namespace: "external-dns-azure"
+
+deployment:
+  args:
+    - --source=ingress
+    - --source=contour-httpproxy
+    - --provider=rfc2136
+  env:
+    - name: "other-key"
+      value: "other-value"
+
+azure:
+  cloud: "azure-cloud"
+  tenantId: "azure-tenant-id"
+  subscriptionId: "azure-subscription-id"
+  resourceGroup: "azure-resource-group"
+  aadClientId: "azure-aad-client-id"
+  aadClientSecret: "azure-aad-client-secret"
+  useManagedIdentityExtension: false #! Either this is true or aadClientId and aadClientSecret are required. Left in for test coverage.
+  userAssignedIdentityID: "azure-user-assigned-identity-id" #! Unused because useManagedIdentityExtension is false.
