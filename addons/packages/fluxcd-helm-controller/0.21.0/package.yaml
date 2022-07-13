@@ -11,7 +11,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/fluxcd-helm-controller-bundle@sha256:681a765ee996c21b33f0911aa9e26f402ee0ab64b9610b7670f92dcc5d108a9a
+            image: projects.registry.vmware.com/tce/fluxcd-helm-controller-bundle@sha256:0c1aab710919cc2f886855235c63fbf50c32fc428c4d14bdb3404ac6217e4f1b
       template:
         - ytt:
             paths:
