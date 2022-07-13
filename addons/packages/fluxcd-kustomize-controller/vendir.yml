@@ -17,7 +17,7 @@ directories:
       - path: .
         githubRelease:
           slug: vmware-tanzu/package-for-kustomize-controller
-          tag: v0.24.4
+          tag: v0.24.4+update.1
           disableAutoChecksumValidation: true
           assetNames:
           - "package.yaml"

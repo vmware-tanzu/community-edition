@@ -11,7 +11,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/fluxcd-kustomize-controller-bundle@sha256:424e08bc92768bbb179a8ba09c0062619dabcba1614736bbd69c025422bbd2f4
+            image: projects.registry.vmware.com/tce/fluxcd-kustomize-controller-bundle@sha256:288c5bae080a994dbb382b904d30f8323b54fe65be3c07837c2bdc8a90c92d2c
       template:
         - ytt:
             paths:
