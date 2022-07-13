@@ -1,0 +1,333 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Namespace"})
+---
+#@overlay/replace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ values.loadBalancerAndIngressService.namespace
+
+#@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata": {"name": "ako"}})
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ako
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+  labels:
+    app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+    kapp.k14s.io/update-strategy: fallback-on-replace
+spec:
+  replicas: #@ values.loadBalancerAndIngressService.config.replica_count
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+    spec:
+#@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
+#@overlay/match missing_ok=True
+      volumes:
+        - name: ako-pv-storage
+          persistentVolumeClaim:
+            claimName: #@ values.loadBalancerAndIngressService.config.persistent_volume_claim
+#@ end
+      containers:
+#@overlay/match by=overlay.index(0)
+        - name: #@ values.loadBalancerAndIngressService.name
+#@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
+#@overlay/match missing_ok=True
+          volumeMounts:
+            - mountPath: #@ values.loadBalancerAndIngressService.config.mount_path
+              name: ako-pv-storage
+#@ end
+          env:
+#@ if values.loadBalancerAndIngressService.config.avi_credentials.certificate_authority_data:
+#@overlay/append
+            - name: CTRL_CA_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: avi-secret
+                  key: certificateAuthorityData
+#@ end
+#@ if values.loadBalancerAndIngressService.config.controller_settings.controller_version:
+#@overlay/append
+            - name: CTRL_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: controllerVersion
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
+#@overlay/append
+            - name: CNI_PLUGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: cniPlugin
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace:
+#@overlay/append
+            - name: VIP_PER_NAMESPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: vipPerNamespace
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.shard_vs_size:
+#@overlay/append
+            - name: SHARD_VS_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: shardVSSize
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.pass_through_shardsize:
+#@overlay/append
+            - name: PASSTHROUGH_SHARD_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: passthroughShardSize
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.primary_instance:
+#@overlay/append
+            - name: PRIMARY_AKO_FLAG
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: primaryInstance
+#@ end
+#@ if values.loadBalancerAndIngressService.config.controller_settings.tenant_name:
+#@overlay/append
+            - name: TENANT_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: tenantName
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.enable_rhi:
+#@overlay/append
+            - name: ENABLE_RHI
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: enableRHI
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.enable_EVH:
+#@overlay/append
+            - name: ENABLE_EVH
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: enableEVH
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.services_api:
+#@overlay/append
+            - name: SERVICES_API
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: servicesAPI
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.default_domain:
+#@overlay/append
+            - name: DEFAULT_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: defaultDomain
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.nsxt_t1_lr:
+#@overlay/append
+            - name: NSXT_T1_LR
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nsxtT1LR
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_key:
+#@overlay/append
+            - name: NAMESPACE_SYNC_LABEL_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nsSyncLabelKey
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.namespace_selector.label_value:
+#@overlay/append
+            - name: NAMESPACE_SYNC_LABEL_VALUE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nsSyncLabelValue
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller:
+#@overlay/append
+            - name: DEFAULT_ING_CONTROLLER
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: defaultIngController
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.bgp_peer_labels:
+#@overlay/append
+            - name: BGP_PEER_LABELS
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: bgpPeerLabels
+#@ end
+#@ if values.loadBalancerAndIngressService.config.network_settings.node_network_list:
+#@overlay/append
+            - name: NODE_NETWORK_LIST
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeNetworkList
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.service_type == "NodePort":
+#@ if values.loadBalancerAndIngressService.config.nodeport_selector.key:
+#@overlay/append
+            - name: NODE_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeKey
+#@ end
+#@ if values.loadBalancerAndIngressService.config.nodeport_selector.value:
+#@overlay/append
+            - name: NODE_VALUE
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: nodeValue
+#@ end
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l4_settings.auto_fqdn:
+#@overlay/append
+            - name: AUTO_L4_FQDN
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: autoFQDN
+#@ end
+#@ if values.loadBalancerAndIngressService.config.persistent_volume_claim:
+#@overlay/append
+            - name: USE_PVC
+              value: "true"
+#@ end
+#@ if values.loadBalancerAndIngressService.config.mount_path:
+#@overlay/append
+            - name: LOG_FILE_PATH
+              value: #@ values.loadBalancerAndIngressService.config.mount_path
+#@ end
+#@ if values.loadBalancerAndIngressService.config.log_file:
+#@overlay/append
+            - name: LOG_FILE_NAME
+              value: #@ values.loadBalancerAndIngressService.config.log_file
+#@ end
+#@ if values.loadBalancerAndIngressService.config.l7_settings.enable_MCI:
+#@overlay/append
+            - name: MCI_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: enableMCI
+#@ end
+          resources:
+            limits:
+              cpu: #@ values.loadBalancerAndIngressService.config.resources.limits.cpu
+              memory: #@ values.loadBalancerAndIngressService.config.resources.limits.memory
+            requests:
+              cpu: #@ values.loadBalancerAndIngressService.config.resources.request.cpu
+              memory: #@ values.loadBalancerAndIngressService.config.resources.request.memory
+          livenessProbe:
+            httpGet:
+              port:  #@ values.loadBalancerAndIngressService.config.ako_settings.api_server_port
+
+#@ def pod_security_policy():
+apiVersion: #@ values.loadBalancerAndIngressService.config.rbac.psp_policy_api_version
+kind: PodSecurityPolicy
+metadata:
+  #@ if values.loadBalancerAndIngressService.config.ako_settings.primary_instance:
+  name: #@ values.loadBalancerAndIngressService.name
+  #@ else:
+  name: #@ "{}-{}".format(values.loadBalancerAndIngressService.name, values.loadBalancerAndIngressService.namespace)
+  #@ end
+  labels:
+    app.kubernetes.io/instance: #@ values.loadBalancerAndIngressService.name
+    app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+#@ end
+
+#@ def ingress_class():
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: avi-lb
+#@ if values.loadBalancerAndIngressService.config.l7_settings.default_ing_controller:
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+#@ end
+spec:
+  controller: ako.vmware.com/avi-lb
+#@ end
+
+#@ def aviInfraSetting():
+apiVersion: ako.vmware.com/v1alpha1
+kind: AviInfraSetting
+metadata:
+  name: #@ "{}-control-plane".format(values.loadBalancerAndIngressService.config.ako_settings.cluster_name)
+spec:
+  seGroup:
+    name: #@ values.loadBalancerAndIngressService.config.controller_settings.service_engine_group_name
+  network:
+    vipNetworks:
+      - networkName: #@ values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name
+#@ end
+
+#@ if values.loadBalancerAndIngressService.config.rbac.psp_enabled:
+--- #@ pod_security_policy()
+#@ end
+
+#@ if not values.loadBalancerAndIngressService.config.l7_settings.disable_ingress_class:
+--- #@ ingress_class()
+#@ end
+
+#@ if values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name != None and values.loadBalancerAndIngressService.config.network_settings.control_plane_network_name != values.loadBalancerAndIngressService.config.network_settings.network_name:
+--- #@ aviInfraSetting()
+#@ end

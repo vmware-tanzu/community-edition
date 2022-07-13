@@ -1,0 +1,26 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: load-balancer-and-ingress-service.community.tanzu.vmware.com.1.7.2
+  namespace: load-balancer-and-ingress-service
+spec:
+  refName: load-balancer-and-ingress-service.community.tanzu.vmware.com
+  version: 1.7.2
+  releaseNotes: "load-balancer-and-ingress-service 1.7.2"
+  licenses:
+    - "UNKNOWN"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/load-balancer-and-ingress-service@sha256:b5507ebc7106b20835e19226d6715ed0b6bde14d0e94314177e14f95ca15b510
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
