@@ -134,7 +134,7 @@ func fileServerMiddleware(next http.Handler) http.Handler {
 			staticContent, _ := fs.Sub(fsys, "web/tanzu-ui/build")
 
 			fallBackFileSystem := newFallBackStaticFileSystem(staticContent)
-			if (strings.HasPrefix(r.URL.Path,"/ui/") && !strings.Contains(r.URL.Path,"/static")) {
+			if strings.HasPrefix(r.URL.Path, "/ui/") && !strings.Contains(r.URL.Path, "/static") {
 				http.FileServer(fallBackFileSystem).ServeHTTP(w, r)
 			} else {
 				w.Header().Set("Cache-Control", "no-store")
@@ -144,7 +144,7 @@ func fileServerMiddleware(next http.Handler) http.Handler {
 				if strings.HasSuffix(r.URL.Path, ".css") {
 					w.Header().Add("Content-Type", "text/css")
 				}
-				
+
 				http.StripPrefix("/ui", requestLogger(http.FileServer(http.FS(staticContent)), "UI")).ServeHTTP(w, r)
 			}
 		}
