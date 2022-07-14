@@ -160,7 +160,9 @@ router.get('/resourcepools', (req, res) => {
 router.get('/osimages', (req, res) => {
     const dc = req?.query?.dc;
     let filename = 'provider-vsphere-osimages.json';
-    if (dc === '/SDDC-Datacenter/test/dc-no-images') {
+    if (dc === '/SDDC-Datacenter/dc-2') {
+        filename = 'provider-vsphere-osimages-2.json';
+    } else if (dc === '/SDDC-Datacenter/test/dc-no-images') {
         filename = 'provider-vsphere-osimages-none.json';
     } else if (dc === '/SDDC-Datacenter/test/dc-no-templates') {
         filename = 'provider-vsphere-osimages-no-templates.json';
