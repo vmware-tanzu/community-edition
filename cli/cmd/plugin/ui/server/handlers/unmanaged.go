@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 
+	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/pkg/containerruntime"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/models"
 	"github.com/vmware-tanzu/community-edition/cli/cmd/plugin/ui/server/restapi/operations/unmanaged"
 )
@@ -33,6 +34,11 @@ func checkUnmanagedPlugin() error {
 	return nil
 }
 
+func checkDockerContainerRunning() error {
+	_, err := containerruntime.GetRuntimeInfo()
+	return err
+}
+
 func runCommand(args ...string) (string, error) {
 	cmdArgs := []string{"unmanaged-cluster"}
 	cmdArgs = append(cmdArgs, args...)
@@ -44,9 +50,19 @@ func runCommand(args ...string) (string, error) {
 
 // CreateUnmanagedCluster creates a new unmanaged cluster.
 func (app *App) CreateUnmanagedCluster(params unmanaged.CreateUnmanagedClusterParams) middleware.Responder {
+	fmt.Println("checking unmanaged plugin...")
 	if err := checkUnmanagedPlugin(); err != nil {
+		fmt.Println("ERROR: unmanaged plugin cannot be found")
 		return unmanaged.NewDeleteUnmanagedClusterInternalServerError().WithPayload(Err(err))
 	}
+	fmt.Println("unmanaged plugin found")
+
+	fmt.Println("checking docker container running...")
+	if err := checkDockerContainerRunning(); err != nil {
+		fmt.Println("ERROR: docker container cannot be found")
+		return unmanaged.NewDeleteUnmanagedClusterInternalServerError().WithPayload(Err(err))
+	}
+	fmt.Println("docker container running")
 
 	createParams := params.Params
 	if createParams.Name == "" {
