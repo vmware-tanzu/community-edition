@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
 /**
  * Mock route for create unmanaged cluster
  */
- router.post('/create', (req, res) => {
+router.post('/', (req, res) => {
     winston.info('Mock UI CREATE UNMANAGED CLUSTER');
     res.status(200);
     res.json({});
