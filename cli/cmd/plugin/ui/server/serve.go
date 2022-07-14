@@ -28,6 +28,22 @@ import (
 // We may want to move the web folder under server to avoid this.
 var Content embed.FS
 
+type fallBackStaticFileSystem struct {
+	http.FileSystem
+}
+
+func newFallBackStaticFileSystem(staticContent fs.FS) *fallBackStaticFileSystem {
+	fsys := http.FS(staticContent)
+
+	return &fallBackStaticFileSystem{
+		FileSystem: fsys,
+	}
+}
+
+func (f *fallBackStaticFileSystem) Open(path string) (http.File, error) {
+	return f.FileSystem.Open("/index.html")
+}
+
 // Serve provides the backend REST API for the UI.
 func Serve(bind, browser string, logLevel int32) error {
 	swaggerSpec, err := loads.Analyzed(restapi.FlatSwaggerJSON, "2.0")
@@ -113,19 +129,24 @@ func fileServerMiddleware(next http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 			}
 		} else {
-			w.Header().Set("Cache-Control", "no-store")
-			w.Header().Set("Pragma", "no-cache")
-			w.Header().Set("Expires", "0")
-
-			if strings.HasSuffix(r.URL.Path, ".css") {
-				w.Header().Add("Content-Type", "text/css")
-			}
-
 			// get static content from go embed
 			fsys := fs.FS(Content)
 			staticContent, _ := fs.Sub(fsys, "web/tanzu-ui/build")
 
-			http.StripPrefix("/ui", requestLogger(http.FileServer(http.FS(staticContent)), "UI")).ServeHTTP(w, r)
+			fallBackFileSystem := newFallBackStaticFileSystem(staticContent)
+			if (strings.HasPrefix(r.URL.Path,"/ui/") && !strings.Contains(r.URL.Path,"/static")) {
+				http.FileServer(fallBackFileSystem).ServeHTTP(w, r)
+			} else {
+				w.Header().Set("Cache-Control", "no-store")
+				w.Header().Set("Pragma", "no-cache")
+				w.Header().Set("Expires", "0")
+
+				if strings.HasSuffix(r.URL.Path, ".css") {
+					w.Header().Add("Content-Type", "text/css")
+				}
+				
+				http.StripPrefix("/ui", requestLogger(http.FileServer(http.FS(staticContent)), "UI")).ServeHTTP(w, r)
+			}
 		}
 	})
 }
