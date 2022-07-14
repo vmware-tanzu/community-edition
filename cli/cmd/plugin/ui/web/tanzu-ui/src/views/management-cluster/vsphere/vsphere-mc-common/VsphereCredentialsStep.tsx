@@ -399,7 +399,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function DatacenterSelectWithoutDatacenters() {
         return (
-            <CdsSelect layout="vertical" controlWidth="shrink">
+            <CdsSelect layout="vertical" className="min-width-200">
                 <label cds-layout="p-b:xs">Datacenter</label>
                 <select {...register(VSPHERE_FIELDS.DATACENTER)} disabled>
                     <option />

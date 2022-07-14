@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { FieldError, FieldErrors, RegisterOptions, SubmitHandler, useForm, UseFormRegisterReturn } from 'react-hook-form';
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons } from '@cds/core/icon';
@@ -16,9 +16,11 @@ import {
     NodeInstanceType,
     NodeProfileSection,
 } from '../../../../shared/components/FormInputSections/NodeProfileSection';
+import { FormAction, VsphereResourceAction } from '../../../../shared/types/types';
 import { getResource } from '../../../providers/vsphere/VsphereResources.reducer';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
 import { VSphereVirtualMachine } from '../../../../swagger-api';
@@ -62,11 +64,7 @@ interface VsphereClusterSettingFormInputs {
 
 export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm, handleValueChange } = props;
-    const { vsphereState } = useContext(VsphereStore);
-
-    const osImages = (getResource('osImages', vsphereState) || []) as VSphereVirtualMachine[];
-    const osTemplates = osImages.filter((osImage) => osImage.isTemplate);
-
+    const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const vsphereClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<VsphereClusterSettingFormInputs>({
         resolver: yupResolver(vsphereClusterSettingsFormSchema),
@@ -79,6 +77,18 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         setValue,
     } = methods;
 
+    const osImages = (getResource('osImages', vsphereState) || []) as VSphereVirtualMachine[];
+    const osTemplates = osImages.filter((osImage) => osImage.isTemplate);
+    // if there's only ONE template, then pretend the user has selected it (unless we've already done that)
+    if (osTemplates.length === 1 && vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMTEMPLATE] !== osTemplates[0].moid) {
+        const moid = osTemplates[0].moid || '';
+        setValue(VSPHERE_FIELDS.VMTEMPLATE, moid);
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.VMTEMPLATE,
+            payload: moid,
+        } as FormAction);
+    }
     let initialSelectedInstanceTypeId = vsphereState[VSPHERE_FIELDS.INSTANCETYPE];
     if (!initialSelectedInstanceTypeId) {
         initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
@@ -144,9 +154,27 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     );
 }
 
+function VmTemplateDropdownOptions(vmTemplates: VSphereVirtualMachine[]) {
+    if (vmTemplates && vmTemplates.length === 1) {
+        return (
+            <option key={vmTemplates[0].moid} value={vmTemplates[0].moid}>
+                {vmTemplates[0].name}
+            </option>
+        );
+    }
+    return (
+        <>
+            <option />
+            {vmTemplates.map((dc) => (
+                <option key={dc.moid}>{dc.name}</option>
+            ))}
+        </>
+    );
+}
+
 function VmTemplateSection(
     field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS,
-    osImages: VSphereVirtualMachine[],
+    vmTemplates: VSphereVirtualMachine[],
     errors: { [key: string]: FieldError | undefined },
     register: any,
     onOsImageSelected: (osImage: string, field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS) => void
@@ -160,10 +188,7 @@ function VmTemplateSection(
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>OS Image</label>
                 <select {...register(VSPHERE_FIELDS.VMTEMPLATE)} onChange={handleOsImageSelect}>
-                    <option />
-                    {osImages.map((dc) => (
-                        <option key={dc.moid}>{dc.name}</option>
-                    ))}
+                    {VmTemplateDropdownOptions(vmTemplates)}
                 </select>
             </CdsSelect>
             {fieldError && (
