@@ -43,8 +43,6 @@ export interface StatusMessageData {
 function DeployProgress() {
     const { state } = useContext(Store);
     const clusterType: string = state[STORE_SECTION_DEPLOYMENT].deployments['type'];
-    // const provider: string = state[STORE_SECTION_DEPLOYMENT].deployments['provider'];
-    // const providerData: ProviderData = retrieveProviderInfo(provider);
 
     const websocketSvc: WebSocketHook = useWebsocketService();
 
@@ -163,10 +161,9 @@ function DeployProgress() {
 
     // Displays page title; style differs depending on creation of management or unmanaged cluster type
     function displayPageTitle() {
-        if (clusterType && clusterType === DeploymentTypes.UNMANAGED_CLUSTER) {
+        if (clusterType === DeploymentTypes.UNMANAGED_CLUSTER) {
             return (
                 <span>
-                    {/*<img src={providerData.logo} className="logo logo-42" cds-layout="m-r:md" alt={`unmanaged cluster logo`} />*/}
                     <CdsIcon cds-layout="m-r:sm" shape="computer" size="xl" className="icon-blue"></CdsIcon>
                     Creating Unmanaged Cluster
                 </span>
@@ -186,7 +183,7 @@ function DeployProgress() {
 
     // Displays deploy timeline for management cluster creation only
     function displayDeployTimeline() {
-        if (clusterType && clusterType === DeploymentTypes.MANAGEMENT_CLUSTER) {
+        if (clusterType === DeploymentTypes.MANAGEMENT_CLUSTER) {
             return (
                 <div cds-layout="col:3 p-b:md">
                     <span cds-text="section">
@@ -200,7 +197,7 @@ function DeployProgress() {
 
     // Renders markup for next steps section of page
     function displayNextSteps() {
-        if (clusterType && clusterType === DeploymentTypes.MANAGEMENT_CLUSTER) {
+        if (clusterType === DeploymentTypes.MANAGEMENT_CLUSTER) {
             return (
                 <>
                     <div cds-layout="vertical gap:md gap@md:lg col:12">

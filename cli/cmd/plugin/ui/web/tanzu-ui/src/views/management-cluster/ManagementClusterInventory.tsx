@@ -53,7 +53,7 @@ function ManagementClusterInventory() {
 
     // Helper function returns true if management clusters exist; otherwise returns false
     function hasManagementClusters() {
-        return managementClusters.length ? true : false;
+        return managementClusters.length > 0;
     }
 
     // Helper function to be passed to ManagementClusterCard components and leveraged for displaying confirm delete

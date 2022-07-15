@@ -59,7 +59,7 @@ function UnmanagedClusterInventory() {
     }
 
     function hasUnmanagedClusters() {
-        return unmanagedClusters.length ? true : false;
+        return unmanagedClusters.length > 0;
     }
 
     const deleteUnmanagedCluster = async (clusterName: string) => {
