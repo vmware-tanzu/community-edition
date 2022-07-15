@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 
 // Library imports
 import { CdsInput } from '@cds/react/input';
@@ -15,9 +15,14 @@ import { AzureStore } from '../../../../../../state-management/stores/Azure.stor
 import { AzureClouds } from '../../../../../../shared/constants/App.constants';
 import { CdsButton } from '@cds/react/button';
 import { AZURE_FIELDS } from '../../../AzureManagementCluster.constants';
+import ConnectionNotification, {
+    CONNECTION_STATUS,
+} from '../../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import './Login.scss';
 
 interface Props {
-    connected: boolean;
+    status: CONNECTION_STATUS;
+    message: string;
     handleInputChange: (field: FormField, value: string) => void;
     handleConnect: () => void;
     methods: UseFormReturn<FormInputs, any>;
@@ -30,7 +35,8 @@ export default function Login(props: Props) {
             formState: { errors },
             register,
         },
-        connected,
+        status,
+        message,
         handleInputChange,
         handleConnect,
     } = props;
@@ -136,11 +142,12 @@ export default function Login(props: Props) {
                     </CdsSelect>
                 </div>
             </div>
-            <div cds-layout="p-t:lg">
-                <CdsButton onClick={handleConnect} disabled={connected || !dataEntered()}>
+            <div cds-layout="p-t:lg" className="azure-button-container">
+                <CdsButton onClick={handleConnect} disabled={status === CONNECTION_STATUS.CONNECTED || !dataEntered()}>
                     <CdsIcon shape="connect" size="md"></CdsIcon>
-                    {connected ? 'CONNECTED' : 'CONNECT'}
+                    CONNECT
                 </CdsButton>
+                <ConnectionNotification message={message} status={status}></ConnectionNotification>
             </div>
         </>
     );

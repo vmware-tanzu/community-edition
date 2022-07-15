@@ -41,7 +41,7 @@ describe('McPrerequisiteStep', () => {
             })
         );
         render(<McPrerequisiteStep />);
-        expect(await screen.findByText('Can not connect to docker daemon')).toBeInTheDocument();
+        expect(await screen.findByText('Unable to connect to Docker: Can not connect to docker daemon')).toBeInTheDocument();
     });
 
     test('connect button', async () => {
