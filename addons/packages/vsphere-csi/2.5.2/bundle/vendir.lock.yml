@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: tag v2.5.2 images (#1819)
+      sha: 9dd55933bd3522ba0a108661b4b9c8c4db147882
+      tags:
+      - v2.5.2
+    path: vsphere-csi
+  path: config/upstream
+kind: LockConfig
