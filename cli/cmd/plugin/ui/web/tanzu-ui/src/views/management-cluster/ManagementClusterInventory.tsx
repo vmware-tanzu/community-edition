@@ -16,6 +16,7 @@ import './ManagementClusterInventory.scss';
 import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 
 function ManagementClusterInventory() {
+    const [showLoading, setShowLoading] = useState<boolean>(false);
     const [notification, setNotification] = useState<Notification | null>(null);
     const [managementClusters, setManagementClusters] = useState<ManagementCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -28,24 +29,27 @@ function ManagementClusterInventory() {
         setNotification(null);
     }
 
-    // Retrieve management clusters list on page load
+    // Retrieve management clusters list on page load; then set loading to false
     useEffect(() => {
-        retrieveManagementClusters();
+        retrieveManagementClusters().then(() => {
+            console.info('initial loading of management clusters list completed');
+        });
     }, []);
 
-    function retrieveManagementClusters() {
-        ManagementService.getMgmtClusters().then(
-            (data) => {
-                setManagementClusters(data);
-            },
-            (err) => {
-                setNotification({
-                    status: NotificationStatus.DANGER,
-                    message: `Unable to retrieve Management Clusters: ${err}`,
-                } as Notification);
-            }
-        );
-    }
+    const retrieveManagementClusters = async () => {
+        setShowLoading(true);
+        try {
+            const data = await ManagementService.getMgmtClusters();
+            setManagementClusters(data);
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to retrieve Management Clusters: ${e}`,
+            } as Notification);
+        } finally {
+            setShowLoading(false);
+        }
+    };
 
     // Helper function returns true if management clusters exist; otherwise returns false
     function hasManagementClusters() {
@@ -68,24 +72,22 @@ function ManagementClusterInventory() {
     // Calls delete API with cluster name, then retrieves updated list of management clusters.
     // TODO: test e2e as management cluster deletion may not be immediate, so we may have to use another mechanism
     // for updating management cluster list periodically
-    function deleteManagementCluster(clusterName: string) {
+    const deleteManagementCluster = async (clusterName: string) => {
         setShowDeleteModal(!showDeleteModal);
-        ManagementService.deleteMgmtCluster(clusterName).then(
-            () => {
-                setNotification({
-                    status: NotificationStatus.SUCCESS,
-                    message: `Management Cluster ${clusterName} has been deleted`,
-                } as Notification);
-                retrieveManagementClusters();
-            },
-            (err) => {
-                setNotification({
-                    status: NotificationStatus.DANGER,
-                    message: `Unable to delete Management Cluster ${clusterName}: ${err}`,
-                } as Notification);
-            }
-        );
-    }
+        try {
+            await ManagementService.deleteMgmtCluster(clusterName);
+
+            setNotification({
+                status: NotificationStatus.SUCCESS,
+                message: `Management Cluster ${clusterName} has been deleted`,
+            } as Notification);
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to delete Management Cluster ${clusterName}: ${e}`,
+            } as Notification);
+        }
+    };
 
     // Returns modal window HTML markup if showDeleteModal state variable is set to true.
     function renderConfirmDeleteModal() {
@@ -118,7 +120,7 @@ function ManagementClusterInventory() {
                         </CdsButton>
                         <CdsButton
                             status="danger"
-                            onClick={() => deleteManagementCluster(clusterNameForDeletion)}
+                            onClick={() => deleteManagementCluster(clusterNameForDeletion).then(() => retrieveManagementClusters())}
                             data-testid="delete-cluster-btn"
                         >
                             Delete
