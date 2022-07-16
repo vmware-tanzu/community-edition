@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState, useContext } from 'react';
 
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
+import { CdsSelect } from '@cds/react/select';
 
 // App imports
 import './ManagementClusterSettings.scss';
@@ -16,16 +17,20 @@ import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
+import { AwsStore } from '../../../state-management/stores/Store.aws';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 interface FormInputs {
     CLUSTER_NAME: string;
 }
-interface MCSettings extends StepProps {
+interface MCSettings<T> extends StepProps {
     message?: string;
     deploy: () => void;
     defaultData?: { [key: string]: any };
+    imageType: T;
+    getImageMethod: (region: string) => Promise<T[]>;
+    clusterName: string;
 }
 
 const nodeProfiles = [
@@ -53,8 +58,9 @@ const nodeProfiles = [
         value: 'PRODUCTION_READY',
     },
 ];
-function ManagementClusterSettings(props: Partial<MCSettings>) {
-    const { handleValueChange, currentStep, deploy, defaultData, message } = props;
+
+function ManagementClusterSettings<T>(props: Partial<MCSettings<T>>) {
+    const { handleValueChange, currentStep, deploy, defaultData, message, getImageMethod, clusterName } = props;
     const {
         register,
         formState: { errors },
@@ -66,7 +72,7 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
             handleValueChange(INPUT_CHANGE, 'NODE_PROFILE', event.target.value, currentStep, errors);
         }
     };
-
+    const { awsState } = useContext(AwsStore);
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
@@ -77,6 +83,18 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
             deploy();
         }
     };
+    const [images, setImages] = useState<T[]>([]);
+    const handleMachineImage = (event: ChangeEvent<HTMLSelectElement>) => {
+        if (handleValueChange) {
+            setTimeout(() => {
+                handleValueChange(INPUT_CHANGE, 'IMAGE_NAME', event.target.value, currentStep, errors);
+            });
+        }
+    };
+
+    useEffect(() => {
+        getImageMethod?.(awsState[STORE_SECTION_FORM].REGION).then((data) => setImages(data));
+    }, []);
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
             <h3>Management Cluster settings</h3>
@@ -135,6 +153,22 @@ function ManagementClusterSettings(props: Partial<MCSettings>) {
                         </CdsRadioGroup>
                     )}
                 </div>
+
+                <div cds-layout="col:8">
+                    <h1>{clusterName}</h1>
+                    <CdsSelect layout="compact">
+                        <label>OS Image with Kubernetes </label>
+                        <select className="select-sm-width" data-testid="image-select" onChange={handleMachineImage}>
+                            <option></option>
+                            {images.map((image) => (
+                                <option key={image.name} value={image.name}>
+                                    {image.name}
+                                </option>
+                            ))}
+                        </select>
+                    </CdsSelect>
+                </div>
+
                 <div cds-layout="grid col:12 p-t:lg">
                     <CdsButton cds-layout="col:start-1" status="success" onClick={handleMCCreation}>
                         <CdsIcon shape="cluster" size="sm"></CdsIcon>
