@@ -12,9 +12,9 @@ const initialState = {
         CLUSTER_NAME: '',
 
         // Cluster Settings advanced
-        CONTROL_PLANE_NODES_COUNT: '1',
-        WORKER_NODES_COUNT: '0',
-        CLUSTER_PROVIDER: 'CALICO',
+        CONTROL_PLANE_NODES_COUNT: 1,
+        WORKER_NODES_COUNT: 0,
+        CLUSTER_PROVIDER: 'calico',
 
         // Cluster Network Settings
         IP_ADDRESS: '127.0.0.1',

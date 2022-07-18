@@ -14,17 +14,20 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
-import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
 import { CONNECTION_STATUS, ConnectionNotification } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { UmcStore } from '../../../../state-management/stores/Store.umc';
-import { isValidCidr, isValidIp } from '../../../../shared/validations/Validation.service';
-import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
-import { UnmanagedService } from '../../../../swagger-api/services/UnmanagedService';
 import { CreateUnmanagedClusterParams } from '../../../../swagger-api';
-import { useNavigate } from 'react-router-dom';
+import { DeploymentStates, DeploymentTypes } from '../../../../shared/constants/Deployment.constants';
+import { DEPLOYMENT_STATUS_CHANGED } from '../../../../state-management/actions/Deployment.actions';
+import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
+import { isValidCidr, isValidIp } from '../../../../shared/validations/Validation.service';
+import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
 import { NavRoutes } from '../../../../shared/constants/NavRoutes.constants';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { Store } from '../../../../state-management/stores/Store';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import { UnmanagedService } from '../../../../swagger-api/services/UnmanagedService';
+import { useNavigate } from 'react-router-dom';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -97,6 +100,7 @@ const unmanagedClusterProtocol = [
 function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     const { handleValueChange, currentStep } = props;
 
+    const { dispatch } = useContext(Store);
     const { umcState } = useContext(UmcStore);
 
     const [connectionMessage, setConnectionMessage] = useState('');
@@ -139,12 +143,11 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
 
     const deployUnmanagedCluster = async () => {
         setConnectionStatus(CONNECTION_STATUS.CONNECTING);
-        setConnectionMessage(`Attempting to start unmanaged cluster creation.`);
+        setConnectionMessage('Attempting to start unmanaged cluster creation.');
         const unmanagedClusterParams: CreateUnmanagedClusterParams = {
             name: umcState[STORE_SECTION_FORM].CLUSTER_NAME,
             provider: K8sProviders.KIND,
-            // cni: umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER,
-            cni: 'calico',
+            cni: umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER,
             podcidr: umcState[STORE_SECTION_FORM].POD_CIDR,
             servicecidr: umcState[STORE_SECTION_FORM].SERVICE_CIDR,
             portmappings: [
@@ -155,29 +158,26 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                     umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL
                 ),
             ],
-            // controlplanecount: umcState[STORE_SECTION_FORM].CONTROL_PLANE_NODES_COUNT,
-            controlplanecount: 1,
-            workernodecount: 0,
+            controlplanecount: umcState[STORE_SECTION_FORM].CONTROL_PLANE_NODES_COUNT,
+            workernodecount: umcState[STORE_SECTION_FORM].WORKER_NODES_COUNT,
         };
 
         try {
             await UnmanagedService.createUnmanagedCluster(unmanagedClusterParams);
 
-            // dispatch({
-            //     type: DEPLOYMENT_STATUS_CHANGED,
-            //     payload: {
-            //         type: DeploymentTypes.MANAGEMENT_CLUSTER,
-            //         status: DeploymentStates.RUNNING,
-            //         provider: Providers.AWS,
-            //         configPath: configFileInfo.path,
-            //     },
-            // });
+            dispatch({
+                type: DEPLOYMENT_STATUS_CHANGED,
+                payload: {
+                    type: DeploymentTypes.UNMANAGED_CLUSTER,
+                    status: DeploymentStates.RUNNING,
+                },
+            });
 
             setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
             navigateToProgress();
         } catch (e) {
             setConnectionStatus(CONNECTION_STATUS.ERROR);
-            const msg = `Error starting unmanaged cluster creation. Please see browser console for more details.`;
+            const msg = 'Error starting unmanaged cluster creation. Please see browser console for more details.';
             console.warn(`Error calling unmanaged cluster create API: ${e}`);
             setConnectionMessage(msg);
         }
