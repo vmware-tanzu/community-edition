@@ -18,7 +18,7 @@ import PageLoading, { LoadingSpinnerStatus } from '../../shared/components/PageL
 import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 
 function ManagementClusterInventory() {
-    const [showLoading, setShowLoading] = useState<boolean>(false);
+    const [showPageLoading, setShowPageLoading] = useState<boolean>(false);
     const [notification, setNotification] = useState<Notification | null>(null);
     const [managementClusters, setManagementClusters] = useState<ManagementCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -39,7 +39,7 @@ function ManagementClusterInventory() {
     }, []);
 
     const retrieveManagementClusters = async () => {
-        setShowLoading(true);
+        setShowPageLoading(true);
         try {
             const data = await ManagementService.getMgmtClusters();
             setManagementClusters(data);
@@ -49,7 +49,7 @@ function ManagementClusterInventory() {
                 message: `Unable to retrieve Management Clusters: ${e}`,
             } as Notification);
         } finally {
-            setShowLoading(false);
+            setShowPageLoading(false);
         }
     };
 
@@ -196,7 +196,7 @@ function ManagementClusterInventory() {
     }
 
     function MainContent() {
-        if (showLoading) {
+        if (showPageLoading) {
             return <PageLoading message="Searching for existing management clusters"></PageLoading>;
         } else {
             return hasManagementClusters() ? ManagementClustersSection() : NoManagementClustersSection();
