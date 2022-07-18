@@ -21,18 +21,41 @@ spec:
         cidr: 10.1.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
-        enableEVH: false
-        layer7Only: false
-        servicesAPI: false
-        l4Config:
-            advancedL4: false
-            autoFQDN: "disabled"
         ingress:
             disableIngressClass: true
             defaultIngressController: false
-            noPGForSNI: false
-        networksConfig:
-            enableRHI: false
+
+---
+apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
+kind: AKODeploymentConfig
+metadata:
+    name: install-ako-for-all-npl
+spec:
+    clusterSelector:
+        matchLabels:
+            nodeportlocal: "true"
+    cloudName: Default-Cloud
+    serviceEngineGroup: Default-Group
+    controller: 10.0.0.1
+    adminCredentialRef:
+        name: controller-credentials
+        namespace: default
+    certificateAuthorityRef:
+        name: controller-ca
+        namespace: default
+    dataNetwork:
+        name: VM Network
+        cidr: 10.0.0.0/20
+    controlPlaneNetwork:
+        name: VM Network 2
+        cidr: 10.1.0.0/20
+    extraConfigs:
+        cniPlugin: antrea
+        disableStaticRouteSync: false
+        ingress:
+            disableIngressClass: true
+            defaultIngressController: false
+            serviceType: NodePortLocal
 
 ---
 apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
@@ -59,16 +82,9 @@ spec:
         name: VM Network 2
         cidr: 10.1.0.0/20
     extraConfigs:
+        cniPlugin: antrea
         disableStaticRouteSync: false
-        enableEVH: false
-        layer7Only: false
-        servicesAPI: false
-        l4Config:
-            advancedL4: false
-            autoFQDN: "disabled"
         ingress:
             disableIngressClass: true
             defaultIngressController: false
-            noPGForSNI: false
-        networksConfig:
-            enableRHI: false
+            serviceType: NodePortLocal
