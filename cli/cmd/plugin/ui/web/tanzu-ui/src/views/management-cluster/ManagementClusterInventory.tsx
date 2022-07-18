@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsModal, CdsModalActions, CdsModalContent, CdsModalHeader } from '@cds/react/modal';
+import { CdsProgressCircle } from '@cds/react/progress-circle';
 
 // App imports
 import ManagementClusterCard from './ManagementClusterCard';
@@ -13,10 +14,11 @@ import { ManagementCluster } from '../../swagger-api/models/ManagementCluster';
 import { ManagementService } from '../../swagger-api';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 import './ManagementClusterInventory.scss';
+import PageLoading, { LoadingSpinnerStatus } from '../../shared/components/PageLoading/PageLoading';
 import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 
 function ManagementClusterInventory() {
-    const [showLoading, setShowLoading] = useState<boolean>(false);
+    const [showPageLoading, setShowPageLoading] = useState<boolean>(false);
     const [notification, setNotification] = useState<Notification | null>(null);
     const [managementClusters, setManagementClusters] = useState<ManagementCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -37,7 +39,7 @@ function ManagementClusterInventory() {
     }, []);
 
     const retrieveManagementClusters = async () => {
-        setShowLoading(true);
+        setShowPageLoading(true);
         try {
             const data = await ManagementService.getMgmtClusters();
             setManagementClusters(data);
@@ -47,7 +49,7 @@ function ManagementClusterInventory() {
                 message: `Unable to retrieve Management Clusters: ${e}`,
             } as Notification);
         } finally {
-            setShowLoading(false);
+            setShowPageLoading(false);
         }
     };
 
@@ -193,6 +195,14 @@ function ManagementClusterInventory() {
         );
     }
 
+    function MainContent() {
+        if (showPageLoading) {
+            return <PageLoading message="Searching for existing management clusters"></PageLoading>;
+        } else {
+            return hasManagementClusters() ? ManagementClustersSection() : NoManagementClustersSection();
+        }
+    }
+
     return (
         <>
             <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:12 grid">
@@ -202,7 +212,7 @@ function ManagementClusterInventory() {
                         Management Clusters
                     </div>
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
-                    {hasManagementClusters() ? ManagementClustersSection() : NoManagementClustersSection()}
+                    {MainContent()}
                 </div>
                 <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
                 {renderConfirmDeleteModal()}

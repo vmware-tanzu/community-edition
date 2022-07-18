@@ -16,7 +16,7 @@ import UnmanagedClusterCard from './UnmanagedClusterCard/UnmanagedClusterCard';
 import './UnmanagedClusterInventory.scss';
 
 function UnmanagedClusterInventory() {
-    const [showLoading, setShowLoading] = useState<boolean>(false);
+    const [showPageLoading, setShowPageLoading] = useState<boolean>(false);
     const [notification, setNotification] = useState<Notification | null>(null);
     const [unmanagedClusters, setUnmanagedClusters] = useState<UnmanagedCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -29,7 +29,7 @@ function UnmanagedClusterInventory() {
     }
 
     const retrieveUnmanagedClusters = async () => {
-        setShowLoading(true);
+        setShowPageLoading(true);
         try {
             const data = await UnmanagedService.getUnmanagedClusters();
             setUnmanagedClusters(data);
@@ -39,7 +39,7 @@ function UnmanagedClusterInventory() {
                 message: `Unable to retrieve Unmanaged Clusters: ${e}`,
             } as Notification);
         } finally {
-            setShowLoading(false);
+            setShowPageLoading(false);
         }
     };
 
