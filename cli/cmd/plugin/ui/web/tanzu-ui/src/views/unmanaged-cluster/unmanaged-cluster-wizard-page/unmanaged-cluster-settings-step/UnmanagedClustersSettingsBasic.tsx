@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 
 // Library imports
 import { CdsControlMessage } from '@cds/react/forms';
@@ -13,9 +13,12 @@ import * as yup from 'yup';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
+import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 export interface FormInputs {
-    CLUSTER_NAME: string;
+    [UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]: string;
 }
 
 const unmanagedClusterBasicSettingStepFormSchema = yup
@@ -35,22 +38,30 @@ const unmanagedClusterBasicSettingStepFormSchema = yup
 function UnmanagedClusterSettings(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
 
+    const { umcState } = useContext(UmcStore);
+
+    const methods = useForm<FormInputs>({
+        resolver: yupResolver(unmanagedClusterBasicSettingStepFormSchema),
+    });
+
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormInputs>({ resolver: yupResolver(unmanagedClusterBasicSettingStepFormSchema) });
+    } = methods;
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        if (goToStep && currentStep && submitForm) {
-            goToStep(currentStep + 1);
-            submitForm(currentStep);
+        if (Object.keys(errors).length === 0) {
+            if (goToStep && currentStep && submitForm) {
+                goToStep(currentStep + 1);
+                submitForm(currentStep);
+            }
         }
     };
 
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME, event.target.value, currentStep, errors);
         }
     };
 
@@ -59,11 +70,17 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
             <div cds-layout="p-b:lg" cds-text="title">
                 Cluster settings
             </div>
-            <div cds-layout="grid gap:md">
-                <div cds-layout="col@sm:4 p-b:md">{ClusterName()}</div>
-            </div>
-            <div cds-layout="horizontal gap:md">
-                <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+            <div cds-layout="grid">
+                <div cds-layout="col@sm:8">
+                    <div cds-layout="vertical gap:lg">
+                        <div cds-layout="grid gap:md">
+                            <div cds-layout="col@sm:6">{ClusterName()}</div>
+                        </div>
+                        <div cds-layout="horizontal gap:md">
+                            <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -76,10 +93,10 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
                         Cluster name
                     </label>
                     <input
-                        {...register('CLUSTER_NAME')}
+                        {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME)}
                         placeholder="cluster-name"
                         onChange={handleClusterNameChange}
-                        defaultValue="test-cluster"
+                        defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_NAME}
                     ></input>
                     {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
                 </CdsInput>

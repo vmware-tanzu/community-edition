@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 // Library imports
@@ -16,14 +16,10 @@ import * as yup from 'yup';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
-
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
-
-enum UNMANAGED_ADVANCED_FIELDS {
-    CLUSTER_NAME = 'CLUSTER_NAME',
-    CONTROL_PLANE_NODE_COUNT = 'CONTROL_PLANE_NODE_COUNT',
-    WORKER_NODE_COUNT = 'WORKER_NODE_COUNT',
-}
 
 const unmanagedClusterAdvancedSettingStepFormSchema = yup
     .object({
@@ -40,9 +36,9 @@ const unmanagedClusterAdvancedSettingStepFormSchema = yup
     .required();
 
 interface FormInputs {
-    [UNMANAGED_ADVANCED_FIELDS.CLUSTER_NAME]: string;
-    [UNMANAGED_ADVANCED_FIELDS.CONTROL_PLANE_NODE_COUNT]: string;
-    [UNMANAGED_ADVANCED_FIELDS.WORKER_NODE_COUNT]: string;
+    [UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]: string;
+    [UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]: string;
+    [UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]: string;
 }
 
 const unmanagedClusterProviders = [
@@ -58,6 +54,7 @@ const unmanagedClusterProviders = [
 
 function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { umcState } = useContext(UmcStore);
 
     const {
         register,
@@ -74,23 +71,23 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
 
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'CLUSTER_NAME', event.target.value, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME, event.target.value, currentStep, errors);
         }
     };
 
     const handleControlPlaneNodeCountChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'CONTROL_PLANE_NODE_COUNT', event.target.value, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT, event.target.value, currentStep, errors);
         }
     };
 
     const handleWorkerNodeCountChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'WORKER_NODE_COUNT', event.target.value, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT, event.target.value, currentStep, errors);
         }
     };
 
-    const [selectedProvider, setSelectedProvider] = useState('KIND');
+    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER);
 
     const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedProvider(event.target.value);
@@ -104,7 +101,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
             <div cds-layout="grid">
                 <div cds-layout="col@sm:8">
                     <div cds-layout="vertical gap:lg">
-                        <div cds-layout="grid">
+                        <div cds-layout="grid gap:md">
                             <div cds-layout="col@sm:6">{ClusterName()}</div>
                         </div>
                         {ClusterNodeCountSelect()}
