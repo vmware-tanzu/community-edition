@@ -15,7 +15,7 @@ const initialState = {
         // Cluster Settings advanced
         [UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]: '1',
         [UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]: '0',
-        [UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROVIDER]: 'kind',
+        [UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROVIDER]: 'KIND',
 
         // Cluster Network Settings
         [UNMANAGED_CLUSTER_FIELDS.CNI_PROVIDER]: 'CALICO',
