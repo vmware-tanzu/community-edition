@@ -97,13 +97,13 @@ describe('ManagementCredential component', () => {
     it('should connect to Azure', async () => {
         render(<ManagementCredentials handleValueChange={jest.fn} />);
         fireEvent.click(screen.getByText('CONNECT'));
-        expect(await screen.findByText('CONNECTED')).toBeInTheDocument();
+        expect(await screen.findByText('Connected to Azure')).toBeInTheDocument();
     });
 
     it('should select a region', async () => {
         render(<ManagementCredentials handleValueChange={jest.fn} />);
         fireEvent.click(screen.getByText('CONNECT'));
-        await screen.findByText('CONNECTED');
+        expect(await screen.findByText('Connected to Azure')).toBeInTheDocument();
         const el = await screen.findByText('West US');
         for (let i = 0; i < regionsMock.length; i++) {
             const profileEl = screen.getByText(regionsMock[i]);
@@ -118,7 +118,7 @@ describe('ManagementCredential component', () => {
     it('should change the button from connected to connect', async () => {
         render(<ManagementCredentials handleValueChange={jest.fn} />);
         fireEvent.click(screen.getByText('CONNECT'));
-        await screen.findByText('CONNECTED');
+        expect(await screen.findByText('Connected to Azure')).toBeInTheDocument();
         await fireEvent.change(screen.getByPlaceholderText('Tenant ID'), {
             target: { value: 'myTestAccessKeyId' },
         });

@@ -13,7 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import '../VsphereManagementCluster.scss';
 import { analyzeOsImages } from './VsphereOsImageUtil';
-import { CONNECTION_STATUS, ConnectionNotification } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { createSchema } from './vsphere.credential.form.schema';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { IP_FAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
@@ -356,7 +356,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                         </CdsButton>
                     </div>
                     <div></div>
-                    <div cds-layout="col:9 p-b:sm">{ConnectionNotification(connectionStatus, connectionMessage)}</div>
+                    <div cds-layout="col:9 p-b:sm">
+                        <ConnectionNotification status={connectionStatus} message={connectionMessage}></ConnectionNotification>
+                    </div>
                 </div>
             </div>
         );

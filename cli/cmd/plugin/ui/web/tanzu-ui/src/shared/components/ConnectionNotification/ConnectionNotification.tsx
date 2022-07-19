@@ -22,10 +22,15 @@ const connectionStatusToAlertStatus = {
 
 // NOTE: there SHOULD NOT be a need to have CONNECTING as a separate case below, but the Clarity CdsAlertGroup does not repaint
 // correctly without it.
-export function ConnectionNotification(status: CONNECTION_STATUS, message: string) {
+interface Props {
+    status: CONNECTION_STATUS;
+    message: string;
+}
+function ConnectionNotification(props: Props) {
+    const { status, message } = props;
     const alertStatus = (connectionStatusToAlertStatus[status] || 'neutral') as AlertStatusTypes;
     return (
-        <div>
+        <div className="connection-notification-container">
             {status !== CONNECTION_STATUS.DISCONNECTED && status !== CONNECTION_STATUS.CONNECTING && (
                 <CdsAlertGroup status={alertStatus} aria-label={message}>
                     <CdsAlert>{message}</CdsAlert>
@@ -46,3 +51,5 @@ export function ConnectionNotification(status: CONNECTION_STATUS, message: strin
         </div>
     );
 }
+
+export default ConnectionNotification;

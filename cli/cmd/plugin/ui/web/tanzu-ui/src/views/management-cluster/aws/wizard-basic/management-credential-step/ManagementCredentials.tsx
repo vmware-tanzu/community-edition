@@ -23,6 +23,7 @@ import ManagementCredentialProfile from './ManagementCredentialProfile';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
 export interface FormInputs {
@@ -43,6 +44,9 @@ enum CREDENTIAL_TYPE {
 function ManagementCredentials(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
     const { awsState } = useContext(AwsStore);
+    const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
+    const [message, setMessage] = useState('');
+
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
     });
@@ -54,7 +58,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
     } = methods;
 
     const [type, setType] = useState<CREDENTIAL_TYPE>(CREDENTIAL_TYPE.PROFILE);
-    const [connected, setConnection] = useState(false);
 
     const [regions, setRegions] = useState<string[]>([]);
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
@@ -65,20 +68,20 @@ function ManagementCredentials(props: Partial<StepProps>) {
     }, []);
 
     useEffect(() => {
-        if (connected) {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             AwsService.getAwsKeyPairs().then((data) => {
                 setKeyPairs(data);
             });
         }
-    }, [connected]);
+    }, [connectionStatus]);
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
-        setConnection(false);
+        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         setType(CREDENTIAL_TYPE[event.target.value as CREDENTIAL_TYPE]);
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        if (connected && Object.keys(errors).length === 0) {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
@@ -86,7 +89,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
-    const handleConnect = () => {
+    const handleConnect = async () => {
         let params: AWSAccountParams = {};
         if (type === CREDENTIAL_TYPE.PROFILE) {
             params = {
@@ -101,13 +104,20 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 sessionToken: awsState[STORE_SECTION_FORM].SESSION_TOKEN,
             };
         }
-        AwsService.setAwsEndpoint(params).then(() => {
-            setConnection(true);
-        });
+        try {
+            setConnectionStatus(CONNECTION_STATUS.CONNECTING);
+            setMessage('Connecting to AWS');
+            await AwsService.setAwsEndpoint(params);
+            setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+            setMessage('Connected to AWS');
+        } catch (err: any) {
+            setConnectionStatus(CONNECTION_STATUS.ERROR);
+            setMessage(`Unable to connect to AWS: ${err.body.message}`);
+        }
     };
 
     const handleSelectProfile = (profile: string) => {
-        setConnection(false);
+        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(INPUT_CHANGE, 'PROFILE', profile, currentStep, errors);
@@ -116,7 +126,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const handleSelectRegion = (region: string) => {
-        setConnection(false);
+        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(INPUT_CHANGE, 'REGION', region, currentStep, errors);
@@ -134,7 +144,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const handleInputChange = (field: string, value: string) => {
-        setConnection(false);
+        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
@@ -144,7 +154,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const handleRefresh = (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
-        if (connected) {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             AwsService.getAwsKeyPairs().then((data) => {
                 setKeyPairs(data);
             });
@@ -190,11 +200,15 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 />
             )}
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <div cds-layout="p-t:lg">
-                    <CdsButton onClick={handleConnect} disabled={connected || !awsState[STORE_SECTION_FORM].REGION}>
+                <div cds-layout="p-t:lg" className="aws-button-container">
+                    <CdsButton
+                        onClick={handleConnect}
+                        disabled={connectionStatus === CONNECTION_STATUS.CONNECTED || !awsState[STORE_SECTION_FORM].REGION}
+                    >
                         <CdsIcon shape="connect" size="md"></CdsIcon>
-                        {connected ? 'CONNECTED' : 'CONNECT'}
+                        CONNECT
                     </CdsButton>
+                    <ConnectionNotification message={message} status={connectionStatus}></ConnectionNotification>
                 </div>
                 <div cds-layout="horizontal gap:lg align:vertical-center">
                     <CdsSelect layout="compact">
