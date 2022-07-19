@@ -21,6 +21,12 @@ const initialState = {
 
         // Region
         REGION: '',
+
+        // Image
+        IMAGE_NAME: '',
+        IMAGE_OS_ARCH: '',
+        IMAGE_OS_NAME: '',
+        IMAGE_OS_VERSION: '',
         ...AWS_DEFAULT_VALUES,
     },
 };

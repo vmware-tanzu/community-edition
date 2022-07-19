@@ -66,6 +66,15 @@ function ManagementClusterSettings<T>(props: Partial<MCSettings<T>>) {
         formState: { errors },
     } = useForm<FormInputs>();
     const [selectedProfile, setSelectedProfile] = useState('SINGLE_NODE');
+    const [images, setImages] = useState<T[]>([]);
+    const setImageParameters = (image) => {
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, 'IMAGE_NAME', image.name, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, 'IMAGE_OS_ARCH', image.osInfo.arch, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, 'IMAGE_OS_NAME', image.osInfo.name, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, 'IMAGE_OS_VERSION', image.osInfo.version, currentStep, errors);
+        }
+    };
     const handleNodeProfileChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedProfile(event.target.value);
         if (handleValueChange) {
@@ -83,18 +92,22 @@ function ManagementClusterSettings<T>(props: Partial<MCSettings<T>>) {
             deploy();
         }
     };
-    const [images, setImages] = useState<T[]>([]);
-    const handleMachineImage = (event: ChangeEvent<HTMLSelectElement>) => {
-        if (handleValueChange) {
-            setTimeout(() => {
-                handleValueChange(INPUT_CHANGE, 'IMAGE_NAME', event.target.value, currentStep, errors);
-            });
-        }
+
+    const handleMachineImageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        images.some((image) => {
+            if (image.name === event.target.value) {
+                setImageParameters(image);
+            }
+        });
     };
 
     useEffect(() => {
-        getImageMethod?.(awsState[STORE_SECTION_FORM].REGION).then((data) => setImages(data));
+        getImageMethod?.(awsState[STORE_SECTION_FORM].REGION).then((data) => {
+            setImages(data);
+            setImageParameters(data[0]);
+        });
     }, []);
+
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
             <h3>Management Cluster settings</h3>
@@ -158,8 +171,7 @@ function ManagementClusterSettings<T>(props: Partial<MCSettings<T>>) {
                     <h1>{clusterName}</h1>
                     <CdsSelect layout="compact">
                         <label>OS Image with Kubernetes </label>
-                        <select className="select-sm-width" data-testid="image-select" onChange={handleMachineImage}>
-                            <option></option>
+                        <select className="select-sm-width" data-testid="image-select" onChange={handleMachineImageChange}>
                             {images.map((image) => (
                                 <option key={image.name} value={image.name}>
                                     {image.name}

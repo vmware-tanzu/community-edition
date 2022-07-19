@@ -48,11 +48,11 @@ const useAzureDeployment = () => {
                 cniType: formInfo.CNI_TYPE,
             },
             os: {
-                name: 'ubuntu-18.04-amd64 (2022.03.22)',
+                name: formInfo.IMAGE_NAME,
                 osInfo: {
-                    arch: 'amd64',
-                    name: 'ubuntu',
-                    version: '18.04',
+                    arch: formInfo.IMAGE_OS_ARCH,
+                    name: formInfo.IMAGE_OS_NAME,
+                    version: formInfo.IMAGE_OS_VERSION,
                 },
             },
             resourceGroup: formInfo.RESOURCE_GROUP,
