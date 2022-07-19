@@ -6,13 +6,6 @@ import { setupServer } from 'msw/lib/node';
 import ManagementCredentials from './ManagementCredentials';
 
 const regionsMock = ['West US', 'North central US', 'South central US', 'Central US', 'East US', 'East US 2'];
-const azureEnvironment = ['Public Cloud', 'US Government Cloud'];
-const formFieldItem = [
-    { placeholder: 'Tenant ID', field: 'TENANT_ID' },
-    { placeholder: 'Client ID', field: 'CLIENT_ID' },
-    { placeholder: 'Client Secret', field: 'CLIENT_SECRET' },
-    { placeholder: 'Subscription ID', field: 'SUBSCRIPTION_ID' },
-];
 
 describe('ManagementCredential component', () => {
     const server = setupServer(
@@ -61,45 +54,6 @@ describe('ManagementCredential component', () => {
         await waitFor(() => {
             expect(view).toBeDefined();
         });
-    });
-
-    it('should contain all Azure Environment', async () => {
-        render(<ManagementCredentials />);
-        for (let i = 0; i < azureEnvironment.length; i++) {
-            const profileEl = screen.getByText(azureEnvironment[i]);
-            expect(profileEl).toBeInTheDocument();
-        }
-    });
-
-    it('should handle form field change', async () => {
-        const handleValueChange = jest.fn();
-        render(<ManagementCredentials handleValueChange={handleValueChange} />);
-        for (let i = 0; i < formFieldItem.length; i++) {
-            const input = screen.getByPlaceholderText(formFieldItem[i].placeholder);
-            // TODO: The issue caused by setValue method. This logic should be revisited.
-            // eslint-disable-next-line testing-library/no-unnecessary-act
-            await act(async () => {
-                fireEvent.change(input, {
-                    target: { value: 'test' + formFieldItem[i].placeholder },
-                });
-            });
-            expect(handleValueChange).toHaveBeenCalled();
-            expect(handleValueChange).toBeCalledWith(
-                'INPUT_CHANGE',
-                formFieldItem[i].field,
-                'test' + formFieldItem[i].placeholder,
-                undefined,
-                {}
-            );
-        }
-        const selectItem = screen.getByTestId('azure-environment-select');
-        // TODO: The issue caused by setValue method. This logic should be revisited.
-        // eslint-disable-next-line testing-library/no-unnecessary-act
-        await act(async () => {
-            fireEvent.change(selectItem, { target: { value: 'AzurePublicCloud' } });
-        });
-        expect(handleValueChange).toHaveBeenCalled();
-        expect(handleValueChange).toBeCalledWith('INPUT_CHANGE', 'AZURE_ENVIRONMENT', 'AzurePublicCloud', undefined, {});
     });
 
     it('should connect to Azure', async () => {
