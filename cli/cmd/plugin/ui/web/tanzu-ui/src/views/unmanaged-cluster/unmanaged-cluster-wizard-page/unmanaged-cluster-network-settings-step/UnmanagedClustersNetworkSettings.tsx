@@ -14,7 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
-import { CONNECTION_STATUS, ConnectionNotification } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { CreateUnmanagedClusterParams } from '../../../../swagger-api';
 import { DeploymentStates, DeploymentTypes } from '../../../../shared/constants/Deployment.constants';
 import { DEPLOYMENT_STATUS_CHANGED } from '../../../../state-management/actions/Deployment.actions';
@@ -207,7 +207,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                                 </CdsButton>
                             </div>
                             <div></div>
-                            <div cds-layout="col:8 p-b:sm">{ConnectionNotification(connectionStatus, connectionMessage)}</div>
+                            <div cds-layout="col:8 p-b:sm">
+                                <ConnectionNotification status={connectionStatus} message={connectionMessage} />
+                            </div>
                         </div>
                     </div>
                 </div>
