@@ -21,12 +21,15 @@ import { DEPLOYMENT_STATUS_CHANGED } from '../../../../state-management/actions/
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { isValidCidr, isValidIp } from '../../../../shared/validations/Validation.service';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
 import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
 import { NavRoutes } from '../../../../shared/constants/NavRoutes.constants';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { Store } from '../../../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import { CniProviders } from '../../../../shared/constants/CniProviders.constants';
+import { ClusterProtocols } from '../../../../shared/constants/ClusterProtocols.constants';
 import { UnmanagedService } from '../../../../swagger-api/services/UnmanagedService';
 import { useNavigate } from 'react-router-dom';
 
@@ -62,31 +65,31 @@ const unmanagedClusterNetworkSettingStepFormSchema = yup
 
 const unmanagedClusterProviders = [
     {
-        label: 'calico',
-        value: 'calico',
+        label: CniProviders.CALICO,
+        value: CniProviders.CALICO,
     },
     {
-        label: 'antrea',
-        value: 'antrea',
+        label: CniProviders.ANTREA,
+        value: CniProviders.ANTREA,
     },
     {
-        label: 'none',
-        value: 'none',
+        label: CniProviders.NONE,
+        value: CniProviders.NONE,
     },
 ];
 
 const unmanagedClusterProtocol = [
     {
-        label: 'tcp',
-        value: 'tcp',
+        label: ClusterProtocols.TCP,
+        value: ClusterProtocols.TCP,
     },
     {
-        label: 'udp',
-        value: 'udp',
+        label: ClusterProtocols.UDP,
+        value: ClusterProtocols.UDP,
     },
     {
-        label: 'sctp',
-        value: 'sctp',
+        label: ClusterProtocols.SCTP,
+        value: ClusterProtocols.SCTP,
     },
 ];
 
@@ -119,7 +122,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         }
     };
 
-    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM].CNI_PROVIDER);
+    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CNI_PROVIDER]);
 
     const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedProvider(event.target.value);
@@ -138,21 +141,21 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         setConnectionStatus(CONNECTION_STATUS.CONNECTING);
         setConnectionMessage('Attempting to start unmanaged cluster creation.');
         const unmanagedClusterParams: CreateUnmanagedClusterParams = {
-            name: umcState[STORE_SECTION_FORM].CLUSTER_NAME,
+            name: umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME],
             provider: K8sProviders.KIND,
-            cni: umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER,
-            podcidr: umcState[STORE_SECTION_FORM].POD_CIDR,
-            servicecidr: umcState[STORE_SECTION_FORM].SERVICE_CIDR,
+            cni: umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROVIDER],
+            podcidr: umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR],
+            servicecidr: umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR],
             portmappings: [
                 combineNodeToHostPortMapping(
-                    umcState[STORE_SECTION_FORM].IP_ADDRESS,
-                    umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING,
-                    umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING,
-                    umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL
+                    umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS],
+                    umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING],
+                    umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING],
+                    umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROTOCOL]
                 ),
             ],
-            controlplanecount: umcState[STORE_SECTION_FORM].CONTROL_PLANE_NODES_COUNT,
-            workernodecount: umcState[STORE_SECTION_FORM].WORKER_NODES_COUNT,
+            controlplanecount: umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT],
+            workernodecount: umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT],
         };
 
         try {
@@ -235,6 +238,8 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     }
 
     function ClusterCidr() {
+        const CLUSTER_SERVICE_CIDR_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR;
+        const CLUSTER_POD_CIDR_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR;
         return (
             <div cds-layout="grid gap:xl wrap:none m-b:md">
                 <div cds-layout="col:3">
@@ -245,12 +250,12 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         <input
                             cds-layout="p:none"
                             {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR)}
-                            placeholder="CLUSTER SERVICE CIDR"
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR]}
                             onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR}
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR]}
                         ></input>
-                        {errors['CLUSTER_SERVICE_CIDR'] && (
-                            <CdsControlMessage status="error">{errors['CLUSTER_SERVICE_CIDR'].message}</CdsControlMessage>
+                        {errors[CLUSTER_SERVICE_CIDR_FIELD] && (
+                            <CdsControlMessage status="error">{errors[CLUSTER_SERVICE_CIDR_FIELD].message}</CdsControlMessage>
                         )}
                     </CdsInput>
                 </div>
@@ -262,12 +267,12 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         <input
                             cds-layout="p:none"
                             {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR)}
-                            placeholder="Cluster POD CIDR"
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR]}
                             onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_POD_CIDR}
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR]}
                         ></input>
-                        {errors['CLUSTER_POD_CIDR'] && (
-                            <CdsControlMessage status="error">{errors['CLUSTER_POD_CIDR'].message}</CdsControlMessage>
+                        {errors[CLUSTER_POD_CIDR_FIELD] && (
+                            <CdsControlMessage status="error">{errors[CLUSTER_POD_CIDR_FIELD].message}</CdsControlMessage>
                         )}
                     </CdsInput>
                 </div>
@@ -285,9 +290,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         <input
                             cds-layout="p:none"
                             {...register(UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS)}
-                            placeholder="127.0.0.1"
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS]}
                             onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM].IP_ADDRESS}
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS]}
                         ></input>
                     </CdsInput>
                     <CdsInput layout="vertical" control-width="shrink">
@@ -295,9 +300,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         <input
                             cds-layout="p:none"
                             {...register(UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING)}
-                            placeholder="80"
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING]}
                             onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING]}
                         ></input>
                     </CdsInput>
                     <CdsInput layout="vertical" control-width="shrink">
@@ -305,9 +310,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         <input
                             cds-layout="p:none"
                             {...register(UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING)}
-                            placeholder="80"
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING]}
                             onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING]}
                         ></input>
                     </CdsInput>
                     <CdsSelect layout="vertical" control-width="shrink" onChange={handleProtocolChange}>
@@ -325,10 +330,10 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                 </div>
                 <CdsControlMessage>
                     {combineNodeToHostPortMapping(
-                        umcState[STORE_SECTION_FORM].IP_ADDRESS,
-                        umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING,
-                        umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING,
-                        umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL
+                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS],
+                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING],
+                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING],
+                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROTOCOL]
                     )}
                 </CdsControlMessage>
             </div>

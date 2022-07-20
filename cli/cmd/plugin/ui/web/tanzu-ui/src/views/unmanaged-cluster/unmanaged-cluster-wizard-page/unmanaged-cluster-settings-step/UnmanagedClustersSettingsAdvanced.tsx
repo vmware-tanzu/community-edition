@@ -18,7 +18,10 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
+import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 const unmanagedClusterAdvancedSettingStepFormSchema = yup
@@ -43,12 +46,12 @@ interface FormInputs {
 
 const unmanagedClusterProviders = [
     {
-        label: 'kind',
-        value: 'kind',
+        label: K8sProviders.KIND,
+        value: K8sProviders.KIND,
     },
     {
-        label: 'minikube',
-        value: 'minikube',
+        label: K8sProviders.MINIKUBE,
+        value: K8sProviders.MINIKUBE,
     },
 ];
 
@@ -87,7 +90,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
         }
     };
 
-    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER);
+    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROVIDER]);
 
     const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedProvider(event.target.value);
@@ -140,19 +143,22 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
     }
 
     function ClusterNodeCountSelect() {
+        const CONTROL_PLANE_NODE_COUNT_FIELD = UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT;
+        const WORKER_NODE_COUNT_FIELD = UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT;
+
         return (
             <div cds-layout="grid gap:lg">
                 <div cds-layout="col:4">
                     <CdsInput layout="vertical" controlWidth="shrink">
                         <label cds-layout="p-b:md">Control Plane Node Count</label>
                         <input
-                            {...register('CONTROL_PLANE_NODE_COUNT')}
-                            placeholder="Control Plane Node Count"
+                            {...register(UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT)}
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]}
                             onChange={handleControlPlaneNodeCountChange}
-                            defaultValue="1"
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]}
                         ></input>
-                        {errors['CONTROL_PLANE_NODE_COUNT'] && (
-                            <CdsControlMessage status="error">{errors['CONTROL_PLANE_NODE_COUNT'].message}</CdsControlMessage>
+                        {errors[CONTROL_PLANE_NODE_COUNT_FIELD] && (
+                            <CdsControlMessage status="error">{errors[CONTROL_PLANE_NODE_COUNT_FIELD].message}</CdsControlMessage>
                         )}
                     </CdsInput>
                     <p className="description" cds-layout="m-t:sm">
@@ -163,13 +169,13 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
                     <CdsInput layout="vertical" controlWidth="shrink">
                         <label cds-layout="p-b:md">Worker Node Count</label>
                         <input
-                            {...register('WORKER_NODE_COUNT')}
-                            placeholder="Worker Node Count"
+                            {...register(UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT)}
+                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]}
                             onChange={handleWorkerNodeCountChange}
-                            defaultValue="0"
+                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]}
                         ></input>
-                        {errors['WORKER_NODE_COUNT'] && (
-                            <CdsControlMessage status="error">{errors['WORKER_NODE_COUNT'].message}</CdsControlMessage>
+                        {errors[WORKER_NODE_COUNT_FIELD] && (
+                            <CdsControlMessage status="error">{errors[WORKER_NODE_COUNT_FIELD].message}</CdsControlMessage>
                         )}
                     </CdsInput>
                     <p className="description" cds-layout="m-t:sm">
@@ -180,6 +186,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
         );
     }
     function ClusterName() {
+        const CLUSTER_NAME_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME;
         return (
             <div>
                 <CdsInput layout="vertical">
@@ -187,12 +194,14 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
                         Cluster name
                     </label>
                     <input
-                        {...register('CLUSTER_NAME')}
-                        placeholder="cluster-name"
+                        {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME)}
+                        placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                         onChange={handleClusterNameChange}
-                        defaultValue="test-cluster"
+                        defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                     ></input>
-                    {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
+                    {errors[CLUSTER_NAME_FIELD] && (
+                        <CdsControlMessage status="error">{errors[CLUSTER_NAME_FIELD].message}</CdsControlMessage>
+                    )}
                 </CdsInput>
                 <div>
                     <p className="description" cds-layout="m-t:sm">

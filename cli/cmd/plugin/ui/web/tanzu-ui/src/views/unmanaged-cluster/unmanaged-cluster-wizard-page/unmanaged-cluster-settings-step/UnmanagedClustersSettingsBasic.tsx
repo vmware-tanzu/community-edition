@@ -16,6 +16,7 @@ import { isK8sCompliantString } from '../../../../shared/validations/Validation.
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
 
 export interface FormInputs {
     [UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]: string;
@@ -47,6 +48,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = methods;
 
@@ -60,6 +62,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     };
 
     const handleClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setValue(UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME, event.target.value, { shouldValidate: true });
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME, event.target.value, currentStep, errors);
         }
@@ -86,6 +89,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     );
 
     function ClusterName() {
+        const CLUSTER_NAME_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME;
         return (
             <div>
                 <CdsInput layout="vertical">
@@ -94,11 +98,13 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
                     </label>
                     <input
                         {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME)}
-                        placeholder="cluster-name"
+                        placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                         onChange={handleClusterNameChange}
-                        defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_NAME}
+                        defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                     ></input>
-                    {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
+                    {errors[CLUSTER_NAME_FIELD] && (
+                        <CdsControlMessage status="error">{errors[CLUSTER_NAME_FIELD].message}</CdsControlMessage>
+                    )}
                 </CdsInput>
                 <div>
                     <p className="description" cds-layout="m-t:sm">
