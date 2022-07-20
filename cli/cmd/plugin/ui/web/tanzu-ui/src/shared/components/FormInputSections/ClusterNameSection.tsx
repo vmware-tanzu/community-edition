@@ -44,7 +44,7 @@ export function ClusterNameSection(
     errors: { [key: string]: FieldError | undefined },
     register: (name: any, options?: RegisterOptions<any, any>) => UseFormRegisterReturn,
     clusterNameChange: (clusterName: string, fieldName?: string) => void,
-    defaultClusterName?: string
+    placeholderClusterName?: string
 ) {
     const onClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         clusterNameChange(event.target.value || '', field);
@@ -57,13 +57,7 @@ export function ClusterNameSection(
                 <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
                     <CdsInput layout="compact">
                         <label cds-layout="p-b:xs">Cluster name</label>
-                        <input
-                            type="text"
-                            {...register(field)}
-                            onChange={onClusterNameChange}
-                            placeholder="cluster-name"
-                            defaultValue={defaultClusterName}
-                        />
+                        <input type="text" {...register(field)} onChange={onClusterNameChange} placeholder={placeholderClusterName} />
                         {fieldError && <CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>}
                     </CdsInput>
                 </div>

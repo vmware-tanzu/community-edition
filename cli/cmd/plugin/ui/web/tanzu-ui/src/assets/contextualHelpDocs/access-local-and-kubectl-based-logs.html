@@ -1,0 +1,54 @@
+<!--
+topicTitle: Access local and kubectl-based Logs
+topicIds: [ctx-management-clusters]
+-->
+
+<p>Tanzu Community Edition retains logs for management and workload cluster deployment and operation.</p>
+
+<h4>Using kubectl-based Cluster Logs</h4>
+
+<p>If local cluster logs do not provide sufficient information, you can retrieve logs using kubectl as follows:</p>
+
+<h5>Using kubectl-based Cluster Logs</h5>
+
+<p>
+    To monitor and troubleshoot management cluster deployments, review: The log file listed in the terminal output Logs of the command
+    execution can also be found at…
+</p>
+
+<p>The log from your cloud provider module for Cluster API. Retrieve the most recent one as follows:</p>
+
+<ul>
+    <li>
+        Search your tanzu management-cluster create output for Bootstrapper created. Kubeconfig: and copy the kubeconfig file path listed.
+        The file is in ~/.kube-tkg/tmp/.
+    </li>
+
+    <li>
+        Run the following, based on your cloud provider:
+
+        <ul>
+            <li>
+                vSphere:
+                <code
+                    >kubectl logs deployment.apps/capv-controller-manager -n capv-system manager --kubeconfig &lt;PATH-TO-KUBECONFIG&gt;
+                </code>
+            </li>
+
+            <li>
+                Amazon Web Services (AWS):
+                <code>
+                    kubectl logs deployment.apps/capa-controller-manager -n capa-system manager --kubeconfig &lt;PATH-TO-KUBECONFIG&gt;
+                </code>
+            </li>
+
+            <li>
+                Azure:
+                <code>
+                    kubectl logs deployment.apps/capz-controller-manager -n capz-system manager --kubeconfig
+                    &lt;PATH-TO-KUBECONFIG&gt;</code
+                >
+            </li>
+        </ul>
+    </li>
+</ul>

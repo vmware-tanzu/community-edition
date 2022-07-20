@@ -19,6 +19,7 @@ import { managementCredentialFormSchema } from './management.credential.form.sch
 import Login from './login/Login';
 import './ManagementCredentials.scss';
 import { AZURE_FIELDS } from '../../AzureManagementCluster.constants';
+import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 
 export interface FormInputs {
     TENANT_ID: string;
@@ -45,12 +46,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
         setValue,
         formState: { errors },
     } = methods;
-    const [connected, setConnection] = useState(false);
     const [regions, setRegions] = useState<AzureLocation[]>([]);
+    const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
+    const [message, setMessage] = useState('');
 
     const handleInputChange = (field: FormField, value: string) => {
         if (field !== AZURE_FIELDS.SSH_PUBLIC_KEY && field !== AZURE_FIELDS.REGION) {
-            setConnection(false);
+            setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         }
         setValue(field, value, { shouldValidate: true });
         if (handleValueChange) {
@@ -62,7 +64,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
         try {
             const azureRegions = await AzureService.getAzureRegions();
             setRegions(azureRegions);
-            setConnection(true);
         } catch (e) {
             console.log(console.log(`Error when calling get azure regions API: ${e}`));
         }
@@ -76,15 +77,19 @@ function ManagementCredentials(props: Partial<StepProps>) {
             azureCloud: azureState[STORE_SECTION_FORM].AZURE_ENVIRONMENT,
         };
         try {
+            setConnectionStatus(CONNECTION_STATUS.CONNECTING);
+            setMessage('Connecting to Azure');
             await AzureService.setAzureEndpoint(params);
-            setConnection(true);
+            setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+            setMessage('Connected to Azure');
             retrieveRegions();
-        } catch (e) {
-            console.log('Error');
+        } catch (err: any) {
+            setConnectionStatus(CONNECTION_STATUS.ERROR);
+            setMessage(`Unable to connect to Azure: ${err.body.message}`);
         }
     };
     const onSubmit: SubmitHandler<FormInputs> = () => {
-        if (connected && Object.keys(errors).length === 0) {
+        if (CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
@@ -102,7 +107,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 </a>
             </p>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <Login connected={connected} methods={methods} handleConnect={handleConnect} handleInputChange={handleInputChange} />
+                <Login
+                    status={connectionStatus}
+                    message={message}
+                    methods={methods}
+                    handleConnect={handleConnect}
+                    handleInputChange={handleInputChange}
+                />
                 <div cds-layout="horizontal gap:lg">
                     <CdsSelect layout="compact">
                         <label>Region </label>

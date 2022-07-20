@@ -1,0 +1,33 @@
+<!--
+topicTitle: Connect to Cluster Nodes with SSH
+topicIds: [ctx-workload-clusters]
+-->
+
+<p>
+    You can use SSH to connect to nodes in management clusters and workload clusters. The SSH key pair that you created when you deployed
+    the management cluster must be available on the machine on which you run the SSH command.
+</p>
+
+<p>The SSH key used to access clusters are associated with the following Linux users:</p>
+
+<ul>
+    <li>vSphere management cluster and workload cluster nodes running on both Photon OS and Ubuntu: capv</li>
+    <li>Amazon EC2 bastion nodes: ubuntu</li>
+    <li>Amazon EC2 management cluster and workload cluster nodes running on Ubuntu: ubuntu</li>
+    <li>Amazon EC2 management cluster and workload cluster nodes running on Amazon Linux: ec2-user</li>
+
+    <li>Azure management cluster and workload cluster nodes (always Ubuntu): capi</li>
+</ul>
+
+<p>To connect to a node by using SSH, run one of the following commands from a machine containing the SSH key:</p>
+
+<ul>
+    <li>vSphere nodes: <code>ssh capv@&lt;em&gt;node_address</code></li>
+    <li>Amazon EC2 bastion nodes, management cluster, and workload nodes on Ubuntu:<code>ssh ubuntu@node_address</code></li>
+    <li>Amazon EC2 management cluster and workload nodes running on Amazon Linux: <code>ssh ec2-user@node_address</code></li>
+    <li>Azure nodes: <code>ssh capi@&lt;em&gt;node_address</code></li>
+</ul>
+
+<p>
+    Each cluster host contains the public key. The hosts will not accept an SSH password <code>(PasswordAuthentication is set to no).</code>
+</p>
