@@ -237,7 +237,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     function ClusterCidr() {
         return (
             <div cds-layout="grid gap:xl wrap:none m-b:md">
-                <div cds-layout="col:4">
+                <div cds-layout="col:3">
                     <CdsInput layout="vertical">
                         <label>
                             Cluster service CIDR <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
@@ -254,7 +254,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                         )}
                     </CdsInput>
                 </div>
-                <div cds-layout="col:4">
+                <div cds-layout="col:3">
                     <CdsInput layout="vertical">
                         <label>
                             Cluster pod CIDR <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
