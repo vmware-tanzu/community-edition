@@ -44,11 +44,11 @@ interface FormInputs {
 const unmanagedClusterProviders = [
     {
         label: 'kind',
-        value: 'KIND',
+        value: 'kind',
     },
     {
         label: 'minikube',
-        value: 'MINIKUBE',
+        value: 'minikube',
     },
 ];
 
