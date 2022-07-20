@@ -3,7 +3,6 @@ import React, { ChangeEvent, useContext, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import { CdsSelect } from '@cds/react/select';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
@@ -20,6 +19,7 @@ import Login from './login/Login';
 import './ManagementCredentials.scss';
 import { AZURE_FIELDS } from '../../AzureManagementCluster.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 
 export interface FormInputs {
     TENANT_ID: string;
@@ -49,10 +49,21 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [regions, setRegions] = useState<AzureLocation[]>([]);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
+    const [regionLoading, setRegionLoading] = useState(false);
+
+    const resetField = (field: FormField) => {
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, field, '', currentStep, errors);
+            setValue(field, '');
+        }
+    };
 
     const handleInputChange = (field: FormField, value: string) => {
         if (field !== AZURE_FIELDS.SSH_PUBLIC_KEY && field !== AZURE_FIELDS.REGION) {
             setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+            if (azureState[STORE_SECTION_FORM].REGION) {
+                resetField(AZURE_FIELDS.REGION);
+            }
         }
         setValue(field, value, { shouldValidate: true });
         if (handleValueChange) {
@@ -62,10 +73,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const retrieveRegions = async () => {
         try {
+            setRegionLoading(true);
             const azureRegions = await AzureService.getAzureRegions();
             setRegions(azureRegions);
         } catch (e) {
             console.log(console.log(`Error when calling get azure regions API: ${e}`));
+        } finally {
+            setRegionLoading(false);
         }
     };
     const handleConnect = async () => {
@@ -115,26 +129,23 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     handleInputChange={handleInputChange}
                 />
                 <div cds-layout="horizontal gap:lg">
-                    <CdsSelect layout="compact">
-                        <label>Region </label>
-                        <select
-                            className="select-sm-width"
-                            {...register(AZURE_FIELDS.REGION)}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) => handleInputChange(AZURE_FIELDS.REGION, e.target.value)}
-                            defaultValue={azureState[STORE_SECTION_FORM].REGION}
-                            data-testid="region-select"
-                        >
-                            <option></option>
-                            {regions.map((region) => (
-                                <option key={region.name} value={region.name}>
-                                    {region.displayName}
-                                </option>
-                            ))}
-                        </select>
-                        {errors[AZURE_FIELDS.REGION] && (
-                            <CdsControlMessage status="error">{errors[AZURE_FIELDS.REGION]?.message}</CdsControlMessage>
-                        )}
-                    </CdsSelect>
+                    <SpinnerSelect
+                        label="Region"
+                        className="select-sm-width"
+                        disabled={connectionStatus !== CONNECTION_STATUS.CONNECTED}
+                        handleSelect={(e: ChangeEvent<HTMLSelectElement>) => handleInputChange(AZURE_FIELDS.REGION, e.target.value)}
+                        name="REGION"
+                        isLoading={regionLoading}
+                        register={register}
+                        error={errors['REGION']?.message}
+                    >
+                        <option></option>
+                        {regions.map((region) => (
+                            <option key={region.name} value={region.name}>
+                                {region.displayName}
+                            </option>
+                        ))}
+                    </SpinnerSelect>
                     <CdsTextarea status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}>
                         <label>SSH public key</label>
                         <textarea

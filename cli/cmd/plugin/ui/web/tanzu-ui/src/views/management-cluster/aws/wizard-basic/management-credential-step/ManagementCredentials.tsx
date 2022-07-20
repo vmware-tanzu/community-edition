@@ -3,13 +3,12 @@ import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import { CdsSelect } from '@cds/react/select';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/core/icon';
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
+import { CdsFormGroup } from '@cds/react/forms';
 
 // App import
 import './ManagementCredentials.scss';
@@ -24,6 +23,8 @@ import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
 export interface FormInputs {
@@ -46,6 +47,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const { awsState } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
+    const [keyPairLoading, setKeyPairLoading] = useState(false);
 
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
@@ -67,11 +69,21 @@ function ManagementCredentials(props: Partial<StepProps>) {
         AwsService.getAwsRegions().then((data) => setRegions(data));
     }, []);
 
+    const fetchKeyPairs = async () => {
+        try {
+            setKeyPairLoading(true);
+            const keyPairs = await AwsService.getAwsKeyPairs();
+            setKeyPairs(keyPairs);
+        } catch (e: any) {
+            console.log(`Unabled to get ec2 key pair: ${e}`);
+        } finally {
+            setKeyPairLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            AwsService.getAwsKeyPairs().then((data) => {
-                setKeyPairs(data);
-            });
+            fetchKeyPairs();
         }
     }, [connectionStatus]);
 
@@ -115,9 +127,15 @@ function ManagementCredentials(props: Partial<StepProps>) {
             setMessage(`Unable to connect to AWS: ${err.body.message}`);
         }
     };
-
+    const resetField = (field: string) => {
+        if (handleValueChange && awsState[STORE_SECTION_FORM][field]) {
+            handleValueChange(INPUT_CHANGE, field, '', currentStep, errors);
+            setValue('EC2_KEY_PAIR', '');
+        }
+    };
     const handleSelectProfile = (profile: string) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+        resetField('EC2_KEY_PAIR');
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(INPUT_CHANGE, 'PROFILE', profile, currentStep, errors);
@@ -127,6 +145,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const handleSelectRegion = (region: string) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+        resetField('EC2_KEY_PAIR');
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(INPUT_CHANGE, 'REGION', region, currentStep, errors);
@@ -145,6 +164,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const handleInputChange = (field: string, value: string) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+        resetField('EC2_KEY_PAIR');
         if (handleValueChange) {
             setTimeout(() => {
                 handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
@@ -152,12 +172,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
-    const handleRefresh = (event: MouseEvent<HTMLAnchorElement>) => {
+    const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            AwsService.getAwsKeyPairs().then((data) => {
-                setKeyPairs(data);
-            });
+            fetchKeyPairs();
         }
     };
 
@@ -211,34 +229,34 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     <ConnectionNotification message={message} status={connectionStatus}></ConnectionNotification>
                 </div>
                 <div cds-layout="horizontal gap:lg align:vertical-center">
-                    <CdsSelect layout="compact">
-                        <label>
-                            EC2 key pair <CdsIcon shape="info-circle" size="md"></CdsIcon>
-                        </label>
-                        <select
-                            className="select-md-width"
-                            {...register('EC2_KEY_PAIR')}
-                            defaultValue={awsState[STORE_SECTION_FORM].EC2_KEY_PAIR}
-                            onChange={handleSelectKeyPair}
-                            data-testid="keypair-select"
-                        >
-                            <option></option>
-                            {keypairs.map((keypair) => (
-                                <option key={keypair.id} value={keypair.name}>
-                                    {keypair.name}
-                                </option>
-                            ))}
-                        </select>
-                        {errors['EC2_KEY_PAIR'] && (
-                            <CdsControlMessage status="error" className="error-height">
-                                {errors['EC2_KEY_PAIR'].message}
-                            </CdsControlMessage>
-                        )}
-                        <CdsControlMessage className="control-message-width">
-                            Connect with your AWS profile to view available EC2 key pairs.
-                        </CdsControlMessage>
-                    </CdsSelect>
-                    <a href="/" className="btn-refresh icon-blue" onClick={handleRefresh} cds-text="secondary">
+                    <SpinnerSelect
+                        className="select-md-width"
+                        disabled={connectionStatus !== CONNECTION_STATUS.CONNECTED}
+                        label="EC2 key pair"
+                        handleSelect={handleSelectKeyPair}
+                        name="EC2_KEY_PAIR"
+                        controlMessage="EC2 key pairs will be retrieved when connected to AWS."
+                        isLoading={keyPairLoading}
+                        register={register}
+                        error={errors['EC2_KEY_PAIR']?.message}
+                    >
+                        <option></option>
+                        {keypairs.map((keypair) => (
+                            <option key={keypair.id} value={keypair.name}>
+                                {keypair.name}
+                            </option>
+                        ))}
+                    </SpinnerSelect>
+                    <a
+                        href="/"
+                        className={
+                            connectionStatus === CONNECTION_STATUS.CONNECTED && !keyPairLoading
+                                ? 'btn-refresh icon-blue'
+                                : 'btn-refresh disabled'
+                        }
+                        onClick={handleRefresh}
+                        cds-text="secondary"
+                    >
                         <CdsIcon shape="refresh" size="sm"></CdsIcon>{' '}
                         <span cds-layout="m-t:sm" className="vertical-mid">
                             REFRESH

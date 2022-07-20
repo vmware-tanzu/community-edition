@@ -85,7 +85,7 @@ function ManagementCredentialProfile(props: Props) {
                     </CdsSelect>
 
                     <CdsSelect layout="compact">
-                        <label>AWS Region </label>
+                        <label>AWS region </label>
                         <select
                             className="select-sm-width"
                             {...register('REGION')}
