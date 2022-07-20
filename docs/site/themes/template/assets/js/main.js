@@ -203,4 +203,32 @@ document.addEventListener('DOMContentLoaded', function(){
             });
         }
     }
+
+    /**
+    * Load video in modal when modal is fired
+    */
+    var
+    $videoModal = $('#videoModal'),
+    $featuredVideo = $videoModal.find('#featuredVideo')
+    ;
+    $videoModal.on('show.bs.modal', function (e) {
+    var
+        $this = $(this),
+        $trigger = $(e.relatedTarget),
+        videoId = $trigger.data('videoId'),
+        videoTitle = $trigger.data('title')
+    ;
+    $this.find('h2').html(videoTitle);
+    $featuredVideo.show();
+    $featuredVideo.attr('src', '//www.youtube.com/embed/' + videoId);
+    });
+
+    /**
+    * unload video in modal when modal is closed
+    */
+    $videoModal.on('hide.bs.modal', function (e) {
+        var $this = $(this);
+        $this.find('h2').html('');
+        $featuredVideo.attr('src', '').hide();
+    });
 });
