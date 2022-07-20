@@ -8,7 +8,7 @@ import './ConfigBanner.scss';
 function ConfigBanner() {
     return (
         <div className="banner-container">
-            <p>Simple configuration</p>
+            <p>Basic configuration</p>
             <CdsButton action="outline" className="btn">
                 Use advanced configuration
             </CdsButton>

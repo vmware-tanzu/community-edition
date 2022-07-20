@@ -1,8 +1,8 @@
 // React imports
-import React, { ChangeEvent, useState, useContext } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 
 // Library imports
-import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
+import { blockIcon, blocksGroupIcon, ClarityIcons, clusterIcon } from '@cds/core/icon';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import { CdsSelect } from '@cds/react/select';
@@ -14,12 +14,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import { CreateUnmanagedClusterParams } from '../../../../swagger-api';
+import { DeploymentStates, DeploymentTypes } from '../../../../shared/constants/Deployment.constants';
+import { DEPLOYMENT_STATUS_CHANGED } from '../../../../state-management/actions/Deployment.actions';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { isValidCidr, isValidIp } from '../../../../shared/validations/Validation.service';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
+import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
+import { NavRoutes } from '../../../../shared/constants/NavRoutes.constants';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { Store } from '../../../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import { UnmanagedService } from '../../../../swagger-api/services/UnmanagedService';
+import { useNavigate } from 'react-router-dom';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -54,37 +63,46 @@ const unmanagedClusterNetworkSettingStepFormSchema = yup
 const unmanagedClusterProviders = [
     {
         label: 'calico',
-        value: 'CALICO',
+        value: 'calico',
     },
     {
         label: 'antrea',
-        value: 'ANTREA',
+        value: 'antrea',
     },
     {
         label: 'none',
-        value: 'NONE',
+        value: 'none',
     },
 ];
 
 const unmanagedClusterProtocol = [
     {
         label: 'tcp',
-        value: 'TCP',
+        value: 'tcp',
     },
     {
         label: 'udp',
-        value: 'UDP',
+        value: 'udp',
     },
     {
         label: 'sctp',
-        value: 'SCTP',
+        value: 'sctp',
     },
 ];
 
 function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     const { handleValueChange, currentStep } = props;
 
+    const { dispatch } = useContext(Store);
     const { umcState } = useContext(UmcStore);
+
+    const [connectionMessage, setConnectionMessage] = useState('');
+    const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
+
+    const navigate = useNavigate();
+    const navigateToProgress = (): void => {
+        navigate('/' + NavRoutes.DEPLOY_PROGRESS);
+    };
 
     function combineNodeToHostPortMapping(ipAddress: string, nodePort: string, hostPort: string, protocol: string) {
         return `${ipAddress}:${nodePort}:${hostPort}/${protocol}`;
@@ -116,21 +134,76 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         }
     };
 
+    const deployUnmanagedCluster = async () => {
+        setConnectionStatus(CONNECTION_STATUS.CONNECTING);
+        setConnectionMessage('Attempting to start unmanaged cluster creation.');
+        const unmanagedClusterParams: CreateUnmanagedClusterParams = {
+            name: umcState[STORE_SECTION_FORM].CLUSTER_NAME,
+            provider: K8sProviders.KIND,
+            cni: umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER,
+            podcidr: umcState[STORE_SECTION_FORM].POD_CIDR,
+            servicecidr: umcState[STORE_SECTION_FORM].SERVICE_CIDR,
+            portmappings: [
+                combineNodeToHostPortMapping(
+                    umcState[STORE_SECTION_FORM].IP_ADDRESS,
+                    umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING,
+                    umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING,
+                    umcState[STORE_SECTION_FORM].CLUSTER_PROTOCOL
+                ),
+            ],
+            controlplanecount: umcState[STORE_SECTION_FORM].CONTROL_PLANE_NODES_COUNT,
+            workernodecount: umcState[STORE_SECTION_FORM].WORKER_NODES_COUNT,
+        };
+
+        try {
+            await UnmanagedService.createUnmanagedCluster(unmanagedClusterParams);
+
+            dispatch({
+                type: DEPLOYMENT_STATUS_CHANGED,
+                payload: {
+                    type: DeploymentTypes.UNMANAGED_CLUSTER,
+                    status: DeploymentStates.RUNNING,
+                },
+            });
+
+            setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+            navigateToProgress();
+        } catch (e) {
+            setConnectionStatus(CONNECTION_STATUS.ERROR);
+            const msg = 'Error starting unmanaged cluster creation. Please see browser console for more details.';
+            console.warn(`Error calling unmanaged cluster create API: ${e}`);
+            setConnectionMessage(msg);
+        }
+    };
+
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
             <div cds-layout="p-b:lg" cds-text="title">
                 Network settings
             </div>
             <div cds-layout="grid">
-                <div cds-layout="col@sm:8">
+                <div cds-layout="col:12">
                     <div cds-layout="vertical gap:lg">
                         {ClusterProvider()}
                         {ClusterCidr()}
                         {NodeHostPortMapping()}
-                        <CdsButton cds-layout="col:start-1" status="success">
-                            <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                            Create Unmanaged cluster
-                        </CdsButton>
+                        <div cds-layout="grid align:vertical-center gap:md">
+                            <div cds-layout="col:3">
+                                <CdsButton
+                                    cds-layout="col:start-1"
+                                    status="success"
+                                    onClick={deployUnmanagedCluster}
+                                    disabled={connectionStatus === CONNECTION_STATUS.CONNECTING}
+                                >
+                                    <CdsIcon shape="cluster" size="sm"></CdsIcon>
+                                    Create Unmanaged cluster
+                                </CdsButton>
+                            </div>
+                            <div></div>
+                            <div cds-layout="col:8 p-b:sm">
+                                <ConnectionNotification status={connectionStatus} message={connectionMessage} />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

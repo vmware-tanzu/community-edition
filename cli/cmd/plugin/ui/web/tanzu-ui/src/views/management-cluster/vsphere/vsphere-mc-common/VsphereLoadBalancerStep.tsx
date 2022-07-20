@@ -11,7 +11,13 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { ENDPOINT_PROVIDER_IDS, ENDPOINT_PROVIDERS, IPFAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
+import {
+    ENDPOINT_PROVIDERS,
+    ENDPOINT_PROVIDERS_DISPLAY,
+    IP_FAMILIES_DISPLAY,
+    IP_FAMILIES,
+    VSPHERE_FIELDS,
+} from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { yupServerTest } from './vsphere.credential.form.schema';
@@ -24,9 +30,9 @@ export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm, handleValueChange } = props;
     const { vsphereState } = useContext(VsphereStore);
     const [endpoint, setEndpoint] = useState<string>('');
-    const ipFamily = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.IPFAMILY] || IPFAMILIES.IPv4;
+    const ipFamilyId = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.IPFAMILY] || IP_FAMILIES.IPv4;
     const vsphereLoadBalancerStepFormSchema = yup.object({
-        [VSPHERE_FIELDS.CLUSTER_ENDPOINT]: yupServerTest(ipFamily).required('vSphere server name is required'),
+        [VSPHERE_FIELDS.CLUSTER_ENDPOINT]: yupServerTest(ipFamilyId).required('vSphere server name is required'),
     });
     const methods = useForm<VsphereLoadBalancerFormInputs>({
         resolver: yupResolver(vsphereLoadBalancerStepFormSchema),
@@ -60,7 +66,7 @@ export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
         <div>
             <div className="wizard-content-container">
                 <h2 cds-layout="m-t:lg">vSphere Load Balancer Settings</h2>
-                {EndpointProviderSection(endpoint, ipFamily, errors, register, onEndpointChange)}
+                {EndpointProviderSection(endpoint, ipFamilyId, errors, register, onEndpointChange)}
                 <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
                     NEXT
                 </CdsButton>
@@ -71,7 +77,7 @@ export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
 
 function EndpointProviderSection(
     endpoint: string,
-    ipFamily: string,
+    ipFamily: IP_FAMILIES,
     errors: any,
     register: any,
     onEndpointChange: (endpoint: string) => void
@@ -86,15 +92,15 @@ function EndpointProviderSection(
                 <CdsSelect layout="vertical" controlWidth="shrink">
                     <label cds-layout="p-b:xs">Control Plane Endpoint Provider</label>
                     <select>
-                        <option key={ENDPOINT_PROVIDER_IDS.KUBE_VIP} value={ENDPOINT_PROVIDER_IDS.KUBE_VIP}>
-                            {ENDPOINT_PROVIDERS[ENDPOINT_PROVIDER_IDS.KUBE_VIP]}
+                        <option key={ENDPOINT_PROVIDERS.KUBE_VIP} value={ENDPOINT_PROVIDERS.KUBE_VIP}>
+                            {ENDPOINT_PROVIDERS_DISPLAY[ENDPOINT_PROVIDERS.KUBE_VIP]}
                         </option>
                     </select>
                     <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
                 </CdsSelect>
 
                 <CdsInput layout="compact">
-                    <label cds-layout="p-b:xs">Control Plane Endpoint ({ipFamily})</label>
+                    <label cds-layout="p-b:xs">Control Plane Endpoint ({IP_FAMILIES_DISPLAY[ipFamily]})</label>
                     <input {...register(VSPHERE_FIELDS.CLUSTER_ENDPOINT)} onChange={handleEndpointChange} defaultValue={endpoint} />
                     {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}
                     {!err && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}

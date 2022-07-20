@@ -76,14 +76,16 @@ describe('ManagementCredential component', () => {
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
-        expect(await screen.findByText('CONNECTED')).toBeInTheDocument();
+        expect(await screen.findByText('Connected to AWS')).toBeInTheDocument();
+        expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
     });
     it('should select a key pair', async () => {
         render(<ManagementCredentials handleValueChange={jest.fn} />);
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
-        await screen.findByText('CONNECTED');
+        expect(await screen.findByText('Connected to AWS')).toBeInTheDocument();
+        expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
         const el = await screen.findByText('us-west-2-kp');
         const keypairEl = screen.getByTestId('keypair-select');
         // eslint-disable-next-line testing-library/no-unnecessary-act
@@ -97,7 +99,8 @@ describe('ManagementCredential component', () => {
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
-        await screen.findByText('CONNECTED');
+        expect(await screen.findByText('Connected to AWS')).toBeInTheDocument();
+        expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
         server.use(
             rest.get('/api/provider/aws/keypair', (req, res, ctx) => {
                 return res(
@@ -120,7 +123,8 @@ describe('ManagementCredential component', () => {
             await screen.findByText('us-east-1');
             fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
             fireEvent.click(screen.getByText('CONNECT'));
-            await screen.findByText('CONNECTED');
+            expect(await screen.findByText('Connected to AWS')).toBeInTheDocument();
+            expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
             fireEvent.change(screen.getByPlaceholderText('Access key ID'), { target: { value: 'myTestAccessKeyId' } });
             expect(await screen.findByText('CONNECT')).toBeInTheDocument();
         });
@@ -129,7 +133,8 @@ describe('ManagementCredential component', () => {
             await screen.findByText('us-east-1');
             fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
             fireEvent.click(screen.getByText('CONNECT'));
-            await screen.findByText('CONNECTED');
+            expect(await screen.findByText('Connected to AWS')).toBeInTheDocument();
+            expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
             await screen.findByText('profile2');
             fireEvent.change(screen.getByTestId('profile-select'), { target: { value: 'profile2' } });
             expect(await screen.findByText('CONNECT')).toBeInTheDocument();

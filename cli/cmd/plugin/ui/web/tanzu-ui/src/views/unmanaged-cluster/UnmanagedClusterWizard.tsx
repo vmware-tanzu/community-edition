@@ -54,7 +54,7 @@ function UnmanagedClusterWizard() {
         return (
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
-                    <div>Simple configuration</div>
+                    <div>Basic configuration</div>
                     <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => toggleBasicAdvanced()}>
                         Use Advanced Configuration
                     </CdsButton>
@@ -70,7 +70,7 @@ function UnmanagedClusterWizard() {
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Advanced configuration</div>
                     <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => setUseBasicSettings(!useBasicSettings)}>
-                        Use Simple Configuration
+                        Use Basic Configuration
                     </CdsButton>
                 </div>
                 <UnmanagedClusterWizardAdvanced />

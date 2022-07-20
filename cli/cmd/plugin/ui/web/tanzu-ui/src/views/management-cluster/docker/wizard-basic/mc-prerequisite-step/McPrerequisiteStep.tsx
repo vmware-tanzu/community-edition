@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 // Library imports
-import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
@@ -11,18 +10,22 @@ import { CriService } from '../../../../../swagger-api';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import './McPrerequisiteStep.scss';
 import { STATUS } from '../../../../../shared/constants/App.constants';
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 
 function McPrerequisiteStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, setTabStatus, tabStatus } = props;
-    const [connected, setConnection] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
+    const [message, setMessage] = useState('');
     const connect = useCallback(async () => {
+        setConnectionStatus(CONNECTION_STATUS.CONNECTING);
+        setMessage('Connecting to docker deamon');
         try {
             await CriService.getContainerRuntimeInfo();
-            setConnection(true);
+            setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+            setMessage('Running Docker daemon');
         } catch (err: any) {
-            setErrorMessage(err.body.message);
-            setConnection(false);
+            setConnectionStatus(CONNECTION_STATUS.ERROR);
+            setMessage(`Unable to connect to Docker: ${err.body.message}`);
         }
     }, []);
 
@@ -31,7 +34,7 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
     }, [connect]);
 
     const handleNext = () => {
-        if (connected) {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             if (tabStatus && currentStep && setTabStatus) {
                 tabStatus[currentStep - 1] = STATUS.VALID;
                 setTabStatus(tabStatus);
@@ -47,26 +50,16 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
             <p cds-layout="m-y:lg" className="description">
                 Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB.
             </p>
-            {connected && (
-                <CdsAlertGroup
-                    status="success"
-                    aria-label="Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB."
-                >
-                    <CdsAlert>Running Docker daemon</CdsAlert>
-                </CdsAlertGroup>
-            )}
-            {!connected && errorMessage && (
-                <CdsAlertGroup status="danger">
-                    <CdsAlert>{errorMessage}</CdsAlert>
-                </CdsAlertGroup>
-            )}
-            <div cds-layout="p-y:lg">
-                <CdsButton onClick={connect} disabled={connected}>
+            <ConnectionNotification status={connectionStatus} message={message}></ConnectionNotification>
+            <div cds-layout="p-t:lg" className={connectionStatus === CONNECTION_STATUS.ERROR ? '' : 'hidden'}>
+                <CdsButton onClick={connect}>
                     <CdsIcon shape="connect" size="md"></CdsIcon>
                     CONNECT DOCKER DAEMON
                 </CdsButton>
             </div>
-            <CdsButton onClick={handleNext}>NEXT</CdsButton>
+            <div cds-layout="p-y:lg">
+                <CdsButton onClick={handleNext}>NEXT</CdsButton>
+            </div>
         </div>
     );
 }

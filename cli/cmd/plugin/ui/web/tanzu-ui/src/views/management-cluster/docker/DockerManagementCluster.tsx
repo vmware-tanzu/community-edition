@@ -18,7 +18,6 @@ function DockerManagementCluster() {
                             Create Management Cluster on Docker
                         </span>
                     </div>
-
                     {/* Disable Basic/Advanced banner until advanced settings available */}
                     {/* <ConfigBanner /> */}
                     <DockerManagementClusterBasic />

@@ -1,0 +1,25 @@
+<!--
+topicTitle: Cleanup after an unsuccessful management deployment
+topicIds: [ctx-management-clusters]
+-->
+
+<p>
+    When a management cluster fails to deploy successfully (or partially deploys), it may leave orphaned objects in your bootstrap
+    environment.
+</p>
+
+<p>Clean the bootstrap environment prior to a subsequent attempt of redeploying the management cluster.</p>
+
+<p>If the management cluster got partially created, attempt to delete the resources for the failed cluster:</p>
+
+<p><code>tanzu management-cluster delete &lt;YOUR-CLUSTER-NAME&gt; </code></p>
+
+<p>Next, if the bootstrap cluster still exists, delete it:</p>
+
+<p>
+    <code> kind get clusters tkg-kind-b4o9sn5948199qbgca8d</code>
+</p>
+
+<code> kind delete cluster --name tkg-kind-b4o9sn5948199qbgca8d</code>
+
+<p>Use docker to stop and remove any running containers related to the bootstrap process</p>
