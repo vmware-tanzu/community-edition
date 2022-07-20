@@ -65,14 +65,7 @@ const useAwsDeployment = () => {
             },
             ceipOptIn: awsState[STORE_SECTION_FORM].ENABLE_CEIP_PARTICIPATION,
             labels: {},
-            os: {
-                name: awsState[STORE_SECTION_FORM].IMAGE_NAME,
-                osInfo: {
-                    arch: awsState[STORE_SECTION_FORM].IMAGE_OS_ARCH,
-                    name: awsState[STORE_SECTION_FORM].IMAGE_OS_NAME,
-                    version: awsState[STORE_SECTION_FORM].IMAGE_OS_VERSION,
-                },
-            },
+            os: awsState[STORE_SECTION_FORM].IMAGE_INFO,
             annotations: {
                 description: '',
                 location: '',

@@ -69,10 +69,7 @@ function ManagementClusterSettings<T>(props: Partial<MCSettings<T>>) {
     const [images, setImages] = useState<T[]>([]);
     const setImageParameters = (image) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'IMAGE_NAME', image.name, currentStep, errors);
-            handleValueChange(INPUT_CHANGE, 'IMAGE_OS_ARCH', image.osInfo.arch, currentStep, errors);
-            handleValueChange(INPUT_CHANGE, 'IMAGE_OS_NAME', image.osInfo.name, currentStep, errors);
-            handleValueChange(INPUT_CHANGE, 'IMAGE_OS_VERSION', image.osInfo.version, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, 'IMAGE_INFO', image, currentStep, errors);
         }
     };
     const handleNodeProfileChange = (event: ChangeEvent<HTMLSelectElement>) => {

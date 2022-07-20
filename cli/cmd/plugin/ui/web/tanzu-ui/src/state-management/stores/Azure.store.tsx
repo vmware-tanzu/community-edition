@@ -18,10 +18,7 @@ const initialState = {
         REGION: '',
         SSH_PUBLIC_KEY: '',
         NODE_PROFILE: '',
-        IMAGE_NAME: '',
-        IMAGE_OS_ARCH: '',
-        IMAGE_OS_NAME: '',
-        IMAGE_OS_VERSION: '',
+        IMAGE_INFO: {},
         ...AZURE_DEFAULT_VALUES,
     },
 };
