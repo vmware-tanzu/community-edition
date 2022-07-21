@@ -1,5 +1,5 @@
-export const ClusterProtocols = {
-    TCP: 'tcp',
-    UDP: 'udp',
-    SCTP: 'sctp',
-};
+export const enum ClusterProtocols {
+    TCP = 'tcp',
+    UDP = 'udp',
+    SCTP = 'sctp',
+}
