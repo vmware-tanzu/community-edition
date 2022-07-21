@@ -13,7 +13,7 @@ import PageLoading from '../../shared/components/PageLoading/PageLoading';
 import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
-import UnmanagedClusterCard from './UnmanagedClusterCard/UnmanagedClusterCard';
+import UnmanagedClusterCard from './unmanaged-cluster-common/UnmanagedClusterCard/UnmanagedClusterCard';
 import './UnmanagedClusterInventory.scss';
 
 function UnmanagedClusterInventory() {
