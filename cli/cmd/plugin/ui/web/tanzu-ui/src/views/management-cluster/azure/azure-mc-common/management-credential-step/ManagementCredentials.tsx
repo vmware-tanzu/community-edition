@@ -17,7 +17,7 @@ import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/For
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialsLogin from './ManagementCredentialsLogin';
 import './ManagementCredentials.scss';
-import { AZURE_FIELDS } from '../../AzureManagementCluster.constants';
+import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 

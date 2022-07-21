@@ -17,7 +17,6 @@ const initialState = {
         AZURE_ENVIRONMENT: AzureCloud.PUBLIC,
         REGION: '',
         SSH_PUBLIC_KEY: '',
-        NODE_PROFILE: '',
         ...AZURE_DEFAULT_VALUES,
     },
 };
