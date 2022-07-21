@@ -11,16 +11,19 @@ import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
 // App imports
-import './WorkloadClusterWizard.scss';
 import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
-import { ClusterNameSection } from '../../shared/components/FormInputSections/ClusterNameSection';
+import { ClusterName, clusterNameValidation } from '../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { getSelectedManagementCluster } from './WorkloadClusterUtility';
-import { isK8sCompliantString } from '../../shared/validations/Validation.service';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
-import RadioButton from '../../shared/components/widgets/RadioButton';
+import {
+    NodeInstanceType,
+    nodeInstanceTypeValidation,
+    NodeProfile,
+} from '../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../shared/components/wizard/Wizard';
-import { WcStore } from './Store.wc';
 import { VSPHERE_FIELDS } from '../management-cluster/vsphere/VsphereManagementCluster.constants';
+import { WcStore } from './Store.wc';
+import './WorkloadClusterWizard.scss';
 
 // NOTE: field names expected to start [category name]___ (because the Form reducer strips that to find the data path)
 // that way these field names match the ones in the ClusterAttributeStep and are stored with the same mechanism
@@ -34,41 +37,23 @@ interface ClusterTopologyStepFormInputs {
 
 const clusterTopologyStepFormSchema = yup
     .object({
-        [FIELD_NAME_WORKLOAD_CLUSTER_NAME]: yup
-            .string()
-            .nullable()
-            .required('Please enter a name for your workload cluster')
-            .test(
-                '',
-                'Cluster name must contain only lower case letters and hyphen',
-                (value) => value !== null && isK8sCompliantString(value)
-            ),
-        [FIELD_NAME_WORKER_NODE_INSTANCE_TYPE]: yup
-            .string()
-            .nullable()
-            .required('Please select an instance type for your workload cluster nodes'),
+        [FIELD_NAME_WORKLOAD_CLUSTER_NAME]: clusterNameValidation(),
+        [FIELD_NAME_WORKER_NODE_INSTANCE_TYPE]: nodeInstanceTypeValidation(),
     })
     .required();
 
-interface WorkerNodeInstanceType {
-    id: string;
-    icon: string;
-    name: string;
-    description: string;
-}
-
 // NOTE: icons must be imported
-const workerNodeInstanceTypes: WorkerNodeInstanceType[] = [
+const workerNodeInstanceTypes: NodeInstanceType[] = [
     {
         id: 'basic-demo',
-        name: 'Basic demo',
+        label: 'Basic demo',
         icon: 'flask',
         description:
             'Virtual machines with a range of compute and memory resources. Intended for small projects and development environments.',
     },
     {
         id: 'general-purpose',
-        name: 'General purpose',
+        label: 'General purpose',
         icon: 'computer',
         description:
             'General purpose instances powered by multi-threaded CPUs. Balanced, high performance, compute and memory for' +
@@ -76,13 +61,13 @@ const workerNodeInstanceTypes: WorkerNodeInstanceType[] = [
     },
     {
         id: 'compute-optimized',
-        name: 'Compute optimized',
+        label: 'Compute optimized',
         icon: 'cpu',
         description: 'Compute optimized instances suited for CPU-intensive workloads such as CI/CD, machine learning, and data processing.',
     },
     {
         id: 'memory-optimized',
-        name: 'Memory optimized',
+        label: 'Memory optimized',
         icon: 'memory',
         description: 'Memory optimized instances best suited for in-memory operations such as big-data and performant databases.',
     },
@@ -109,17 +94,9 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
         }
     };
 
-    const onClusterNameChange = (clusterName: string | undefined) => {
-        if (handleValueChange) {
-            handleValueChange(CCVAR_CHANGE, VSPHERE_FIELDS.CLUSTERNAME, clusterName, currentStep, errors, { clusterName: cluster.name });
-        }
-    };
-
-    const onValueChange = (evt: ChangeEvent<HTMLSelectElement>) => {
-        if (handleValueChange) {
-            const value = evt.target.value;
-            const key = evt.target.name;
-            handleValueChange(CCVAR_CHANGE, key, value, currentStep, errors, { clusterName: cluster.name });
+    const onFieldChange = (value: string, fieldName?: string | undefined) => {
+        if (handleValueChange && fieldName) {
+            handleValueChange(CCVAR_CHANGE, fieldName, value, currentStep, errors, { clusterName: cluster.name });
         }
     };
 
@@ -131,60 +108,21 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
             <br />
             <div cds-layout="grid gap:xxl" key="section-holder">
                 <div cds-layout="col:6" key="cluster-name-section">
-                    {ClusterNameSection(VSPHERE_FIELDS.CLUSTERNAME, errors, register, onClusterNameChange)}
+                    <ClusterName field={VSPHERE_FIELDS.CLUSTERNAME} errors={errors} register={register} clusterNameChange={onFieldChange} />
                 </div>
                 <div cds-layout="col:6" key="instance-type-section">
-                    {WorkerNodeInstanceTypeSection(errors, register, onValueChange)}
+                    <NodeProfile
+                        field={VSPHERE_FIELDS.INSTANCETYPE}
+                        nodeInstanceTypes={workerNodeInstanceTypes}
+                        errors={errors}
+                        register={register}
+                        nodeInstanceTypeChange={onFieldChange}
+                    />
                 </div>
             </div>
             <br />
             <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
         </div>
-    );
-}
-
-function WorkerNodeInstanceTypeSection(
-    errors: any,
-    register: any,
-    onSelectNodeInstanceType: (evt: ChangeEvent<HTMLSelectElement>) => void
-) {
-    return (
-        <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6">
-            <div cds-layout="cols:6">Select a worker node instance type</div>
-            <div cds-layout="grid gap:md align:fill">
-                {workerNodeInstanceTypes.map((instanceType) => {
-                    return InstanceTypeInList(instanceType, register, onSelectNodeInstanceType);
-                })}
-            </div>
-            {errors[FIELD_NAME_WORKER_NODE_INSTANCE_TYPE] && (
-                <CdsControlMessage status="error">{errors[FIELD_NAME_WORKER_NODE_INSTANCE_TYPE].message}</CdsControlMessage>
-            )}
-        </div>
-    );
-}
-
-function InstanceTypeInList(
-    instance: WorkerNodeInstanceType,
-    register: any,
-    onSelectNodeInstanceType: (evt: ChangeEvent<HTMLSelectElement>) => void
-) {
-    return (
-        <>
-            <div className="text-white" cds-layout="col:1">
-                <CdsIcon shape={instance.icon}></CdsIcon>
-            </div>
-            <RadioButton
-                className="input-radio"
-                cdsLayout="col:1"
-                value={instance.id}
-                register={register}
-                name={FIELD_NAME_WORKER_NODE_INSTANCE_TYPE}
-                onChange={onSelectNodeInstanceType}
-            />
-            <div className="text-white" cds-layout="col:10">
-                {instance.name} {instance.description}
-            </div>
-        </>
     );
 }
 
