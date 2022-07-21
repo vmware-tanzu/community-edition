@@ -14,7 +14,7 @@ import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/For
 import { AzureStore } from '../../../../../state-management/stores/Azure.store';
 import { AzureClouds } from '../../../../../shared/constants/App.constants';
 import { CdsButton } from '@cds/react/button';
-import { AZURE_FIELDS } from '../../AzureManagementCluster.constants';
+import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import './ManagementCredentialsLogin.scss';
 
