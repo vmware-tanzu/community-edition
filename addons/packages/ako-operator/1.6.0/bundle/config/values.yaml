@@ -6,17 +6,13 @@ akoOperator:
   namespace: tkg-system-networking
   cluster_name: ""
   config:
-    avi_controller_version: ""
-    avi_disable_ingress_class: true
-    avi_ingress_default_ingress_controller: false
-    avi_ingress_shard_vs_size: ""
-    avi_ingress_service_type: ""
-    avi_ingress_node_network_list: '""'
     avi_admin_credential_name: avi-controller-credentials
     avi_ca_name: avi-controller-ca
     avi_controller: ""
+    avi_controller_version: ""
     avi_username: ""
     avi_password: ""
+    avi_ca_data_b64: ""
     avi_cloud_name: "Default-Cloud"
     avi_service_engine_group: "Default-Group"
     avi_management_cluster_service_engine_group: null
@@ -24,24 +20,18 @@ akoOperator:
     avi_data_network_cidr: ""
     avi_control_plane_network: ""
     avi_control_plane_network_cidr: ""
-    avi_ca_data_b64: ""
-    avi_labels: '""'
-    avi_cni_plugin: antrea
-    avi_disable_static_route_sync: false
-    avi_control_plane_ha_provider: false
     avi_management_cluster_vip_network_name: ""
     avi_management_cluster_vip_network_cidr: ""
     avi_management_cluster_control_plane_vip_network_name: ""
     avi_management_cluster_control_plane_vip_network_cidr: ""
+    avi_labels: '""'
+    avi_cni_plugin: ""
+    avi_control_plane_ha_provider: false
     avi_control_plane_endpoint_port: 6443
-    avi_enable_evh: null
-    avi_l7_only: null
-    avi_services_api: null
-    avi_namespace_selector_label_key: ""
-    avi_namespace_selector_label_value: ""
-    avi_enable_rhi: null
-    avi_bgp_peer_labels: ""
-    avi_no_pg_for_sni: null
-    avi_advanced_l4: null
-    avi_auto_fqdn: null
     avi_nsxt_t1_lr: null
+    avi_disable_ingress_class: true
+    avi_disable_static_route_sync: false
+    avi_ingress_default_ingress_controller: false
+    avi_ingress_shard_vs_size: ""
+    avi_ingress_service_type: ""
+    avi_ingress_node_network_list: '""'

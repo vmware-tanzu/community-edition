@@ -21,18 +21,9 @@ spec:
         cidr: 10.1.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
-        enableEVH: false
-        layer7Only: false
-        servicesAPI: false
-        l4Config:
-            advancedL4: false
-            autoFQDN: "disabled"
         ingress:
             disableIngressClass: true
             defaultIngressController: false
-            noPGForSNI: false
-        networksConfig:
-            enableRHI: false
 
 ---
 apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
@@ -60,15 +51,6 @@ spec:
         cidr: 10.1.0.0/20
     extraConfigs:
         disableStaticRouteSync: false
-        enableEVH: false
-        layer7Only: false
-        servicesAPI: false
-        l4Config:
-            advancedL4: false
-            autoFQDN: "disabled"
         ingress:
             disableIngressClass: true
             defaultIngressController: false
-            noPGForSNI: false
-        networksConfig:
-            enableRHI: false

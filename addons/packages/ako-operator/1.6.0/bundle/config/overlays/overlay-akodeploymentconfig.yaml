@@ -40,22 +40,6 @@ spec:
         cniPlugin: #@ values.akoOperator.config.avi_cni_plugin
 #@ end
         disableStaticRouteSync: #@ values.akoOperator.config.avi_disable_static_route_sync
-        enableEVH: #@ values.akoOperator.config.avi_enable_evh
-        layer7Only: #@ values.akoOperator.config.avi_l7_only
-        servicesAPI: #@ values.akoOperator.config.avi_services_api
-
-#@ if values.akoOperator.config.avi_namespace_selector_label_key:
-#@overlay/match missing_ok=True
-        namespaceSelector:
-            labelKey: #@ values.akoOperator.config.avi_namespace_selector_label_key
-            labelValue: #@ values.akoOperator.config.avi_namespace_selector_label_value
-#@ end
-        l4Config:
-            advancedL4: #@ values.akoOperator.config.avi_advanced_l4
-#@ if values.akoOperator.config.avi_auto_fqdn:
-            #@overlay/match missing_ok=True
-            autoFQDN: #@ values.akoOperator.config.avi_auto_fqdn
-#@ end
         ingress:
             disableIngressClass: #@ values.akoOperator.config.avi_disable_ingress_class
             defaultIngressController: #@ values.akoOperator.config.avi_ingress_default_ingress_controller
@@ -71,15 +55,9 @@ spec:
             #@overlay/match missing_ok=True
             nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
 #@ end
-            noPGForSNI: #@ values.akoOperator.config.avi_no_pg_for_sni
-        networksConfig:
-            enableRHI: #@ values.akoOperator.config.avi_enable_rhi
-#@ if values.akoOperator.config.avi_bgp_peer_labels:
-            #@overlay/match missing_ok=True
-            bgpPeerLabels: #@ values.akoOperator.config.avi_bgp_peer_labels
-#@ end
 #@ if values.akoOperator.config.avi_nsxt_t1_lr:
-            #@overlay/match missing_ok=True
+        #@overlay/append
+        networksConfig:
             nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
 #@ end
 
@@ -119,24 +97,6 @@ spec:
         cniPlugin: #@ values.akoOperator.config.avi_cni_plugin
 #@ end
         disableStaticRouteSync: #@ values.akoOperator.config.avi_disable_static_route_sync
-        enableEVH: #@ values.akoOperator.config.avi_enable_evh
-        layer7Only: #@ values.akoOperator.config.avi_l7_only
-        servicesAPI: #@ values.akoOperator.config.avi_services_api
-
-#@ if values.akoOperator.config.avi_namespace_selector_label_key:
-#@overlay/match missing_ok=True
-        namespaceSelector:
-            labelKey: #@ values.akoOperator.config.avi_namespace_selector_label_key
-            labelValue: #@ values.akoOperator.config.avi_namespace_selector_label_value
-#@ end
-
-        l4Config:
-            advancedL4: #@ values.akoOperator.config.avi_advanced_l4
-#@ if values.akoOperator.config.avi_auto_fqdn:
-            #@overlay/match missing_ok=True
-            autoFQDN: #@ values.akoOperator.config.avi_auto_fqdn
-#@ end
-
         ingress:
             disableIngressClass: #@ values.akoOperator.config.avi_disable_ingress_class
             defaultIngressController: #@ values.akoOperator.config.avi_ingress_default_ingress_controller
@@ -152,14 +112,8 @@ spec:
             #@overlay/match missing_ok=True
             nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
 #@ end
-            noPGForSNI: #@ values.akoOperator.config.avi_no_pg_for_sni
-        networksConfig:
-            enableRHI: #@ values.akoOperator.config.avi_enable_rhi
-#@ if values.akoOperator.config.avi_bgp_peer_labels:
-            #@overlay/match missing_ok=True
-            bgpPeerLabels: #@ values.akoOperator.config.avi_bgp_peer_labels
-#@ end
 #@ if values.akoOperator.config.avi_nsxt_t1_lr:
-            #@overlay/match missing_ok=True
+        #@overlay/append
+        networksConfig:
             nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
 #@ end
