@@ -9,7 +9,7 @@ import * as yup from 'yup';
 
 // App imports
 
-import { AZURE_FIELDS } from '../AzureManagementCluster.constants';
+import { AZURE_FIELDS, AZURE_NODE_PROFILE_NAMES } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { AzureStore } from '../../../../state-management/stores/Azure.store';
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
@@ -24,19 +24,19 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
     {
-        id: 'single-node',
+        id: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
         label: 'Single node',
         icon: 'block',
         description: 'Create a single control plane node with a Standard_D2s_v3 instance type',
     },
     {
-        id: 'high-availability',
+        id: AZURE_NODE_PROFILE_NAMES.HIGH_AVAILABILITY,
         label: 'High availability',
         icon: 'blocks-group',
         description: 'Create a multi-node control plane with a Standard_D2s_v3 instance type',
     },
     {
-        id: 'compute-optimized',
+        id: AZURE_NODE_PROFILE_NAMES.PRODUCTION_READY,
         label: 'Production-ready (High availability)',
         icon: 'blocks-group',
         isSolidIcon: true,
@@ -44,11 +44,11 @@ const nodeInstanceTypes: NodeInstanceType[] = [
     },
 ];
 
-type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.INSTANCE_TYPE;
+type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE;
 
 interface AzureClusterSettingFormInputs {
     [AZURE_FIELDS.CLUSTER_NAME]: string;
-    [AZURE_FIELDS.INSTANCE_TYPE]: string;
+    [AZURE_FIELDS.NODE_PROFILE]: string;
 }
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
@@ -66,15 +66,19 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setValue,
     } = methods;
 
-    let initialSelectedInstanceTypeId = azureState[AZURE_FIELDS.INSTANCE_TYPE];
-    if (!initialSelectedInstanceTypeId) {
-        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-        setValue(AZURE_FIELDS.INSTANCE_TYPE, initialSelectedInstanceTypeId);
+    let initialSelectedNodeProfileId = azureState[AZURE_FIELDS.NODE_PROFILE];
+    if (!initialSelectedNodeProfileId) {
+        initialSelectedNodeProfileId = nodeInstanceTypes[0].id;
+        setValue(AZURE_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }
-    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
+    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedNodeProfileId);
 
     const canContinue = (): boolean => {
-        return Object.keys(errors).length === 0;
+        return (
+            Object.keys(errors).length === 0 &&
+            azureState.dataForm[AZURE_FIELDS.CLUSTER_NAME] &&
+            azureState.dataForm[AZURE_FIELDS.NODE_PROFILE]
+        );
     };
 
     // TODO: just deactivate button until no errors
@@ -96,7 +100,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const onInstanceTypeChange = (instanceType: string) => {
-        onFieldChange(instanceType, AZURE_FIELDS.INSTANCE_TYPE);
+        onFieldChange(instanceType, AZURE_FIELDS.NODE_PROFILE);
         setSelectedInstanceTypeId(instanceType);
     };
 
@@ -116,7 +120,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                     </div>
                     <div cds-layout="col:6" key="instance-type-section">
                         <NodeProfile
-                            field={AZURE_FIELDS.INSTANCE_TYPE}
+                            field={AZURE_FIELDS.NODE_PROFILE}
                             nodeInstanceTypes={nodeInstanceTypes}
                             errors={errors}
                             register={register}
@@ -136,7 +140,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
 
 function createYupSchemaObject() {
     return {
-        [AZURE_FIELDS.INSTANCE_TYPE]: nodeInstanceTypeValidation(),
+        [AZURE_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
         [AZURE_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
     };
 }
