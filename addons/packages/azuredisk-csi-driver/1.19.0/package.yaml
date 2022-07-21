@@ -5,29 +5,29 @@ metadata:
 spec:
   refName: azuredisk-csi-driver.community.tanzu.vmware.com
   version: 1.19.0
-  releaseNotes: "azuredisk-csi-driver 1.19.0 https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases/tag/v1.19.0"
+  releaseNotes: azuredisk-csi-driver 1.19.0 https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases/tag/v1.19.0
   licenses:
-    - "Apache 2.0"
+  - Apache 2.0
   template:
     spec:
       fetch:
-        - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:f7f03d29bd959b718fcd4f61a345a68e0d83a12eec3b59908a762394cee6e912
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:dfc66ff1f7b2de0dfade390f9194d13b6e53cf4efd939f10bdac5bfcfb44a66c
       template:
-        - ytt:
-            paths:
-              - config/
-        - kbld:
-            paths:
-              - "-"
-              - .imgpkg/images.yml
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
       deploy:
-        - kapp: {}
+      - kapp: {}
   valuesSchema:
     openAPIv3:
       type: object
       additionalProperties: false
-      description: OpenAPIv3 Schema for azure disk csi driver
+      description: OpenAPIv3 Schema for azuredisk-csi-driver
       properties:
         nodeSelector:
           nullable: true
@@ -66,33 +66,30 @@ spec:
               description: Update strategy of daemonsets
               default: null
         azureDiskCSIDriver:
-          namespace:
-            type: string
-            nullable: true
-            deprecated: true
-            description: The namespace in which azure disk csi driver is deployed
-            default: kube-system
-          http_proxy:
-            type: string
-            nullable: true
-            deprecated: true
-            description: The HTTP proxy to use for network traffic
-            default: ""
-          https_proxy:
-            type: string
-            nullable: true
-            deprecated: true
-            description: The HTTPS proxy to use for network traffic
-            default: ""
-          no_proxy:
-            type: string
-            nullable: true
-            deprecated: true
-            description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
-            default: ""
-          deployment_replicas:
-            type: integer
-            nullable: true
-            deprecated: true
-            description: The number of replicas of csi-azuredisk-controller and csi-snapshot-controller deployment
-            default: 3
+          type: object
+          additionalProperties: false
+          description: Configurations for azuredisk-csi-driver
+          properties:
+            namespace:
+              type: string
+              description: The namespace in which azure disk csi driver is deployed
+              default: kube-system
+            http_proxy:
+              type: string
+              nullable: true
+              description: The HTTP proxy to use for network traffic
+              default: null
+            https_proxy:
+              type: string
+              nullable: true
+              description: The HTTPS proxy to use for network traffic
+              default: null
+            no_proxy:
+              type: string
+              nullable: true
+              description: A comma-separated list of hostnames, IP addresses, or IP ranges in CIDR format that should not use a proxy
+              default: null
+            deployment_replicas:
+              type: integer
+              description: The number of replicas of csi-azuredisk-controller and csi-snapshot-controller deployment
+              default: 3
