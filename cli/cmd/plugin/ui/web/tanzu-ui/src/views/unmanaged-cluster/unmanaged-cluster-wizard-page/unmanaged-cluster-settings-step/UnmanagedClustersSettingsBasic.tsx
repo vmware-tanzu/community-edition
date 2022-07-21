@@ -89,7 +89,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     );
 
     function ClusterName() {
-        const CLUSTER_NAME_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME;
+        const errorClusterName = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME];
         return (
             <div>
                 <CdsInput layout="vertical">
@@ -102,9 +102,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
                         onChange={handleClusterNameChange}
                         defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                     ></input>
-                    {errors[CLUSTER_NAME_FIELD] && (
-                        <CdsControlMessage status="error">{errors[CLUSTER_NAME_FIELD].message}</CdsControlMessage>
-                    )}
+                    {errorClusterName && <CdsControlMessage status="error">{errorClusterName.message}</CdsControlMessage>}
                 </CdsInput>
                 <div>
                     <p className="description" cds-layout="m-t:sm">

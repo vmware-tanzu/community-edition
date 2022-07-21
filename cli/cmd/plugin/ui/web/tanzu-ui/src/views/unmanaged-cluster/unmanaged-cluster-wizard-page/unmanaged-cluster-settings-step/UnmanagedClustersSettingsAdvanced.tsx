@@ -143,8 +143,8 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
     }
 
     function ClusterNodeCountSelect() {
-        const CONTROL_PLANE_NODE_COUNT_FIELD = UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT;
-        const WORKER_NODE_COUNT_FIELD = UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT;
+        const errorControlPlaneNodeCount = errors[UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT];
+        const errorWorkerNodeCount = errors[UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT];
 
         return (
             <div cds-layout="grid gap:lg">
@@ -157,8 +157,8 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
                             onChange={handleControlPlaneNodeCountChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]}
                         ></input>
-                        {errors[CONTROL_PLANE_NODE_COUNT_FIELD] && (
-                            <CdsControlMessage status="error">{errors[CONTROL_PLANE_NODE_COUNT_FIELD].message}</CdsControlMessage>
+                        {errorControlPlaneNodeCount && (
+                            <CdsControlMessage status="error">{errorControlPlaneNodeCount.message}</CdsControlMessage>
                         )}
                     </CdsInput>
                     <p className="description" cds-layout="m-t:sm">
@@ -174,9 +174,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
                             onChange={handleWorkerNodeCountChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]}
                         ></input>
-                        {errors[WORKER_NODE_COUNT_FIELD] && (
-                            <CdsControlMessage status="error">{errors[WORKER_NODE_COUNT_FIELD].message}</CdsControlMessage>
-                        )}
+                        {errorWorkerNodeCount && <CdsControlMessage status="error">{errorWorkerNodeCount.message}</CdsControlMessage>}
                     </CdsInput>
                     <p className="description" cds-layout="m-t:sm">
                         The number of worker nodes to deploy; default is 0
@@ -186,7 +184,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
         );
     }
     function ClusterName() {
-        const CLUSTER_NAME_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME;
+        const errorClusterName = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME];
         return (
             <div>
                 <CdsInput layout="vertical">
@@ -199,9 +197,7 @@ function UnmanagedClusterSettingsAdvanced(props: Partial<StepProps>) {
                         onChange={handleClusterNameChange}
                         defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                     ></input>
-                    {errors[CLUSTER_NAME_FIELD] && (
-                        <CdsControlMessage status="error">{errors[CLUSTER_NAME_FIELD].message}</CdsControlMessage>
-                    )}
+                    {errorClusterName && <CdsControlMessage status="error">{errorClusterName.message}</CdsControlMessage>}
                 </CdsInput>
                 <div>
                     <p className="description" cds-layout="m-t:sm">

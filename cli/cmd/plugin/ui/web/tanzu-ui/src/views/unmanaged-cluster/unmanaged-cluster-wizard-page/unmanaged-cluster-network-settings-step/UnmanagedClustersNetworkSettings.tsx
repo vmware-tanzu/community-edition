@@ -238,8 +238,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     }
 
     function ClusterCidr() {
-        const CLUSTER_SERVICE_CIDR_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR;
-        const CLUSTER_POD_CIDR_FIELD = UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR;
+        const errorClusterServiceCidr = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR];
+        const errorClusterPodCidr = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR];
+
         return (
             <div cds-layout="grid gap:xl wrap:none m-b:md">
                 <div cds-layout="col:3">
@@ -254,9 +255,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             onChange={handleFieldChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR]}
                         ></input>
-                        {errors[CLUSTER_SERVICE_CIDR_FIELD] && (
-                            <CdsControlMessage status="error">{errors[CLUSTER_SERVICE_CIDR_FIELD].message}</CdsControlMessage>
-                        )}
+                        {errorClusterServiceCidr && <CdsControlMessage status="error">{errorClusterServiceCidr.message}</CdsControlMessage>}
                     </CdsInput>
                 </div>
                 <div cds-layout="col:3">
@@ -271,9 +270,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             onChange={handleFieldChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR]}
                         ></input>
-                        {errors[CLUSTER_POD_CIDR_FIELD] && (
-                            <CdsControlMessage status="error">{errors[CLUSTER_POD_CIDR_FIELD].message}</CdsControlMessage>
-                        )}
+                        {errorClusterPodCidr && <CdsControlMessage status="error">{errorClusterPodCidr.message}</CdsControlMessage>}
                     </CdsInput>
                 </div>
             </div>
@@ -282,6 +279,10 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
 
     function NodeHostPortMapping() {
         //TODO: refactor in the future const errorNodeHost = errors[UNMANAGED_NETWORK_FIELDS.NODE_HOST_PORT_MAPPING];
+        const errorIpAddress = errors[UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS];
+        const errorNodePortMapping = errors[UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING];
+        const errorHostPortMapping = errors[UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING];
+
         return (
             <div cds-layout="m-b:md">
                 <div cds-layout="horizontal gap:sm p-y:md wrap:none">
@@ -294,6 +295,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             onChange={handleFieldChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS]}
                         ></input>
+                        {errorIpAddress && <CdsControlMessage status="error">{errorIpAddress.message}</CdsControlMessage>}
                     </CdsInput>
                     <CdsInput layout="vertical" control-width="shrink">
                         <label>Node Port</label>
@@ -304,6 +306,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             onChange={handleFieldChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING]}
                         ></input>
+                        {errorNodePortMapping && <CdsControlMessage status="error">{errorNodePortMapping.message}</CdsControlMessage>}
                     </CdsInput>
                     <CdsInput layout="vertical" control-width="shrink">
                         <label>Host Port</label>
@@ -314,6 +317,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                             onChange={handleFieldChange}
                             defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING]}
                         ></input>
+                        {errorHostPortMapping && <CdsControlMessage status="error">{errorHostPortMapping.message}</CdsControlMessage>}
                     </CdsInput>
                     <CdsSelect layout="vertical" control-width="shrink" onChange={handleProtocolChange}>
                         <label>Protocol</label>
