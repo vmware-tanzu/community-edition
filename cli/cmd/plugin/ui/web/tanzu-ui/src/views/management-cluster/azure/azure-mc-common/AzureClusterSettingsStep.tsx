@@ -81,7 +81,6 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         );
     };
 
-    // TODO: just deactivate button until no errors
     const onSubmit: SubmitHandler<AzureClusterSettingFormInputs> = (data) => {
         if (canContinue() && deploy) {
             deploy();
