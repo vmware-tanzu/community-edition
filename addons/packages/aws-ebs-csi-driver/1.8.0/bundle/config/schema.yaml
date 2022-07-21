@@ -23,9 +23,7 @@ daemonset:
   updateStrategy: ""
 #@schema/desc "Configurations for aws-ebs-csi-driver"
 awsEBSCSIDriver:
-  #@schema/deprecated "Kept for backward compatibility"
   #@schema/desc "The namespace in which aws ebs csi driver is deployed"
-  #@schema/nullable
   namespace: kube-system
   #@schema/desc "The HTTP proxy to use for network traffic"
   #@schema/nullable
