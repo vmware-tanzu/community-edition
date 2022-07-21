@@ -95,24 +95,41 @@ function SideNavigation(this: any) {
                 </CdsNavigationItem>
             )}
             <CdsDivider cds-layout="p-y:sm"></CdsDivider>
-            {/* TODO: Determine links for external pages */}
             <CdsNavigationItem>
-                <Link cds-layout={navigationItemLinkLayout} to={'/'}>
-                    <CdsIcon shape="list" size="sm"></CdsIcon>
-                    FAQ
-                </Link>
+                <a
+                    cds-layout={navigationItemLinkLayout}
+                    href="https://tanzucommunityedition.io/resources/"
+                    target="_blank"
+                    rel="noreferrer"
+                    cds-text="link"
+                >
+                    Resources
+                    <CdsIcon shape="pop-out" size="sm"></CdsIcon>
+                </a>
             </CdsNavigationItem>
             <CdsNavigationItem>
-                <Link cds-layout={navigationItemLinkLayout} to={'/'}>
-                    <CdsIcon shape="chat-bubble" size="sm"></CdsIcon>
+                <a
+                    cds-layout={navigationItemLinkLayout}
+                    href="https://tanzucommunityedition.io/community/"
+                    target="_blank"
+                    rel="noreferrer"
+                    cds-text="link"
+                >
                     Feedback
-                </Link>
+                    <CdsIcon shape="pop-out" size="sm"></CdsIcon>
+                </a>
             </CdsNavigationItem>
             <CdsNavigationItem>
-                <Link cds-layout={navigationItemLinkLayout} to={'/'}>
-                    <CdsIcon shape="computer" size="sm"></CdsIcon>
+                <a
+                    cds-layout={navigationItemLinkLayout}
+                    href="https://tanzucommunityedition.io/docs/edge/contribute/contributing/"
+                    target="_blank"
+                    rel="noreferrer"
+                    cds-text="link"
+                >
                     Contribute
-                </Link>
+                    <CdsIcon shape="pop-out" size="sm"></CdsIcon>
+                </a>
             </CdsNavigationItem>
         </CdsNavigation>
 
