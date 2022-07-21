@@ -1,0 +1,9 @@
+.select-container {
+    position: relative;
+    display: inline;
+    .select-spinner-container {
+        position: absolute;
+        top: 35%;
+        left: 40%;
+    }
+}

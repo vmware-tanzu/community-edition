@@ -219,6 +219,8 @@ function ManagementClusterInventory() {
                 </div>
                 {renderConfirmDeleteModal()}
             </div>
+            <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
+            {renderConfirmDeleteModal()}
         </>
     );
 }
