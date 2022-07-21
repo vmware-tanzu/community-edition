@@ -1,21 +1,26 @@
 // React imports
 import React, { ChangeEvent } from 'react';
-import { FieldError, FieldErrors, RegisterOptions, UseFormRegisterReturn } from 'react-hook-form';
+import { FieldError, RegisterOptions, UseFormRegisterReturn } from 'react-hook-form';
 // Library imports
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
 import * as yup from 'yup';
 // App imports
-import './ClusterNameSection.scss';
-import { isK8sCompliantString } from '../../validations/Validation.service';
+import { isK8sCompliantString } from '../../../validations/Validation.service';
+import './ClusterName.scss';
+
+interface ClusterNameProps {
+    field: string;
+    errors: { [key: string]: FieldError | undefined };
+    register: (name: any, options?: RegisterOptions<any, any>) => UseFormRegisterReturn;
+    clusterNameChange: (clusterName: string, fieldName?: string) => void;
+    placeholderClusterName?: string;
+}
 
 /**
- * addClusterNameValidation takes a "yup" schema object and returns a new "yup" schema object with the field added,
- * and associated with a yup validation
- * @param field - the name of the field for the cluster name
- * @param yupObject - the yup schema object
+ * addClusterNameValidation returns a "yup" validation to be used in the yup schema object
+ * and associated with the field that is being used for the cluster name.
  */
-
 export function clusterNameValidation() {
     return yup
         .string()
@@ -39,13 +44,9 @@ export function clusterNameValidation() {
  * @param clusterNameChange - function called whenever the cluster name changes
  * @param defaultClusterName - optional value of the field when user first comes to the page
  */
-export function ClusterNameSection(
-    field: string,
-    errors: { [key: string]: FieldError | undefined },
-    register: (name: any, options?: RegisterOptions<any, any>) => UseFormRegisterReturn,
-    clusterNameChange: (clusterName: string, fieldName?: string) => void,
-    placeholderClusterName?: string
-) {
+export function ClusterName(props: ClusterNameProps) {
+    const { field, errors, register, clusterNameChange, placeholderClusterName } = props;
+
     const onClusterNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         clusterNameChange(event.target.value || '', field);
     };

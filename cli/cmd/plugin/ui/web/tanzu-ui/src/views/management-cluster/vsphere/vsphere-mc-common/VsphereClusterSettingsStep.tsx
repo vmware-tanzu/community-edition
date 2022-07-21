@@ -10,15 +10,15 @@ import { CdsTextarea } from '@cds/react/textarea';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
-import { clusterNameValidation, ClusterNameSection } from '../../../../shared/components/FormInputSections/ClusterNameSection';
-import {
-    nodeInstanceTypeValidation,
-    NodeInstanceType,
-    NodeProfileSection,
-} from '../../../../shared/components/FormInputSections/NodeProfileSection';
-import { FormAction, VsphereResourceAction } from '../../../../shared/types/types';
+import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
+import { FormAction } from '../../../../shared/types/types';
 import { getResource } from '../../../providers/vsphere/VsphereResources.reducer';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
+import {
+    NodeInstanceType,
+    NodeProfile,
+    nodeInstanceTypeValidation,
+} from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
@@ -129,17 +129,23 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                 <h2 cds-layout="m-t:lg">vSphere Management Cluster Settings</h2>
                 <div cds-layout="grid gap:m" key="section-holder">
                     <div cds-layout="col:6" key="cluster-name-section">
-                        {ClusterNameSection(VSPHERE_FIELDS.CLUSTERNAME, errors, register, onClusterNameChange, 'my-vsphere-cluster')}
+                        <ClusterName
+                            field={VSPHERE_FIELDS.CLUSTERNAME}
+                            errors={errors}
+                            register={register}
+                            clusterNameChange={onClusterNameChange}
+                            placeholderClusterName={'my-vsphere-cluster'}
+                        />
                     </div>
                     <div cds-layout="col:6" key="instance-type-section">
-                        {NodeProfileSection(
-                            VSPHERE_FIELDS.INSTANCETYPE,
-                            nodeInstanceTypes,
-                            errors,
-                            register,
-                            onInstanceTypeChange,
-                            selectedInstanceTypeId
-                        )}
+                        <NodeProfile
+                            field={VSPHERE_FIELDS.INSTANCETYPE}
+                            nodeInstanceTypes={nodeInstanceTypes}
+                            errors={errors}
+                            register={register}
+                            nodeInstanceTypeChange={onInstanceTypeChange}
+                            selectedInstanceId={selectedInstanceTypeId}
+                        />
                     </div>
                     <div cds-layout="col:12">
                         {VmTemplateSection(VSPHERE_FIELDS.VMTEMPLATE, osTemplates, errors, register, onFieldChange)}

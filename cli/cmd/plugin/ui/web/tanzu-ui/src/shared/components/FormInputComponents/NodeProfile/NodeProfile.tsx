@@ -1,13 +1,13 @@
 // React imports
 import React, { ChangeEvent } from 'react';
+
 // Library imports
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
-import * as yup from 'yup';
-import { FieldError } from 'react-hook-form';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
-// App imports
-import './NodeProfileSection.scss';
+import { FieldError } from 'react-hook-form';
+import * as yup from 'yup';
+import './NodeProfile.scss';
 
 export interface NodeInstanceType {
     id: string;
@@ -17,17 +17,27 @@ export interface NodeInstanceType {
     description: string;
 }
 
+interface NodeProfileProps {
+    field: string;
+    nodeInstanceTypes: NodeInstanceType[];
+    errors: { [key: string]: FieldError | undefined };
+    register: any;
+    nodeInstanceTypeChange: (nodeInstanceTypeId: string, fieldName?: string) => void;
+    selectedInstanceId?: string;
+    prompt?: string;
+}
+
+const DEFAULT_PROMPT = 'Select a node profile';
+
 /**
- * addNodeInstanceTypeValidation takes a "yup" schema object and returns a new "yup" schema object with the field added,
- * and associated with a yup validation
- * @param field - the name of the field for the node instance id
- * @param yupObject - the yup schema object
+ * addNodeInstanceTypeValidation returns a "yup" validation to be used in the yup schema object
+ * and associated with the field that is being used for the node instance type.
  */
 export function nodeInstanceTypeValidation() {
     return yup.string().nullable().required('Please select an instance type for your cluster nodes');
 }
 
-function InstanceTypeInList(field: string, instance: NodeInstanceType, register: any, selectedInstanceId?: string) {
+function instanceTypeInList(field: string, instance: NodeInstanceType, register: any, selectedInstanceId?: string) {
     return (
         <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={instance.id + '-cds-radio'} data-testid="cds-radio">
             <label>
@@ -45,17 +55,9 @@ function InstanceTypeInList(field: string, instance: NodeInstanceType, register:
     );
 }
 
-const DEFAULT_PROMPT = 'Select a node profile';
+export function NodeProfile(props: NodeProfileProps) {
+    const { field, nodeInstanceTypes, errors, register, nodeInstanceTypeChange, selectedInstanceId, prompt } = props;
 
-export function NodeProfileSection(
-    field: string,
-    nodeInstanceTypes: NodeInstanceType[],
-    errors: { [key: string]: FieldError | undefined },
-    register: any,
-    nodeInstanceTypeChange: (nodeInstanceTypeId: string, fieldName?: string) => void,
-    selectedInstanceId?: string,
-    prompt?: string
-) {
     const onSelectNodeInstanceType = (event: ChangeEvent<HTMLSelectElement>) => {
         nodeInstanceTypeChange(event.target.value || '', field);
     };
@@ -68,7 +70,7 @@ export function NodeProfileSection(
                 <CdsRadioGroup layout="vertical" onChange={onSelectNodeInstanceType}>
                     <label>{displayPrompt}</label>
                     {nodeInstanceTypes.map((instanceType) => {
-                        return InstanceTypeInList(field, instanceType, register, selectedInstanceId);
+                        return instanceTypeInList(field, instanceType, register, selectedInstanceId);
                     })}
                 </CdsRadioGroup>
                 {fieldError && <CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>}
