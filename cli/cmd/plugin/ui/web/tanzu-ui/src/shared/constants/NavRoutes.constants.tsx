@@ -23,11 +23,3 @@ export const enum NavRoutes {
     // temp routes to be refactored out
     DEPLOY_PROGRESS = 'progress',
 }
-
-export const AWS_MC_BASIC_TAB_NAMES = ['AWS Credentials', 'Cluster settings'];
-
-export const DOCKER_MC_BASIC_TAB_NAMES = ['Prerequisites', 'Cluster settings'];
-
-export const UMC_BASIC_TAB_NAMES = ['Cluster settings', 'Network settings'];
-
-export const UMC_ADVANCED_TAB_NAMES = ['Cluster settings', 'Network settings'];

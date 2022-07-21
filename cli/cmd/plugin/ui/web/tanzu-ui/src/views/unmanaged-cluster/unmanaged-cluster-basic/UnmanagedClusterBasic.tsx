@@ -3,12 +3,12 @@ import React, { useContext } from 'react';
 
 // App imports
 import { UmcStore } from '../../../state-management/stores/Store.umc';
-import { UMC_BASIC_TAB_NAMES } from '../../../shared/constants/NavRoutes.constants';
+import { UMC_BASIC_TAB_NAMES } from './UnmanagedClusterBasic.constants';
 import Wizard from '../../../shared/components/wizard/Wizard';
 import UnmanagedClusterSettingsBasic from './unmanaged-cluster-settings-step/UnmanagedClustersSettingsBasic';
 import UnmanagedClusterNetworkSettings from './unmanaged-cluster-network-settings-step/UnmanagedClustersNetworkSettings';
 
-function UnmanagedClusterWizardBasic() {
+function UnmanagedClusterBasic() {
     const { umcState, umcDispatch } = useContext(UmcStore);
 
     return (
@@ -19,4 +19,4 @@ function UnmanagedClusterWizardBasic() {
     );
 }
 
-export default UnmanagedClusterWizardBasic;
+export default UnmanagedClusterBasic;

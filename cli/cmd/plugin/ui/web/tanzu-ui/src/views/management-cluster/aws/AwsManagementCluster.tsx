@@ -3,7 +3,7 @@ import React from 'react';
 
 // App imports
 import { AwsProvider } from '../../../state-management/stores/Store.aws';
-import AwsManagementClusterBasic from './wizard-basic/AwsManagementClusterBasic';
+import AwsManagementClusterBasic from './aws-mc-basic/AwsManagementClusterBasic';
 import './AwsManagementCluster.scss';
 import AwsLogo from '../../../assets/aws.svg';
 
