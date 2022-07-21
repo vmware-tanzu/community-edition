@@ -6,16 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsModal, CdsModalActions, CdsModalContent, CdsModalHeader } from '@cds/react/modal';
-import { CdsProgressCircle } from '@cds/react/progress-circle';
 
 // App imports
 import ManagementClusterCard from './ManagementClusterCard';
 import { ManagementCluster } from '../../swagger-api/models/ManagementCluster';
 import { ManagementService } from '../../swagger-api';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
-import './ManagementClusterInventory.scss';
-import PageLoading, { LoadingSpinnerStatus } from '../../shared/components/PageLoading/PageLoading';
+import PageLoading from '../../shared/components/PageLoading/PageLoading';
 import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
+import './ManagementClusterInventory.scss';
 
 function ManagementClusterInventory() {
     const [showPageLoading, setShowPageLoading] = useState<boolean>(false);
@@ -143,22 +142,10 @@ function ManagementClusterInventory() {
                     data-testid="no-clusters-messaging"
                 >
                     <div cds-layout="grid horizontal cols:12 gap:lg gap@md:lg">
-                        <div cds-text="section">Management Cluster not found</div>
+                        <div cds-text="section">Management Clusters not found</div>
                         <div cds-text="body">
                             <p cds-layout="m-t:none">
-                                Create a Management Cluster on your preferred cloud provider through a guided series of steps.
-                            </p>
-                            <p>
-                                This cluster will manage new workload clusters you create for your workloads.{' '}
-                                <a
-                                    href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    cds-text="link"
-                                >
-                                    Learn more about Management Clusters
-                                </a>
-                                .
+                                Create a Management Clusters on your preferred cloud provider through a guided series of steps.
                             </p>
                             <CdsButton onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}>
                                 <CdsIcon shape="blocks-group"></CdsIcon>create a management cluster
@@ -174,12 +161,12 @@ function ManagementClusterInventory() {
     function ManagementClustersSection() {
         return (
             <>
-                <div cds-text="body">The following clusters were discovered on this workstation.</div>
                 <div>
                     <CdsButton onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}>
                         <CdsIcon shape="blocks-group"></CdsIcon>create a management cluster
                     </CdsButton>
                 </div>
+                <div cds-text="body">The following clusters were discovered on this workstation.</div>
                 {managementClusters.map((cluster: ManagementCluster) => {
                     return (
                         <ManagementClusterCard
@@ -197,7 +184,11 @@ function ManagementClusterInventory() {
 
     function MainContent() {
         if (showPageLoading) {
-            return <PageLoading message="Searching for existing management clusters"></PageLoading>;
+            return (
+                <div cds-layout="vertical col:12 p-y:xxl">
+                    <PageLoading message="Retrieving management clusters..."></PageLoading>
+                </div>
+            );
         } else {
             return hasManagementClusters() ? ManagementClustersSection() : NoManagementClustersSection();
         }
@@ -211,10 +202,21 @@ function ManagementClusterInventory() {
                         <CdsIcon cds-layout="m-r:sm" shape="blocks-group" size="lg"></CdsIcon>
                         Management Clusters
                     </div>
+                    <div cds-text="subsection">
+                        Management clusters are used to manage new workload clusters you create for your workloads.{' '}
+                        <a
+                            href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
+                            target="_blank"
+                            rel="noreferrer"
+                            cds-text="link"
+                        >
+                            Learn more about Management Clusters
+                        </a>
+                        .
+                    </div>
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     {MainContent()}
                 </div>
-                <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
                 {renderConfirmDeleteModal()}
             </div>
         </>

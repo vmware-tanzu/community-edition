@@ -9,6 +9,7 @@ import { CdsModal, CdsModalHeader, CdsModalActions, CdsModalContent } from '@cds
 
 // App imports
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import PageLoading from '../../shared/components/PageLoading/PageLoading';
 import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
@@ -83,12 +84,8 @@ function UnmanagedClusterInventory() {
             <div cds-layout="grid horizontal col:12">
                 <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
                     {Header()}
-                    <CdsButton className="cluster-action-btn" status="primary" onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}>
-                        <CdsIcon shape="cluster"></CdsIcon>
-                        create unmanaged cluster
-                    </CdsButton>
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
-                    {hasUnmanagedClusters() ? UnmanagedClustersSection() : NoUnmanagedClustersSection()}
+                    {MainContent()}
                 </div>
                 <div cds-layout="col@sm:4 col:4 container:fill"></div>
                 {renderConfirmDeleteModal()}
@@ -104,9 +101,17 @@ function UnmanagedClusterInventory() {
                     Unmanaged Cluster
                 </div>
                 <div cds-text="subsection">
-                    Create a single node, local workstation cluster suitable for a development/test environment. It requires minimal local
-                    resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu Community Edition
-                    package repository is automatically installed when you deploy an unmanaged cluster.
+                    Unmanaged clusters are a single node, local workstation cluster suitable for a development/test environment. It requires
+                    minimal local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu
+                    Community Edition package repository is automatically installed when you deploy an unmanaged cluster.{' '}
+                    <a
+                        href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
+                        target="_blank"
+                        rel="noreferrer"
+                        cds-text="link"
+                    >
+                        Learn more about Unmanaged Clusters
+                    </a>
                 </div>
             </div>
         );
@@ -169,10 +174,27 @@ function UnmanagedClusterInventory() {
         );
     }
 
-    // Returns view to be rendered when Unamanged clusters are present.
+    function MainContent() {
+        if (showPageLoading) {
+            return (
+                <div cds-layout="vertical col:12 p-y:xxl">
+                    <PageLoading message="Retrieving unmanaged clusters..."></PageLoading>
+                </div>
+            );
+        } else {
+            return hasUnmanagedClusters() ? UnmanagedClustersSection() : NoUnmanagedClustersSection();
+        }
+    }
+
+    // Returns view to be rendered when Unmanaged clusters are present.
     function UnmanagedClustersSection() {
         return (
             <>
+                <CdsButton className="cluster-action-btn" status="primary" onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}>
+                    <CdsIcon shape="cluster"></CdsIcon>
+                    create an unmanaged cluster
+                </CdsButton>
+                <div cds-text="body">The following clusters were discovered on this workstation.</div>
                 {unmanagedClusters.map((cluster: UnmanagedCluster) => {
                     return (
                         <UnmanagedClusterCard
@@ -188,7 +210,7 @@ function UnmanagedClusterInventory() {
         );
     }
 
-    // Returns view to be rendered when no Unamanged clusters are present.
+    // Returns view to be rendered when no Unmanaged clusters are present.
     function NoUnmanagedClustersSection() {
         return (
             <>
@@ -200,17 +222,15 @@ function UnmanagedClusterInventory() {
                     <div cds-layout="grid horizontal cols:12 gap:lg gap@md:lg">
                         <div cds-text="title">Unmanaged Cluster not found</div>
                         <div cds-text="body">
-                            Create an Unmanaged Cluster through a guided series of steps.
-                            <br />
-                            <br />
-                            <a
-                                href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
-                                target="_blank"
-                                rel="noreferrer"
-                                cds-text="link"
+                            <p cds-layout="m-t:none">Create an Unmanaged Cluster through a guided series of steps.</p>
+                            <CdsButton
+                                className="cluster-action-btn"
+                                status="primary"
+                                onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}
                             >
-                                Learn more about Unmanaged Clusters
-                            </a>
+                                <CdsIcon shape="cluster"></CdsIcon>
+                                create an unmanaged cluster
+                            </CdsButton>
                         </div>
                     </div>
                 </div>
