@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 export enum AZURE_FIELDS {
+    CLUSTER_NAME = 'CLUSTER_NAME',
+    INSTANCE_TYPE = 'INSTANCE_TYPE',
     TENANT_ID = 'TENANT_ID',
     CLIENT_ID = 'CLIENT_ID',
     CLIENT_SECRET = 'CLIENT_SECRET',

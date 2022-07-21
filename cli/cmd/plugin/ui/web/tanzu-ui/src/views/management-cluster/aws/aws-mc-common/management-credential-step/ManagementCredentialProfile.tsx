@@ -57,11 +57,17 @@ function ManagementCredentialProfile(props: Props) {
             </p>
             <p cds-layout="m-y:lg" className="description">
                 Don&apos;t have an AWS Credential profile? Credential profiles can be configured using the{' '}
-                <a href="/" className="text-blue">
+                <a
+                    href="/Users/miclettej/Dev/miclettej-community-edition/community-edition/cli/cmd/plugin/ui/web/tanzu-ui/public"
+                    className="text-blue"
+                >
                     AWS CLI
                 </a>
                 . More on{' '}
-                <a href="/" className="text-blue">
+                <a
+                    href="/Users/miclettej/Dev/miclettej-community-edition/community-edition/cli/cmd/plugin/ui/web/tanzu-ui/public"
+                    className="text-blue"
+                >
                     AWS Credential profile.
                 </a>
             </p>

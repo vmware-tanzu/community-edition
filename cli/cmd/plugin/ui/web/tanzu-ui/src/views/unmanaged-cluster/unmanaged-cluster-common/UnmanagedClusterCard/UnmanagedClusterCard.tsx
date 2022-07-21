@@ -9,7 +9,7 @@ import { ClarityIcons, disconnectIcon, unknownStatusIcon } from '@cds/core/icon'
 
 // App imports
 import './UnmanagedClusterCard.scss';
-import { UnmanagedCluster } from '../../../swagger-api';
+import { UnmanagedCluster } from '../../../../swagger-api';
 
 ClarityIcons.addIcons(disconnectIcon, unknownStatusIcon);
 

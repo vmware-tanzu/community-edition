@@ -3,10 +3,10 @@ import React, { useContext } from 'react';
 
 // App imports
 import { AwsStore } from '../../../../state-management/stores/Store.aws';
-import { AWS_MC_BASIC_TAB_NAMES } from '../../../../shared/constants/NavRoutes.constants';
+import { AWS_MC_BASIC_TAB_NAMES } from './AwsManagementClusterBasic.constants';
 import Wizard from '../../../../shared/components/wizard/Wizard';
 import ManagementClusterSettings from '../../../../shared/components/management-cluster-settings-step/ManagementClusterSettings';
-import ManagementCredentials from './management-credential-step/ManagementCredentials';
+import ManagementCredentials from '../aws-mc-common/management-credential-step/ManagementCredentials';
 import useAwsDeployment from '../../../../shared/services/awsDeployment';
 
 function AwsManagementClusterBasic() {

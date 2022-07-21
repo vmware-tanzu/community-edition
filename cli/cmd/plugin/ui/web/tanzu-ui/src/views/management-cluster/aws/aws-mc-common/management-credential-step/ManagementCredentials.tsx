@@ -238,7 +238,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             Connect with your AWS profile to view available EC2 key pairs.
                         </CdsControlMessage>
                     </CdsSelect>
-                    <a href="/" className="btn-refresh icon-blue" onClick={handleRefresh} cds-text="secondary">
+                    <a
+                        href="/Users/miclettej/Dev/miclettej-community-edition/community-edition/cli/cmd/plugin/ui/web/tanzu-ui/public"
+                        className="btn-refresh icon-blue"
+                        onClick={handleRefresh}
+                        cds-text="secondary"
+                    >
                         <CdsIcon shape="refresh" size="sm"></CdsIcon>{' '}
                         <span cds-layout="m-t:sm" className="vertical-mid">
                             REFRESH
