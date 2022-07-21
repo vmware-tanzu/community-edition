@@ -1,6 +1,4 @@
-import {
-    AZURE_NODE_PROFILE_NAMES
-} from '../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
+import { AZURE_NODE_PROFILE_NAMES } from '../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 
 export const AZURE_DEFAULT_VALUES = {
     CLUSTER_NAME: '',
