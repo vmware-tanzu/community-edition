@@ -31,7 +31,7 @@
     },
     {
         "name": "Network 7",
-        "id": "network-7",
+        "moid": "network-7",
         "displayName": "Network 7"
     }
 ]

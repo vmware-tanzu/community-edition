@@ -1,16 +1,16 @@
+// App imports
+import './Wizard.scss';
+
+import { FormAction, StoreDispatch } from '../../types/types';
 // React imports
 import React, { ReactElement, useState } from 'react';
+import StepWizard, { StepWizardChildProps } from 'react-step-wizard';
 
 // Library imports
 import { FieldError } from 'react-hook-form';
-import _ from 'lodash';
-import StepWizard, { StepWizardChildProps } from 'react-step-wizard';
-
-// App imports
-import './Wizard.scss';
 import { STATUS } from '../../constants/App.constants';
 import StepNav from './StepNav';
-import { FormAction, StoreDispatch } from '../../types/types';
+import _ from 'lodash';
 
 interface WizardProps {
     tabNames: string[];
@@ -19,7 +19,11 @@ interface WizardProps {
     children: ReactElement<any, any>[];
 }
 export interface StepProps extends StepWizardChildProps {
+    tabStatus: STATUS[];
+    setTabStatus: (status: STATUS[]) => void;
+    key: number;
     deploy?: () => void;
+    submitForm: (data: any | undefined) => void;
     handleValueChange: (
         type: string,
         field: string,
