@@ -35,7 +35,7 @@ describe('ManagementClusterInventory component', () => {
 
     const clickFirstDeleteButton = async function () {
         const deleteBtns = await screen.findAllByText('Delete');
-        const firstDeleteBtn = deleteBtns[0];
+        const firstDeleteBtn = deleteBtns[0] as HTMLElement;
         fireEvent.click(firstDeleteBtn);
     };
 
@@ -70,7 +70,9 @@ describe('ManagementClusterInventory component', () => {
 
         await clickFirstDeleteButton();
 
-        expect(await screen.findByTestId('confirm-delete-cluster-modal')).toBeInTheDocument();
+        const modalWindows = await screen.findAllByTestId('confirm-delete-cluster-modal');
+        const firstModalWindow = modalWindows[0] as HTMLElement;
+        expect(await firstModalWindow).toBeInTheDocument();
     });
 
     test('delete modal confirmation cancel button should close modal window', async () => {
@@ -78,8 +80,10 @@ describe('ManagementClusterInventory component', () => {
 
         await clickFirstDeleteButton();
 
-        const cancelBtn = await screen.findByText('Cancel');
-        fireEvent.click(cancelBtn);
+        const cancelBtns = await screen.findAllByText('Cancel');
+        const firstCancelBtn = cancelBtns[0] as HTMLElement;
+        fireEvent.click(firstCancelBtn);
+
         expect(screen.queryByTestId('confirm-delete-cluster-modal')).not.toBeInTheDocument();
 
         const managementClusterCards = await screen.findAllByTestId('management-cluster-card');
@@ -104,8 +108,9 @@ describe('ManagementClusterInventory component', () => {
 
         await clickFirstDeleteButton();
 
-        const deleteBtn = await screen.findByTestId('delete-cluster-btn');
-        fireEvent.click(deleteBtn);
+        const deleteBtns = await screen.findAllByTestId('delete-cluster-btn');
+        const firstDeleteBtn = deleteBtns[0] as HTMLElement;
+        fireEvent.click(firstDeleteBtn);
 
         const managementClusterCards = await screen.findAllByTestId('management-cluster-card');
         expect(managementClusterCards.length).toBe(3);
