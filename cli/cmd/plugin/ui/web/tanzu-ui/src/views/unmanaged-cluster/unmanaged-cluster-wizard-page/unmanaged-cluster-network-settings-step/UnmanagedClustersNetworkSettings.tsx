@@ -29,7 +29,7 @@ import { Store } from '../../../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
-import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../unmanaged.defaults';
 import { UnmanagedService } from '../../../../swagger-api/services/UnmanagedService';
 import { useNavigate } from 'react-router-dom';
 

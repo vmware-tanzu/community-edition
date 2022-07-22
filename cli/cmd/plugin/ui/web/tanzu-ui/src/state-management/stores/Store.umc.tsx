@@ -6,7 +6,7 @@ import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 import { StoreDispatch } from '../../shared/types/types';
 import umcReducer from '../reducers/Wizard.reducer';
 import { UNMANAGED_CLUSTER_FIELDS } from '../../views/unmanaged-cluster/unmanaged-cluster-wizard-page/UnmanagedCluster.constants';
-import { UNMANAGED_DEFAULT_VALUES } from '../../shared/constants/defaults/unmanaged.defaults';
+import { UNMANAGED_DEFAULT_VALUES } from '../../views/unmanaged-cluster/unmanaged-cluster-wizard-page/unmanaged.defaults';
 
 const initialState = {
     [STORE_SECTION_FORM]: {

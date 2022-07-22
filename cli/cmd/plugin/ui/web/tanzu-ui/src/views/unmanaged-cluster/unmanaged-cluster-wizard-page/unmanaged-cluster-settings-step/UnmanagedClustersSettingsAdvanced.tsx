@@ -20,7 +20,7 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
-import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../unmanaged.defaults';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 

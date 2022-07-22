@@ -1,4 +1,4 @@
-import { UNMANAGED_CLUSTER_FIELDS } from '../../../views/unmanaged-cluster/unmanaged-cluster-wizard-page/UnmanagedCluster.constants';
+import { UNMANAGED_CLUSTER_FIELDS } from './UnmanagedCluster.constants';
 import { K8sProviders } from '../../../shared/constants/K8sProviders.constants';
 import { CniProviders } from '../../../shared/constants/CniProviders.constants';
 import { ClusterProtocols } from '../../../shared/constants/ClusterProtocols.constants';

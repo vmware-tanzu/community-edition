@@ -15,7 +15,7 @@ import { isK8sCompliantString } from '../../../../shared/validations/Validation.
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
-import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../unmanaged.defaults';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
 
 export interface FormInputs {
@@ -53,11 +53,9 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     } = methods;
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        if (Object.keys(errors).length === 0) {
-            if (goToStep && currentStep && submitForm) {
-                goToStep(currentStep + 1);
-                submitForm(currentStep);
-            }
+        if (Object.keys(errors).length === 0 && goToStep && currentStep && submitForm) {
+            goToStep(currentStep + 1);
+            submitForm(currentStep);
         }
     };
 
