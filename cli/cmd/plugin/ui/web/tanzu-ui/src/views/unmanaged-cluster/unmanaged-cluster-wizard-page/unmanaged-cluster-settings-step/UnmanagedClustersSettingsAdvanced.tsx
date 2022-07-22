@@ -3,24 +3,24 @@ import React, { ChangeEvent, useState, useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 // Library imports
-import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
+import { blockIcon, blocksGroupIcon, ClarityIcons, clusterIcon } from '@cds/core/icon';
+import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
+import { CdsIcon } from '@cds/react/icon';
 import { CdsInput } from '@cds/react/input';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
-import { CdsIcon } from '@cds/react/icon';
-import { CdsButton } from '@cds/react/button';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
+import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
 import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
 import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
-import { K8sProviders } from '../../../../shared/constants/K8sProviders.constants';
-import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 

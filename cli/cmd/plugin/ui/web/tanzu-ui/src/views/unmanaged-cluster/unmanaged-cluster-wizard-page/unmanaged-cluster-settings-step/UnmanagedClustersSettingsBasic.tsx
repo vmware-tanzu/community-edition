@@ -1,22 +1,22 @@
 // React imports
 import React, { ChangeEvent, useContext } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
+import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
-import { CdsButton } from '@cds/react/button';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
-import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
-import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { UNMANAGED_CLUSTER_FIELDS } from '../UnmanagedCluster.constants';
 import { UNMANAGED_PLACEHOLDER_VALUES } from '../../../../shared/constants/defaults/unmanaged.defaults';
+import { UmcStore } from '../../../../state-management/stores/Store.umc';
 
 export interface FormInputs {
     [UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]: string;
