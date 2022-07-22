@@ -9,16 +9,17 @@
     --background-color: hsl(0, 0%, 0%);
     --popup-icon-distance: 10px;
     .tooltip-content {
-        padding: 10px;
+        padding: 12px;
         position: absolute;
         background-color: var(--background-color);
         max-width: fit-content;
         max-width: -moz-fit-content;
         border-radius: 0.3rem;
-        ::after {
+        &::after {
             content: '';
             position: absolute;
             border: 8px solid transparent;
+            margin: 0;
         }
     }
     &.large {
@@ -36,11 +37,12 @@
         transform: translateX(100%);
         .tooltip-content {
             left: 0;
+            top: 0;
             transform: translateX(var(--popup-icon-distance));
-            ::after {
+            &::after {
                 top: 0;
                 left: 0;
-                transform: translateX(calc(-100% + 8px));
+                transform: translateX(-5px);
                 border-top-color: var(--background-color);
                 border-right-color: var(--background-color);
             }
@@ -52,11 +54,12 @@
         right: 100%;
         .tooltip-content {
             right: 0;
+            top: 0;
             transform: translateX(calc(-1 * var(--popup-icon-distance)));
-            ::after {
+            &::after {
                 top: 0;
                 right: 0;
-                transform: translateX(calc(100% - 8px));
+                transform: translateX(5px);
                 border-top-color: var(--background-color);
                 border-left-color: var(--background-color);
             }
@@ -71,10 +74,10 @@
             left: 0;
             bottom: 0;
             transform: translateY(calc(-1 * var(--popup-icon-distance)));
-            ::after {
+            &::after {
                 bottom: 0;
                 left: 0;
-                transform: translateY(calc(100% - 8px));
+                transform: translateY(5px);
                 border-top-color: var(--background-color);
                 border-left-color: var(--background-color);
             }
@@ -89,10 +92,10 @@
             right: 0;
             bottom: 0;
             transform: translateY(calc(-1 * var(--popup-icon-distance)));
-            ::after {
+            &::after {
                 bottom: 0;
                 right: 0;
-                transform: translateY(calc(100% - 8px));
+                transform: translateY(5px);
                 border-top-color: var(--background-color);
                 border-right-color: var(--background-color);
             }
@@ -107,10 +110,10 @@
             top: 0;
             left: 0;
             transform: translateY(var(--popup-icon-distance));
-            ::after {
+            &::after {
                 top: 0;
                 left: 0;
-                transform: translateY(calc(-100% + 8px));
+                transform: translateY(-5px);
                 border-bottom-color: var(--background-color);
                 border-left-color: var(--background-color);
             }
@@ -124,10 +127,10 @@
         .tooltip-content {
             right: 0;
             transform: translateY(var(--popup-icon-distance));
-            ::after {
+            &::after {
                 top: 0;
                 right: 0;
-                transform: translateY(calc(-100% + 8px));
+                transform: translateY(-5px);
                 border-bottom-color: var(--background-color);
                 border-right-color: var(--background-color);
             }
