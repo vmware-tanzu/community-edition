@@ -1,0 +1,11 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:base64", "base64")
+
+#@ load("/provider-config.lib.txt", "get_provider_config")
+
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata": {"name": "oci-cloud-controller-manager"}}),expects="1+"
+---
+data:
+  cloud-provider.yaml: #@ base64.encode(get_provider_config(data.values))

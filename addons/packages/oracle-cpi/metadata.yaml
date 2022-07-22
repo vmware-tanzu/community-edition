@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: oracle-cpi.community.tanzu.vmware.com
+spec:
+  displayName: "oracle-cpi"
+  longDescription: "Kubernetes Cloud Controller Manager implementation for Oracle Cloud Infrastucture"
+  shortDescription: "OCI Kubernetes Cloud Controller Manager"
+  providerName: VMware
+  maintainers:
+    - name: Naadir Jeewa <jeewan@vmware.com>
+    - name: Fang Han <fhan@vmware.com>
+  categories:
+    - "cloud provider interface"

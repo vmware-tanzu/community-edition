@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: oracle-cpi
+authors:
+- name: Naadir Jeewa
+  email: jeewan@vmware.com
+websites:
+- url: https://github.com/oracle/oci-cloud-controller-manager

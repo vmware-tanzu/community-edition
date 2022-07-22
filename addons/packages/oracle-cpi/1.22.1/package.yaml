@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: oracle-cpi.community.tanzu.vmware.com.1.21.0
+spec:
+  refName: oracle-cpi.community.tanzu.vmware.com
+  version: 1.22.1
+  releaseNotes: oracle-cpi 1.22.1 https://github.com/oracle/oci-cloud-controller-manager
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/oracle-cpi@sha256:fe3a041bb05c7fb30c60749c1b7d24a153035199a46f40fcc432d83fdda88346
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
