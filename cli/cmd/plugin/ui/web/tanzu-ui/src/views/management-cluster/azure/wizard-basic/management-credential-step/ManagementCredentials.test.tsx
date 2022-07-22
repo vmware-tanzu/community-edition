@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/lib/node';
 
@@ -76,8 +76,12 @@ describe('ManagementCredential component', () => {
         render(<ManagementCredentials handleValueChange={handleValueChange} />);
         for (let i = 0; i < formFieldItem.length; i++) {
             const input = screen.getByPlaceholderText(formFieldItem[i].placeholder);
-            fireEvent.change(input, {
-                target: { value: 'test' + formFieldItem[i].placeholder },
+            // TODO: The issue caused by setValue method. This logic should be revisited.
+            // eslint-disable-next-line testing-library/no-unnecessary-act
+            await act(async () => {
+                fireEvent.change(input, {
+                    target: { value: 'test' + formFieldItem[i].placeholder },
+                });
             });
             expect(handleValueChange).toHaveBeenCalled();
             expect(handleValueChange).toBeCalledWith(
@@ -89,7 +93,11 @@ describe('ManagementCredential component', () => {
             );
         }
         const selectItem = screen.getByTestId('azure-environment-select');
-        fireEvent.change(selectItem, { target: { value: 'AzurePublicCloud' } });
+        // TODO: The issue caused by setValue method. This logic should be revisited.
+        // eslint-disable-next-line testing-library/no-unnecessary-act
+        await act(async () => {
+            fireEvent.change(selectItem, { target: { value: 'AzurePublicCloud' } });
+        });
         expect(handleValueChange).toHaveBeenCalled();
         expect(handleValueChange).toBeCalledWith('INPUT_CHANGE', 'AZURE_ENVIRONMENT', 'AzurePublicCloud', undefined, {});
     });
@@ -110,8 +118,11 @@ describe('ManagementCredential component', () => {
             expect(profileEl).toBeInTheDocument();
         }
         const keypairEl = screen.getByTestId('region-select');
-        fireEvent.change(keypairEl, { target: { value: 'westus' } });
-        console.log((el as HTMLOptionElement).value);
+        // TODO: The issue caused by setValue method. This logic should be revisited.
+        // eslint-disable-next-line testing-library/no-unnecessary-act
+        await act(async () => {
+            fireEvent.change(keypairEl, { target: { value: 'westus' } });
+        });
         expect((el as HTMLOptionElement).selected).toBeTruthy();
     });
 
@@ -119,11 +130,13 @@ describe('ManagementCredential component', () => {
         render(<ManagementCredentials handleValueChange={jest.fn} />);
         fireEvent.click(screen.getByText('CONNECT'));
         expect(await screen.findByText('Connected to Azure')).toBeInTheDocument();
-        await fireEvent.change(screen.getByPlaceholderText('Tenant ID'), {
-            target: { value: 'myTestAccessKeyId' },
+        // TODO: The issue caused by setValue method. This logic should be revisited.
+        // eslint-disable-next-line testing-library/no-unnecessary-act
+        await act(async () => {
+            fireEvent.change(screen.getByPlaceholderText('Tenant ID'), {
+                target: { value: 'myTestAccessKeyId' },
+            });
         });
-        const keypairEl = screen.getByPlaceholderText('Tenant ID');
-        console.log((keypairEl as HTMLElement).getAttribute('placeholder'));
         expect(await screen.findByText('CONNECT')).toBeInTheDocument();
     });
 });
