@@ -1,3 +1,6 @@
+import { KeyOfStringToString } from '../../types/types';
+import { AWS_NODE_PROFILE_NAMES } from '../../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
+
 export const AWS_DEFAULT_VALUES = {
     // Cluster Data
     CLUSTER_NAME: 'my-aws-cluster',
@@ -24,11 +27,11 @@ export const AWS_DEFAULT_VALUES = {
     LOAD_BALANCER_SCHEME_INTERNAL: false,
 };
 
-const AWS_DEFAULT_INSTANCE_TYPES = new Map<string, string>([
-    ['SINGLE_NODE', 't3a.large'],
-    ['HIGH_AVAILABILITY', 't3a.large'],
-    ['PRODUCTION_READY', 'm6a.xlarge'],
-]);
+const AWS_DEFAULT_INSTANCE_TYPES: KeyOfStringToString = {
+    [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: 't3a.large',
+    [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: 't3a.large',
+    [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: 'm6a.xlarge',
+};
 
 /**
  * @method retrieveAwsInstanceType
@@ -37,10 +40,10 @@ const AWS_DEFAULT_INSTANCE_TYPES = new Map<string, string>([
  * Returns aws instance type string corresponding to selected node profile.
  */
 export function retrieveAwsInstanceType(nodeProfile: string): string {
-    if (nodeProfile && AWS_DEFAULT_INSTANCE_TYPES.has(nodeProfile)) {
-        return AWS_DEFAULT_INSTANCE_TYPES.get(nodeProfile) as string;
+    if (nodeProfile && AWS_DEFAULT_INSTANCE_TYPES[nodeProfile]) {
+        return AWS_DEFAULT_INSTANCE_TYPES[nodeProfile];
     } else {
         console.warn(`provided node profile value not found in AWS_DEFAULT_INSTANCE_TYPES: ${nodeProfile}`);
-        return AWS_DEFAULT_INSTANCE_TYPES.get('SINGLE_NODE') as string;
+        return AWS_DEFAULT_INSTANCE_TYPES[AWS_NODE_PROFILE_NAMES.SINGLE_NODE];
     }
 }

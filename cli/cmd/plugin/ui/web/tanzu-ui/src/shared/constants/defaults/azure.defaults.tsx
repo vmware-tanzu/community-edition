@@ -1,4 +1,5 @@
 import { AZURE_NODE_PROFILE_NAMES } from '../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
+import { KeyOfStringToString } from '../../types/types';
 
 export const AZURE_DEFAULT_VALUES = {
     CLUSTER_NAME: '',
@@ -23,25 +24,21 @@ export const AZURE_DEFAULT_VALUES = {
     ACTIVATE_PROXY_SETTINGS: false,
 };
 
-interface AzureDefaultInstanceTypes {
-    [key: string]: string;
-}
-
-const AZURE_DEFAULT_INSTANCE_TYPES: AzureDefaultInstanceTypes = {
+const AZURE_DEFAULT_INSTANCE_TYPES: KeyOfStringToString = {
     [AZURE_NODE_PROFILE_NAMES.SINGLE_NODE]: 'Standard_D2s_v3',
     [AZURE_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: 'Standard_D2s_v3',
     [AZURE_NODE_PROFILE_NAMES.PRODUCTION_READY]: 'Standard_D4s_v3',
 };
 
 /**
- * @method retrieveAwsInstanceType
+ * @method retrieveAzureInstanceType
  * @param nodeProfile - node profile name set by ManagementClusterSettings.tsx; references key of AZURE_DEFAULT_INSTANCE_TYPES
  * defaults const.
  * Returns aws instance type string corresponding to selected node profile.
  */
 export function retrieveAzureInstanceType(nodeProfile: string): string {
-    if (nodeProfile && Object.keys(AZURE_DEFAULT_INSTANCE_TYPES).includes(nodeProfile)) {
-        return AZURE_DEFAULT_INSTANCE_TYPES[nodeProfile as keyof AzureDefaultInstanceTypes];
+    if (nodeProfile && AZURE_DEFAULT_INSTANCE_TYPES[nodeProfile]) {
+        return AZURE_DEFAULT_INSTANCE_TYPES[nodeProfile];
     } else {
         console.warn(`provided node profile value not found in AZURE_DEFAULT_INSTANCE_TYPES: ${nodeProfile}`);
         return AZURE_DEFAULT_INSTANCE_TYPES[AZURE_NODE_PROFILE_NAMES.SINGLE_NODE];
