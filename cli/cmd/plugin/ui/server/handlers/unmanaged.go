@@ -294,7 +294,7 @@ func executeAndRedirect(args ...string) error {
 	cmdArgs = append(cmdArgs, args...)
 
 	fmt.Println("Tanzu CLI command: 'tanzu " + strings.Join(cmdArgs, " ") + "'")
-	sendTanzuCommand(args)
+	sendTanzuCommand(cmdArgs)
 	cmd := exec.Command("tanzu", cmdArgs...)
 
 	var errStdout, errStderr error
