@@ -7,8 +7,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"os"
 	"os/exec"
 	"strconv"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/go-openapi/runtime/middleware"
 
@@ -104,19 +109,14 @@ func (app *App) CreateUnmanagedCluster(params unmanaged.CreateUnmanagedClusterPa
 		args = append(args, "--worker-node-count", strconv.FormatInt(createParams.Workernodecount, 10))
 	}
 
-	// TODO: Add streaming of create output
-	_, err := runCommand(args...)
-	if err != nil {
-		return unmanaged.NewDeleteUnmanagedClusterInternalServerError().WithPayload(Err(err))
-	}
+	go executeAndRedirect(args...)
 
-	cluster, err := app.getUnmanagedCluster(createParams.Name)
-	if err != nil {
-		e := fmt.Errorf("cluster created but could not be found: %s", err.Error())
-		return unmanaged.NewDeleteUnmanagedClusterInternalServerError().WithPayload(Err(e))
+	creatingClusterPayload := &models.UnmanagedCluster{
+		Name:     createParams.Name,
+		Provider: createParams.Provider,
+		Status:   "creating",
 	}
-
-	return unmanaged.NewCreateUnmanagedClusterOK().WithPayload(cluster)
+	return unmanaged.NewCreateUnmanagedClusterOK().WithPayload(creatingClusterPayload)
 }
 
 // GetUnmanagedCluster gets details of a specific unmanaged cluster.
@@ -205,4 +205,129 @@ func (app *App) DeleteUnmanagedCluster(params unmanaged.DeleteUnmanagedClusterPa
 	}
 
 	return unmanaged.NewDeleteUnmanagedClusterOK()
+}
+
+func sendTanzuCommand(tanzuArgs []string) {
+	doSendLog([]byte(formatTanzuCommandMessage(tanzuArgs)))
+}
+
+// Our sendLog is a wrapper to the SendLog method.
+// The SendLog method is expecting a byte array of a valid JSON object, so our sendLog method
+// - splits the raw byte array into several messages along "\n" boundaries,
+// - wraps the resulting messages in JSON as a formatted "log" message, and
+// - calls doSendLog (which calls SendLog).
+func sendLog(msg []byte) {
+	// split the message on "\n" boundaries
+	rawMessages := strings.Split(string(msg), "\n")
+	// remove messages that only contain white space
+	var messages []string
+	for x := range rawMessages {
+		trimmedMessage := strings.TrimSpace(rawMessages[x])
+		if len(trimmedMessage) > 0 {
+			messages = append(messages, trimmedMessage)
+		}
+	}
+	// Some "messages" are ONLY white space. When we encounter them, we send a "ping" message.
+	// The interpretation: the white space "message" is just the process saying "I'm still alive"
+	if len(messages) == 0 {
+		doSendLog([]byte(formatPingMessage()))
+		return
+	}
+
+	for _, singleMessage := range messages {
+		fmt.Printf("%s: Sending LOG message: [%s]\n", time.Now(), singleMessage)
+		doSendLog([]byte(formatLogMessage(singleMessage)))
+	}
+}
+
+func doSendLog(msg []byte) {
+	SendLog(msg)
+	sleepAfterSendingWebSocketMessage()
+}
+
+func sleepAfterSendingWebSocketMessage() {
+	// A hack to avoid losing messages, which happens if we write another message too quickly to the websocket
+	time.Sleep(25 * time.Millisecond)
+}
+
+func formatLogMessage(logMessage string) string {
+	// Because we are sending the raw messages wrapped in JSON, we need to escape any double quotes
+	escapedMessage := strings.Replace(logMessage, "\"", "\\\"", -1)
+	return fmt.Sprintf("{\"type\":\"log\", \"data\":{\"logType\":\"output\",\"message\":\"%s\"}}", escapedMessage)
+}
+
+func formatPingMessage() string {
+	return "{\"type\":\"ping\"}"
+}
+
+func formatTanzuCommandMessage(args []string) string {
+	tanzuCmd := "tanzu " + strings.Join(args, " ")
+	return fmt.Sprintf("{\"type\":\"log\", \"data\":{\"logType\":\"tanzu command\",\"message\":\"%s\"}}", tanzuCmd)
+}
+
+// Adapted from copyAndCapture at https://blog.kowalczyk.info/article/wOYk/advanced-command-execution-in-go-with-osexec.html
+// Copies data from one stream to the other AND sends it as a Log message to the web socket
+func copyAndLog(w io.Writer, r io.Reader) error {
+	buf := make([]byte, 1024, 1024)
+	for {
+		n, err := r.Read(buf[:])
+		if n > 0 {
+			d := buf[:n]
+			sendLog(d)
+			_, err := w.Write(d)
+			if err != nil {
+				return err
+			}
+		}
+		if err != nil {
+			// Read returns io.EOF at the end of file, which is not an error for us
+			if err == io.EOF {
+				err = nil
+			}
+			return err
+		}
+	}
+}
+
+func executeAndRedirect(args ...string) error {
+	cmdArgs := []string{"unmanaged-cluster"}
+	cmdArgs = append(cmdArgs, args...)
+
+	fmt.Println("Tanzu CLI command: 'tanzu " + strings.Join(cmdArgs, " ") + "'")
+	sendTanzuCommand(args)
+	cmd := exec.Command("tanzu", cmdArgs...)
+
+	var errStdout, errStderr error
+	stdoutIn, _ := cmd.StdoutPipe()
+	stderrIn, _ := cmd.StderrPipe()
+
+	fmt.Println("starting command with cmd.Start()")
+	err := cmd.Start()
+	if err != nil {
+		fmt.Printf("cmd.Start() failed with '%s'\n", err)
+		return err
+	}
+
+	// cmd.Wait() should be called only after we finish reading from stdoutIn and stderrIn.
+	// wg ensures that we finish
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		errStdout = copyAndLog(os.Stdout, stdoutIn)
+		wg.Done()
+	}()
+
+	errStderr = copyAndLog(os.Stderr, stderrIn)
+
+	wg.Wait()
+
+	err = cmd.Wait()
+	if err != nil {
+		fmt.Printf("cmd.Run() failed with %s\n", err)
+	}
+	if errStdout != nil || errStderr != nil {
+		fmt.Printf("failed to capture stdout or stderr\n")
+	}
+
+	return err
 }
