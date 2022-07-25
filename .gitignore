@@ -58,6 +58,7 @@ docs/site/resources
 
 .vs
 .idea
+.vscode
 
 .envrc
 
