@@ -31,26 +31,26 @@
         color: $white;
         font-family: $metropolis-semibold;
         font-size: 12px;
+        line-height: 2;
+        letter-spacing: 1px;
         margin: 0;
         padding: 25px 0 10px;
         text-transform: uppercase;
-        &::after {
-            content: '';
-            border-top: 2px solid $white;
-            border-right: 2px solid $white;
-            display: inline-block;
-            height: 5px;
-            margin-left: 4px;
-            transform: rotate(45deg) translateY(-2px);
-            width: 5px;
-        }
     }
     p {
         color: $white;
+        font-family: $metropolis-light;
         font-size: 16px;
         line-height: 24px;
         margin: 0;
         padding: 0 0 40px 0;
+        &:first-of-type {
+            padding-bottom: 10px;
+        }
+        &.cta {
+            font-family: $metropolis-semibold;
+            text-decoration: underline;
+        }
     }
     @include breakpoint(small-up) {
         .col {
@@ -68,6 +68,7 @@
 .use-cases {
     @include breakpoint(small-up) {
         padding-top: 70px;
+        padding-bottom: 30px;
     }
     > a {
         &:hover {
@@ -529,7 +530,10 @@
         margin-bottom: 10px;
     }
     p {
-        margin-bottom: 40px;
+        margin-bottom: 28px;
+    }
+    .buttons {
+        margin-bottom: 56px;
     }
     img {
         margin-bottom: 50px;

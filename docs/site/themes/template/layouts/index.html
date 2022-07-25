@@ -1,4 +1,5 @@
 {{ define "main" }}
+	{{ partial "video-modal.html" . }}
 	<main>
 		<div class="announcement-bar">
 			<div class="wrapper">
@@ -18,6 +19,7 @@
 						<div class="content-wrap">
 							<h3>Try it out</h3>
 							<p>Get hands-on now: deploy, scale, and monitor apps now in a hosted workshop environment.</p>
+							<p class="cta">Launch the workshop</p>
 						</div>
 					</div>
 				</a>
@@ -26,19 +28,32 @@
 						<div class="content-wrap">
 							<h3>Shape the Future</h3>
 							<p>Your thoughts, experiences, and contributions matter. Share them and help guide the direction of VMware Tanzu.</p>
+							<p class="cta">Learn more</p>
 						</div>
 					</div>
 				</a>
 			</div>
 		</div>
-		{{ partial "use-cases.html" . }}
 		<div class="bg-lighter-blue architecture">
 			<div class="wrapper">
 				<h2>A complete and customizable Kubernetes platform</h2>
 				<p>Tanzu Community Edition includes the same open source software used in Tanzu commercial offerings.</p>
+				<div class="buttons">
+					<button class="button navy-blue modal-video"
+						data-target="#videoModal"
+						data-title="Getting Started with Tanzu Community Edition: A Technical Overview"
+						data-video-id="UnxQjhXb2K4"
+						data-provider="youtube"
+						data-video=""
+						data-toggle="modal">
+						<span class="icon-play"></span>
+						Watch technical overview video
+					</button>
+				</div>
 				<img src="https://d1fto35gcfffzn.cloudfront.net/editions/tce-arch-diagram-2082.png" alt="Architecture diagram" />
 			</div>
 		</div>
+		{{ partial "use-cases.html" . }}
 		{{ partial "faqs.html" . }}
 		{{/* partial "contributors.html" . */}}
 	</main>

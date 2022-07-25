@@ -1,0 +1,113 @@
+body.modal-open {
+  overflow-y: hidden;
+}
+.modal {
+  display: none;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+}
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0 10px;
+  max-width: 750px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #979797;
+  padding: 15px;
+  h2 {
+    margin: 0;
+    color: $black;
+    font-size: 20px;
+    font-family: $metropolis-regular;
+  }
+  .close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+  }
+}
+.modal-content {
+  position: relative;
+  background-color: $white;
+  border: none;
+  border-radius: 0;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
+  outline: 0;
+  .embed-responsive-16by9 {
+    display: block;
+    width: 100%;
+    padding-top: 56.25%;
+    iframe {
+      position: absolute;
+      width: 100%; 
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+}
+.modal-body {
+  position: relative;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 75vw;
+    margin: 0 auto;
+  }
+  .modal-content {
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+  .modal-sm {
+    width: 300px;
+  }
+}
+@media (min-width: 1025px) {
+  .modal-lg {
+    width: 900px;
+  }
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000000;
+  &.fade {
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+  &.show {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+  }
+}
