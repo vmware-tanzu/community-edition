@@ -3,7 +3,7 @@ import * as ContextualHelpUtils from './shared/components/ContextualHelp/Context
 import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
 // React imports
 import React, { useContext, useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
@@ -89,6 +89,7 @@ function App() {
                             <Route path={NavRoutes.WELCOME} element={<Welcome />} />
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_INVENTORY} element={<WorkloadClusterInventory />} />
                             <Route path={NavRoutes.WORKLOAD_CLUSTER_WIZARD} element={<WorkloadClusterWorkflow />} />
+                            <Route path="*" element={<Navigate replace to="/" />} />
                         </Routes>
                     </div>
                 </div>
