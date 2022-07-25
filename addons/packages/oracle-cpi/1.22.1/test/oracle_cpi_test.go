@@ -44,6 +44,7 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 
 			// overlays
 			filepath.Join(configDir, "overlay/provider-config.yaml"),
+			filepath.Join(configDir, "overlay/proxy.yaml"),
 
 			// default values
 			filepath.Join(configDir, "values.star"),
@@ -80,4 +81,36 @@ loadBalancer:
 			Expect(output).ToNot(BeEmpty())
 		})
 	})
+
+	When("proxy configurations are provided", func() {
+		BeforeEach(func() {
+			values = `
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+compartment: sample-compartment
+vcn: sample-vcn
+loadBalancer:
+  subnet1: sample-subnet1
+  subnet2: sample-subnet2
+http_proxy: 10.0.0.1
+https_proxy: 10.0.0.2
+no_proxy: 10.0.0.1
+`
+		})
+
+		It("can render cloud config secret successfully", func() {
+			Expect(yttRenderErr).ToNot(HaveOccurred())
+			Expect(output).ToNot(BeEmpty())
+			Expect(output).To(ContainSubstring(` env:
+        - name: HTTP_PROXY
+          value: 10.0.0.1
+        - name: HTTPS_PROXY
+          value: 10.0.0.2
+        - name: NO_PROXY
+          value: 10.0.0.1`))
+		})
+	})
+
 })

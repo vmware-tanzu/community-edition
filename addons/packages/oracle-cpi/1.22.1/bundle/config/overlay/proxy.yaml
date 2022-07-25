@@ -1,0 +1,24 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:struct", "struct")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:sha256", "sha256")
+
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "oci-cloud-controller-manager"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@ if values.http_proxy != "" :
+      #@overlay/match by=overlay.subset({"name": "oci-cloud-controller-manager"})
+      #@overlay/match-child-defaults missing_ok=True
+      - env:
+        - name: "HTTP_PROXY"
+          value: #@ values.http_proxy
+        - name: "HTTPS_PROXY"
+          value: #@ values.https_proxy
+        - name: "NO_PROXY"
+          value: #@ values.no_proxy
+      #@ end
