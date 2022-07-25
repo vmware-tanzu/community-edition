@@ -15,9 +15,9 @@ import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actio
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
-import Login from './login/Login';
+import ManagementCredentialsLogin from './ManagementCredentialsLogin';
 import './ManagementCredentials.scss';
-import { AZURE_FIELDS } from '../../AzureManagementCluster.constants';
+import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 
@@ -116,12 +116,15 @@ function ManagementCredentials(props: Partial<StepProps>) {
             <p cds-layout="m-y:lg" className="description">
                 Provide the Azure user credentials to create the Management Server on Azure. Don&apos;t have Azure credentials? View our
                 guide on&nbsp;
-                <a href="/" className="text-blue">
+                <a
+                    href="/Users/miclettej/Dev/miclettej-community-edition/community-edition/cli/cmd/plugin/ui/web/tanzu-ui/public"
+                    className="text-blue"
+                >
                     creating Microsoft Azure credentials
                 </a>
             </p>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <Login
+                <ManagementCredentialsLogin
                     status={connectionStatus}
                     message={message}
                     methods={methods}

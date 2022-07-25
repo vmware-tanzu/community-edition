@@ -9,16 +9,14 @@ import { CdsControlMessage } from '@cds/react/forms';
 import { CdsSelect } from '@cds/react/select';
 
 // App imports
-import { FormField, FormInputs } from '../ManagementCredentials';
-import { STORE_SECTION_FORM } from '../../../../../../state-management/reducers/Form.reducer';
-import { AzureStore } from '../../../../../../state-management/stores/Azure.store';
-import { AzureClouds } from '../../../../../../shared/constants/App.constants';
+import { FormField, FormInputs } from './ManagementCredentials';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import { AzureStore } from '../../../../../state-management/stores/Azure.store';
+import { AzureClouds } from '../../../../../shared/constants/App.constants';
 import { CdsButton } from '@cds/react/button';
-import { AZURE_FIELDS } from '../../../AzureManagementCluster.constants';
-import ConnectionNotification, {
-    CONNECTION_STATUS,
-} from '../../../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import './Login.scss';
+import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import './ManagementCredentialsLogin.scss';
 
 interface Props {
     status: CONNECTION_STATUS;
@@ -28,7 +26,7 @@ interface Props {
     methods: UseFormReturn<FormInputs, any>;
 }
 
-export default function Login(props: Props) {
+export default function ManagementCredentialsLogin(props: Props) {
     const { azureState } = useContext(AzureStore);
     const {
         methods: {

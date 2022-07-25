@@ -3,16 +3,16 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // App imports
-import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
-import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
-import { Store } from '../../state-management/stores/Store';
+import { AzureManagementClusterParams, AzureService, ConfigFileInfo } from '../../swagger-api';
 import { AzureStore } from '../../state-management/stores/Azure.store';
-import { AWSManagementClusterParams, AzureManagementClusterParams, AzureService, ConfigFileInfo } from '../../swagger-api';
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
+import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
-import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { retrieveAzureInstanceType } from '../constants/defaults/azure.defaults';
+import { Store } from '../../state-management/stores/Store';
+import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
 
 const useAzureDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -68,10 +68,10 @@ const useAzureDeployment = () => {
     };
 
     const deployOnAzure = async () => {
-        const awsClusterParams: AWSManagementClusterParams = getAzureRequestPayload();
+        const azureClusterParams: AzureManagementClusterParams = getAzureRequestPayload();
         try {
-            const configFileInfo: ConfigFileInfo = await AzureService.applyTkgConfigForAzure(awsClusterParams);
-            await AzureService.createAzureManagementCluster(awsClusterParams);
+            const configFileInfo: ConfigFileInfo = await AzureService.applyTkgConfigForAzure(azureClusterParams);
+            await AzureService.createAzureManagementCluster(azureClusterParams);
             dispatch({
                 type: DEPLOYMENT_STATUS_CHANGED,
                 payload: {

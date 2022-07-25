@@ -10,17 +10,25 @@ export interface Action {
     type: string; // type of action, e.g. INPUT_CHANGE
     payload?: any; // the payload of the action, generally the new value
 }
+
 export interface FormAction extends Action {
     field: string; // name of form field related to the action
 }
+
 export interface DynamicFormAction extends FormAction {
     locationData?: any; // data needed for storing the payload, generally only used when store location is dynamic (cf CCVAR_CHANGE)
 }
+
 export interface VsphereResourceAction extends Action {
     resourceName: string;
 }
+
 export interface DynamicCategoryToggleAction extends Action {
     category: string;
+}
+
+export interface KeyOfStringToString {
+    [key: string]: string;
 }
 
 export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, Action>>>;

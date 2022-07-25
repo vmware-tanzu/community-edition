@@ -4,18 +4,18 @@ import React from 'react';
 // App imports
 import { AzureProvider } from '../../../state-management/stores/Azure.store';
 import AzureLogo from '../../../assets/azure.svg';
+import AzureManagementClusterBasic from './azure-mc-basic/AzureManagementClusterBasic';
 import './AzureManagementCluster.scss';
-import AzureManagementClusterBasic from './wizard-basic/AzureManagementClusterBasic';
 
 function AzureManagementCluster() {
     return (
         <AzureProvider>
-            <div className="aws-management-container" cds-layout="grid col:12">
+            <div cds-layout="grid col:12">
                 <div cds-layout="col:8">
                     <div cds-layout="col:12 p-b:lg">
                         <span cds-text="title">
-                            <img src={AzureLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
-                            Create Management Cluster on Docker
+                            <img src={AzureLogo} className="logo logo-42" cds-layout="m-r:md" alt="azure logo" />
+                            Create Management Cluster on Azure
                         </span>
                     </div>
 

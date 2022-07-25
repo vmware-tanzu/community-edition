@@ -9,8 +9,8 @@ import { arrowIcon, ClarityIcons } from '@cds/core/icon';
 
 // App imports
 import { UmcProvider } from '../../state-management/stores/Store.umc';
-import UnmanagedClusterWizardBasic from './unmanaged-cluster-wizard-page/UnmanagedClusterWizardBasic';
-import UnmanagedClusterWizardAdvanced from './unmanaged-cluster-wizard-page/UnmanagedClusterWizardAdvanced';
+import UnmanagedClusterBasic from './unmanaged-cluster-basic/UnmanagedClusterBasic';
+import UnmanagedClusterAdvanced from './unmanaged-cluster-advanced/UnmanagedClusterAdvanced';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(arrowIcon);
@@ -59,7 +59,7 @@ function UnmanagedClusterWizard() {
                         Use Advanced Configuration
                     </CdsButton>
                 </div>
-                <UnmanagedClusterWizardBasic />
+                <UnmanagedClusterBasic />
             </div>
         );
     }
@@ -73,7 +73,7 @@ function UnmanagedClusterWizard() {
                         Use Basic Configuration
                     </CdsButton>
                 </div>
-                <UnmanagedClusterWizardAdvanced />
+                <UnmanagedClusterAdvanced />
             </div>
         );
     }
