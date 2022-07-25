@@ -288,7 +288,7 @@ func copyAndLog(w io.Writer, r io.Reader) error {
 	}
 }
 
-func executeAndRedirect(args ...string) error {
+func executeAndRedirect(args ...string) {
 	cmdArgs := []string{"unmanaged-cluster"}
 	cmdArgs = append(cmdArgs, args...)
 
@@ -304,7 +304,7 @@ func executeAndRedirect(args ...string) error {
 	err := cmd.Start()
 	if err != nil {
 		fmt.Printf("cmd.Start() failed with '%s'\n", err)
-		return err
+		return
 	}
 
 	// cmd.Wait() should be called only after we finish reading from stdoutIn and stderrIn.
@@ -327,6 +327,4 @@ func executeAndRedirect(args ...string) error {
 	if errStdout != nil || errStderr != nil {
 		fmt.Printf("failed to capture stdout or stderr\n")
 	}
-
-	return err
 }
