@@ -24,6 +24,7 @@ import { CdsIcon } from '@cds/react/icon';
 export const LogTypes = {
     LOG: 'log',
     PROGRESS: 'progress',
+    PING: 'ping',
 };
 
 export interface LogMessage {
@@ -63,6 +64,7 @@ function DeployProgress() {
     // Processes each message by type ('log' or 'status') and routes to appropriate handlers/state
     useEffect(() => {
         const lastMessage: MessageEvent | null = websocketSvc.lastMessage;
+        console.log(`WebSocket log message: ${lastMessage?.data}`);
         const logData = lastMessage ? JSON.parse(lastMessage.data) : null;
 
         if (logData && logData.type === LogTypes.LOG) {
@@ -70,6 +72,17 @@ function DeployProgress() {
             setLogMessageHistory((prev) => prev.concat([logLine]));
         } else if (logData && logData.type === LogTypes.PROGRESS) {
             handleDeploymentProgress(logData.data);
+        } else if (logData && logData.type === LogTypes.PING) {
+            // Add a '.' to the last line (if there is one)
+            setLogMessageHistory((prev) => {
+                const lastIndex = prev.length - 1;
+                if (lastIndex >= 0) {
+                    prev[lastIndex] = prev[lastIndex] + '.';
+                } else {
+                    prev.concat(['.']);
+                }
+                return prev;
+            });
         }
     }, [websocketSvc.lastMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
