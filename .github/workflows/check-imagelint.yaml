@@ -17,6 +17,12 @@ jobs:
     name: Check imagelint
     runs-on: ubuntu-latest
     steps:
+      - name: Clean up unused dependency
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
