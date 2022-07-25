@@ -251,9 +251,8 @@ func sleepAfterSendingWebSocketMessage() {
 }
 
 func formatLogMessage(logMessage string) string {
-	// Because we are sending the raw messages wrapped in JSON, we need to escape any double quotes
-	escapedMessage := strings.Replace(logMessage, "\"", "\\\"", -1)
-	return fmt.Sprintf("{\"type\":\"log\", \"data\":{\"logType\":\"output\",\"message\":\"%s\"}}", escapedMessage)
+	// Because we are sending the raw messages wrapped in JSON, we need to escape any double quotes, hence %q
+	return fmt.Sprintf("{\"type\":\"log\", \"data\":{\"logType\":\"output\",\"message\":%q}}", logMessage)
 }
 
 func formatPingMessage() string {
@@ -262,7 +261,7 @@ func formatPingMessage() string {
 
 func formatTanzuCommandMessage(args []string) string {
 	tanzuCmd := "tanzu " + strings.Join(args, " ")
-	return fmt.Sprintf("{\"type\":\"log\", \"data\":{\"logType\":\"tanzu command\",\"message\":\"%s\"}}", tanzuCmd)
+	return fmt.Sprintf("{\"type\":\"log\", \"data\":{\"logType\":\"tanzu command\",\"message\":%q}}", tanzuCmd)
 }
 
 // Adapted from copyAndCapture at https://blog.kowalczyk.info/article/wOYk/advanced-command-execution-in-go-with-osexec.html
@@ -270,7 +269,7 @@ func formatTanzuCommandMessage(args []string) string {
 func copyAndLog(w io.Writer, r io.Reader) error {
 	buf := make([]byte, 1024, 1024)
 	for {
-		n, err := r.Read(buf[:])
+		n, err := r.Read(buf)
 		if n > 0 {
 			d := buf[:n]
 			sendLog(d)
