@@ -23,6 +23,7 @@ const useVSphereDeployment = () => {
         navigate('/' + NavRoutes.DEPLOY_PROGRESS);
     };
 
+    // TODO: finish wiring up payload and make sure defaults are set in store
     const getVSphereRequestPayload = () => {
         const vSphereClusterParams: VsphereManagementClusterParams = {
             vsphereCredentials: {

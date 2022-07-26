@@ -1,28 +1,28 @@
-import * as yup from 'yup';
-
-// App imports
+// React imports
 import React, { useContext } from 'react';
-import { SelectionType, TreeSelectItem } from '../../../../shared/components/TreeSelect/TreeSelect.interface';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { VSphereDatastore, VSphereFolder, VSphereManagementObject, VSphereNetwork } from '../../../../swagger-api';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsSelect } from '@cds/react/select';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
+// App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { SelectionType, TreeSelectItem } from '../../../../shared/components/TreeSelect/TreeSelect.interface';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
-import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
-import { VsphereStore } from '../Store.vsphere.mc';
 import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
 import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
 import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
 import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereNetworkNames';
-// React imports
-import { yupResolver } from '@hookform/resolvers/yup';
+import { VSphereDatastore, VSphereFolder, VSphereManagementObject, VSphereNetwork } from '../../../../swagger-api';
+import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
+import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
@@ -36,8 +36,8 @@ const schema = yup
     .shape({
         [VSPHERE_FIELDS.VMFolder]: yup.string().required('Please select a VM folder.'),
         [VSPHERE_FIELDS.DataStore]: yup.string().required('Please select a Datastore.'),
-        [VSPHERE_FIELDS.VSphereNetworkName]: yup.string().required('Please select a VSphere network name.'),
-        [VSPHERE_FIELDS.Pool]: yup.string().required('Please select a pool.'),
+        [VSPHERE_FIELDS.VSphereNetworkName]: yup.string().required('Please select a vSphere network name.'),
+        [VSPHERE_FIELDS.Pool]: yup.string().required('Please select a resource pool.'),
     })
     .required();
 
@@ -139,7 +139,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
         <div className="cluster-settings-container" cds-layout="m:lg">
             <h3>vSphere Cluster Resources</h3>
             <div cds-layout="vertical gap:md align:stretch">
-                <p>The following are settings for VMWare vSphere that could be changed from their default values or enabled. </p>
+                <p>The following are settings for VMWare vSphere that could be changed from their default values or enabled.</p>
 
                 <h3>Resources</h3>
                 <div cds-layout="horizontal gap:md align:stretch">

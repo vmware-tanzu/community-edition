@@ -19,8 +19,8 @@ export const initialState: TreeSelectState = {
  * Actions
  */
 export const enum TreeSelectActions {
-    UpdateChecked,
-    UpdateExpanded,
+    UpdateChecked = 'updateChecked',
+    UpdateExpanded = 'updateExpanded',
 }
 
 /**

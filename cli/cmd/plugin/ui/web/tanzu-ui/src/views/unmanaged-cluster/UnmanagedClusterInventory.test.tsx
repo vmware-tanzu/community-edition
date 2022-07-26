@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => jest.fn(),
 }));
 
-describe.skip('UnmanagedClusterInventory component', () => {
+describe('UnmanagedClusterInventory component', () => {
     const server = setupServer(
         rest.get('/api/unmanaged', (req, res, ctx) => {
             return res(ctx.status(200), ctx.json(testUnamangedClusterArray));

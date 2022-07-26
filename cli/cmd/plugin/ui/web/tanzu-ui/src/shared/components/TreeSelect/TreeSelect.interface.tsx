@@ -8,6 +8,6 @@ export interface TreeSelectItem {
 }
 
 export const enum SelectionType {
-    Single,
-    Multi,
+    Single = 'single',
+    Multi = 'multi',
 }
