@@ -1,13 +1,11 @@
 // React imports
-import React, { ChangeEvent, useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
-import { CdsControlMessage } from '@cds/react/forms';
-import { FieldError, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
-import { CdsSelect } from '@cds/react/select';
 
 // App imports
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
@@ -160,9 +158,6 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
                         selectedInstanceId={selectedInstanceTypeId}
                     />
                 </div>
-
-                {/* <div cds-layout="col:12">{AwsOSImageSection('IMAGE_INFO', images, errors, register, onFieldChange)}</div> */}
-
                 <div cds-layout="col:12">
                     <RetrieveOSImages
                         osImageTitle={'Amazon Machine Image(AMI)'}
@@ -183,69 +178,8 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
                         View configuration details
                     </CdsButton>
                 </div>
-
-                {/* <div cds-layout="col:8">
-                    <h1>{'Amazon Machine Image(AMI)'}</h1>
-                    <CdsSelect layout="compact">
-                        <label>OS Image with Kubernetes </label>
-                        <select className="select-sm-width" data-testid="image-select" onChange={handleMachineImageChange}>
-                            {images.map((image) => (
-                                <option key={image.name} value={image.name}>
-                                    {image.name}
-                                </option>
-                            ))}
-                        </select>
-                    </CdsSelect>
-                </div> */}
             </div>
         </div>
-    );
-}
-
-function AwsOSImageSection(
-    field: AWS_CLUSTER_SETTING_STEP_FIELDS,
-    vmTemplates: AWSVirtualMachine[],
-    errors: { [key: string]: FieldError | undefined },
-    register: any,
-    onOsImageSelected: (osImage: string, field: AWS_CLUSTER_SETTING_STEP_FIELDS) => void
-) {
-    const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-        onOsImageSelected(event.target.value || '', field);
-    };
-    const fieldError = errors[field];
-    return (
-        <div cds-layout="m:lg">
-            <h1>{'Amazon Machine Image(AMI)'}</h1>
-            <CdsSelect layout="compact" controlWidth="shrink">
-                <label>OS Image with Kubernetes </label>
-                <select {...register('IMAGE_INFO')} onChange={handleOsImageSelect}>
-                    {AwsOSDropdownOptions(vmTemplates)}
-                </select>
-            </CdsSelect>
-            {fieldError && (
-                <div>
-                    &nbsp;<CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>
-                </div>
-            )}
-        </div>
-    );
-}
-
-function AwsOSDropdownOptions(images: AWSVirtualMachine[]) {
-    // if (vmTemplates && vmTemplates.length === 1) {
-    //     return (
-
-    //         <option key={vmTemplates[0].name} value={vmTemplates[0].name}>
-    //             {vmTemplates[0].name}
-    //         </option>
-    //     );
-    // }
-    return (
-        <>
-            {images.map((dc) => (
-                <option key={dc.name}>{dc.name}</option>
-            ))}
-        </>
     );
 }
 
