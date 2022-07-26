@@ -63,26 +63,37 @@ function DeployProgress() {
 
     // Processes each message by type ('log' or 'status') and routes to appropriate handlers/state
     useEffect(() => {
-        const lastMessage: MessageEvent | null = websocketSvc.lastMessage;
-        console.log(`WebSocket log message: ${lastMessage?.data}`);
-        const logData = lastMessage ? JSON.parse(lastMessage.data) : null;
-
-        if (logData && logData.type === LogTypes.LOG) {
-            const logLine = formatLog(logData.data);
-            setLogMessageHistory((prev) => prev.concat([logLine]));
-        } else if (logData && logData.type === LogTypes.PROGRESS) {
-            handleDeploymentProgress(logData.data);
-        } else if (logData && logData.type === LogTypes.PING) {
-            // Add a '.' to the last line (if there is one)
+        const appendToPreviousMessage = (msg: string) => {
             setLogMessageHistory((prev) => {
                 const lastIndex = prev.length - 1;
                 if (lastIndex >= 0) {
-                    prev[lastIndex] = prev[lastIndex] + '.';
+                    prev[lastIndex] = prev[lastIndex] + msg;
                 } else {
                     prev.concat(['.']);
                 }
                 return prev;
             });
+        };
+        const isOnlyDots = (msg: string) => {
+            const regexOnlyDots = /^[.]+$/;
+            return msg && regexOnlyDots.test(msg);
+        };
+        const lastMessage: MessageEvent | null = websocketSvc.lastMessage;
+        console.log(`WebSocket log message: ${lastMessage?.data}`);
+        const logData = lastMessage ? JSON.parse(lastMessage.data) : null;
+
+        if (logData && logData.type === LogTypes.LOG) {
+            const msg = logData.data?.message;
+            if (isOnlyDots(msg)) {
+                appendToPreviousMessage(msg);
+            } else {
+                const logLine = formatLog(logData.data);
+                setLogMessageHistory((prev) => prev.concat([logLine]));
+            }
+        } else if (logData && logData.type === LogTypes.PROGRESS) {
+            handleDeploymentProgress(logData.data);
+        } else if (logData && logData.type === LogTypes.PING) {
+            appendToPreviousMessage('.');
         }
     }, [websocketSvc.lastMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
