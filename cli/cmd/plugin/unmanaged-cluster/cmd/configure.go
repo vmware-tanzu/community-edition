@@ -28,7 +28,6 @@ var ConfigureCmd = &cobra.Command{
 	RunE:    configure,
 }
 
-//nolint:dupl
 func init() {
 	ConfigureCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "Configuration file for unmanaged cluster creation")
 	ConfigureCmd.Flags().StringVar(&co.kubeconfigPath, "kubeconfig-path", "", "File path to where the kubeconfig will be persisted. Defaults to global user kubeconfig")
