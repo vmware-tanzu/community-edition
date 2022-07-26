@@ -251,7 +251,23 @@ func sendLog(msg []byte) {
 	for _, singleMessage := range messages {
 		fmt.Printf("%s: Sending LOG message: [%s]\n", time.Now(), singleMessage)
 		doSendLog([]byte(formatLogMessage(singleMessage)))
+		// NOTE: "RESULT: FAILURE" and "RESULT: SUCCESS" are magic strings output from the unmanaged-cluster plugin
+		if singleMessage == "RESULT: FAILURE" {
+			sendResultFailure()
+		} else if singleMessage == "RESULT: SUCCESS" {
+			sendResultSuccess()
+		}
 	}
+}
+
+func sendResultFailure() {
+	// NOTE: "failed" is a magic string recognized by the UI front end
+	doSendLog([]byte(formatResultMessage("failed")))
+}
+
+func sendResultSuccess() {
+	// NOTE: "successful" is a magic string recognized by the UI front end
+	doSendLog([]byte(formatResultMessage("successful")))
 }
 
 func doSendLog(msg []byte) {
@@ -262,6 +278,11 @@ func doSendLog(msg []byte) {
 func sleepAfterSendingWebSocketMessage() {
 	// A hack to avoid losing messages, which happens if we write another message too quickly to the websocket
 	time.Sleep(25 * time.Millisecond)
+}
+
+// NOTE: all the formatXXX methods are structuring JSON in a special way that is expected by the front end
+func formatResultMessage(result string) string {
+	return fmt.Sprintf("{\"type\":\"progress\", \"data\":{\"status\":%q,\"message\":\"RESULT: %s\"}}", result, result)
 }
 
 func formatLogMessage(logMessage string) string {
