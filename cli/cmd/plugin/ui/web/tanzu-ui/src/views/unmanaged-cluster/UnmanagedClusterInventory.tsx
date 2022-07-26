@@ -5,35 +5,49 @@ import { useNavigate } from 'react-router-dom';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
-import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
 import { CdsModal, CdsModalHeader, CdsModalActions, CdsModalContent } from '@cds/react/modal';
 
 // App imports
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import PageLoading from '../../shared/components/PageLoading/PageLoading';
+import PageNotification, { Notification, NotificationStatus } from '../../shared/components/PageNotification/PageNotification';
 import { UnmanagedCluster } from '../../swagger-api';
 import { UnmanagedService } from '../../swagger-api/services/UnmanagedService';
-import UnmanagedClusterCard from './UnmanagedClusterCard/UnmanagedClusterCard';
+import UnmanagedClusterCard from './unmanaged-cluster-common/UnmanagedClusterCard/UnmanagedClusterCard';
 import './UnmanagedClusterInventory.scss';
 
 function UnmanagedClusterInventory() {
+    const [showPageLoading, setShowPageLoading] = useState<boolean>(false);
+    const [notification, setNotification] = useState<Notification | null>(null);
     const [unmanagedClusters, setUnmanagedClusters] = useState<UnmanagedCluster[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [clusterNameForDeletion, setClusterNameForDeletion] = useState<string>('');
     const navigate = useNavigate();
 
-    function retrieveUnmanagedClusters() {
-        UnmanagedService.getUnmanagedClusters().then(
-            (data) => {
-                setUnmanagedClusters(data);
-            },
-            (err) => {
-                console.warn(`unmanaged clusters get api failed with error: ${err}`);
-            }
-        );
+    // sets notification to null to dismiss alert
+    function dismissAlert() {
+        setNotification(null);
     }
 
+    const retrieveUnmanagedClusters = async () => {
+        setShowPageLoading(true);
+        try {
+            const data = await UnmanagedService.getUnmanagedClusters();
+            setUnmanagedClusters(data);
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to retrieve Unmanaged Clusters: ${e}`,
+            } as Notification);
+        } finally {
+            setShowPageLoading(false);
+        }
+    };
+
     useEffect(() => {
-        retrieveUnmanagedClusters();
+        retrieveUnmanagedClusters().then(() => {
+            console.info('initial loading of unmanaged clusters list completed');
+        });
     }, []);
 
     function showConfirmDeleteModal(clusterName?: string) {
@@ -46,36 +60,32 @@ function UnmanagedClusterInventory() {
     }
 
     function hasUnmanagedClusters() {
-        return unmanagedClusters.length ? true : false;
+        return unmanagedClusters.length > 0;
     }
 
-    function deleteUnmanagedCluster(clusterName: string) {
+    const deleteUnmanagedCluster = async (clusterName: string) => {
         setShowDeleteModal(!showDeleteModal);
-        UnmanagedService.deleteUnmanagedCluster(clusterName).then(
-            () => {
-                console.log(`unmanaged cluster ${clusterName} has been deleted`);
-                retrieveUnmanagedClusters();
-            },
-            (err) => {
-                console.log(`unmanaged cluster delete api failed with error: ${err}`);
-            }
-        );
-        // TODO: show alert confirming deletion of mgmt cluster or failure - requires shared alert component
-    }
+        try {
+            await UnmanagedService.deleteUnmanagedCluster(clusterName);
+            setNotification({
+                status: NotificationStatus.SUCCESS,
+                message: `Successfully deleted cluster ${clusterName}`,
+            } as Notification);
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to delete Unmanaged Clusters ${clusterName}: ${e}`,
+            } as Notification);
+        }
+    };
 
     return (
         <div className="unmanaged-cluster-landing-container" cds-layout="grid vertical col:12 gap:lg align:fill">
             <div cds-layout="grid horizontal col:12">
                 <div cds-layout="vertical gap:md gap@md:lg col@sm:8 col:8">
                     {Header()}
-                    <CdsButton className="cluster-action-btn" status="primary" onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}>
-                        <CdsIcon shape="cluster"></CdsIcon>
-                        create unmanaged cluster
-                    </CdsButton>
-                    <CdsAlertGroup status="success">
-                        <CdsAlert>This is an alert with a status</CdsAlert>
-                    </CdsAlertGroup>
-                    {hasUnmanagedClusters() ? UnmanagedClustersSection() : NoUnmanagedClustersSection()}
+                    <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
+                    {MainContent()}
                 </div>
                 <div cds-layout="col@sm:4 col:4 container:fill"></div>
                 {renderConfirmDeleteModal()}
@@ -91,9 +101,17 @@ function UnmanagedClusterInventory() {
                     Unmanaged Cluster
                 </div>
                 <div cds-text="subsection">
-                    Create a single node, local workstation cluster suitable for a development/test environment. It requires minimal local
-                    resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu Community Edition
-                    package repository is automatically installed when you deploy an unmanaged cluster.
+                    Unmanaged clusters are a single node, local workstation cluster suitable for a development/test environment. It requires
+                    minimal local resources and is fast to deploy. It provides support for running multiple clusters. The default Tanzu
+                    Community Edition package repository is automatically installed when you deploy an unmanaged cluster.{' '}
+                    <a
+                        href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
+                        target="_blank"
+                        rel="noreferrer"
+                        cds-text="link"
+                    >
+                        Learn more about Unmanaged Clusters
+                    </a>
                 </div>
             </div>
         );
@@ -145,7 +163,7 @@ function UnmanagedClusterInventory() {
                         </CdsButton>
                         <CdsButton
                             status="danger"
-                            onClick={() => deleteUnmanagedCluster(clusterNameForDeletion)}
+                            onClick={() => deleteUnmanagedCluster(clusterNameForDeletion).then(() => retrieveUnmanagedClusters())}
                             data-testid="delete-cluster-btn"
                         >
                             Delete
@@ -156,10 +174,27 @@ function UnmanagedClusterInventory() {
         );
     }
 
-    // Returns view to be rendered when Unamanged clusters are present.
+    function MainContent() {
+        if (showPageLoading) {
+            return (
+                <div cds-layout="vertical col:12 p-y:xxl">
+                    <PageLoading message="Retrieving unmanaged clusters..."></PageLoading>
+                </div>
+            );
+        } else {
+            return hasUnmanagedClusters() ? UnmanagedClustersSection() : NoUnmanagedClustersSection();
+        }
+    }
+
+    // Returns view to be rendered when Unmanaged clusters are present.
     function UnmanagedClustersSection() {
         return (
             <>
+                <CdsButton className="cluster-action-btn" status="primary" onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}>
+                    <CdsIcon shape="cluster"></CdsIcon>
+                    create an unmanaged cluster
+                </CdsButton>
+                <div cds-text="body">The following clusters were discovered on this workstation.</div>
                 {unmanagedClusters.map((cluster: UnmanagedCluster) => {
                     return (
                         <UnmanagedClusterCard
@@ -175,7 +210,7 @@ function UnmanagedClusterInventory() {
         );
     }
 
-    // Returns view to be rendered when no Unamanged clusters are present.
+    // Returns view to be rendered when no Unmanaged clusters are present.
     function NoUnmanagedClustersSection() {
         return (
             <>
@@ -187,17 +222,15 @@ function UnmanagedClusterInventory() {
                     <div cds-layout="grid horizontal cols:12 gap:lg gap@md:lg">
                         <div cds-text="title">Unmanaged Cluster not found</div>
                         <div cds-text="body">
-                            Create an Unmanaged Cluster through a guided series of steps.
-                            <br />
-                            <br />
-                            <a
-                                href="https://tanzucommunityedition.io/docs/v0.12/planning/#managed-cluster"
-                                target="_blank"
-                                rel="noreferrer"
-                                cds-text="link"
+                            <p cds-layout="m-t:none">Create an Unmanaged Cluster through a guided series of steps.</p>
+                            <CdsButton
+                                className="cluster-action-btn"
+                                status="primary"
+                                onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_WIZARD)}
                             >
-                                Learn more about Unmanaged Clusters
-                            </a>
+                                <CdsIcon shape="cluster"></CdsIcon>
+                                create an unmanaged cluster
+                            </CdsButton>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,16 @@
+<!--
+topicTitle: Limitations with Unmanaged Clusters
+topicIds: [ctx-unmanaged-clusters]
+-->
+
+<h4>Can’t Upgrade Kubernetes</h4>
+<p>
+    By design, unmanaged clusters do not lifecycle-manage Kubernetes. They are not meant to be long-running with real workloads. To change
+    Kubernetes versions, delete the existing cluster and create a new cluster with a different configuration.
+</p>
+<h4>Deploy to Windows</h4>
+<p>
+    <code>kind</code>, the default provider, has several known limitations when deploying to Windows. For example,
+    <u>deploying a load balancer has networking considerations.</u> Be sure to familiarize yourself with the <code>kind</code>
+    <u>documentation</u> in order to <u>customize your unmanaged-cluster deployment</u> for your needs.
+</p>

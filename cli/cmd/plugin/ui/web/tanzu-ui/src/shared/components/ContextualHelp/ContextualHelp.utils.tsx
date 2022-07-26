@@ -1,7 +1,7 @@
-import { NavRoutes } from '../../constants/NavRoutes.constants';
 import { ContextualHelpState } from './ContextualHelp.store';
+import { NavRoutes } from '../../constants/NavRoutes.constants';
 
-const enum ContextTitle {
+const enum CtxTitle {
     TanzuCommunityEdition = 'Tanzu Community Edition',
     TanzuClusters = 'Tanzu Clusters',
     GettingStarted = 'Getting Started',
@@ -14,118 +14,92 @@ const enum ContextTitle {
     DeployProgress = 'Deploy Progress',
 }
 
+const enum CtxKeys {
+    Welcome = 'ctx-welcome',
+    GettingStarted = 'ctx-getting-started',
+    ManagementClusters = 'ctx-management-clusters',
+    WorkloadClusters = 'ctx-workload-clusters',
+    UnmanagedClusters = 'ctx-unmanaged-clusters',
+}
+
 const welcomePage: ContextualHelpState = {
     externalLink: 'https://tanzucommunityedition.io/resources',
-    keywords: ['tce-welcome'],
+    keywords: [CtxKeys.Welcome],
     title: {
-        contextTitle: ContextTitle.TanzuCommunityEdition,
-        pageTitle: ContextTitle.TanzuCommunityEdition,
+        contextTitle: CtxTitle.TanzuCommunityEdition,
+        pageTitle: CtxTitle.TanzuCommunityEdition,
     },
 };
 
 const gettingStartedPage: ContextualHelpState = {
     externalLink: 'https://tanzucommunityedition.io/docs/',
-    keywords: ['tce-getting-started'],
+    keywords: [CtxKeys.GettingStarted],
     title: {
-        contextTitle: ContextTitle.GettingStarted,
-        pageTitle: ContextTitle.TanzuClusters,
+        contextTitle: CtxTitle.GettingStarted,
+        pageTitle: CtxTitle.TanzuClusters,
     },
 };
 
-const contextualHelpForManagementClustersPage: ContextualHelpState = {
+const managementClustersPage: ContextualHelpState = {
     externalLink: 'http://tanzucommunityedition.io',
-    keywords: ['tce-management-clusters'],
+    keywords: [CtxKeys.ManagementClusters],
     title: {
-        contextTitle: ContextTitle.ManagementClusters,
-        pageTitle: ContextTitle.ManagementClusters,
+        contextTitle: CtxTitle.ManagementClusters,
+        pageTitle: CtxTitle.ManagementClusters,
     },
 };
 
-const contextualHelpForWorkloadClustersPage: ContextualHelpState = {
+const workloadClustersPage: ContextualHelpState = {
     externalLink: 'http://tanzucommunityedition.io',
-    keywords: ['tce-workload-clusters'],
+    keywords: [CtxKeys.WorkloadClusters],
     title: {
-        contextTitle: ContextTitle.WorkloadClusters,
-        pageTitle: ContextTitle.WorkloadClusters,
+        contextTitle: CtxTitle.WorkloadClusters,
+        pageTitle: CtxTitle.WorkloadClusters,
     },
 };
 
-const contextualHelpForUnmanagedClustersPage: ContextualHelpState = {
+const unmanagedClustersPage: ContextualHelpState = {
     externalLink: 'http://tanzucommunityedition.io',
-    keywords: ['tce-unmanaged-clusters'],
+    keywords: [CtxKeys.UnmanagedClusters],
     title: {
-        contextTitle: ContextTitle.UnmanagedClusters,
-        pageTitle: ContextTitle.UnmanagedClusters,
+        contextTitle: CtxTitle.UnmanagedClusters,
+        pageTitle: CtxTitle.UnmanagedClusters,
     },
 };
 
-const contextualHelpForCreateManagementCluster: ContextualHelpState = {
+const createManagementCluster: ContextualHelpState = {
     externalLink: 'http://tanzucommunityedition.io',
-    keywords: ['tce-create-management-cluster'],
+    keywords: [CtxKeys.ManagementClusters],
     title: {
-        contextTitle: ContextTitle.CreateManagementCluster,
-        pageTitle: ContextTitle.CreateManagementCluster,
+        contextTitle: CtxTitle.CreateManagementCluster,
+        pageTitle: CtxTitle.CreateManagementCluster,
     },
 };
 
-const contextualHelpForCreateWorkloadCluster: ContextualHelpState = {
+const createWorkloadCluster: ContextualHelpState = {
     externalLink: 'http://tanzucommunityedition.io',
-    keywords: ['tce-docker'],
+    keywords: [CtxKeys.WorkloadClusters],
     title: {
-        contextTitle: ContextTitle.CreateWorkloadCluster,
-        pageTitle: ContextTitle.CreateWorkloadCluster,
+        contextTitle: CtxTitle.CreateWorkloadCluster,
+        pageTitle: CtxTitle.CreateWorkloadCluster,
     },
 };
 
-const contextualHelpForCreateUnmanagedCluster: ContextualHelpState = {
+const createUnmanagedCluster: ContextualHelpState = {
     externalLink: 'http://tanzucommunityedition.io',
-    keywords: ['tce-docker'],
+    keywords: [CtxKeys.UnmanagedClusters],
     title: {
-        contextTitle: ContextTitle.CreateUnmanagedCluster,
-        pageTitle: ContextTitle.CreateUnmanagedCluster,
+        contextTitle: CtxTitle.CreateUnmanagedCluster,
+        pageTitle: CtxTitle.CreateUnmanagedCluster,
     },
 };
 
-// const contextualHelpForVSphere: ContextualHelpState = {
-//     externalLink: 'http://tanzucommunityedition.io',
-//     keywords: ['tce-docker'],
-//     title: {
-//         contextTitle: 'Unmanaged Clusters',
-//         pageTitle: 'Getting Started',
-//     },
-// };
-// const contextualHelpForAWS: ContextualHelpState = {
-//     externalLink: 'http://tanzucommunityedition.io',
-//     keywords: ['tce-docker'],
-//     title: {
-//         contextTitle: 'Unmanaged Clusters',
-//         pageTitle: 'Getting Started',
-//     },
-// };
-
-// const contextualHelpForDocker: ContextualHelpState = {
-//     externalLink: 'http://tanzucommunityedition.io',
-//     keywords: ['tce-docker'],
-//     title: {
-//         contextTitle: 'Unmanaged Clusters',
-//         pageTitle: 'Getting Started',
-//     },
-// };
-
-// const contextualHelpForDeployProgress: ContextualHelpState = {
-//     externalLink: 'http://tanzucommunityedition.io',
-//     keywords: ['tce-docker'],
-//     title: {
-//         contextTitle: ContextTitle.DeployProgress,
-//         pageTitle: ContextTitle.DeployProgress,
-//     },
-// };
 const defaultContextualHelp: ContextualHelpState = {
     title: {
-        contextTitle: ContextTitle.TanzuCommunityEdition,
-        pageTitle: 'Welcome to Tanzu',
+        contextTitle: CtxTitle.TanzuCommunityEdition,
+        pageTitle: CtxTitle.TanzuCommunityEdition,
     },
-    keywords: ['tce-welcome', 'default'],
+    keywords: [CtxKeys.Welcome, CtxKeys.GettingStarted],
     externalLink: 'http://tanzucommunityedition.io',
 };
 
@@ -134,19 +108,13 @@ export const determineContextualHelpContent = (pathname: NavRoutes): ContextualH
         [NavRoutes.WELCOME]: welcomePage,
         [NavRoutes.GETTING_STARTED]: gettingStartedPage,
 
-        [NavRoutes.MANAGEMENT_CLUSTER_INVENTORY]: contextualHelpForManagementClustersPage,
-        [NavRoutes.WORKLOAD_CLUSTER_INVENTORY]: contextualHelpForWorkloadClustersPage,
-        [NavRoutes.UNMANAGED_CLUSTER_INVENTORY]: contextualHelpForUnmanagedClustersPage,
+        [NavRoutes.MANAGEMENT_CLUSTER_INVENTORY]: managementClustersPage,
+        [NavRoutes.WORKLOAD_CLUSTER_INVENTORY]: workloadClustersPage,
+        [NavRoutes.UNMANAGED_CLUSTER_INVENTORY]: unmanagedClustersPage,
 
-        [NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER]: contextualHelpForCreateManagementCluster,
-        [NavRoutes.WORKLOAD_CLUSTER_LANDING]: contextualHelpForCreateWorkloadCluster,
-        [NavRoutes.UNMANAGED_CLUSTER_WIZARD]: contextualHelpForCreateUnmanagedCluster,
-        // [NavRoutes.WORKLOAD_CLUSTER_WIZARD]: contextualHelpForCreateWorkloadClusterWizard,
-
-        // [NavRoutes.VSPHERE]: contextualHelpForVSphere,
-        // [NavRoutes.AWS]: contextualHelpForAWS,
-        // [NavRoutes.DOCKER]: contextualHelpForDocker,
-        // [NavRoutes.DEPLOY_PROGRESS]: contextualHelpForDeployProgress,
+        [NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER]: createManagementCluster,
+        [NavRoutes.WORKLOAD_CLUSTER_LANDING]: createWorkloadCluster,
+        [NavRoutes.UNMANAGED_CLUSTER_WIZARD]: createUnmanagedCluster,
     };
     return mapper[pathname] ?? defaultContextualHelp;
 };

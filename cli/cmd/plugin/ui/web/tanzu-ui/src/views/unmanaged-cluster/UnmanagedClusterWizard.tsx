@@ -9,8 +9,8 @@ import { arrowIcon, ClarityIcons } from '@cds/core/icon';
 
 // App imports
 import { UmcProvider } from '../../state-management/stores/Store.umc';
-import UnmanagedClusterWizardBasic from './unmanaged-cluster-wizard-page/UnmanagedClusterWizardBasic';
-import UnmanagedClusterWizardAdvanced from './unmanaged-cluster-wizard-page/UnmanagedClusterWizardAdvanced';
+import UnmanagedClusterBasic from './unmanaged-cluster-basic/UnmanagedClusterBasic';
+import UnmanagedClusterAdvanced from './unmanaged-cluster-advanced/UnmanagedClusterAdvanced';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(arrowIcon);
@@ -54,12 +54,12 @@ function UnmanagedClusterWizard() {
         return (
             <div cds-layout="vertical align:stretch">
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
-                    <div>Simple configuration</div>
+                    <div>Basic configuration</div>
                     <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => toggleBasicAdvanced()}>
                         Use Advanced Configuration
                     </CdsButton>
                 </div>
-                <UnmanagedClusterWizardBasic />
+                <UnmanagedClusterBasic />
             </div>
         );
     }
@@ -70,10 +70,10 @@ function UnmanagedClusterWizard() {
                 <div className="section-raised" cds-layout="horizontal align:vertical-center p:md">
                     <div>Advanced configuration</div>
                     <CdsButton action="outline" cds-layout="align:right" size="sm" onClick={() => setUseBasicSettings(!useBasicSettings)}>
-                        Use Simple Configuration
+                        Use Basic Configuration
                     </CdsButton>
                 </div>
-                <UnmanagedClusterWizardAdvanced />
+                <UnmanagedClusterAdvanced />
             </div>
         );
     }

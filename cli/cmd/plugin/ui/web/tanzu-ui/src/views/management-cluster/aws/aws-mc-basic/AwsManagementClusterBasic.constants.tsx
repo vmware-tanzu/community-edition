@@ -1,0 +1,7 @@
+export const AWS_MC_BASIC_TAB_NAMES = ['AWS Credentials', 'Cluster Settings'];
+
+export const enum AWS_NODE_PROFILE_NAMES {
+    SINGLE_NODE = 'SINGLE_NODE',
+    HIGH_AVAILABILITY = 'HIGH_AVAILABILITY',
+    PRODUCTION_READY = 'PRODUCTION_READY',
+}

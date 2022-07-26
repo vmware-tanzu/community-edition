@@ -1,11 +1,12 @@
 .management-cluster-landing-container {
     .card-container {
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             --border: var(--cds-alias-object-border-width-100, 0.0625rem) solid var(--cds-global-color-blue-400);
             cursor: pointer;
         }
         &:active {
-            --background: var(--cds-alias-object-container-background-shade)
+            --background: var(--cds-alias-object-container-background-shade);
         }
     }
     .logo-name {

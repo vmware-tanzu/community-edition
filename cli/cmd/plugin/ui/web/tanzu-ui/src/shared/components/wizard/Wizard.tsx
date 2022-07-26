@@ -19,10 +19,7 @@ interface WizardProps {
     children: ReactElement<any, any>[];
 }
 export interface StepProps extends StepWizardChildProps {
-    tabStatus: STATUS[];
-    setTabStatus: (status: STATUS[]) => void;
-    key: number;
-    submitForm: (data: any | undefined) => void;
+    deploy?: () => void;
     handleValueChange: (
         type: string,
         field: string,
@@ -32,6 +29,9 @@ export interface StepProps extends StepWizardChildProps {
         locationData?: any
     ) => void;
     provider: string;
+    setTabStatus: (status: STATUS[]) => void;
+    submitForm: (data: any | undefined) => void;
+    tabStatus: STATUS[];
 }
 function Wizard(props: WizardProps) {
     const { tabNames, children, dispatch } = props;

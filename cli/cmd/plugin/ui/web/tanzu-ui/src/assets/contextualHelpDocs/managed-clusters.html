@@ -1,0 +1,16 @@
+<!--
+topicTitle: Managed Clusters
+topicIds: [ctx-welcome, ctx-getting-started, ctx-workload-clusters]
+-->
+
+<p>
+    Managed clusters are deployed and managed by a Tanzu management cluster. This is the primary deployment model for clusters in the Tanzu
+    ecosystem and is recommended for production scenarios. To bootstrap managed clusters, you first need a management cluster. When creating
+    a management cluster, a bootstrap cluster is created locally and is used to then create the management cluster.
+</p>
+
+<p>
+    Once the management cluster has been created, the bootstrap cluster will perform a move (aka pivot) of all management objects to the
+    management cluster. From this point forward, the management cluster is responsible for managing itself and any new clusters you create.
+    These new clusters, managed by the management cluster, are referred to as workload clusters.
+</p>
