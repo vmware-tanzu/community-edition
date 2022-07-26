@@ -171,6 +171,8 @@ func create(cmd *cobra.Command, args []string) {
 	exitCode, err := tm.Deploy(clusterConfig)
 	if err != nil {
 		log.Error(err.Error())
+		log.Info("RESULT: FAILURE")
 		os.Exit(exitCode)
 	}
+	log.Info("RESULT: SUCCESS")
 }
