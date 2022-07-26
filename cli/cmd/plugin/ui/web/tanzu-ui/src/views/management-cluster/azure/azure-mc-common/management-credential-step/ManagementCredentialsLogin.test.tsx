@@ -41,7 +41,7 @@ describe('Login component', () => {
         });
     });
 
-    it('should contain all Auzre Environment', async () => {
+    it('should contain all Azure Environment', async () => {
         render(
             <ManagementCredentialsLogin
                 status={CONNECTION_STATUS.DISCONNECTED}
