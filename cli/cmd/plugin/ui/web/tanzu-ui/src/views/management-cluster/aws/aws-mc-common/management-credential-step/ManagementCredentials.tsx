@@ -181,7 +181,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     return (
         <div className="wizard-content-container">
-            <h2 cds-layout="m-t:lg">Amazon Web Services Credentials</h2>
+            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                Amazon Web Services Credentials
+            </h2>
             <CdsRadioGroup layout="vertical-inline" onChange={selectCredentialType}>
                 <label cds-text="section medium" cds-layout="m-b:md">
                     Credential Type
