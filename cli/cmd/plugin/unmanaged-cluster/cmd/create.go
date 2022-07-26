@@ -77,7 +77,6 @@ var CreateCmd = &cobra.Command{
 
 var co = createUnmanagedOpts{}
 
-//nolint:dupl
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
 	CreateCmd.Flags().StringVar(&co.kubeconfigPath, "kubeconfig-path", "", "File path to where the kubeconfig will be persisted. Defaults to global user kubeconfig")
