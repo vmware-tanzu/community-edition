@@ -1,13 +1,16 @@
-import './TreeSelect.scss';
-
-import { Control, useController } from 'react-hook-form';
+// React imports
 import React, { useReducer } from 'react';
-import { SelectionType, TreeSelectItem } from './TreeSelect.interface';
-import { TreeSelectActions, initialState, treeSelectReducer } from './TreeSelect.store';
 
+// Library imports
 import { CdsCheckbox } from '@cds/react/checkbox';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
+
+// App imports
+import { Control, useController } from 'react-hook-form';
+import { SelectionType, TreeSelectItem } from './TreeSelect.interface';
+import { TreeSelectActions, initialState, treeSelectReducer } from './TreeSelect.store';
+import './TreeSelect.scss';
 
 function TreeSelect({
     control,
