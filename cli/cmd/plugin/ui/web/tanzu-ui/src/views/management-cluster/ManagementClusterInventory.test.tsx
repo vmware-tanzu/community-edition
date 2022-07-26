@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => jest.fn(),
 }));
 
-describe.skip('ManagementClusterInventory component', () => {
+describe('ManagementClusterInventory component', () => {
     const server = setupServer(
         rest.get('/api/management', (req, res, ctx) => {
             return res(
