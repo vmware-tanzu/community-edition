@@ -46,6 +46,11 @@ func TtySetting(flags *pflag.FlagSet) bool {
 			result = !disableTTY
 		}
 	}
+	if flags.Changed("tty-activate") {
+		// User may explicitly ask for TTY-style output, when normal auto-detect would suppress it.
+		// For example, if stdout were re-directed.
+		result = true
+	}
 	return result
 }
 

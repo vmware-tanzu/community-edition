@@ -108,6 +108,7 @@ func (app *App) CreateUnmanagedCluster(params unmanaged.CreateUnmanagedClusterPa
 	if createParams.Workernodecount > 0 {
 		args = append(args, "--worker-node-count", strconv.FormatInt(createParams.Workernodecount, 10))
 	}
+	args = append(args, "--tty-activate")
 
 	go executeAndRedirect(args...)
 
@@ -211,6 +212,19 @@ func sendTanzuCommand(tanzuArgs []string) {
 	doSendLog([]byte(formatTanzuCommandMessage(tanzuArgs)))
 }
 
+func customTrim(src string) string {
+	// We want to trim all spaces from the RIGHT side, and just "\r\n" from the left.
+	// For the right side, we COULD use TrimRight(), but
+	// that function requires us to specify the white characters,
+	// so instead we use TrimSpace to find the central non-whitespace string
+	// and then pull it out of the main string ALONG with any left side whitespace.
+	noSpaceMessage := strings.TrimSpace(src)
+	xStartNoSpaceMessage := strings.Index(src, noSpaceMessage)
+	rightTrimmedMessage := src[0 : xStartNoSpaceMessage+len(noSpaceMessage)]
+	// THEN we remove \r\n from the left
+	return strings.TrimLeft(rightTrimmedMessage, "\r\n")
+}
+
 // Our sendLog is a wrapper to the SendLog method.
 // The SendLog method is expecting a byte array of a valid JSON object, so our sendLog method
 // - splits the raw byte array into several messages along "\n" boundaries,
@@ -222,7 +236,7 @@ func sendLog(msg []byte) {
 	// remove messages that only contain white space
 	var messages []string
 	for x := range rawMessages {
-		trimmedMessage := strings.TrimSpace(rawMessages[x])
+		trimmedMessage := customTrim(rawMessages[x])
 		if len(trimmedMessage) > 0 {
 			messages = append(messages, trimmedMessage)
 		}
@@ -237,7 +251,23 @@ func sendLog(msg []byte) {
 	for _, singleMessage := range messages {
 		fmt.Printf("%s: Sending LOG message: [%s]\n", time.Now(), singleMessage)
 		doSendLog([]byte(formatLogMessage(singleMessage)))
+		// NOTE: "RESULT: FAILURE" and "RESULT: SUCCESS" are magic strings output from the unmanaged-cluster plugin
+		if singleMessage == "RESULT: FAILURE" {
+			sendResultFailure()
+		} else if singleMessage == "RESULT: SUCCESS" {
+			sendResultSuccess()
+		}
 	}
+}
+
+func sendResultFailure() {
+	// NOTE: "failed" is a magic string recognized by the UI front end
+	doSendLog([]byte(formatResultMessage("failed")))
+}
+
+func sendResultSuccess() {
+	// NOTE: "successful" is a magic string recognized by the UI front end
+	doSendLog([]byte(formatResultMessage("successful")))
 }
 
 func doSendLog(msg []byte) {
@@ -248,6 +278,11 @@ func doSendLog(msg []byte) {
 func sleepAfterSendingWebSocketMessage() {
 	// A hack to avoid losing messages, which happens if we write another message too quickly to the websocket
 	time.Sleep(25 * time.Millisecond)
+}
+
+// NOTE: all the formatXXX methods are structuring JSON in a special way that is expected by the front end
+func formatResultMessage(result string) string {
+	return fmt.Sprintf("{\"type\":\"progress\", \"data\":{\"status\":%q,\"message\":\"RESULT: %s\"}}", result, result)
 }
 
 func formatLogMessage(logMessage string) string {
