@@ -91,6 +91,7 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     const setImageParameters = (image) => {
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, 'IMAGE_INFO', image, currentStep, errors);
+            setValue('IMAGE_INFO', image.name);
         }
     };
 
@@ -131,8 +132,12 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
         onFieldChange(clusterName, 'CLUSTER_NAME');
     };
 
-    const onOsImageSelected = (clusterName: string) => {
-        onFieldChange(clusterName, 'IMAGE_INFO');
+    const onOsImageSelected = (imageName: string) => {
+        images.some((image) => {
+            if (image.name === imageName) {
+                setImageParameters(image);
+            }
+        });
     };
 
     return (
