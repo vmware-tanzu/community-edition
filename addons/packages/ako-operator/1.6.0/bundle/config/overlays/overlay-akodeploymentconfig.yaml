@@ -56,7 +56,7 @@ spec:
             nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
 #@ end
 #@ if values.akoOperator.config.avi_nsxt_t1_lr:
-        #@overlay/append
+        #@overlay/match missing_ok=True
         networksConfig:
             nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
 #@ end
@@ -113,7 +113,7 @@ spec:
             nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
 #@ end
 #@ if values.akoOperator.config.avi_nsxt_t1_lr:
-        #@overlay/append
+        #@overlay/match missing_ok=True
         networksConfig:
             nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
 #@ end
