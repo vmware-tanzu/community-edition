@@ -5,9 +5,9 @@ import React, { useContext } from 'react';
 import { AwsStore } from '../../../../state-management/stores/Store.aws';
 import { AWS_MC_BASIC_TAB_NAMES } from './AwsManagementClusterBasic.constants';
 import Wizard from '../../../../shared/components/wizard/Wizard';
-import ManagementClusterSettings from '../../../../shared/components/management-cluster-settings-step/ManagementClusterSettings';
 import ManagementCredentials from '../aws-mc-common/management-credential-step/ManagementCredentials';
 import useAwsDeployment from '../../../../shared/services/awsDeployment';
+import AwsClusterSettingsStep from '../AwsClusterSettingsStep';
 
 function AwsManagementClusterBasic() {
     const { awsState, awsDispatch } = useContext(AwsStore);
@@ -16,7 +16,7 @@ function AwsManagementClusterBasic() {
     return (
         <Wizard tabNames={AWS_MC_BASIC_TAB_NAMES} state={awsState} dispatch={awsDispatch}>
             <ManagementCredentials />
-            <ManagementClusterSettings deploy={deployOnAws} defaultData={awsState} />
+            <AwsClusterSettingsStep deploy={deployOnAws} defaultData={awsState} />
         </Wizard>
     );
 }
