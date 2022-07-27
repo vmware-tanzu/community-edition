@@ -1,13 +1,12 @@
-// React imports
-import React from 'react';
-
 // Library imports
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { rest } from 'msw';
-import { setupServer } from 'msw/lib/node';
 
+// React imports
+import React from 'react';
 // App imports
 import UnmanagedClusterInventory from './UnmanagedClusterInventory';
+import { rest } from 'msw';
+import { setupServer } from 'msw/lib/node';
 
 const testUnamangedClusterArray = [
     {

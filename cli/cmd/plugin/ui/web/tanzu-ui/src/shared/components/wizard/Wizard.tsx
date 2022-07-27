@@ -3,14 +3,14 @@ import React, { ReactElement, useState } from 'react';
 
 // Library imports
 import { FieldError } from 'react-hook-form';
-import _ from 'lodash';
 import StepWizard, { StepWizardChildProps } from 'react-step-wizard';
+import _ from 'lodash';
 
 // App imports
-import './Wizard.scss';
+import { FormAction, StoreDispatch } from '../../types/types';
 import { STATUS } from '../../constants/App.constants';
 import StepNav from './StepNav';
-import { FormAction, StoreDispatch } from '../../types/types';
+import './Wizard.scss';
 
 interface WizardProps {
     tabNames: string[];
@@ -19,7 +19,11 @@ interface WizardProps {
     children: ReactElement<any, any>[];
 }
 export interface StepProps extends StepWizardChildProps {
+    tabStatus: STATUS[];
+    setTabStatus: (status: STATUS[]) => void;
+    key: number;
     deploy?: () => void;
+    submitForm: (data: any | undefined) => void;
     handleValueChange: (
         type: string,
         field: string,

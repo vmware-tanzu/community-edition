@@ -11,6 +11,11 @@ export enum VSPHERE_FIELDS {
     VMTEMPLATE = 'vmTemplate',
     SSHKEY = 'sshKey',
     CLUSTER_ENDPOINT = 'clusterEndpoint',
+
+    VMFolder = 'vmFolder',
+    DataStore = 'datastore',
+    VSphereNetworkName = 'vSphereNetworkName',
+    Pool = 'pool',
 }
 
 /* eslint-disable no-unused-vars */

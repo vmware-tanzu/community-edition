@@ -18,8 +18,8 @@
             border-right: none;
         }
         &.current {
-          background-color: var(--cds-alias-object-container-background);
-          border-bottom-color: var(--cds-alias-object-container-background);
+            background-color: var(--cds-alias-object-container-background);
+            border-bottom-color: var(--cds-alias-object-container-background);
         }
     }
     .status-bar {

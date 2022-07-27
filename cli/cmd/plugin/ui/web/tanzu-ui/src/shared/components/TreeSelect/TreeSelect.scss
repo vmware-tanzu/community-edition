@@ -1,0 +1,11 @@
+.tree-container {
+    .tree-list {
+        .tree-item {
+            list-style-type: none;
+            .tree-item-label {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}
