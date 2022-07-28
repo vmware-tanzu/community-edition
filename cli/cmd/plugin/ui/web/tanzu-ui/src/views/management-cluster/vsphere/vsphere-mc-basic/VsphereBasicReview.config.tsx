@@ -41,6 +41,16 @@ const configGroupsBasic: ConfigGroup[] = [
             { label: 'Endpoint', value: '', field: VSPHERE_FIELDS.CLUSTER_ENDPOINT },
         ],
     },
+    {
+        label: 'Resources',
+        pairsPerLine: 2,
+        pairs: [
+            { label: 'VM Folder', value: '', field: VSPHERE_FIELDS.VMFolder },
+            { label: 'Data Store', value: '', field: VSPHERE_FIELDS.DataStore },
+            { label: 'Network', value: '', field: VSPHERE_FIELDS.NetworkName },
+            { label: 'Pool', value: '', field: VSPHERE_FIELDS.Pool },
+        ],
+    },
 ];
 export const configDisplayBasic: ConfigDisplayData = {
     label: 'Basic Configuration',

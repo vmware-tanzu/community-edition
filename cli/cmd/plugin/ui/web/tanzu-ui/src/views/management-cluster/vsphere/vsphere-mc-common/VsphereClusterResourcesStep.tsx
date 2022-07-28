@@ -17,8 +17,8 @@ import { SelectionType, TreeSelectItem } from '../../../../shared/components/Tre
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
-import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
 import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
 import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
 import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereNetworkNames';
@@ -29,7 +29,7 @@ import { VsphereStore } from '../Store.vsphere.mc';
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
     [VSPHERE_FIELDS.DataStore]: string;
-    [VSPHERE_FIELDS.VSphereNetworkName]: string;
+    [VSPHERE_FIELDS.NetworkName]: string;
     [VSPHERE_FIELDS.Pool]: string;
 }
 
@@ -38,7 +38,7 @@ const schema = yup
     .shape({
         [VSPHERE_FIELDS.VMFolder]: yup.string().required('Please select a VM folder.'),
         [VSPHERE_FIELDS.DataStore]: yup.string().required('Please select a Datastore.'),
-        [VSPHERE_FIELDS.VSphereNetworkName]: yup.string().required('Please select a vSphere network name.'),
+        [VSPHERE_FIELDS.NetworkName]: yup.string().required('Please select a vSphere network name.'),
         [VSPHERE_FIELDS.Pool]: yup.string().required('Please select a resource pool.'),
     })
     .required();
@@ -260,8 +260,8 @@ function VSphereNetworkName({
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>VSphere network name</label>
                 <select
-                    {...register(VSPHERE_FIELDS.VSphereNetworkName, {
-                        onChange: (e: any) => onChange(VSPHERE_FIELDS.VSphereNetworkName, e?.target?.value ?? ''),
+                    {...register(VSPHERE_FIELDS.NetworkName, {
+                        onChange: (e: any) => onChange(VSPHERE_FIELDS.NetworkName, e?.target?.value ?? ''),
                     })}
                 >
                     <option />
@@ -271,8 +271,8 @@ function VSphereNetworkName({
                         </option>
                     ))}
                 </select>
-                {errors[VSPHERE_FIELDS.VSphereNetworkName] && (
-                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.VSphereNetworkName].message}</CdsControlMessage>
+                {errors[VSPHERE_FIELDS.NetworkName] && (
+                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.NetworkName].message}</CdsControlMessage>
                 )}
             </CdsSelect>
         </div>
