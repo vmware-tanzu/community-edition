@@ -19,6 +19,7 @@ import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.r
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
 import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
 import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereNetworkNames';
