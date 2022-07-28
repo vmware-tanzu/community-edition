@@ -47,14 +47,7 @@ const useAzureDeployment = () => {
                 clusterServiceCIDR: formInfo.CLUSTER_SERVICE_CIDR,
                 cniType: formInfo.CNI_TYPE,
             },
-            os: {
-                name: 'ubuntu-18.04-amd64 (2022.03.22)',
-                osInfo: {
-                    arch: 'amd64',
-                    name: 'ubuntu',
-                    version: '18.04',
-                },
-            },
+            os: formInfo.IMAGE_INFO,
             resourceGroup: formInfo.RESOURCE_GROUP,
             sshPublicKey: formInfo.SSH_PUBLIC_KEY,
             vnetCidr: formInfo.VNET_CIDR,

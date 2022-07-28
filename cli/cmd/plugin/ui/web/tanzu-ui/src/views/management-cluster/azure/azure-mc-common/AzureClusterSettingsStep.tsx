@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -20,6 +20,8 @@ import {
 } from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
+import RetrieveOSImages from '../../../../shared/components/FormInputComponents/RetrieveOSImages/RetrieveOSImages';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -49,6 +51,7 @@ type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELD
 interface AzureClusterSettingFormInputs {
     [AZURE_FIELDS.CLUSTER_NAME]: string;
     [AZURE_FIELDS.NODE_PROFILE]: string;
+    [AZURE_FIELDS.IMAGE_INFO]: string;
 }
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
@@ -58,7 +61,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     const methods = useForm<AzureClusterSettingFormInputs>({
         resolver: yupResolver(azureClusterSettingsFormSchema),
     });
-
+    const [images, setImages] = useState<AzureVirtualMachine[]>([]);
     const {
         handleSubmit,
         formState: { errors },
@@ -72,6 +75,13 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setValue(AZURE_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedNodeProfileId);
+
+    const setImageParameters = (image) => {
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, AZURE_FIELDS.IMAGE_INFO, image, currentStep, errors);
+            setValue(AZURE_FIELDS.IMAGE_INFO, image.name);
+        }
+    };
 
     const canContinue = (): boolean => {
         return (
@@ -103,6 +113,21 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setSelectedInstanceTypeId(instanceType);
     };
 
+    const onOsImageSelected = (imageName: string) => {
+        images.some((image) => {
+            if (image.name === imageName) {
+                setImageParameters(image);
+            }
+        });
+    };
+
+    useEffect(() => {
+        AzureService.getAzureOsImages().then((data) => {
+            setImages(data);
+            setImageParameters(data[0]);
+        });
+    }, []);
+
     return (
         <div>
             <div className="wizard-content-container">
@@ -125,6 +150,16 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                             register={register}
                             nodeInstanceTypeChange={onInstanceTypeChange}
                             selectedInstanceId={selectedInstanceTypeId}
+                        />
+                    </div>
+                    <div cds-layout="col:12">
+                        <RetrieveOSImages
+                            osImageTitle={'Amazon Machine Image(AMI)'}
+                            images={images}
+                            field={'IMAGE_INFO'}
+                            errors={errors}
+                            register={register}
+                            onOsImageSelected={onOsImageSelected}
                         />
                     </div>
                 </div>
