@@ -1,0 +1,47 @@
+.config-icon-expand {
+  color: var(--cds-global-color-blue-300);
+  vertical-align: 1%;
+}
+.config-icon-collapse {
+  color: var(--cds-global-color-green-400);
+  vertical-align: 1%;
+}
+
+.config-section {
+  font-size: var(--cds-global-typography-font-size-6);
+  font-weight: bold;
+  vertical-align: center;
+}
+
+.config-about {
+  font-size: var(--cds-global-typography-font-size-4);
+  font-weight: normal;
+  padding-left: 24px;
+}
+
+.config-grid {
+  padding-left: 24px;
+}
+
+.config-group {
+  background-color: var(--cds-global-color-gray-800);
+  font-size: var(--cds-global-typography-font-size-5);
+  font-weight: bold;
+  padding-left: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.config-label {
+  background-color: var(--cds-global-color-gray-700);
+  font-size: var(--cds-global-typography-font-size-4);
+  font-weight: bold;
+  padding-left: 18px;
+}
+
+.config-value {
+  background-color: var(--cds-global-color-gray-700);
+  font-size: var(--cds-global-typography-font-size-4);
+  font-weight: normal;
+  color: var(--cds-global-color-gray-400);
+}

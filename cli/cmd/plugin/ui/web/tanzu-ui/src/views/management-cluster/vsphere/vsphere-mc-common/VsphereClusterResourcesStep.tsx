@@ -11,20 +11,20 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 // App imports
+import { FormAction } from '../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { SelectionType, TreeSelectItem } from '../../../../shared/components/TreeSelect/TreeSelect.interface';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
 import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
 import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
 import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereNetworkNames';
 import { VSphereDatastore, VSphereFolder, VSphereManagementObject, VSphereNetwork } from '../../../../swagger-api';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
-import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { FormAction } from '../../../../shared/types/types';
 
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
@@ -106,7 +106,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const datacenter = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
 
-    const { currentStep, deploy, updateTabStatus } = props;
+    const { currentStep, deploy, updateTabStatus, goToStep } = props;
 
     const methods = useForm<VSphereClusterResourcesStepInputs>({
         resolver: yupResolver(schema),
@@ -136,7 +136,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<VSphereClusterResourcesStepInputs> = (data) => {
-        deploy && deploy();
+        goToStep && goToStep((currentStep ?? 0) + 1);
     };
 
     const onChange = (field: any, value: string) => {
@@ -171,9 +171,8 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
                     />
                 </div>
             </div>
-            <CdsButton cds-layout="col:start-1" status="success" onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                Create Management cluster
+            <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                NEXT
             </CdsButton>
         </div>
     );

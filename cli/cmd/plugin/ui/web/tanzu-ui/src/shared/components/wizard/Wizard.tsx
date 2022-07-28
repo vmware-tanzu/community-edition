@@ -15,10 +15,10 @@ interface WizardProps {
     children: ReactElement<any, any>[];
 }
 export interface StepProps extends StepWizardChildProps {
+    deploy?: () => void;
     key: number;
     provider: string;
     tabStatus: STATUS[];
-    deploy?: () => void;
     setTabStatus: (status: STATUS[]) => void;
     submitForm: (data: any | undefined) => void;
     updateTabStatus: (currentStep: number | undefined, validForm: boolean) => void;
@@ -38,6 +38,7 @@ function Wizard(props: WizardProps) {
         status[currentStep] = STATUS.TOUCHED;
         setTabStatus(status);
     };
+
     return (
         <div className="wizard-container">
             <StepWizard initialStep={1} nav={<StepNav tabStatus={tabStatus} tabNames={tabNames} />}>
