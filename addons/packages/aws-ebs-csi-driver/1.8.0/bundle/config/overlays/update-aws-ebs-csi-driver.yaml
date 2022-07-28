@@ -56,8 +56,10 @@ spec:
     spec:
       containers:
         #@ if values.awsEBSCSIDriver.http_proxy != "" :
-        #@overlay/append
-        - env:
+        #@overlay/match by=overlay.subset({"name": "snapshot-controller"})
+          - args:
+            #@overlay/match missing_ok=True
+            env:
             #@overlay/append
             - name: "HTTP_PROXY"
               value: #@ values.awsEBSCSIDriver.http_proxy
