@@ -149,7 +149,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             </option>
                         ))}
                     </SpinnerSelect>
-                    <CdsTextarea status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}>
+                    <CdsTextarea layout="vertical" status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}>
                         <label>SSH public key</label>
                         <textarea
                             {...register(AZURE_FIELDS.SSH_PUBLIC_KEY)}

@@ -56,7 +56,7 @@ export function ClusterName(props: ClusterNameProps) {
         <div className="cluster-name-container" cds-layout="m:lg">
             <CdsFormGroup layout="vertical-inline">
                 <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
-                    <CdsInput layout="compact">
+                    <CdsInput layout="vertical">
                         <label cds-layout="p-b:xs">Cluster name</label>
                         <input type="text" {...register(field)} onChange={onClusterNameChange} placeholder={placeholderClusterName} />
                         {fieldError && <CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>}

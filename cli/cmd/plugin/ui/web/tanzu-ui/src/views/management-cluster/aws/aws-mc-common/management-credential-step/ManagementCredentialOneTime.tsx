@@ -69,7 +69,7 @@ function ManagementCredentialOneTime(props: Props) {
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="horizontal gap:lg align:vertical-top">
                     <div cds-layout="vertical gap:lg align:vertical-center">
-                        <CdsInput>
+                        <CdsInput layout="vertical">
                             <label>Secret access key</label>
                             <input
                                 {...register('SECRET_ACCESS_KEY')}
@@ -82,7 +82,7 @@ function ManagementCredentialOneTime(props: Props) {
                                 <CdsControlMessage status="error">{errors['SECRET_ACCESS_KEY'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
-                        <CdsInput>
+                        <CdsInput layout="vertical">
                             <label>Access key ID</label>
                             <input
                                 {...register('ACCESS_KEY_ID')}
@@ -95,7 +95,7 @@ function ManagementCredentialOneTime(props: Props) {
                                 <CdsControlMessage status="error">{errors['ACCESS_KEY_ID'].message}</CdsControlMessage>
                             )}
                         </CdsInput>
-                        <CdsInput>
+                        <CdsInput layout="vertical">
                             <label>Session token</label>
                             <input
                                 {...register('SESSION_TOKEN')}
@@ -110,7 +110,7 @@ function ManagementCredentialOneTime(props: Props) {
                         </CdsInput>
                     </div>
                     <div cds-layout="vertical gap:lg align:vertical-top">
-                        <CdsSelect layout="compact">
+                        <CdsSelect layout="vertical">
                             <label>AWS Region </label>
                             <select
                                 className="select-sm-width"
