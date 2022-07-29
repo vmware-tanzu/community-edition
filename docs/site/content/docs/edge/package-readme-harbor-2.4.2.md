@@ -628,3 +628,7 @@ Users can now connect to the Harbor UI by navigating to `https://harbor.yourdoma
 ## Troubleshooting
 
 Please checkout `Installation` and `Usage Example` for more details about trouble-shooting.
+
+## Additional Documentation
+
+See the [harbor documentation](https://goharbor.io/) for more information.
