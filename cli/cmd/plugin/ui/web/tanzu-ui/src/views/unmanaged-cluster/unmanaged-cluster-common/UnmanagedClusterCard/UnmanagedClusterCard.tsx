@@ -28,7 +28,7 @@ function UnmanagedClusterCard(props: UnmanagedClusterProps) {
     const { name, provider, status, confirmDeleteCallback } = props;
 
     return (
-        <div className="section-raised" cds-layout="grid cols:12 wrap:none" data-testid="unmanaged-cluster-card">
+        <div className={'section-raised ' + status?.toLowerCase()} cds-layout="grid cols:12 wrap:none" data-testid="unmanaged-cluster-card">
             <div cds-layout="vertical">
                 <div cds-layout="vertical" cds-text="subsection">
                     <div cds-layout="horizontal">
