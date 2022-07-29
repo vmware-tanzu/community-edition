@@ -163,7 +163,7 @@ func (app *App) getUnmanagedCluster(clusterName string) (*models.UnmanagedCluste
 
 // getUnmanagedClusters gets a list of all unmanaged clusters.
 func (app *App) getUnmanagedClusters() ([]*models.UnmanagedCluster, error) {
-	jsonOutput, err := parseCommandOutput(runCommand("list", "-o", "json"))    
+	jsonOutput, err := parseCommandOutput(runCommand("list", "-o", "json"))
 	if err != nil {
 		return nil, err
 	}
