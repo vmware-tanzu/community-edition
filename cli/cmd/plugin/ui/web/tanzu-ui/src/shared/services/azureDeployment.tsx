@@ -47,7 +47,7 @@ const useAzureDeployment = () => {
                 clusterServiceCIDR: formInfo.CLUSTER_SERVICE_CIDR,
                 cniType: formInfo.CNI_TYPE,
             },
-            os: formInfo.IMAGE_INFO,
+            os: formInfo.OS_IMAGE,
             resourceGroup: formInfo.RESOURCE_GROUP,
             sshPublicKey: formInfo.SSH_PUBLIC_KEY,
             vnetCidr: formInfo.VNET_CIDR,

@@ -21,7 +21,7 @@ import {
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
-import RetrieveOSImages from '../../../../shared/components/FormInputComponents/RetrieveOSImages/RetrieveOSImages';
+import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -51,7 +51,7 @@ type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELD
 interface AzureClusterSettingFormInputs {
     [AZURE_FIELDS.CLUSTER_NAME]: string;
     [AZURE_FIELDS.NODE_PROFILE]: string;
-    [AZURE_FIELDS.IMAGE_INFO]: string;
+    [AZURE_FIELDS.OS_IMAGE]: string;
 }
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
@@ -78,8 +78,8 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
 
     const setImageParameters = (image) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, AZURE_FIELDS.IMAGE_INFO, image, currentStep, errors);
-            setValue(AZURE_FIELDS.IMAGE_INFO, image.name);
+            handleValueChange(INPUT_CHANGE, AZURE_FIELDS.OS_IMAGE, image, currentStep, errors);
+            setValue(AZURE_FIELDS.OS_IMAGE, image.name);
         }
     };
 
@@ -153,7 +153,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                         />
                     </div>
                     <div cds-layout="col:12">
-                        <RetrieveOSImages
+                        <OsImageSelect
                             osImageTitle={'Amazon Machine Image(AMI)'}
                             images={images}
                             field={'IMAGE_INFO'}

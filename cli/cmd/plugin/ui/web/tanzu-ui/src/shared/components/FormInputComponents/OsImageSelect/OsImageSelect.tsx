@@ -19,7 +19,7 @@ export function osImagesValidation() {
     return yup.string().nullable().required('Please select an OS image');
 }
 
-function RetrieveOSImages<T>(props: ImageProps<T>) {
+function OsImageSelect<T>(props: ImageProps<T>) {
     const { osImageTitle, field, errors, register, images, onOsImageSelected } = props;
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
         onOsImageSelected(event.target.value || '', field);
@@ -45,4 +45,4 @@ function RetrieveOSImages<T>(props: ImageProps<T>) {
     );
 }
 
-export default RetrieveOSImages;
+export default OsImageSelect;

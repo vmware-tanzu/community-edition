@@ -17,7 +17,7 @@ const initialState = {
         AZURE_ENVIRONMENT: AzureCloud.PUBLIC,
         REGION: '',
         SSH_PUBLIC_KEY: '',
-        IMAGE_INFO: {},
+        OS_IMAGE: {},
         ...AZURE_DEFAULT_VALUES,
     },
 };
