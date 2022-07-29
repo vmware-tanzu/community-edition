@@ -367,7 +367,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function CredentialsField(label: string, fieldName: VSPHERE_CREDENTIALS_STEP_FIELDS, placeholder: string, isPassword = false) {
         const err = errors[fieldName];
         return (
-            <CdsInput layout="compact">
+            <CdsInput layout="vertical">
                 <label cds-layout="p-b:xs">{label}</label>
                 <input
                     {...register(fieldName)}

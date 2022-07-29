@@ -77,7 +77,7 @@ function ManagementCredentialProfile(props: Props) {
             </p>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="horizontal gap:lg align:vertical-center">
-                    <CdsSelect layout="compact">
+                    <CdsSelect layout="vertical">
                         <label>AWS credential profile</label>
                         <select
                             className="select-sm-width"
@@ -94,7 +94,7 @@ function ManagementCredentialProfile(props: Props) {
                         </select>
                     </CdsSelect>
 
-                    <CdsSelect layout="compact">
+                    <CdsSelect layout="vertical">
                         <label>AWS region </label>
                         <select
                             className="select-sm-width"

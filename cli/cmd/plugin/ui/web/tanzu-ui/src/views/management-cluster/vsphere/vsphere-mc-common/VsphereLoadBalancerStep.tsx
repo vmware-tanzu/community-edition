@@ -99,7 +99,7 @@ function EndpointProviderSection(
                     <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>
                 </CdsSelect>
 
-                <CdsInput layout="compact">
+                <CdsInput layout="vertical">
                     <label cds-layout="p-b:xs">Control Plane Endpoint ({IP_FAMILIES_DISPLAY[ipFamily]})</label>
                     <input {...register(VSPHERE_FIELDS.CLUSTER_ENDPOINT)} onChange={handleEndpointChange} defaultValue={endpoint} />
                     {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}

@@ -59,7 +59,7 @@ export default function ManagementCredentialsLogin(props: Props) {
         <>
             <div cds-layout="horizontal gap:lg">
                 <div cds-layout="horizontal gap:lg">
-                    <CdsInput>
+                    <CdsInput layout="vertical">
                         <label>Tenant ID</label>
                         <input
                             {...register(AZURE_FIELDS.TENANT_ID)}
@@ -73,7 +73,7 @@ export default function ManagementCredentialsLogin(props: Props) {
                             <CdsControlMessage status="error">{errors[AZURE_FIELDS.TENANT_ID]?.message}</CdsControlMessage>
                         )}
                     </CdsInput>
-                    <CdsInput>
+                    <CdsInput layout="vertical">
                         <label>Client ID</label>
                         <input
                             {...register(AZURE_FIELDS.CLIENT_ID)}
@@ -91,7 +91,7 @@ export default function ManagementCredentialsLogin(props: Props) {
             </div>
             <div cds-layout="horizontal gap:lg">
                 <div cds-layout="horizontal gap:md">
-                    <CdsInput>
+                    <CdsInput layout="vertical" className="test">
                         <label>Client Secret</label>
                         <input
                             {...register(AZURE_FIELDS.CLIENT_SECRET)}
@@ -104,7 +104,7 @@ export default function ManagementCredentialsLogin(props: Props) {
                             <CdsControlMessage status="error">{errors[AZURE_FIELDS.CLIENT_SECRET]?.message}</CdsControlMessage>
                         )}
                     </CdsInput>
-                    <CdsInput>
+                    <CdsInput layout="vertical" className="test">
                         <label>Subscription ID</label>
                         <input
                             {...register(AZURE_FIELDS.SUBSCRIPTION_ID)}
@@ -117,7 +117,7 @@ export default function ManagementCredentialsLogin(props: Props) {
                             <CdsControlMessage status="error">{errors[AZURE_FIELDS.SUBSCRIPTION_ID]?.message}</CdsControlMessage>
                         )}
                     </CdsInput>
-                    <CdsSelect layout="compact">
+                    <CdsSelect layout="vertical">
                         <label>Azure environment</label>
                         <select
                             className="select-sm-width"
