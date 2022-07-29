@@ -23,7 +23,7 @@ const initialState = {
         NODE_PROFILE: '',
 
         // Image
-        IMAGE_INFO: {},
+        OS_IMAGE: {},
 
         // Region
         REGION: '',
