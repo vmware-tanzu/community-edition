@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -51,6 +52,16 @@ func runCommand(args ...string) (string, error) {
 	cmd := exec.Command("tanzu", cmdArgs...)
 	output, err := cmd.CombinedOutput()
 	return string(output), err
+}
+
+func parseCommandOutput(intput string, err error) (string, error) {
+	if err == nil {
+		var result = strings.Replace(intput, "\n", "", -1)
+		result = strings.Replace(result, " ", "", -1)
+		re := regexp.MustCompile(`(.*)(\[(?s).*\]$)`)
+		return re.FindStringSubmatch(result)[2], nil
+	}
+	return "", err
 }
 
 // CreateUnmanagedCluster creates a new unmanaged cluster.
@@ -152,7 +163,7 @@ func (app *App) getUnmanagedCluster(clusterName string) (*models.UnmanagedCluste
 
 // getUnmanagedClusters gets a list of all unmanaged clusters.
 func (app *App) getUnmanagedClusters() ([]*models.UnmanagedCluster, error) {
-	jsonOutput, err := runCommand("list", "-o", "json")
+	jsonOutput, err := parseCommandOutput(runCommand("list", "-o", "json"))    
 	if err != nil {
 		return nil, err
 	}
