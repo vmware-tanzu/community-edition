@@ -154,9 +154,9 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                     </div>
                     <div cds-layout="col:12">
                         <OsImageSelect
-                            osImageTitle={'Amazon Machine Image(AMI)'}
+                            osImageTitle={'Azure Machine Image'}
                             images={images}
-                            field={'IMAGE_INFO'}
+                            field={AZURE_FIELDS.OS_IMAGE}
                             errors={errors}
                             register={register}
                             onOsImageSelected={onOsImageSelected}
