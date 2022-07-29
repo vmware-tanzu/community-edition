@@ -22,6 +22,7 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
 import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
+import PageNotification, { Notification, NotificationStatus } from '../../../../shared/components/PageNotification/PageNotification';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -46,7 +47,7 @@ const nodeInstanceTypes: NodeInstanceType[] = [
     },
 ];
 
-type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE;
+type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE | AZURE_FIELDS.OS_IMAGE;
 
 interface AzureClusterSettingFormInputs {
     [AZURE_FIELDS.CLUSTER_NAME]: string;
@@ -56,7 +57,8 @@ interface AzureClusterSettingFormInputs {
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     const { currentStep, deploy, handleValueChange } = props;
-    const { azureState, azureDispatch } = useContext(AzureStore);
+    const { azureState } = useContext(AzureStore);
+    const [notification, setNotification] = useState<Notification | null>(null);
     const azureClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AzureClusterSettingFormInputs>({
         resolver: yupResolver(azureClusterSettingsFormSchema),
@@ -75,6 +77,10 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setValue(AZURE_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedNodeProfileId);
+
+    function dismissAlert() {
+        setNotification(null);
+    }
 
     const setImageParameters = (image) => {
         if (handleValueChange) {
@@ -122,10 +128,17 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        AzureService.getAzureOsImages().then((data) => {
-            setImages(data);
-            setImageParameters(data[0]);
-        });
+        try {
+            AzureService.getAzureOsImages().then((data) => {
+                setImages(data);
+                setImageParameters(data[0]);
+            });
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to retrieve OS Images: ${e}`,
+            } as Notification);
+        }
     }, []);
 
     return (
@@ -151,6 +164,9 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                             nodeInstanceTypeChange={onInstanceTypeChange}
                             selectedInstanceId={selectedInstanceTypeId}
                         />
+                    </div>
+                    <div cds-layout="col:6">
+                        <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     </div>
                     <div cds-layout="col:12">
                         <OsImageSelect
