@@ -26,7 +26,7 @@ import PageNotification, { Notification, NotificationStatus } from '../../../sha
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
-type AWS_CLUSTER_SETTING_STEP_FIELDS = 'NODE_PROFILE' | 'IMAGE_INFO' | 'CLUSTER_NAME';
+type AWS_CLUSTER_SETTING_STEP_FIELDS = 'NODE_PROFILE' | 'OS_IMAGE' | 'CLUSTER_NAME';
 
 interface MCSettings extends StepProps {
     message?: string;
@@ -183,7 +183,7 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
                     <OsImageSelect
                         osImageTitle={'Amazon Machine Image (AMI)'}
                         images={images}
-                        field={'IMAGE_INFO'}
+                        field={'OS_IMAGE'}
                         errors={errors}
                         register={register}
                         onOsImageSelected={onOsImageSelected}
