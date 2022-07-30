@@ -1,6 +1,6 @@
 // React imports
 import React, { ChangeEvent, useContext, useState } from 'react';
-import { FieldError, FieldErrors, RegisterOptions, SubmitHandler, useForm, UseFormRegisterReturn } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
@@ -21,14 +21,16 @@ import {
 import { VsphereStore } from '../Store.vsphere.mc';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { yupServerTest } from './vsphere.credential.form.schema';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { FormAction } from '../../../../shared/types/types';
 
 interface VsphereLoadBalancerFormInputs {
     [VSPHERE_FIELDS.CLUSTER_ENDPOINT]: string;
 }
 
 export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
-    const { currentStep, goToStep, submitForm, handleValueChange } = props;
-    const { vsphereState } = useContext(VsphereStore);
+    const { currentStep, goToStep, submitForm, updateTabStatus } = props;
+    const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const [endpoint, setEndpoint] = useState<string>('');
     const ipFamilyId = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.IPFAMILY] || IP_FAMILIES.IPv4;
     const vsphereLoadBalancerStepFormSchema = yup.object({
@@ -36,14 +38,19 @@ export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
     });
     const methods = useForm<VsphereLoadBalancerFormInputs>({
         resolver: yupResolver(vsphereLoadBalancerStepFormSchema),
+        mode: 'all',
     });
 
     const {
         handleSubmit,
         formState: { errors },
         register,
-        setValue,
     } = methods;
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
 
     const canContinue = () => {
         return Object.keys(errors).length === 0;
@@ -58,8 +65,11 @@ export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
 
     const onEndpointChange = (endpoint: string) => {
         setEndpoint(endpoint);
-        setValue && setValue(VSPHERE_FIELDS.CLUSTER_ENDPOINT, endpoint, { shouldValidate: true });
-        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.CLUSTER_ENDPOINT, endpoint, currentStep, errors);
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.CLUSTER_ENDPOINT,
+            payload: endpoint,
+        } as FormAction);
     };
 
     return (
@@ -101,7 +111,7 @@ function EndpointProviderSection(
 
                 <CdsInput layout="vertical">
                     <label cds-layout="p-b:xs">Control Plane Endpoint ({IP_FAMILIES_DISPLAY[ipFamily]})</label>
-                    <input {...register(VSPHERE_FIELDS.CLUSTER_ENDPOINT)} onChange={handleEndpointChange} defaultValue={endpoint} />
+                    <input {...register(VSPHERE_FIELDS.CLUSTER_ENDPOINT, { onChange: handleEndpointChange })} defaultValue={endpoint} />
                     {err && <CdsControlMessage status="error">{err.message}</CdsControlMessage>}
                     {!err && <CdsControlMessage status="neutral">&nbsp;</CdsControlMessage>}
                 </CdsInput>

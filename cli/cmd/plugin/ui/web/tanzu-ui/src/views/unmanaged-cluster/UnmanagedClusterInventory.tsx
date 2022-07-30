@@ -117,21 +117,6 @@ function UnmanagedClusterInventory() {
         );
     }
 
-    function LearnMore() {
-        return (
-            <div cds-layout="vertical">
-                <CdsButton
-                    action="flat"
-                    onClick={() => {
-                        window.open('http://tanzucommunityedition.io', '_blank');
-                    }}
-                >
-                    Learn more about Tanzu&apos;s architecture
-                </CdsButton>
-            </div>
-        );
-    }
-
     // Returns modal window HTML markup if showDeleteModal state variable is set to true.
     function renderConfirmDeleteModal() {
         if (!showDeleteModal) {

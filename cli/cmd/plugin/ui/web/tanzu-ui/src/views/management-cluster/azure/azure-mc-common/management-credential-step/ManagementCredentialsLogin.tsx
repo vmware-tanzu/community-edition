@@ -1,43 +1,37 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 
 // Library imports
-import { CdsInput } from '@cds/react/input';
-import { CdsIcon } from '@cds/react/icon';
-import { UseFormReturn } from 'react-hook-form';
+import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
+import { CdsIcon } from '@cds/react/icon';
 import { CdsSelect } from '@cds/react/select';
+import { useFormContext } from 'react-hook-form';
 
 // App imports
-import { FormField, FormInputs } from './ManagementCredentials';
+import { FormField } from './ManagementCredentials';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { AzureStore } from '../../../../../state-management/stores/Azure.store';
 import { AzureClouds } from '../../../../../shared/constants/App.constants';
-import { CdsButton } from '@cds/react/button';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import './ManagementCredentialsLogin.scss';
+import TextInputWithError from '../../../../../shared/components/Input/TextInputWithError';
 
 interface Props {
     status: CONNECTION_STATUS;
     message: string;
     handleInputChange: (field: FormField, value: string) => void;
     handleConnect: () => void;
-    methods: UseFormReturn<FormInputs, any>;
 }
 
 export default function ManagementCredentialsLogin(props: Props) {
     const { azureState } = useContext(AzureStore);
+    const { status, message, handleInputChange, handleConnect } = props;
     const {
-        methods: {
-            formState: { errors },
-            register,
-        },
-        status,
-        message,
-        handleInputChange,
-        handleConnect,
-    } = props;
+        register,
+        formState: { errors },
+    } = useFormContext();
 
     const dataEntered = () => {
         const fields = [
@@ -59,72 +53,45 @@ export default function ManagementCredentialsLogin(props: Props) {
         <>
             <div cds-layout="horizontal gap:lg">
                 <div cds-layout="horizontal gap:lg">
-                    <CdsInput layout="vertical">
-                        <label>Tenant ID</label>
-                        <input
-                            {...register(AZURE_FIELDS.TENANT_ID)}
-                            placeholder="Tenant ID"
-                            type="text"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(AZURE_FIELDS.TENANT_ID, e.target.value)}
-                            value={azureState[STORE_SECTION_FORM].TENANT_ID}
-                            className="large-input"
-                        ></input>
-                        {errors[AZURE_FIELDS.TENANT_ID] && (
-                            <CdsControlMessage status="error">{errors[AZURE_FIELDS.TENANT_ID]?.message}</CdsControlMessage>
-                        )}
-                    </CdsInput>
-                    <CdsInput layout="vertical">
-                        <label>Client ID</label>
-                        <input
-                            {...register(AZURE_FIELDS.CLIENT_ID)}
-                            placeholder="Client ID"
-                            type="text"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(AZURE_FIELDS.CLIENT_ID, e.target.value)}
-                            value={azureState[STORE_SECTION_FORM].CLIENT_ID}
-                            className="large-input"
-                        ></input>
-                        {errors[AZURE_FIELDS.CLIENT_ID] && (
-                            <CdsControlMessage status="error">{errors[AZURE_FIELDS.CLIENT_ID]?.message}</CdsControlMessage>
-                        )}
-                    </CdsInput>
+                    <TextInputWithError
+                        defaultValue={azureState[STORE_SECTION_FORM][AZURE_FIELDS.TENANT_ID]}
+                        label="Tenant ID"
+                        name={AZURE_FIELDS.TENANT_ID}
+                        handleInputChange={handleInputChange}
+                        className="large-input"
+                    />
+                    <TextInputWithError
+                        defaultValue={azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLIENT_ID]}
+                        label="Client ID"
+                        name={AZURE_FIELDS.CLIENT_ID}
+                        handleInputChange={handleInputChange}
+                        className="large-input"
+                    />
                 </div>
             </div>
             <div cds-layout="horizontal gap:lg">
                 <div cds-layout="horizontal gap:md">
-                    <CdsInput layout="vertical" className="test">
-                        <label>Client Secret</label>
-                        <input
-                            {...register(AZURE_FIELDS.CLIENT_SECRET)}
-                            placeholder="Client Secret"
-                            type="password"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(AZURE_FIELDS.CLIENT_SECRET, e.target.value)}
-                            value={azureState[STORE_SECTION_FORM].CLIENT_SECRET}
-                        ></input>
-                        {errors[AZURE_FIELDS.CLIENT_SECRET] && (
-                            <CdsControlMessage status="error">{errors[AZURE_FIELDS.CLIENT_SECRET]?.message}</CdsControlMessage>
-                        )}
-                    </CdsInput>
-                    <CdsInput layout="vertical" className="test">
-                        <label>Subscription ID</label>
-                        <input
-                            {...register(AZURE_FIELDS.SUBSCRIPTION_ID)}
-                            placeholder="Subscription ID"
-                            type="text"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(AZURE_FIELDS.SUBSCRIPTION_ID, e.target.value)}
-                            value={azureState[STORE_SECTION_FORM].SUBSCRIPTION_ID}
-                        ></input>
-                        {errors[AZURE_FIELDS.SUBSCRIPTION_ID] && (
-                            <CdsControlMessage status="error">{errors[AZURE_FIELDS.SUBSCRIPTION_ID]?.message}</CdsControlMessage>
-                        )}
-                    </CdsInput>
-                    <CdsSelect layout="vertical">
+                    <TextInputWithError
+                        label="Client Secret"
+                        name={AZURE_FIELDS.CLIENT_SECRET}
+                        handleInputChange={handleInputChange}
+                        defaultValue={azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLIENT_SECRET]}
+                    />
+                    <TextInputWithError
+                        label="Subscription ID"
+                        name={AZURE_FIELDS.SUBSCRIPTION_ID}
+                        handleInputChange={handleInputChange}
+                        defaultValue={azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID]}
+                    />
+                    <CdsSelect layout="compact">
                         <label>Azure environment</label>
                         <select
                             className="select-sm-width"
-                            {...register(AZURE_FIELDS.AZURE_ENVIRONMENT)}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                                handleInputChange(AZURE_FIELDS.AZURE_ENVIRONMENT, e.target.value)
-                            }
+                            {...register(AZURE_FIELDS.AZURE_ENVIRONMENT, {
+                                onChange: (e: ChangeEvent<HTMLSelectElement>) => {
+                                    handleInputChange(AZURE_FIELDS.AZURE_ENVIRONMENT, e.target.value);
+                                },
+                            })}
                             defaultValue={azureState[STORE_SECTION_FORM].AZURE_ENVIRONMENT}
                             data-testid="azure-environment-select"
                         >

@@ -23,6 +23,8 @@ import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereN
 import { VSphereDatastore, VSphereFolder, VSphereManagementObject, VSphereNetwork } from '../../../../swagger-api';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { FormAction } from '../../../../shared/types/types';
 
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
@@ -101,20 +103,27 @@ const treeDataMapper = (inputData: VSphereManagementObject[]) => {
 };
 
 export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
-    const { vsphereState } = useContext(VsphereStore);
+    const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const datacenter = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
 
-    const { currentStep, handleValueChange, deploy } = props;
+    const { currentStep, deploy, updateTabStatus } = props;
+
+    const methods = useForm<VSphereClusterResourcesStepInputs>({
+        resolver: yupResolver(schema),
+        mode: 'all',
+    });
 
     const {
         register,
         formState: { errors },
         handleSubmit,
-        setValue,
         control,
-    } = useForm<VSphereClusterResourcesStepInputs>({
-        resolver: yupResolver(schema),
-    });
+    } = methods;
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
 
     const { data: vSphereFolders } = useVSphereFolders(datacenter);
     const { data: vSphereDatastores } = useVSphereDatastores(datacenter);
@@ -131,8 +140,11 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     };
 
     const onChange = (field: any, value: string) => {
-        handleValueChange && handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
-        setValue(field, value, { shouldValidate: true });
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: value,
+        } as FormAction);
     };
 
     return (
@@ -214,8 +226,9 @@ function Datastore({
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>Datastore</label>
                 <select
-                    {...register(VSPHERE_FIELDS.DataStore)}
-                    onChange={(e) => onChange(VSPHERE_FIELDS.DataStore, e?.target?.value ?? '')}
+                    {...register(VSPHERE_FIELDS.DataStore, {
+                        onChange: (e: any) => onChange(VSPHERE_FIELDS.DataStore, e?.target?.value ?? ''),
+                    })}
                 >
                     <option />
                     {datastores.map((details: any) => (
@@ -248,8 +261,9 @@ function VSphereNetworkName({
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>VSphere network name</label>
                 <select
-                    {...register(VSPHERE_FIELDS.VSphereNetworkName)}
-                    onChange={(e) => onChange(VSPHERE_FIELDS.VSphereNetworkName, e?.target?.value ?? '')}
+                    {...register(VSPHERE_FIELDS.VSphereNetworkName, {
+                        onChange: (e: any) => onChange(VSPHERE_FIELDS.VSphereNetworkName, e?.target?.value ?? ''),
+                    })}
                 >
                     <option />
                     {vSphereNetworkNames.map((details: any) => (
