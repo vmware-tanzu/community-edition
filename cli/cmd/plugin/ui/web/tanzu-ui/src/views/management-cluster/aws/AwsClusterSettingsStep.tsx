@@ -21,7 +21,8 @@ import { AwsStore } from '../../../state-management/stores/Store.aws';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 import { AwsService, AWSVirtualMachine } from '../../../swagger-api';
-import RetrieveOSImages from '../../../shared/components/FormInputComponents/RetrieveOSImages/RetrieveOSImages';
+import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
+import PageNotification, { Notification, NotificationStatus } from '../../../shared/components/PageNotification/PageNotification';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -80,6 +81,7 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     const methods = useForm<AwsClusterSettingFormInputs>({
         resolver: yupResolver(awsClusterSettingsFormSchema),
     });
+    const [notification, setNotification] = useState<Notification | null>(null);
     const [images, setImages] = useState<AWSVirtualMachine[]>([]);
     const {
         handleSubmit,
@@ -87,6 +89,10 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
         register,
         setValue,
     } = methods;
+
+    function dismissAlert() {
+        setNotification(null);
+    }
 
     const setImageParameters = (image) => {
         if (handleValueChange) {
@@ -101,10 +107,17 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     };
 
     useEffect(() => {
-        AwsService.getAwsosImages(awsState[STORE_SECTION_FORM].REGION).then((data) => {
-            setImages(data);
-            setImageParameters(data[0]);
-        });
+        try {
+            AwsService.getAwsosImages(awsState[STORE_SECTION_FORM].REGION).then((data) => {
+                setImages(data);
+                setImageParameters(data[0]);
+            });
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to retrieve OS Images: ${e}`,
+            } as Notification);
+        }
     }, [awsState[STORE_SECTION_FORM].REGION]);
 
     let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM].NODE_PROFILE;
@@ -158,8 +171,11 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
                         selectedInstanceId={selectedInstanceTypeId}
                     />
                 </div>
+                <div cds-layout="col:6">
+                    <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
+                </div>
                 <div cds-layout="col:12">
-                    <RetrieveOSImages
+                    <OsImageSelect
                         osImageTitle={'Amazon Machine Image(AMI)'}
                         images={images}
                         field={'IMAGE_INFO'}

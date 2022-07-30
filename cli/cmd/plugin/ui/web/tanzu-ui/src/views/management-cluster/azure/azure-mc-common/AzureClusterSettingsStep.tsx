@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -20,6 +20,9 @@ import {
 } from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
+import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
+import PageNotification, { Notification, NotificationStatus } from '../../../../shared/components/PageNotification/PageNotification';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -44,21 +47,23 @@ const nodeInstanceTypes: NodeInstanceType[] = [
     },
 ];
 
-type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE;
+type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE | AZURE_FIELDS.OS_IMAGE;
 
 interface AzureClusterSettingFormInputs {
     [AZURE_FIELDS.CLUSTER_NAME]: string;
     [AZURE_FIELDS.NODE_PROFILE]: string;
+    [AZURE_FIELDS.OS_IMAGE]: string;
 }
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     const { currentStep, deploy, handleValueChange } = props;
-    const { azureState, azureDispatch } = useContext(AzureStore);
+    const { azureState } = useContext(AzureStore);
+    const [notification, setNotification] = useState<Notification | null>(null);
     const azureClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AzureClusterSettingFormInputs>({
         resolver: yupResolver(azureClusterSettingsFormSchema),
     });
-
+    const [images, setImages] = useState<AzureVirtualMachine[]>([]);
     const {
         handleSubmit,
         formState: { errors },
@@ -72,6 +77,17 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setValue(AZURE_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedNodeProfileId);
+
+    function dismissAlert() {
+        setNotification(null);
+    }
+
+    const setImageParameters = (image) => {
+        if (handleValueChange) {
+            handleValueChange(INPUT_CHANGE, AZURE_FIELDS.OS_IMAGE, image, currentStep, errors);
+            setValue(AZURE_FIELDS.OS_IMAGE, image.name);
+        }
+    };
 
     const canContinue = (): boolean => {
         return (
@@ -103,6 +119,28 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setSelectedInstanceTypeId(instanceType);
     };
 
+    const onOsImageSelected = (imageName: string) => {
+        images.some((image) => {
+            if (image.name === imageName) {
+                setImageParameters(image);
+            }
+        });
+    };
+
+    useEffect(() => {
+        try {
+            AzureService.getAzureOsImages().then((data) => {
+                setImages(data);
+                setImageParameters(data[0]);
+            });
+        } catch (e) {
+            setNotification({
+                status: NotificationStatus.DANGER,
+                message: `Unable to retrieve OS Images: ${e}`,
+            } as Notification);
+        }
+    }, []);
+
     return (
         <div>
             <div className="wizard-content-container">
@@ -125,6 +163,19 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                             register={register}
                             nodeInstanceTypeChange={onInstanceTypeChange}
                             selectedInstanceId={selectedInstanceTypeId}
+                        />
+                    </div>
+                    <div cds-layout="col:6">
+                        <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
+                    </div>
+                    <div cds-layout="col:12">
+                        <OsImageSelect
+                            osImageTitle={'Azure Machine Image'}
+                            images={images}
+                            field={AZURE_FIELDS.OS_IMAGE}
+                            errors={errors}
+                            register={register}
+                            onOsImageSelected={onOsImageSelected}
                         />
                     </div>
                 </div>
