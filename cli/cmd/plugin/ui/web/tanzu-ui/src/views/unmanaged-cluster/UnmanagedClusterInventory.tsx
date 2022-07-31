@@ -37,7 +37,7 @@ function UnmanagedClusterInventory() {
                 if (cluster.status === 'Unknown') {
                     setNotification({
                         status: NotificationStatus.DANGER,
-                        message: `Unmanaged Clusters ${cluster.name} is failed: Please Delete it first`,
+                        message: `Unmanaged Clusters ${cluster.name} is failed: Please delete this cluster before attempting to create a new unmanaged cluster.`,
                     } as Notification);
                 }
             });
