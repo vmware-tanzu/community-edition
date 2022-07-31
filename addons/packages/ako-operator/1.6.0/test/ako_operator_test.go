@@ -134,6 +134,7 @@ akoOperator:
 				values = defaultValues + "\n" + "  config:\n" + "    avi_admin_credential_name: avi-controller-credentials\n" + "    avi_ca_name: avi-controller-ca"
 			})
 			It("should have rebase rule to skip their reconciliation in kapp-config", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
 				cms, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
 					"$.kind":          "ConfigMap",
 					"$.metadata.name": "ako-operator-kapp-config",
@@ -156,6 +157,7 @@ akoOperator:
 				values = defaultValues + "\n" + "  config:\n" + "    avi_nsxt_t1_lr: test_lr"
 			})
 			It("should have it set in AKODeploymentConfig spec", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
 				adcs, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
 					"$.kind": "AKODeploymentConfig",
 				})
@@ -171,6 +173,7 @@ akoOperator:
 				values = defaultValues
 			})
 			It("should have it set in AKODeploymentConfig spec", func() {
+				Expect(yttRenderErr).NotTo(HaveOccurred())
 				adcs, err := matchers.FindDocsMatchingYAMLPath(output, map[string]string{
 					"$.kind": "AKODeploymentConfig",
 				})
