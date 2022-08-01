@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:dfc66ff1f7b2de0dfade390f9194d13b6e53cf4efd939f10bdac5bfcfb44a66c
+          image: projects.registry.vmware.com/tce/azuredisk-csi@sha256:b9cfed78e00916c46eda6955f5411e6a86fcb0dc84c8b49923fe2d7d8a80381f
       template:
       - ytt:
           paths:
