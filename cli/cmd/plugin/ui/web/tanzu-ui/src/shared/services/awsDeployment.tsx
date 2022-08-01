@@ -65,15 +65,7 @@ const useAwsDeployment = () => {
             },
             ceipOptIn: awsState[STORE_SECTION_FORM].ENABLE_CEIP_PARTICIPATION,
             labels: {},
-            // TODO: define a default OS image to set via aws.defaults.tsx
-            os: {
-                name: 'ubuntu-20.04-amd64 (ami-0dd0327a3bfaa4dc8)',
-                osInfo: {
-                    arch: 'amd64',
-                    name: 'ubuntu',
-                    version: '20.04',
-                },
-            },
+            os: awsState[STORE_SECTION_FORM].OS_IMAGE,
             annotations: {
                 description: '',
                 location: '',

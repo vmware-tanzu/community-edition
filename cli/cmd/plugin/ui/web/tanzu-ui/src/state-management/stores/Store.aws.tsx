@@ -22,6 +22,9 @@ const initialState = {
         // InstanceType
         NODE_PROFILE: '',
 
+        // Image
+        OS_IMAGE: {},
+
         // Region
         REGION: '',
         ...AWS_DEFAULT_VALUES,

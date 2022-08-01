@@ -59,12 +59,12 @@ const nodeInstanceTypes: NodeInstanceType[] = [
 interface AwsClusterSettingFormInputs {
     CLUSTER_NAME: string;
     NODE_PROFILE: string;
-    IMAGE_INFO: string;
+    OS_IMAGE: string;
 }
 
 function createYupSchemaObject() {
     return {
-        IMAGE_INFO: yupStringRequired('Please select an OS image'),
+        OS_IMAGE: yupStringRequired('Please select an OS image'),
         NODE_PROFILE: nodeInstanceTypeValidation(),
         CLUSTER_NAME: clusterNameValidation(),
     };
@@ -78,10 +78,10 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     const { handleValueChange, currentStep, deploy, defaultData, message } = props;
     const { awsState } = useContext(AwsStore);
     const awsClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
+    const [notification, setNotification] = useState<Notification | null>(null);
     const methods = useForm<AwsClusterSettingFormInputs>({
         resolver: yupResolver(awsClusterSettingsFormSchema),
     });
-    const [notification, setNotification] = useState<Notification | null>(null);
     const [images, setImages] = useState<AWSVirtualMachine[]>([]);
     const {
         handleSubmit,
@@ -90,13 +90,10 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
         setValue,
     } = methods;
 
-    function dismissAlert() {
-        setNotification(null);
-    }
-
     const setImageParameters = (image) => {
         if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, 'IMAGE_INFO', image, currentStep, errors);
+            handleValueChange(INPUT_CHANGE, 'OS_IMAGE', image, currentStep, errors);
+            setValue('OS_IMAGE', image.name);
         }
     };
 
@@ -128,6 +125,10 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     }
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
+    function dismissAlert() {
+        setNotification(null);
+    }
+
     const onFieldChange = (data: string, field: AWS_CLUSTER_SETTING_STEP_FIELDS) => {
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, field, data, currentStep, errors);
@@ -144,8 +145,12 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
         onFieldChange(clusterName, 'CLUSTER_NAME');
     };
 
-    const onOsImageSelected = (clusterName: string) => {
-        onFieldChange(clusterName, 'IMAGE_INFO');
+    const onOsImageSelected = (imageName: string) => {
+        images.some((image) => {
+            if (image.name === imageName) {
+                setImageParameters(image);
+            }
+        });
     };
 
     return (
