@@ -181,7 +181,7 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
                 </div>
                 <div cds-layout="col:12">
                     <OsImageSelect
-                        osImageTitle={'Amazon Machine Image(AMI)'}
+                        osImageTitle={'Amazon Machine Image (AMI)'}
                         images={images}
                         field={'IMAGE_INFO'}
                         errors={errors}
@@ -189,7 +189,6 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
                         onOsImageSelected={onOsImageSelected}
                     />
                 </div>
-
                 <div cds-layout="grid col:12 p-t:lg">
                     <CdsButton cds-layout="col:start-1" status="success" onClick={handleSubmit(handleMCCreation)}>
                         <CdsIcon shape="cluster" size="sm"></CdsIcon>
