@@ -23,6 +23,10 @@ export interface VsphereResourceAction extends Action {
     resourceName: string;
 }
 
+export interface AwsResourceAction extends Action {
+    resourceName: string;
+}
+
 export interface DynamicCategoryToggleAction extends Action {
     category: string;
 }

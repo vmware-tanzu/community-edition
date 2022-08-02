@@ -12,7 +12,6 @@ import { CdsFormGroup } from '@cds/react/forms';
 
 // App import
 import './ManagementCredentials.scss';
-import { AwsService } from '../../../../../swagger-api/services/AwsService';
 import { AwsStore } from '../../../../../state-management/stores/Store.aws';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
@@ -24,6 +23,9 @@ import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
+import { AwsResourceAction } from '../../../../../shared/types/types';
+import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -44,7 +46,7 @@ enum CREDENTIAL_TYPE {
 
 function ManagementCredentials(props: Partial<StepProps>) {
     const { handleValueChange, currentStep, goToStep, submitForm } = props;
-    const { awsState } = useContext(AwsStore);
+    const { awsState, awsDispatch } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
     const [keyPairLoading, setKeyPairLoading] = useState(false);
@@ -81,6 +83,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
+    const [osImages, setOsImages] = useState<AWSVirtualMachine[]>([]);
+    const [errorMessage, setErrorMessage] = useState<any>();
+
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchKeyPairs();
@@ -97,6 +102,16 @@ function ManagementCredentials(props: Partial<StepProps>) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
+                awsDispatch({
+                    type: AWS_ADD_RESOURCES,
+                    resourceName: 'osImages',
+                    payload: osImages,
+                } as AwsResourceAction);
+                awsDispatch({
+                    type: AWS_ADD_RESOURCES,
+                    resourceName: 'errors',
+                    payload: errorMessage,
+                } as AwsResourceAction);
             }
         }
     };
@@ -151,6 +166,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 handleValueChange(INPUT_CHANGE, 'REGION', region, currentStep, errors);
             });
         }
+        retrieveOsImages(region);
     };
 
     const handleSelectKeyPair = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -178,6 +194,17 @@ function ManagementCredentials(props: Partial<StepProps>) {
             fetchKeyPairs();
         }
     };
+
+    function retrieveOsImages(region: string | undefined) {
+        try {
+            setOsImages([]);
+            AwsService.getAwsosImages(region).then((data) => {
+                setOsImages(data);
+            });
+        } catch (e) {
+            setErrorMessage(e);
+        }
+    }
 
     return (
         <div className="wizard-content-container">
