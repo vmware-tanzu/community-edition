@@ -23,8 +23,9 @@ import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.r
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import { VSPHERE_ADD_RESOURCES } from '../../../../state-management/actions/Resources.actions';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
-import { VsphereResourceAction } from '../../../../shared/types/types';
+import { FormAction, VsphereResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 export interface VsphereCredentialsStepInputs {
     [VSPHERE_FIELDS.DATACENTER]: string;
@@ -45,7 +46,7 @@ type VSPHERE_CREDENTIALS_STEP_FIELDS =
 const SERVER_RESPONSE_BAD_CREDENTIALS = 403;
 
 export function VsphereCredentialsStep(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { currentStep, goToStep, submitForm, updateTabStatus } = props;
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
 
     const [connectionMessage, setConnectionMessage] = useState('');
@@ -64,6 +65,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [selectedDcHasTemplate, setSelectedDcHasTemplate] = useState<boolean>(false);
     const methods = useForm<VsphereCredentialsStepInputs>({
         resolver: yupResolver(createSchema(ipFamily)),
+        mode: 'all',
     });
     const {
         register,
@@ -71,6 +73,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         setValue,
         formState: { errors },
     } = methods;
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
 
     const errDataCenter = () => connectionStatus === CONNECTION_STATUS.CONNECTED && errors[VSPHERE_FIELDS.DATACENTER];
     const errNoDataCentersFound = () => {
@@ -110,11 +117,13 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = event.target.name as VSPHERE_CREDENTIALS_STEP_FIELDS;
-        const value = event.target.value;
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, fieldName, value, currentStep, errors);
-            setValue(fieldName, value, { shouldValidate: true });
-        }
+        const newValue = event.target.value;
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: fieldName,
+            payload: newValue,
+        } as FormAction);
+
         if (fieldName === VSPHERE_FIELDS.SERVERNAME) {
             setThumbprint('');
             setThumbprintErrorMessage('');
@@ -148,13 +157,21 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     // toggle the value of ipFamily
     const handleIpFamilyChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target['checked'] ? IP_FAMILIES.IPv6 : IP_FAMILIES.IPv4;
-        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.IPFAMILY, newValue, currentStep, errors);
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.IPFAMILY,
+            payload: newValue,
+        } as FormAction);
         setIpFamily(newValue);
     };
 
     const handleUseThumbprintChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target['checked'];
-        handleValueChange && handleValueChange(INPUT_CHANGE, VSPHERE_FIELDS.USETHUMBPRINT, newValue, currentStep, errors);
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.USETHUMBPRINT,
+            payload: newValue,
+        } as FormAction);
         setUseThumbprint(newValue);
     };
 
@@ -301,7 +318,12 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 <CdsFormGroup layout="vertical">
                     <CdsToggle>
                         <label>Use IPv6</label>
-                        <input type="checkbox" {...register(VSPHERE_FIELDS.IPFAMILY)} onChange={handleIpFamilyChange} />
+                        <input
+                            type="checkbox"
+                            {...register(VSPHERE_FIELDS.IPFAMILY, {
+                                onChange: handleIpFamilyChange,
+                            })}
+                        />
                     </CdsToggle>
                 </CdsFormGroup>
             </div>
@@ -324,9 +346,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     function ThumbprintVerification() {
         const box = useThumbprint ? (
-            <input type="checkbox" {...register(VSPHERE_FIELDS.USETHUMBPRINT)} onChange={handleUseThumbprintChange} checked />
+            <input type="checkbox" {...register(VSPHERE_FIELDS.USETHUMBPRINT, { onChange: handleUseThumbprintChange })} checked />
         ) : (
-            <input type="checkbox" {...register(VSPHERE_FIELDS.USETHUMBPRINT)} onChange={handleUseThumbprintChange} />
+            <input type="checkbox" {...register(VSPHERE_FIELDS.USETHUMBPRINT, { onChange: handleUseThumbprintChange })} />
         );
         return (
             <div cds-layout="col:4 vertical gap:md">
@@ -367,13 +389,14 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function CredentialsField(label: string, fieldName: VSPHERE_CREDENTIALS_STEP_FIELDS, placeholder: string, isPassword = false) {
         const err = errors[fieldName];
         return (
-            <CdsInput layout="compact">
+            <CdsInput layout="vertical">
                 <label cds-layout="p-b:xs">{label}</label>
                 <input
-                    {...register(fieldName)}
+                    {...register(fieldName, {
+                        onChange: handleCredentialsFieldChange,
+                    })}
                     placeholder={placeholder}
                     type={isPassword ? 'password' : 'text'}
-                    onChange={handleCredentialsFieldChange}
                     onBlurCapture={handleCredentialsFieldBlur}
                     defaultValue={vsphereState[STORE_SECTION_FORM][fieldName]}
                 />
@@ -389,7 +412,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         return (
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label cds-layout="p-b:xs">Datacenter</label>
-                <select {...register(VSPHERE_FIELDS.DATACENTER)} onChange={handleDatacenterChange}>
+                <select {...register(VSPHERE_FIELDS.DATACENTER, { onChange: handleDatacenterChange })}>
                     <option />
                     {datacenters.map((dc) => (
                         <option key={dc.moid}>{dc.name}</option>

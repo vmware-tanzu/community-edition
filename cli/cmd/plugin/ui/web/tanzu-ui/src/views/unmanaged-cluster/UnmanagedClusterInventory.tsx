@@ -33,6 +33,14 @@ function UnmanagedClusterInventory() {
         setShowPageLoading(true);
         try {
             const data = await UnmanagedService.getUnmanagedClusters();
+            data.filter((cluster) => {
+                if (cluster.status === 'Unknown') {
+                    setNotification({
+                        status: NotificationStatus.DANGER,
+                        message: `Unmanaged Clusters ${cluster.name} is failed: Please delete this cluster before attempting to create a new unmanaged cluster.`,
+                    } as Notification);
+                }
+            });
             setUnmanagedClusters(data);
         } catch (e) {
             setNotification({
@@ -113,21 +121,6 @@ function UnmanagedClusterInventory() {
                         Learn more about Unmanaged Clusters
                     </a>
                 </div>
-            </div>
-        );
-    }
-
-    function LearnMore() {
-        return (
-            <div cds-layout="vertical">
-                <CdsButton
-                    action="flat"
-                    onClick={() => {
-                        window.open('http://tanzucommunityedition.io', '_blank');
-                    }}
-                >
-                    Learn more about Tanzu&apos;s architecture
-                </CdsButton>
             </div>
         );
     }

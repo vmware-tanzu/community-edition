@@ -1,24 +1,24 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useContext, useState } from 'react';
 
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons, clusterIcon } from '@cds/core/icon';
-import { CdsButton } from '@cds/react/button';
-import { CdsControlMessage } from '@cds/react/forms';
-import { CdsIcon } from '@cds/react/icon';
-import { CdsInput } from '@cds/react/input';
-import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { CdsSelect } from '@cds/react/select';
+import { FormProvider, useForm } from 'react-hook-form';
+import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
+import { CdsIcon } from '@cds/react/icon';
+import { CdsButton } from '@cds/react/button';
+import { CdsControlMessage } from '@cds/react/forms';
 import { ClusterProtocols } from '../../../../shared/constants/ClusterProtocols.constants';
 import { CniProviders } from '../../../../shared/constants/CniProviders.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { CreateUnmanagedClusterParams } from '../../../../swagger-api';
 import { DeploymentStates, DeploymentTypes } from '../../../../shared/constants/Deployment.constants';
+import { FormAction } from '../../../../shared/types/types';
 import { DEPLOYMENT_STATUS_CHANGED } from '../../../../state-management/actions/Deployment.actions';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { isValidCidr, isValidIp } from '../../../../shared/validations/Validation.service';
@@ -32,6 +32,8 @@ import { UNMANAGED_CLUSTER_FIELDS } from '../../unmanaged-cluster-common/Unmanag
 import { UNMANAGED_PLACEHOLDER_VALUES } from '../../unmanaged-cluster-common/unmanaged.defaults';
 import { UnmanagedService } from '../../../../swagger-api/services/UnmanagedService';
 import { useNavigate } from 'react-router-dom';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import TextInputWithError from '../../../../shared/components/Input/TextInputWithError';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -94,7 +96,7 @@ const unmanagedClusterProtocol = [
 ];
 
 function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep } = props;
+    const { updateTabStatus, currentStep } = props;
 
     const { dispatch } = useContext(Store);
     const { umcState } = useContext(UmcStore);
@@ -111,31 +113,27 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         return `${ipAddress}:${nodePort}:${hostPort}/${protocol}`;
     }
 
+    const methods = useForm<FormInputs>({ resolver: yupResolver(unmanagedClusterNetworkSettingStepFormSchema), mode: 'all' });
     const {
-        register,
         formState: { errors },
-    } = useForm<FormInputs>({ resolver: yupResolver(unmanagedClusterNetworkSettingStepFormSchema) });
+    } = methods;
 
-    const handleFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, event.target.name, event.target.value, currentStep, errors);
-        }
+    const { umcDispatch } = useContext(UmcStore);
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
+
+    const handleFieldChange = (field: string, value: string) => {
+        umcDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: value,
+        } as FormAction);
     };
 
-    const [selectedProvider, setSelectedProvider] = useState(umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CNI_PROVIDER]);
-
-    const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedProvider(event.target.value);
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.CNI_PROVIDER, event.target.value, currentStep, errors);
-        }
-    };
-
-    const handleProtocolChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROTOCOL, event.target.value, currentStep, errors);
-        }
-    };
+    const [selectedProvider] = useState(umcState[STORE_SECTION_FORM].CLUSTER_PROVIDER);
 
     const deployUnmanagedCluster = async () => {
         setConnectionStatus(CONNECTION_STATUS.CONNECTING);
@@ -180,42 +178,44 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     };
 
     return (
-        <div className="cluster-settings-container" cds-layout="m:lg">
-            <div cds-layout="p-b:lg" cds-text="title">
-                Network settings
-            </div>
-            <div cds-layout="grid">
-                <div cds-layout="col:12">
-                    <div cds-layout="vertical gap:lg">
-                        {ClusterProvider()}
-                        {ClusterCidr()}
-                        {NodeHostPortMapping()}
-                        <div cds-layout="grid align:vertical-center gap:md">
-                            <div cds-layout="col:3">
-                                <CdsButton
-                                    cds-layout="col:start-1"
-                                    status="success"
-                                    onClick={deployUnmanagedCluster}
-                                    disabled={connectionStatus === CONNECTION_STATUS.CONNECTING}
-                                >
-                                    <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                                    Create Unmanaged cluster
-                                </CdsButton>
-                            </div>
-                            <div></div>
-                            <div cds-layout="col:8 p-b:sm">
-                                <ConnectionNotification status={connectionStatus} message={connectionMessage} />
+        <FormProvider {...methods}>
+            <div className="cluster-settings-container" cds-layout="m:lg">
+                <div cds-layout="p-b:lg" cds-text="title">
+                    Network settings
+                </div>
+                <div cds-layout="grid">
+                    <div cds-layout="col:12">
+                        <div cds-layout="vertical gap:lg">
+                            {ClusterProvider()}
+                            {ClusterCidr()}
+                            {NodeHostPortMapping()}
+                            <div cds-layout="grid align:vertical-center gap:md">
+                                <div cds-layout="col:3">
+                                    <CdsButton
+                                        cds-layout="col:start-1"
+                                        status="success"
+                                        onClick={deployUnmanagedCluster}
+                                        disabled={connectionStatus === CONNECTION_STATUS.CONNECTING}
+                                    >
+                                        <CdsIcon shape="cluster" size="sm"></CdsIcon>
+                                        Create Unmanaged cluster
+                                    </CdsButton>
+                                </div>
+                                <div></div>
+                                <div cds-layout="col:8 p-b:sm">
+                                    <ConnectionNotification status={connectionStatus} message={connectionMessage} />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </FormProvider>
     );
 
     function ClusterProvider() {
         return (
-            <CdsRadioGroup layout="vertical-inline" onChange={handleProviderChange}>
+            <CdsRadioGroup layout="vertical-inline" onChange={(e: any) => handleFieldChange('CLUSTER_PROVIDER', e.target.value)}>
                 <label>
                     Container Network Interface (CNI) provider <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
                 </label>
@@ -242,36 +242,24 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         const errorClusterPodCidr = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR];
 
         return (
-            <div cds-layout="grid gap:xl wrap:none m-b:md">
-                <div cds-layout="col:3">
-                    <CdsInput layout="vertical">
-                        <label>
-                            Cluster service CIDR <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
-                        </label>
-                        <input
-                            cds-layout="p:none"
-                            {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR)}
-                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR]}
-                            onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR]}
-                        ></input>
-                        {errorClusterServiceCidr && <CdsControlMessage status="error">{errorClusterServiceCidr.message}</CdsControlMessage>}
-                    </CdsInput>
+            <div cds-layout="horizontal gap:xl">
+                <div cds-layout="col:4">
+                    <TextInputWithError
+                        label="Cluster service CIDR"
+                        name="CLUSTER_SERVICE_CIDR"
+                        handleInputChange={handleFieldChange}
+                        placeholder="CLUSTER SERVICE CIDR"
+                        defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR}
+                    />
                 </div>
-                <div cds-layout="col:3">
-                    <CdsInput layout="vertical">
-                        <label>
-                            Cluster pod CIDR <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
-                        </label>
-                        <input
-                            cds-layout="p:none"
-                            {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR)}
-                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR]}
-                            onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR]}
-                        ></input>
-                        {errorClusterPodCidr && <CdsControlMessage status="error">{errorClusterPodCidr.message}</CdsControlMessage>}
-                    </CdsInput>
+                <div cds-layout="col:4">
+                    <TextInputWithError
+                        label="Cluster POD CIDR"
+                        name="CLUSTER_POD_CIDR"
+                        handleInputChange={handleFieldChange}
+                        placeholder="CLUSTER POD CIDR"
+                        defaultValue={umcState[STORE_SECTION_FORM].CLUSTER_POD_CIDR}
+                    />
                 </div>
             </div>
         );
@@ -284,62 +272,61 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
         const errorHostPortMapping = errors[UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING];
 
         return (
-            <div cds-layout="m-b:md">
-                <div cds-layout="horizontal gap:sm p-y:md wrap:none">
-                    <CdsInput layout="vertical" control-width="shrink" cds-layout="align:shrink">
-                        <label cds-layout="wrap:none">IP Address</label>
-                        <input
-                            cds-layout="p:none"
-                            {...register(UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS)}
-                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS]}
-                            onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS]}
-                        ></input>
-                        {errorIpAddress && <CdsControlMessage status="error">{errorIpAddress.message}</CdsControlMessage>}
-                    </CdsInput>
-                    <CdsInput layout="vertical" control-width="shrink">
-                        <label>Node Port</label>
-                        <input
-                            cds-layout="p:none"
-                            {...register(UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING)}
-                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING]}
-                            onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING]}
-                        ></input>
-                        {errorNodePortMapping && <CdsControlMessage status="error">{errorNodePortMapping.message}</CdsControlMessage>}
-                    </CdsInput>
-                    <CdsInput layout="vertical" control-width="shrink">
-                        <label>Host Port</label>
-                        <input
-                            cds-layout="p:none"
-                            {...register(UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING)}
-                            placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING]}
-                            onChange={handleFieldChange}
-                            defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING]}
-                        ></input>
-                        {errorHostPortMapping && <CdsControlMessage status="error">{errorHostPortMapping.message}</CdsControlMessage>}
-                    </CdsInput>
-                    <CdsSelect layout="vertical" control-width="shrink" onChange={handleProtocolChange}>
-                        <label>Protocol</label>
-                        <select cds-layout="p:none">
-                            {unmanagedClusterProtocol.map((unmanagedClusterProtocol, index) => {
-                                return (
-                                    <option cds-layout="m:md m-l:none" key={index}>
-                                        <label>{unmanagedClusterProtocol.label}</label>
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </CdsSelect>
+            <div cds-layout="grid">
+                <div cds-layout="col:10">
+                    <label cds-text="body extrabold" cds-layout="p-t:sm" slot="label">
+                        Node to host port mapping <CdsIcon shape="info-circle" size="md" status="info"></CdsIcon>
+                    </label>
+                    <div cds-layout="grid gap:sm p-y:md">
+                        <div cds-layout="col:2">
+                            <TextInputWithError
+                                label="IP Address"
+                                name={UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS}
+                                handleInputChange={handleFieldChange}
+                                placeholder={UNMANAGED_PLACEHOLDER_VALUES.IP_ADDRESS}
+                                defaultValue={umcState[STORE_SECTION_FORM].IP_ADDRESS}
+                            />
+                        </div>
+                        <div cds-layout="col:2">
+                            <TextInputWithError
+                                label="Node Port"
+                                name={UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING}
+                                handleInputChange={handleFieldChange}
+                                placeholder={UNMANAGED_PLACEHOLDER_VALUES.NODE_PORT_MAPPING}
+                                defaultValue={umcState[STORE_SECTION_FORM].NODE_PORT_MAPPING}
+                            />
+                        </div>
+                        <div cds-layout="col:2">
+                            <TextInputWithError
+                                label="Host Port"
+                                name={UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING}
+                                handleInputChange={handleFieldChange}
+                                placeholder={UNMANAGED_PLACEHOLDER_VALUES.HOST_PORT_MAPPING}
+                                defaultValue={umcState[STORE_SECTION_FORM].HOST_PORT_MAPPING}
+                            />
+                        </div>
+                        <CdsSelect cds-layout="align:shrink" onChange={(e: any) => handleFieldChange('CLUSTER_PROTOCOL', e.target.value)}>
+                            <label>Protocol</label>
+                            <select>
+                                {unmanagedClusterProtocol.map((unmanagedClusterProtocol, index) => {
+                                    return (
+                                        <option cds-layout="m:md m-l:none" key={index}>
+                                            {unmanagedClusterProtocol.label}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </CdsSelect>
+                    </div>
+                    <CdsControlMessage>
+                        {combineNodeToHostPortMapping(
+                            umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS],
+                            umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING],
+                            umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING],
+                            umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROTOCOL]
+                        )}
+                    </CdsControlMessage>
                 </div>
-                <CdsControlMessage>
-                    {combineNodeToHostPortMapping(
-                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.IP_ADDRESS],
-                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.NODE_PORT_MAPPING],
-                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.HOST_PORT_MAPPING],
-                        umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_PROTOCOL]
-                    )}
-                </CdsControlMessage>
             </div>
         );
     }

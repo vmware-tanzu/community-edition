@@ -77,7 +77,6 @@ var CreateCmd = &cobra.Command{
 
 var co = createUnmanagedOpts{}
 
-//nolint:dupl
 func init() {
 	CreateCmd.Flags().StringVarP(&co.clusterConfigFile, "config", "f", "", "A config file describing how to create the Tanzu environment")
 	CreateCmd.Flags().StringVar(&co.kubeconfigPath, "kubeconfig-path", "", "File path to where the kubeconfig will be persisted. Defaults to global user kubeconfig")
@@ -91,6 +90,7 @@ func init() {
 	CreateCmd.Flags().StringVar(&co.servicecidr, "service-cidr", "", "The CIDR for Service IP allocation; default is 10.96.0.0/16")
 	CreateCmd.Flags().StringSliceVarP(&co.portMapping, "port-map", "p", []string{}, "Ports to map between container node and the host (format: '127.0.0.1:80:80/tcp', '80:80/tcp', '80:80', or just '80')")
 	CreateCmd.Flags().Bool("tty-disable", false, "Disable log stylization and emojis")
+	CreateCmd.Flags().Bool("tty-activate", false, "Force usage of log stylization and emojis")
 	CreateCmd.Flags().BoolVar(&co.skipPreflightChecks, "skip-preflight", false, "Skip the preflight checks; default is false")
 	CreateCmd.Flags().StringVar(&co.numContPlanes, "control-plane-node-count", "", "The number of control plane nodes to deploy; default is 1")
 	CreateCmd.Flags().StringVar(&co.numWorkers, "worker-node-count", "", "The number of worker nodes to deploy; default is 0")
@@ -170,6 +170,8 @@ func create(cmd *cobra.Command, args []string) {
 	exitCode, err := tm.Deploy(clusterConfig)
 	if err != nil {
 		log.Error(err.Error())
+		log.Info("RESULT: FAILURE")
 		os.Exit(exitCode)
 	}
+	log.Info("RESULT: SUCCESS")
 }

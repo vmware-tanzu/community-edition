@@ -5,7 +5,7 @@ import React, { ChangeEvent } from 'react';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsIcon } from '@cds/react/icon';
 import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
-import { FieldError } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import * as yup from 'yup';
 import './NodeProfile.scss';
 
@@ -20,8 +20,6 @@ export interface NodeInstanceType {
 interface NodeProfileProps {
     field: string;
     nodeInstanceTypes: NodeInstanceType[];
-    errors: { [key: string]: FieldError | undefined };
-    register: any;
     nodeInstanceTypeChange: (nodeInstanceTypeId: string, fieldName?: string) => void;
     selectedInstanceId?: string;
     prompt?: string;
@@ -56,7 +54,11 @@ function instanceTypeInList(field: string, instance: NodeInstanceType, register:
 }
 
 export function NodeProfile(props: NodeProfileProps) {
-    const { field, nodeInstanceTypes, errors, register, nodeInstanceTypeChange, selectedInstanceId, prompt } = props;
+    const { field, nodeInstanceTypes, nodeInstanceTypeChange, selectedInstanceId, prompt } = props;
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext();
 
     const onSelectNodeInstanceType = (event: ChangeEvent<HTMLSelectElement>) => {
         nodeInstanceTypeChange(event.target.value || '', field);

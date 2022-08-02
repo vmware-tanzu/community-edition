@@ -19,6 +19,9 @@ const initialState = {
         // Auth - General
         EC2_KEY_PAIR: '',
 
+        // InstanceType
+        NODE_PROFILE: '',
+
         // Region
         REGION: '',
         ...AWS_DEFAULT_VALUES,

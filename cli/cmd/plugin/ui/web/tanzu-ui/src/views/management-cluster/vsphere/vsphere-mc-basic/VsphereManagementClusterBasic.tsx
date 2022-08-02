@@ -1,25 +1,24 @@
 // React imports
-import React, { useContext } from 'react';
+import React from 'react';
+
+import { VSPHERE_MC_BASIC_TAB_NAMES } from './VsphereManagementClusterBasic.constants';
+import { VsphereClusterResourcesStep } from '../vsphere-mc-common/VsphereClusterResourcesStep';
+import { VsphereClusterSettingsStep } from '../vsphere-mc-common/VsphereClusterSettingsStep';
+import { VsphereCredentialsStep } from '../vsphere-mc-common/VsphereCredentialsStep';
+import { VsphereLoadBalancerStep } from '../vsphere-mc-common/VsphereLoadBalancerStep';
 // App imports
 import Wizard from '../../../../shared/components/wizard/Wizard';
-import { VSPHERE_MC_BASIC_TAB_NAMES } from './VsphereManagementClusterBasic.constants';
-import { VsphereCredentialsStep } from '../vsphere-mc-common/VsphereCredentialsStep';
-import { VsphereClusterSettingsStep } from '../vsphere-mc-common/VsphereClusterSettingsStep';
-import { VsphereClusterResourcesStep } from '../vsphere-mc-common/VsphereClusterResourcesStep';
-import { VsphereLoadBalancerStep } from '../vsphere-mc-common/VsphereLoadBalancerStep';
-import { VsphereStore } from '../Store.vsphere.mc';
+import useVSphereDeployment from '../../../../shared/services/vSphereDeployment';
 
 function VsphereManagementClusterBasic() {
-    const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
-    // TODO: create a similar useVsphereDeployment() function
-    // const { deployOnAws } = useAwsDeployment();
+    const { deployOnVSphere } = useVSphereDeployment();
 
     return (
-        <Wizard tabNames={VSPHERE_MC_BASIC_TAB_NAMES} state={vsphereState} dispatch={vsphereDispatch}>
+        <Wizard tabNames={VSPHERE_MC_BASIC_TAB_NAMES}>
             <VsphereCredentialsStep />
             <VsphereClusterSettingsStep />
             <VsphereLoadBalancerStep />
-            <VsphereClusterResourcesStep />
+            <VsphereClusterResourcesStep deploy={deployOnVSphere} />
         </Wizard>
     );
 }

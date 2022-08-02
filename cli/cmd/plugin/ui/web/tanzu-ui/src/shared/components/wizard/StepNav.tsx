@@ -23,7 +23,7 @@ function StepNav(props: ChildProps | any) {
                 return (
                     <button
                         cds-layout="p:lg"
-                        className="wizard-tab"
+                        className={`wizard-tab ${currentStep - 1 === index ? 'current' : ''}`}
                         cds-text="body left"
                         key={index}
                         style={{ width: `${100 / totalSteps}%` }}

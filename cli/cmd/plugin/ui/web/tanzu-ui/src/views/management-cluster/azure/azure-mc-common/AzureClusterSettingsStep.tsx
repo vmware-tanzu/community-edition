@@ -1,9 +1,10 @@
 // React imports
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
@@ -19,7 +20,12 @@ import {
     NodeProfile,
 } from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import PageNotification, { Notification, NotificationStatus } from '../../../../shared/components/PageNotification/PageNotification';
+import { FormAction } from '../../../../shared/types/types';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
+import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -44,27 +50,41 @@ const nodeInstanceTypes: NodeInstanceType[] = [
     },
 ];
 
-type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE;
+type AZURE_CLUSTER_SETTING_STEP_FIELDS = AZURE_FIELDS.CLUSTER_NAME | AZURE_FIELDS.NODE_PROFILE | AZURE_FIELDS.OS_IMAGE;
 
 interface AzureClusterSettingFormInputs {
     [AZURE_FIELDS.CLUSTER_NAME]: string;
     [AZURE_FIELDS.NODE_PROFILE]: string;
+    [AZURE_FIELDS.OS_IMAGE]: string;
+}
+
+function createYupSchemaObject() {
+    return {
+        [AZURE_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
+        [AZURE_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
+    };
 }
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
-    const { currentStep, deploy, handleValueChange } = props;
+    const { updateTabStatus, currentStep, deploy } = props;
     const { azureState, azureDispatch } = useContext(AzureStore);
+    const [notification, setNotification] = useState<Notification | null>(null);
     const azureClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AzureClusterSettingFormInputs>({
         resolver: yupResolver(azureClusterSettingsFormSchema),
+        mode: 'all',
     });
-
+    const [images, setImages] = useState<AzureVirtualMachine[]>([]);
     const {
         handleSubmit,
         formState: { errors },
-        register,
         setValue,
     } = methods;
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
 
     let initialSelectedNodeProfileId = azureState[AZURE_FIELDS.NODE_PROFILE];
     if (!initialSelectedNodeProfileId) {
@@ -73,11 +93,15 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     }
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedNodeProfileId);
 
+    function dismissAlert() {
+        setNotification(null);
+    }
+
     const canContinue = (): boolean => {
         return (
             Object.keys(errors).length === 0 &&
-            azureState.dataForm[AZURE_FIELDS.CLUSTER_NAME] &&
-            azureState.dataForm[AZURE_FIELDS.NODE_PROFILE]
+            azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLUSTER_NAME] &&
+            azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE]
         );
     };
 
@@ -87,44 +111,78 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         }
     };
 
-    const onFieldChange = (data: string, field: AZURE_CLUSTER_SETTING_STEP_FIELDS) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, field, data, currentStep, errors);
-            setValue(field, data, { shouldValidate: true });
-        }
+    const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: string) => {
+        azureDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: data,
+        } as FormAction);
     };
 
     const onClusterNameChange = (clusterName: string) => {
-        onFieldChange(clusterName, AZURE_FIELDS.CLUSTER_NAME);
+        onFieldChange(AZURE_FIELDS.CLUSTER_NAME, clusterName);
     };
 
     const onInstanceTypeChange = (instanceType: string) => {
-        onFieldChange(instanceType, AZURE_FIELDS.NODE_PROFILE);
+        onFieldChange(AZURE_FIELDS.NODE_PROFILE, instanceType);
         setSelectedInstanceTypeId(instanceType);
     };
 
+    useEffect(() => {
+        const setImageInfo = (image: any) => {
+            azureDispatch({
+                type: INPUT_CHANGE,
+                field: AZURE_FIELDS.OS_IMAGE,
+                payload: image,
+            } as FormAction);
+        };
+        const fetchOsImage = async () => {
+            try {
+                const data = await AzureService.getAzureOsImages();
+                setImages(data);
+                setImageInfo(data[0]);
+            } catch (e: any) {
+                setNotification({
+                    status: NotificationStatus.DANGER,
+                    message: `Unable to retrieve OS Images: ${e}`,
+                } as Notification);
+            }
+        };
+        fetchOsImage();
+    }, [azureDispatch]);
+
     return (
-        <div>
+        <FormProvider {...methods}>
             <div className="wizard-content-container">
                 <h2 cds-layout="m-t:lg">Azure Management Cluster Settings</h2>
                 <div cds-layout="grid gap:m" key="section-holder">
-                    <div cds-layout="col:6" key="cluster-name-section">
+                    <div cds-layout="col:4" key="cluster-name-section">
                         <ClusterName
                             field={AZURE_FIELDS.CLUSTER_NAME}
-                            errors={errors}
-                            register={register}
                             clusterNameChange={onClusterNameChange}
-                            placeholderClusterName={'my-azure-cluster'}
+                            placeholderClusterName="my-azure-cluster"
+                            defaultClusterName={azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLUSTER_NAME]}
                         />
                     </div>
-                    <div cds-layout="col:6" key="instance-type-section">
+                    <div cds-layout="col:8" key="instance-type-section">
                         <NodeProfile
                             field={AZURE_FIELDS.NODE_PROFILE}
                             nodeInstanceTypes={nodeInstanceTypes}
-                            errors={errors}
-                            register={register}
                             nodeInstanceTypeChange={onInstanceTypeChange}
                             selectedInstanceId={selectedInstanceTypeId}
+                        />
+                    </div>
+                    <div cds-layout="col:6">
+                        <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
+                    </div>
+                    <div cds-layout="col:12">
+                        <OsImageSelect
+                            osImageTitle={'Azure Machine Image'}
+                            images={images}
+                            field={AZURE_FIELDS.OS_IMAGE}
+                            onOsImageSelected={(value) => {
+                                onFieldChange(AZURE_FIELDS.OS_IMAGE, value);
+                            }}
                         />
                     </div>
                 </div>
@@ -133,13 +191,6 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                     Create Management cluster
                 </CdsButton>
             </div>
-        </div>
+        </FormProvider>
     );
-}
-
-function createYupSchemaObject() {
-    return {
-        [AZURE_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
-        [AZURE_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
-    };
 }

@@ -21,7 +21,6 @@ import helpDocs from '../../../assets/contextualHelpDocs/data.json';
 import useFuseSearch from '../../hooks/UseFuseSearch';
 
 ClarityIcons.addIcons(viewColumnsIcon, searchIcon, popOutIcon);
-
 function Search({ value = '', onSearch }: SearchProps) {
     const [searchValue, setSearchValue] = React.useState(value);
 

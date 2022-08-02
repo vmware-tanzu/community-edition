@@ -17,6 +17,8 @@ const initialState = {
         AZURE_ENVIRONMENT: AzureCloud.PUBLIC,
         REGION: '',
         SSH_PUBLIC_KEY: '',
+        OS_IMAGE: {},
+        CLUSTER_NAME: '',
         ...AZURE_DEFAULT_VALUES,
     },
 };

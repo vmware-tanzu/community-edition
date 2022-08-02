@@ -1,52 +1,73 @@
 // React imports
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 // Library imports
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
-import { CdsSelect } from '@cds/react/select';
-import { UseFormReturn } from 'react-hook-form';
+import { CdsFormGroup } from '@cds/react/forms';
+import { useFormContext } from 'react-hook-form';
 
 // App imports
 import { AwsService } from '../../../../../swagger-api/services/AwsService';
-import { FormInputs } from './ManagementCredentials';
 import './ManagementCredentialProfile.scss';
+import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { FormAction } from '../../../../../shared/types/types';
+import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 
 interface Props {
-    initialProfile: string;
-    initialRegion: string;
-    regions: string[];
-    handleSelectProfile: (profile: string) => void;
-    handleSelectRegion: (region: string) => void;
-    methods: UseFormReturn<FormInputs, any>;
+    selectCallback: () => void;
 }
 
 function ManagementCredentialProfile(props: Props) {
+    const { selectCallback } = props;
+    const { awsDispatch } = useContext(AwsStore);
     const {
-        methods: {
-            formState: { errors },
-            register,
-            setValue,
-        },
-        regions,
-        initialProfile,
-        initialRegion,
-        handleSelectProfile,
-        handleSelectRegion,
-    } = props;
+        register,
+        formState: { errors },
+    } = useFormContext();
+
     const [profiles, setProfiles] = useState<string[]>([]);
+    const [profilesLoading, setProfilesLoading] = useState(false);
+    const [regions, setRegions] = useState<string[]>([]);
+    const [regionLoading, setRegionLoading] = useState(false);
+
+    useEffect(() => {
+        // fetch regions
+        const fetchRegions = async () => {
+            try {
+                setRegionLoading(true);
+                const data = await AwsService.getAwsRegions();
+                setRegions(data);
+            } catch (e: any) {
+                console.log(`Unabled to get regions: ${e}`);
+            } finally {
+                setRegionLoading(false);
+            }
+        };
+        fetchRegions();
+    }, []);
     useEffect(() => {
         // fetch profiles
-        AwsService.getAwsCredentialProfiles().then((data: string[]) => setProfiles(data));
-        setValue('REGION', initialRegion);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        const fetchProfiles = async () => {
+            try {
+                setProfilesLoading(true);
+                const data = await AwsService.getAwsCredentialProfiles();
+                setProfiles(data);
+            } catch (e: any) {
+                console.log(`Unabled to get profiles: ${e}`);
+            } finally {
+                setProfilesLoading(false);
+            }
+        };
+        fetchProfiles();
+    }, []);
 
-    const handleProfileChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        handleSelectProfile(event.target.value);
-    };
-
-    const handleRegionChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setValue('REGION', event.target.value, { shouldValidate: true });
-        handleSelectRegion(event.target.value);
+    const onSelectChange = (field: string, value: string) => {
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: value,
+        } as FormAction);
     };
 
     return (
@@ -57,51 +78,64 @@ function ManagementCredentialProfile(props: Props) {
             </p>
             <p cds-layout="m-y:lg" className="description">
                 Don&apos;t have an AWS Credential profile? Credential profiles can be configured using the{' '}
-                <a href="/" className="text-blue">
+                <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials"
+                    className="text-blue"
+                >
                     AWS CLI
                 </a>
                 . More on{' '}
-                <a href="/" className="text-blue">
+                <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-precedence"
+                    className="text-blue"
+                >
                     AWS Credential profile.
                 </a>
             </p>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="horizontal gap:lg align:vertical-center">
-                    <CdsSelect layout="compact">
-                        <label>AWS credential profile</label>
-                        <select
-                            className="select-sm-width"
-                            onChange={handleProfileChange}
-                            value={initialProfile}
-                            data-testid="profile-select"
-                        >
-                            <option></option>
-                            {profiles.map((profile) => (
-                                <option key={profile} value={profile}>
-                                    {profile}
-                                </option>
-                            ))}
-                        </select>
-                    </CdsSelect>
-
-                    <CdsSelect layout="compact">
-                        <label>AWS region </label>
-                        <select
-                            className="select-sm-width"
-                            {...register('REGION')}
-                            onChange={handleRegionChange}
-                            value={initialRegion}
-                            data-testid="region-select"
-                        >
-                            <option></option>
-                            {regions.map((region) => (
-                                <option key={region} value={region}>
-                                    {region}
-                                </option>
-                            ))}
-                        </select>
-                        {errors['REGION'] && <CdsControlMessage status="error">{errors['REGION'].message}</CdsControlMessage>}
-                    </CdsSelect>
+                    <SpinnerSelect
+                        label="AWS credential profile"
+                        className="select-sm-width"
+                        handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
+                            onSelectChange(AWS_FIELDS.PROFILE, e.target.value);
+                            selectCallback();
+                        }}
+                        name={AWS_FIELDS.PROFILE}
+                        isLoading={profilesLoading}
+                        register={register}
+                        error={errors[AWS_FIELDS.PROFILE]?.message}
+                    >
+                        <option></option>
+                        {profiles.map((profile) => (
+                            <option key={profile} value={profile}>
+                                {profile}
+                            </option>
+                        ))}
+                    </SpinnerSelect>
+                    <SpinnerSelect
+                        label="AWS region"
+                        className="select-sm-width"
+                        handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
+                            onSelectChange(AWS_FIELDS.REGION, e.target.value);
+                            selectCallback();
+                        }}
+                        name={AWS_FIELDS.REGION}
+                        isLoading={regionLoading}
+                        register={register}
+                        error={errors[AWS_FIELDS.REGION]?.message}
+                    >
+                        <option></option>
+                        {regions.map((region) => (
+                            <option key={region} value={region}>
+                                {region}
+                            </option>
+                        ))}
+                    </SpinnerSelect>
                 </div>
             </CdsFormGroup>
         </>
