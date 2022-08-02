@@ -1,12 +1,3 @@
-.config-icon-expand {
-  color: var(--cds-global-color-blue-300);
-  vertical-align: 1%;
-}
-.config-icon-collapse {
-  color: var(--cds-global-color-green-400);
-  vertical-align: 1%;
-}
-
 .config-section {
   font-size: var(--cds-global-typography-font-size-6);
   font-weight: bold;
@@ -17,6 +8,7 @@
   font-size: var(--cds-global-typography-font-size-4);
   font-weight: normal;
   padding-left: 24px;
+  padding-bottom: 8px;
 }
 
 .config-grid {
@@ -24,24 +16,30 @@
 }
 
 .config-group {
-  background-color: var(--cds-global-color-gray-800);
-  font-size: var(--cds-global-typography-font-size-5);
-  font-weight: bold;
-  padding-left: 6px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  background-color: var(--cds-global-color-black);
+  font-size: var(--cds-global-typography-font-size-3);
+  font-weight: normal;
+  color: var(--cds-global-color-warm-gray-200);
+  padding-left: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border:1px solid var(--cds-global-color-warm-gray-200);
 }
-
+.config-pair {
+  border:1px solid var(--cds-global-color-warm-gray-200);
+}
 .config-label {
-  background-color: var(--cds-global-color-gray-700);
-  font-size: var(--cds-global-typography-font-size-4);
+  font-size: var(--cds-global-typography-font-size-3);
   font-weight: bold;
   padding-left: 18px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .config-value {
-  background-color: var(--cds-global-color-gray-700);
-  font-size: var(--cds-global-typography-font-size-4);
+  font-size: var(--cds-global-typography-font-size-3);
   font-weight: normal;
-  color: var(--cds-global-color-gray-400);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: var(--cds-global-color-gray-200);
 }

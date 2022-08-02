@@ -65,7 +65,6 @@ const configGroupsDefault: ConfigGroup[] = [
             { label: 'Server', value: '', field: VSPHERE_FIELDS.SERVERNAME },
             { label: 'Username', value: '', field: VSPHERE_FIELDS.USERNAME },
             { label: 'Datacenter', value: '', field: VSPHERE_FIELDS.DATACENTER },
-            { label: 'Password', value: '********', field: '' },
         ],
     },
 ];
@@ -73,5 +72,5 @@ const configGroupsDefault: ConfigGroup[] = [
 export const configDisplayDefaults: ConfigDisplayData = {
     label: 'Configuration Defaults',
     groups: configGroupsDefault,
-    about: 'These are values set "behind the scenes". If you want to change any of them, use an advanced configuration option.',
+    about: 'These are default values that are common to most clusters. If you need to change any of them, use an advanced configuration option.',
 };

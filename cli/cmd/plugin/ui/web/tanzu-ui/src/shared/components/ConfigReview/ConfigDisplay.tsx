@@ -1,12 +1,10 @@
 // React imports
 import React, { useState } from 'react';
+// Library imports
+import { CdsAccordion, CdsAccordionContent, CdsAccordionHeader, CdsAccordionPanel } from '@cds/react/accordion';
 // App imports
 import { ConfigGrid, ConfigGroup } from './ConfigGrid';
 import './ConfigReview.scss';
-import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, resizeIcon, shrinkIcon } from '@cds/core/icon';
-
-ClarityIcons.addIcons(shrinkIcon, resizeIcon);
 
 export interface ConfigDisplayData {
     label: string;
@@ -27,24 +25,21 @@ export function ConfigDisplay(props: ConfigDisplayProps) {
         setOpen((prevState) => !prevState);
     };
 
-    const iconName = open ? 'shrink' : 'resize';
-    const iconClass = open ? 'config-icon-collapse' : 'config-icon-expand';
-
     if (props.store) {
         populateConfigData(props.data.groups, props.store);
     }
 
     return (
         <div className="config-section" cds-layout="m-y:sm">
-            <CdsIcon shape={iconName} size="sm" className={iconClass} onClick={toggleOpen}></CdsIcon>
-            &nbsp;
-            {props.data.label}
-            {open && (
-                <>
-                    <div className="config-about">{props.data.about}</div>
-                    <ConfigGrid groups={props.data.groups} />
-                </>
-            )}
+            <CdsAccordion className="accordion-normal">
+                <CdsAccordionPanel expanded={open} cds-motion="off" onExpandedChange={toggleOpen}>
+                    <CdsAccordionHeader>{props.data.label}</CdsAccordionHeader>
+                    <CdsAccordionContent>
+                        <div className="config-about">{props.data.about}</div>
+                        <ConfigGrid groups={props.data.groups} />
+                    </CdsAccordionContent>
+                </CdsAccordionPanel>
+            </CdsAccordion>
         </div>
     );
 }

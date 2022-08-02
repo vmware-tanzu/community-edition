@@ -70,18 +70,18 @@ function ConfigSingleLineDisplay(pairs: ConfigPair[], pairsPerLine: number): JSX
 }
 
 function ConfigPairDisplay(pair: ConfigPair | undefined) {
-    const cdsLayoutLabel = `col:${GRIDCELLS_PER_LABEL}`;
-    const cdsLayoutValue = `col:${GRIDCELLS_PER_VALUE}`;
     const displayValue = pair?.value && pair?.createValueDisplay ? pair.createValueDisplay(pair.value) : pair?.value;
     // NOTE: the &nbsp; are there to ensure the background is painted when there is no data; a simple space does not work
     return (
-        <>
-            <div cds-layout={cdsLayoutLabel} className="config-label">
-                {pair?.label}&nbsp;
+        <div cds-layout="col:6" className="config-pair">
+            <div cds-layout="grid align:horizontal-stretch">
+                <div cds-layout="col:4" className="config-label">
+                    {pair?.label ? pair.label + ':' : ''}&nbsp;
+                </div>
+                <div cds-layout="col:8" className="config-value">
+                    {displayValue}&nbsp;
+                </div>
             </div>
-            <div cds-layout={cdsLayoutValue} className="config-value">
-                {displayValue}&nbsp;
-            </div>
-        </>
+        </div>
     );
 }
