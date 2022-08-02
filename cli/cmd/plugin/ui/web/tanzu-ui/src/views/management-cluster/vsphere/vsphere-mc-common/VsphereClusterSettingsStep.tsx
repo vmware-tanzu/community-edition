@@ -1,6 +1,6 @@
 // React imports
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { FieldError, FieldErrors, RegisterOptions, SubmitHandler, useForm, UseFormRegisterReturn } from 'react-hook-form';
+import React, { ChangeEvent, useContext, useState } from 'react';
+import { FieldError, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons } from '@cds/core/icon';
 import { CdsButton } from '@cds/react/button';
@@ -24,6 +24,7 @@ import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.r
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
 import { VSphereVirtualMachine } from '../../../../swagger-api';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -63,11 +64,12 @@ interface VsphereClusterSettingFormInputs {
 }
 
 export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
-    const { currentStep, goToStep, submitForm, handleValueChange } = props;
+    const { currentStep, goToStep, submitForm, updateTabStatus } = props;
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const vsphereClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<VsphereClusterSettingFormInputs>({
         resolver: yupResolver(vsphereClusterSettingsFormSchema),
+        mode: 'all',
     });
 
     const {
@@ -77,6 +79,10 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         setValue,
     } = methods;
 
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
     const osImages = (getResource('osImages', vsphereState) || []) as VSphereVirtualMachine[];
     const osTemplates = osImages.filter((osImage) => osImage.isTemplate);
     // if there's only ONE template, then pretend the user has selected it (unless we've already done that)
@@ -108,10 +114,11 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const onFieldChange = (data: string, field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, field, data, currentStep, errors);
-            setValue(field, data, { shouldValidate: true });
-        }
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: data,
+        } as FormAction);
     };
 
     const onClusterNameChange = (clusterName: string) => {
@@ -124,15 +131,13 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     return (
-        <div>
+        <FormProvider {...methods}>
             <div className="wizard-content-container">
                 <h2 cds-layout="m-t:lg">vSphere Management Cluster Settings</h2>
                 <div cds-layout="grid gap:m" key="section-holder">
                     <div cds-layout="col:6" key="cluster-name-section">
                         <ClusterName
                             field={VSPHERE_FIELDS.CLUSTERNAME}
-                            errors={errors}
-                            register={register}
                             clusterNameChange={onClusterNameChange}
                             placeholderClusterName={'my-vsphere-cluster'}
                         />
@@ -141,8 +146,6 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                         <NodeProfile
                             field={VSPHERE_FIELDS.INSTANCETYPE}
                             nodeInstanceTypes={nodeInstanceTypes}
-                            errors={errors}
-                            register={register}
                             nodeInstanceTypeChange={onInstanceTypeChange}
                             selectedInstanceId={selectedInstanceTypeId}
                         />
@@ -156,7 +159,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                     NEXT
                 </CdsButton>
             </div>
-        </div>
+        </FormProvider>
     );
 }
 

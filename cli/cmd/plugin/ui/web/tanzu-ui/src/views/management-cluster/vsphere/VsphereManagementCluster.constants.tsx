@@ -6,7 +6,7 @@ export enum VSPHERE_FIELDS {
     DATACENTER = 'datacenter',
     IPFAMILY = 'ipFamily',
     USETHUMBPRINT = 'useThumbprint',
-    CLUSTERNAME = 'clusterName',
+    CLUSTERNAME = 'CLUSTER_NAME',
     INSTANCETYPE = 'instanceType',
     VMTEMPLATE = 'vmTemplate',
     SSHKEY = 'sshKey',

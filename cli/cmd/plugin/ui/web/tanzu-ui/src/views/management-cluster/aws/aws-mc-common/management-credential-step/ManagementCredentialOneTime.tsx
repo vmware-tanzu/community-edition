@@ -1,64 +1,59 @@
 // React imports
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 // Library imports
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
-import { CdsInput } from '@cds/react/input';
-import { CdsSelect } from '@cds/react/select';
-import { UseFormReturn } from 'react-hook-form';
+import { CdsFormGroup } from '@cds/react/forms';
+import { useFormContext } from 'react-hook-form';
 
 // App imports
-import { FormInputs } from './ManagementCredentials';
 import './ManagementCredentialOneTime.scss';
+import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import TextInputWithError from '../../../../../shared/components/Input/TextInputWithError';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import { AwsService } from '../../../../../swagger-api';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { FormAction } from '../../../../../shared/types/types';
 
 interface Props {
-    initialRegion?: string;
-    initialSecretAccessKey?: string;
-    initialSessionToken?: string;
-    initialAccessKeyId?: string;
-    regions: string[];
-    handleSelectRegion: (region: string) => void;
-    handleInputChange: (field: string, value: string) => void;
-    methods: UseFormReturn<FormInputs, any>;
+    selectCallback: () => void;
 }
 
 function ManagementCredentialOneTime(props: Props) {
+    const { selectCallback } = props;
+    const { awsState, awsDispatch } = useContext(AwsStore);
     const {
-        methods: {
-            formState: { errors },
-            register,
-            setValue,
-        },
-        regions,
-        initialRegion,
-        initialSecretAccessKey,
-        initialSessionToken,
-        initialAccessKeyId,
-        handleInputChange,
-        handleSelectRegion,
-    } = props;
+        register,
+        formState: { errors },
+    } = useFormContext();
+
+    const [regions, setRegions] = useState<string[]>([]);
+    const [regionLoading, setRegionLoading] = useState(false);
 
     useEffect(() => {
-        setValue('REGION', initialRegion || '');
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        // fetch regions
+        const fetchRegions = async () => {
+            try {
+                setRegionLoading(true);
+                const data = await AwsService.getAwsRegions();
+                setRegions(data);
+            } catch (e: any) {
+                console.log(`Unabled to get regions: ${e}`);
+            } finally {
+                setRegionLoading(false);
+            }
+        };
+        fetchRegions();
+    }, []);
 
-    const handleRegionChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setValue('REGION', event.target.value, { shouldValidate: true });
-        handleSelectRegion(event.target.value);
+    const onInputValueChange = (field: string, value: string) => {
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: value,
+        } as FormAction);
     };
-
-    const handleSecretAccessKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
-        handleInputChange('SECRET_ACCESS_KEY', event.target.value);
-    };
-
-    const handleSessionTokenChange = (event: ChangeEvent<HTMLInputElement>) => {
-        handleInputChange('SESSION_TOKEN', event.target.value);
-    };
-
-    const handleAccessKeyIdChange = (event: ChangeEvent<HTMLInputElement>) => {
-        handleInputChange('ACCESS_KEY_ID', event.target.value);
-    };
-
     return (
         <div className="credential-one-time-container">
             <p cds-layout="m-y:lg">
@@ -69,63 +64,48 @@ function ManagementCredentialOneTime(props: Props) {
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="horizontal gap:lg align:vertical-top">
                     <div cds-layout="vertical gap:lg align:vertical-center">
-                        <CdsInput layout="vertical">
-                            <label>Secret access key</label>
-                            <input
-                                {...register('SECRET_ACCESS_KEY')}
-                                placeholder="Secret access key"
-                                type="password"
-                                onChange={handleSecretAccessKeyChange}
-                                value={initialSecretAccessKey}
-                            ></input>
-                            {errors['SECRET_ACCESS_KEY'] && (
-                                <CdsControlMessage status="error">{errors['SECRET_ACCESS_KEY'].message}</CdsControlMessage>
-                            )}
-                        </CdsInput>
-                        <CdsInput layout="vertical">
-                            <label>Access key ID</label>
-                            <input
-                                {...register('ACCESS_KEY_ID')}
-                                placeholder="Access key ID"
-                                type="password"
-                                onChange={handleAccessKeyIdChange}
-                                value={initialAccessKeyId}
-                            ></input>
-                            {errors['ACCESS_KEY_ID'] && (
-                                <CdsControlMessage status="error">{errors['ACCESS_KEY_ID'].message}</CdsControlMessage>
-                            )}
-                        </CdsInput>
-                        <CdsInput layout="vertical">
-                            <label>Session token</label>
-                            <input
-                                {...register('SESSION_TOKEN')}
-                                placeholder="Session token"
-                                type="password"
-                                onChange={handleSessionTokenChange}
-                                value={initialSessionToken}
-                            ></input>
-                            {errors['SESSION_TOKEN'] && (
-                                <CdsControlMessage status="error">{errors['SESSION_TOKEN'].message}</CdsControlMessage>
-                            )}
-                        </CdsInput>
+                        <TextInputWithError
+                            defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SECRET_ACCESS_KEY]}
+                            label="Secret access key"
+                            name={AWS_FIELDS.SECRET_ACCESS_KEY}
+                            handleInputChange={onInputValueChange}
+                            maskText
+                        />
+                        <TextInputWithError
+                            defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.ACCESS_KEY_ID]}
+                            label="Access key ID"
+                            name={AWS_FIELDS.ACCESS_KEY_ID}
+                            handleInputChange={onInputValueChange}
+                            maskText
+                        />
+                        <TextInputWithError
+                            defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SESSION_TOKEN]}
+                            label="Session token"
+                            name={AWS_FIELDS.SESSION_TOKEN}
+                            handleInputChange={onInputValueChange}
+                            maskText
+                        />
                     </div>
                     <div cds-layout="vertical gap:lg align:vertical-top">
-                        <CdsSelect layout="vertical">
-                            <label>AWS Region </label>
-                            <select
-                                className="select-sm-width"
-                                {...register('REGION')}
-                                onChange={handleRegionChange}
-                                defaultValue={initialRegion}
-                                data-testid="region-select"
-                            >
-                                <option></option>
-                                {regions.map((region) => (
-                                    <option key={region}> {region} </option>
-                                ))}
-                            </select>
-                            {errors['REGION'] && <CdsControlMessage status="error">{errors['REGION'].message}</CdsControlMessage>}
-                        </CdsSelect>
+                        <SpinnerSelect
+                            label="AWS region"
+                            className="select-sm-width"
+                            handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
+                                onInputValueChange(AWS_FIELDS.REGION, e.target.value);
+                                selectCallback();
+                            }}
+                            name={AWS_FIELDS.REGION}
+                            isLoading={regionLoading}
+                            register={register}
+                            error={errors[AWS_FIELDS.REGION]?.message}
+                        >
+                            <option></option>
+                            {regions.map((region) => (
+                                <option key={region} value={region}>
+                                    {region}
+                                </option>
+                            ))}
+                        </SpinnerSelect>
                     </div>
                 </div>
             </CdsFormGroup>

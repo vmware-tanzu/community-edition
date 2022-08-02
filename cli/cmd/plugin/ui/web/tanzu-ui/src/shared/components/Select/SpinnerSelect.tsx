@@ -58,9 +58,10 @@ function SpinnerSelect(props: Props) {
                 </label>
                 <select
                     className={className}
-                    {...register(name)}
+                    {...register(name, {
+                        onChange: handleSelect,
+                    })}
                     defaultValue={defaultValue}
-                    onChange={handleSelect}
                     data-testid={name.toLowerCase() + '-select'}
                     disabled={isLoading || disabled}
                 >

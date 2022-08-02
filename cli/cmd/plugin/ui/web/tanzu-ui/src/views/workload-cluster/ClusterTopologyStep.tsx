@@ -1,17 +1,14 @@
 //React imports
-import React, { ChangeEvent, useContext } from 'react';
+import React, { useContext } from 'react';
 import { CdsButton } from '@cds/react/button';
-import { CdsControlMessage } from '@cds/react/forms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
+import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, computerIcon, cpuIcon, flaskIcon, memoryIcon } from '@cds/core/icon';
 
 // App imports
-import { CCVAR_CHANGE } from '../../state-management/actions/Form.actions';
 import { ClusterName, clusterNameValidation } from '../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { getSelectedManagementCluster } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
@@ -76,12 +73,11 @@ const workerNodeInstanceTypes: NodeInstanceType[] = [
 ClarityIcons.addIcons(flaskIcon, computerIcon, cpuIcon, memoryIcon);
 
 function ClusterTopologyStep(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { currentStep, goToStep, submitForm } = props;
     const { state } = useContext(WcStore);
     const cluster = getSelectedManagementCluster(state);
     const methods = useForm<ClusterTopologyStepFormInputs>({ resolver: yupResolver(clusterTopologyStepFormSchema) });
     const {
-        register,
         handleSubmit,
         formState: { errors },
     } = methods;
@@ -95,9 +91,7 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
     };
 
     const onFieldChange = (value: string, fieldName?: string | undefined) => {
-        if (handleValueChange && fieldName) {
-            handleValueChange(CCVAR_CHANGE, fieldName, value, currentStep, errors, { clusterName: cluster.name });
-        }
+        console.log('This part need to be refactored');
     };
 
     return (
@@ -108,14 +102,12 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
             <br />
             <div cds-layout="grid gap:xxl" key="section-holder">
                 <div cds-layout="col:6" key="cluster-name-section">
-                    <ClusterName field={VSPHERE_FIELDS.CLUSTERNAME} errors={errors} register={register} clusterNameChange={onFieldChange} />
+                    <ClusterName field={VSPHERE_FIELDS.CLUSTERNAME} clusterNameChange={onFieldChange} />
                 </div>
                 <div cds-layout="col:6" key="instance-type-section">
                     <NodeProfile
                         field={VSPHERE_FIELDS.INSTANCETYPE}
                         nodeInstanceTypes={workerNodeInstanceTypes}
-                        errors={errors}
-                        register={register}
                         nodeInstanceTypeChange={onFieldChange}
                     />
                 </div>
