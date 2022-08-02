@@ -21,9 +21,7 @@ export function VsphereBasicReviewStep(props: Partial<StepProps>) {
     };
 
     const handleMCCreation = () => {
-        // TODO: gather the payload, set data into store, call endpoint to create the MC
         props.deploy && props.deploy();
-
         navigateToDeploymentProgress();
     };
     return (
