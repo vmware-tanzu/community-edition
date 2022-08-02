@@ -1,5 +1,9 @@
+import { AZURE_NODE_PROFILE_NAMES } from '../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
+import { KeyOfStringToString } from '../../types/types';
+
 export const AZURE_DEFAULT_VALUES = {
-    CLUSTER_NAME: 'my-azure-cluster',
+    CLUSTER_NAME: '',
+    NODE_PROFILE: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
     CEIP_OPT_IN: false,
     CONTROL_PLANE_FLAVOR: 'dev',
     PRIVATE_AZURE_CLUSTER: false,
@@ -14,29 +18,29 @@ export const AZURE_DEFAULT_VALUES = {
     WORKER_NODE_SUBNET: 'tanzu-worker-node-subnet-default',
     WORKER_NODE_SUBNET_CIDR: '10.0.1.0/24',
     // Network
-    CNI_TYPE: 'antrea',
+    CNI_TYPE: 'antrea', // TODO: refactor to use CniProviders Const
     CLUSTER_POD_CIDR: '100.96.0.0/11',
     CLUSTER_SERVICE_CIDR: '100.64.0.0/13',
     ACTIVATE_PROXY_SETTINGS: false,
 };
 
-const AZURE_DEFAULT_INSTANCE_TYPES = new Map<string, string>([
-    ['SINGLE_NODE', 'Standard_D2s_v3'],
-    ['HIGH_AVAILABILITY', 'Standard_D2s_v3'],
-    ['PRODUCTION_READY', 'Standard_D4s_v3'],
-]);
+const AZURE_DEFAULT_INSTANCE_TYPES: KeyOfStringToString = {
+    [AZURE_NODE_PROFILE_NAMES.SINGLE_NODE]: 'Standard_D2s_v3',
+    [AZURE_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: 'Standard_D2s_v3',
+    [AZURE_NODE_PROFILE_NAMES.PRODUCTION_READY]: 'Standard_D4s_v3',
+};
 
 /**
- * @method retrieveAwsInstanceType
+ * @method retrieveAzureInstanceType
  * @param nodeProfile - node profile name set by ManagementClusterSettings.tsx; references key of AZURE_DEFAULT_INSTANCE_TYPES
- * defaults map.
+ * defaults const.
  * Returns aws instance type string corresponding to selected node profile.
  */
 export function retrieveAzureInstanceType(nodeProfile: string): string {
-    if (nodeProfile && AZURE_DEFAULT_INSTANCE_TYPES.has(nodeProfile)) {
-        return AZURE_DEFAULT_INSTANCE_TYPES.get(nodeProfile) as string;
+    if (nodeProfile && AZURE_DEFAULT_INSTANCE_TYPES[nodeProfile]) {
+        return AZURE_DEFAULT_INSTANCE_TYPES[nodeProfile];
     } else {
         console.warn(`provided node profile value not found in AZURE_DEFAULT_INSTANCE_TYPES: ${nodeProfile}`);
-        return AZURE_DEFAULT_INSTANCE_TYPES.get('SINGLE_NODE') as string;
+        return AZURE_DEFAULT_INSTANCE_TYPES[AZURE_NODE_PROFILE_NAMES.SINGLE_NODE];
     }
 }

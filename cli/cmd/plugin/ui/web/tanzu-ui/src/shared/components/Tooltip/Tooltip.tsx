@@ -6,7 +6,7 @@ interface TooltipProps {
 }
 
 function Tooltip(props: TooltipProps) {
-    return <div className="tooltip">{props.children}</div>;
+    return <div className="tooltip-container">{props.children}</div>;
 }
 
 export default Tooltip;
