@@ -29,7 +29,7 @@ const configGroupClusterSettings: ConfigGroup = {
         { label: 'Name', field: AWS_FIELDS.CLUSTER_NAME },
         { label: 'Node Type', field: AWS_FIELDS.NODE_PROFILE },
         {
-            label: 'Image (AMI)',
+            label: 'OS Image',
             field: AWS_FIELDS.IMAGE_INFO,
             longValue: true,
             createValueDisplay: (osImageInfo: OsImage) => osImageInfo?.name ?? '',

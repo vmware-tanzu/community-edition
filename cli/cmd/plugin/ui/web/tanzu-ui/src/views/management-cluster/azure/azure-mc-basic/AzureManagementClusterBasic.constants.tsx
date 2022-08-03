@@ -1,4 +1,4 @@
-export const AZURE_MC_BASIC_TAB_NAMES = ['Azure Credentials', 'Cluster Settings'];
+export const AZURE_MC_BASIC_TAB_NAMES = ['Azure Credentials', 'Cluster Settings', 'Review'];
 
 /* eslint-disable no-unused-vars */
 export const enum AZURE_FIELDS {
