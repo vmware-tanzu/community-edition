@@ -26,11 +26,7 @@ const initialState = {
         // InstanceType
         NODE_PROFILE: '',
     },
-    [STORE_SECTION_AWS_RESOURCES]: {
-        // Image
-        OS_IMAGE: {},
-        ...AWS_DEFAULT_VALUES,
-    },
+    [STORE_SECTION_AWS_RESOURCES]: {},
 };
 
 const AwsStore = createContext<{

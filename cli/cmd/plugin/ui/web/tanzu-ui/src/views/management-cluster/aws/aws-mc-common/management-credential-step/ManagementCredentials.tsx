@@ -8,7 +8,7 @@ import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/cor
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CdsFormGroup } from '@cds/react/forms';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
 // App import
 import './ManagementCredentials.scss';
@@ -24,8 +24,9 @@ import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/For
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
-import { AwsResourceAction } from '../../../../../shared/types/types';
+import { AwsResourceAction, FormAction } from '../../../../../shared/types/types';
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
+import { divide } from 'lodash';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -84,7 +85,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const [osImages, setOsImages] = useState<AWSVirtualMachine[]>([]);
-    const [errorMessage, setErrorMessage] = useState<any>();
+    const [errorMessage, setErrorMessage] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
@@ -107,11 +108,16 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     resourceName: 'osImages',
                     payload: osImages,
                 } as AwsResourceAction);
-                awsDispatch({
-                    type: AWS_ADD_RESOURCES,
-                    resourceName: 'errors',
-                    payload: errorMessage,
-                } as AwsResourceAction);
+                if (osImages[0]) {
+                    awsDispatch({
+                        type: INPUT_CHANGE,
+                        field: 'OS_IMAGE',
+                        payload: osImages[0],
+                    } as FormAction);
+                    if (handleValueChange) {
+                        handleValueChange(INPUT_CHANGE, 'OS_IMAGE', osImages[0], currentStep, errors);
+                    }
+                }
             }
         }
     };
@@ -200,10 +206,65 @@ function ManagementCredentials(props: Partial<StepProps>) {
             setOsImages([]);
             AwsService.getAwsosImages(region).then((data) => {
                 setOsImages(data);
+
+                // awsDispatch({
+                //     type: AWS_ADD_RESOURCES,
+                //     resourceName: 'osImages',
+                //     payload: osImages,
+                // } as AwsResourceAction);
+                // if (osImages[0]) {
+                //     awsDispatch({
+                //         type: INPUT_CHANGE,
+                //         field: 'OS_IMAGE',
+                //         payload: osImages[0],
+                //     } as FormAction);
+                //     if (handleValueChange) {
+                //         handleValueChange(INPUT_CHANGE, 'OS_IMAGE', osImages[0], currentStep, errors);
+                //     }
+                // }
+
+                // setErrorMessage((errorMessage) => {
+                //     const copy = { ...errorMessage };
+                //     delete copy['OS_IMAGE'];
+                //     return copy;
+                // });
+                // throw '404';
             });
+
+            throw '404';
         } catch (e) {
-            setErrorMessage(e);
+            console.log('抓到了 ', e);
+            setErrorMessage({
+                ...errorMessage,
+                OS_IMAGE: e,
+            });
         }
+    }
+
+    function showErrorInfo() {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
+            // const errorNotifications = (
+            //     Object.keys(errorMessage).map((errorField) => {
+            //         return (<CdsControlMessage status="error">{errorMessage[errorField]}</CdsControlMessage>)
+            //     })
+            // )
+            console.log('errormessage is ', errorMessage);
+            return (
+                <div>
+                    <div className="error-text">Error Occurs</div>
+                    <br />
+                    {Object.keys(errorMessage).map((errorField) => {
+                        return (
+                            <CdsControlMessage status="error" key={errorField}>
+                                {errorMessage[errorField]}
+                            </CdsControlMessage>
+                        );
+                    })}
+                    <br />
+                </div>
+            );
+        }
+        return;
     }
 
     return (
@@ -291,7 +352,20 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             REFRESH
                         </span>
                     </a>
+                    {/* <div cds-layout="col:6 align:horizontal-center">
+                        
+                        {connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) === '{}' && (
+                            <div>
+                                <div className="error-text">Unable to use this Datacenter unless changes are made</div>
+                                <br />
+                                <CdsControlMessage status="error">{'aaaa'}</CdsControlMessage>
+                                <br />
+                            </div>
+                        )}
+                    </div> */}
+                    <div cds-layout="col:6 align:horizontal-center">{showErrorInfo()}</div>
                 </div>
+
                 <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
             </CdsFormGroup>
         </div>

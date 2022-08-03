@@ -61,12 +61,12 @@ const nodeInstanceTypes: NodeInstanceType[] = [
 interface AwsClusterSettingFormInputs {
     CLUSTER_NAME: string;
     NODE_PROFILE: string;
-    OS_IMAGE: string;
+    // OS_IMAGE: string;
 }
 
 function createYupSchemaObject() {
     return {
-        OS_IMAGE: yupStringRequired('Please select an OS image'),
+        // OS_IMAGE: yupStringRequired('Please select an OS image'),
         NODE_PROFILE: nodeInstanceTypeValidation(),
         CLUSTER_NAME: clusterNameValidation(),
     };
@@ -94,7 +94,7 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     const setImageParameters = (image) => {
         if (handleValueChange) {
             handleValueChange(INPUT_CHANGE, 'OS_IMAGE', image, currentStep, errors);
-            setValue('OS_IMAGE', image.name);
+            // setValue('OS_IMAGE', image.name);
         }
     };
 
@@ -109,25 +109,45 @@ function AwsClusterSettingsStep(props: Partial<MCSettings>) {
     }
 
     const osImages = (getResource('osImages', awsState) || []) as AWSVirtualMachine[];
+    console.log('搞你妈');
+    console.log(osImages);
     const error = getResource('errors', awsState);
     let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM].NODE_PROFILE;
 
-    useEffect(() => {
-        if (osImages[0]) {
-            awsDispatch({
-                type: INPUT_CHANGE,
-                field: 'OS_IMAGE',
-                payload: osImages[0],
-            } as FormAction);
-            setValue('OS_IMAGE', osImages[0].name);
-        }
-        if (error) {
-            setNotification({
-                status: NotificationStatus.DANGER,
-                message: `Unable to retrieve Management Clusters: ${error}`,
-            } as Notification);
-        }
-    }, [osImages]);
+    // 移动到 managementCredentials
+    // useEffect(() => {
+    //     if (osImages[0]) {
+    //         awsDispatch({
+    //             type: INPUT_CHANGE,
+    //             field: 'OS_IMAGE',
+    //             payload: osImages[0],
+    //         } as FormAction);
+    //         setValue('OS_IMAGE', osImages[0].name);
+    //     }
+    //     if (error) {
+    //         setNotification({
+    //             status: NotificationStatus.DANGER,
+    //             message: `Unable to retrieve Management Clusters: ${error}`,
+    //         } as Notification);
+    //     }
+    // }, [osImages]);
+
+    // useEffect(() => {
+    //     if (osImages[0]) {
+    //         awsDispatch({
+    //             type: INPUT_CHANGE,
+    //             field: 'OS_IMAGE',
+    //             payload: osImages[0],
+    //         } as FormAction);
+    //         setValue('OS_IMAGE', osImages[0].name);
+    //     }
+    //     if (error) {
+    //         setNotification({
+    //             status: NotificationStatus.DANGER,
+    //             message: `Unable to retrieve Management Clusters: ${error}`,
+    //         } as Notification);
+    //     }
+    // }, [osImages]);
 
     if (!initialSelectedInstanceTypeId) {
         initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
