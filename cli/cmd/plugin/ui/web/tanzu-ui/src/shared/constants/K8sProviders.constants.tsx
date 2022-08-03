@@ -1,4 +1,4 @@
-export const K8sProviders = {
-    KIND: 'kind',
-    MINIKUBE: 'minikube',
-};
+export const enum K8sProviders {
+    KIND = 'kind',
+    MINIKUBE = 'minikube',
+}

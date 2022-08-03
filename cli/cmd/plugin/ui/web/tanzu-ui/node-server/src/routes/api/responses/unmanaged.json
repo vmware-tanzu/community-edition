@@ -1,5 +1,5 @@
 [{
-    "name": "work-space-cluster",
+    "name": "test-name-thats-is-the-len-of-the-max-name",
     "provider": "MiniKube",
     "status":"Running"
 },{

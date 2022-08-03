@@ -1,24 +1,27 @@
 // React imports
 import React, { ChangeEvent, useContext } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 // Library imports
+import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
 import { CdsInput } from '@cds/react/input';
-import { CdsButton } from '@cds/react/button';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { isK8sCompliantString } from '../../../../shared/validations/Validation.service';
-import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { UNMANAGED_CLUSTER_FIELDS } from '../../unmanaged-cluster-common/UnmanagedCluster.constants';
+import { UNMANAGED_PLACEHOLDER_VALUES } from '../../unmanaged-cluster-common/unmanaged.defaults';
 import { UmcStore } from '../../../../state-management/stores/Store.umc';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import { FormAction } from '../../../../shared/types/types';
 
 export interface FormInputs {
-    CLUSTER_NAME: string;
+    [UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]: string;
 }
 
 const unmanagedClusterBasicSettingStepFormSchema = yup
@@ -38,9 +41,16 @@ const unmanagedClusterBasicSettingStepFormSchema = yup
 function UnmanagedClusterSettings(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm, updateTabStatus } = props;
 
+    const { umcState } = useContext(UmcStore);
+
+    const methods = useForm<FormInputs>({
+        resolver: yupResolver(unmanagedClusterBasicSettingStepFormSchema),
+    });
+
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<FormInputs>({ resolver: yupResolver(unmanagedClusterBasicSettingStepFormSchema), mode: 'all' });
     const { umcDispatch } = useContext(UmcStore);
@@ -50,7 +60,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     }
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        if (goToStep && currentStep && submitForm) {
+        if (Object.keys(errors).length === 0 && goToStep && currentStep && submitForm) {
             goToStep(currentStep + 1);
             submitForm(currentStep);
         }
@@ -69,16 +79,23 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
             <div cds-layout="p-b:lg" cds-text="title">
                 Cluster settings
             </div>
-            <div cds-layout="grid gap:md">
-                <div cds-layout="col@sm:4 p-b:md">{ClusterName()}</div>
-            </div>
-            <div cds-layout="horizontal gap:md">
-                <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+            <div cds-layout="grid">
+                <div cds-layout="col@sm:8">
+                    <div cds-layout="vertical gap:lg">
+                        <div cds-layout="grid gap:md">
+                            <div cds-layout="col@sm:6">{ClusterName()}</div>
+                        </div>
+                        <div cds-layout="horizontal gap:md">
+                            <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
 
     function ClusterName() {
+        const errorClusterName = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME];
         return (
             <div>
                 <CdsInput layout="vertical">
@@ -86,11 +103,11 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
                         Cluster name
                     </label>
                     <input
-                        {...register('CLUSTER_NAME', { onChange: handleClusterNameChange })}
-                        placeholder="cluster-name"
-                        defaultValue="test-cluster"
+                        {...register(UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME, { onChange: handleClusterNameChange })}
+                        placeholder={UNMANAGED_PLACEHOLDER_VALUES[UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
+                        defaultValue={umcState[STORE_SECTION_FORM][UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]}
                     ></input>
-                    {errors['CLUSTER_NAME'] && <CdsControlMessage status="error">{errors['CLUSTER_NAME'].message}</CdsControlMessage>}
+                    {errorClusterName && <CdsControlMessage status="error">{errorClusterName.message}</CdsControlMessage>}
                 </CdsInput>
                 <div>
                     <p className="description" cds-layout="m-t:sm">
