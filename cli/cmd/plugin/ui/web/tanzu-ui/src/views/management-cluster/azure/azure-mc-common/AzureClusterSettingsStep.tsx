@@ -111,7 +111,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         }
     };
 
-    const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: string) => {
+    const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: any) => {
         azureDispatch({
             type: INPUT_CHANGE,
             field,

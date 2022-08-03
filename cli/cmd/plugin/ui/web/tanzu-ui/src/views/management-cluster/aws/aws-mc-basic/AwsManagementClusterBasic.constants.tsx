@@ -1,6 +1,7 @@
-export const AWS_MC_BASIC_TAB_NAMES = ['AWS Credentials', 'Cluster Settings'];
+export const AWS_MC_BASIC_TAB_NAMES = ['AWS Credentials', 'Cluster Settings', 'Review'];
 
 export const enum AWS_FIELDS {
+    CREDENTIAL_TYPE = 'credentialType',
     PROFILE = 'PROFILE',
     SECRET_ACCESS_KEY = 'SECRET_ACCESS_KEY',
     SESSION_TOKEN = 'SESSION_TOKEN',
@@ -16,4 +17,10 @@ export const enum AWS_NODE_PROFILE_NAMES {
     SINGLE_NODE = 'SINGLE_NODE',
     HIGH_AVAILABILITY = 'HIGH_AVAILABILITY',
     PRODUCTION_READY = 'PRODUCTION_READY',
+}
+
+/* eslint-disable no-unused-vars */
+export const enum CREDENTIAL_TYPE {
+    PROFILE = 'PROFILE',
+    ONE_TIME = 'ONE_TIME',
 }
