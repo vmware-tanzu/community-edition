@@ -123,7 +123,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
     return (
         <div className="wizard-content-container azure-credential">
-            <h2 cds-layout="m-t:lg">Microsoft Azure Credentials</h2>
+            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                Microsoft Azure Credentials
+            </h2>
             <p cds-layout="m-y:lg" className="description">
                 Provide the Azure user credentials to create the Management Server on Azure. Don&apos;t have Azure credentials? View our
                 guide on&nbsp;

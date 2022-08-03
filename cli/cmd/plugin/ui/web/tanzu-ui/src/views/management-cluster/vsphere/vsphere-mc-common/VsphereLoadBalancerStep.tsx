@@ -75,7 +75,9 @@ export function VsphereLoadBalancerStep(props: Partial<StepProps>) {
     return (
         <div>
             <div className="wizard-content-container">
-                <h2 cds-layout="m-t:lg">vSphere Load Balancer Settings</h2>
+                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                    vSphere Load Balancer Settings
+                </h2>
                 {EndpointProviderSection(endpoint, ipFamilyId, errors, register, onEndpointChange)}
                 <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
                     NEXT

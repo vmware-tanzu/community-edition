@@ -149,7 +149,9 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
 
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
-            <h3>vSphere Cluster Resources</h3>
+            <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
+                vSphere Cluster Resources
+            </h3>
             <div cds-layout="vertical gap:md align:stretch">
                 <p>The following are settings for VMWare vSphere that could be changed from their default values or enabled.</p>
 
