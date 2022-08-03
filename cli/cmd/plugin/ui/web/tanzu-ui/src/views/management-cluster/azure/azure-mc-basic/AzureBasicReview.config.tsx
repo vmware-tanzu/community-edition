@@ -9,7 +9,7 @@ const configGroupCredentials: ConfigGroup = {
         { label: 'Tenant Id', field: AZURE_FIELDS.TENANT_ID },
         { label: 'Client Id', field: AZURE_FIELDS.CLIENT_ID },
         { label: 'Client Secret', field: AZURE_FIELDS.CLIENT_SECRET },
-        { label: 'Subscription', field: AZURE_FIELDS.SUBSCRIPTION_ID },
+        { label: 'Subscription Id', field: AZURE_FIELDS.SUBSCRIPTION_ID },
         { label: 'Environment', field: AZURE_FIELDS.AZURE_ENVIRONMENT },
         { label: 'Region', field: AZURE_FIELDS.REGION },
         { label: 'Public SSH Key', field: AZURE_FIELDS.SSH_PUBLIC_KEY, createValueDisplay: CommonValueDisplayFunctions.TRUNCATE(24) },
@@ -22,7 +22,7 @@ const configGroupClusterSettings: ConfigGroup = {
         { label: 'Name', field: AZURE_FIELDS.CLUSTER_NAME },
         { label: 'Node Type', field: AZURE_FIELDS.NODE_PROFILE },
         {
-            label: 'Image (AMI)',
+            label: 'OS Image',
             field: AZURE_FIELDS.OS_IMAGE,
             longValue: true,
             createValueDisplay: (osImageInfo: OsImage) => osImageInfo?.name ?? '',
