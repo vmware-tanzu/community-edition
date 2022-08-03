@@ -6,13 +6,19 @@ import { CdsControlMessage } from '@cds/react/forms';
 import { useFormContext } from 'react-hook-form';
 import { CdsSelect } from '@cds/react/select';
 import * as yup from 'yup';
-import { AWSVirtualMachine } from '../../../../swagger-api';
+
+export interface OsImage {
+    // NOTE: we expect all images to have a name; however, the swagger contract generates objects where the name is defined as optional
+    // so we define our interface to be compatible with an optional name attribute
+    // NOTE: this name MUST be unique for all images in the array, because we use the name to find the corresponding image
+    name?: string;
+}
 
 interface ImageProps {
     osImageTitle: string;
     field: string;
-    onOsImageSelected: (osImage: string, fieldName?: string) => void;
-    images: AWSVirtualMachine[];
+    onOsImageSelected: (osImage: OsImage | undefined, fieldName?: string) => void;
+    images: OsImage[];
 }
 export function osImagesValidation() {
     return yup.string().nullable().required('Please select an OS image');
@@ -21,7 +27,8 @@ export function osImagesValidation() {
 function OsImageSelect(props: ImageProps) {
     const { osImageTitle, field, images, onOsImageSelected } = props;
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-        onOsImageSelected(event.target.value || '', field);
+        const selectedOsImage = props.images.find((osImage) => osImage.name === event.target.value);
+        onOsImageSelected(selectedOsImage, field);
     };
     const {
         register,

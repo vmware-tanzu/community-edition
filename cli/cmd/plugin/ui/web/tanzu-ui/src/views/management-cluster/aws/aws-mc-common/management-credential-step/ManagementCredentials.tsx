@@ -12,20 +12,20 @@ import { CdsFormGroup } from '@cds/react/forms';
 
 // App import
 import './ManagementCredentials.scss';
+import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AwsService } from '../../../../../swagger-api/services/AwsService';
 import { AwsStore } from '../../../../../state-management/stores/Store.aws';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
+import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 import ManagementCredentialProfile from './ManagementCredentialProfile';
+import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
-import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { FormAction } from '../../../../../shared/types/types';
-import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -38,12 +38,6 @@ export interface FormInputs {
     EC2_KEY_PAIR: string;
 }
 type FormField = 'PROFILE' | 'REGION' | 'SECRET_ACCESS_KEY' | 'SESSION_TOKEN' | 'ACCESS_KEY_ID' | 'EC2_KEY_PAIR';
-
-/* eslint-disable no-unused-vars */
-enum CREDENTIAL_TYPE {
-    PROFILE = 'PROFILE',
-    ONE_TIME = 'ONE_TIME',
-}
 
 function ManagementCredentials(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm } = props;
@@ -87,7 +81,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        setType(CREDENTIAL_TYPE[event.target.value as CREDENTIAL_TYPE]);
+        setType(event.target.value as CREDENTIAL_TYPE);
+        // We set the credentials type in the store to use later in the review config step
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.CREDENTIAL_TYPE,
+            payload: event.target.value,
+        } as FormAction);
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {

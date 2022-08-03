@@ -72,7 +72,7 @@ function yupStringRequired(errorMessage: string) {
 }
 
 function AwsClusterSettingsStep(props: Partial<StepProps>) {
-    const { updateTabStatus, currentStep, deploy } = props;
+    const { updateTabStatus, currentStep, goToStep } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const awsClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AwsClusterSettingFormInputs>({
@@ -96,11 +96,12 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
 
-    const handleMCCreation = () => {
-        if (deploy) {
-            deploy();
+    const goToNextStep = () => {
+        if (goToStep && currentStep) {
+            goToStep(currentStep + 1);
         }
     };
+
     const region = awsState[STORE_SECTION_FORM].REGION;
     useEffect(() => {
         const setImageInfo = (image: any) => {
@@ -133,7 +134,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     }
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
-    const onFieldChange = (field: AWS_CLUSTER_SETTING_STEP_FIELDS, data: string) => {
+    const onFieldChange = (field: AWS_CLUSTER_SETTING_STEP_FIELDS, data: any) => {
         awsDispatch({
             type: INPUT_CHANGE,
             field,
@@ -186,13 +187,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                     </div>
 
                     <div cds-layout="grid col:12 p-t:lg">
-                        <CdsButton cds-layout="col:start-1" status="success" onClick={handleSubmit(handleMCCreation)}>
-                            <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                            Create Management cluster
-                        </CdsButton>
-                        <CdsButton cds-layout="col:end-12" action="flat">
-                            View configuration details
-                        </CdsButton>
+                        <CdsButton onClick={handleSubmit(goToNextStep)}>NEXT</CdsButton>
                     </div>
                 </div>
             </div>
