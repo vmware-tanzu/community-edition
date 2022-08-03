@@ -26,7 +26,6 @@ import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect
 import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
 import { AwsResourceAction, FormAction } from '../../../../../shared/types/types';
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
-import { divide } from 'lodash';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -206,34 +205,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
             setOsImages([]);
             AwsService.getAwsosImages(region).then((data) => {
                 setOsImages(data);
-
-                // awsDispatch({
-                //     type: AWS_ADD_RESOURCES,
-                //     resourceName: 'osImages',
-                //     payload: osImages,
-                // } as AwsResourceAction);
-                // if (osImages[0]) {
-                //     awsDispatch({
-                //         type: INPUT_CHANGE,
-                //         field: 'OS_IMAGE',
-                //         payload: osImages[0],
-                //     } as FormAction);
-                //     if (handleValueChange) {
-                //         handleValueChange(INPUT_CHANGE, 'OS_IMAGE', osImages[0], currentStep, errors);
-                //     }
-                // }
-
-                // setErrorMessage((errorMessage) => {
-                //     const copy = { ...errorMessage };
-                //     delete copy['OS_IMAGE'];
-                //     return copy;
-                // });
-                // throw '404';
+                setErrorMessage((errorMessage) => {
+                    const copy = { ...errorMessage };
+                    delete copy['OS_IMAGE'];
+                    return copy;
+                });
             });
-
-            throw '404';
         } catch (e) {
-            console.log('抓到了 ', e);
             setErrorMessage({
                 ...errorMessage,
                 OS_IMAGE: e,
@@ -243,12 +221,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
-            // const errorNotifications = (
-            //     Object.keys(errorMessage).map((errorField) => {
-            //         return (<CdsControlMessage status="error">{errorMessage[errorField]}</CdsControlMessage>)
-            //     })
-            // )
-            console.log('errormessage is ', errorMessage);
             return (
                 <div>
                     <div className="error-text">Error Occurs</div>
@@ -352,17 +324,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             REFRESH
                         </span>
                     </a>
-                    {/* <div cds-layout="col:6 align:horizontal-center">
-                        
-                        {connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) === '{}' && (
-                            <div>
-                                <div className="error-text">Unable to use this Datacenter unless changes are made</div>
-                                <br />
-                                <CdsControlMessage status="error">{'aaaa'}</CdsControlMessage>
-                                <br />
-                            </div>
-                        )}
-                    </div> */}
                     <div cds-layout="col:6 align:horizontal-center">{showErrorInfo()}</div>
                 </div>
 
