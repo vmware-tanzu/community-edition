@@ -31,7 +31,7 @@ let __serverErrorState;
 
 // [internal]
 // @const {Number} Default app port.
-const DEFAULT_PORT = 8008;
+const DEFAULT_PORT = 8080;
 // @const {String} Default log level
 const DEFAULT_LOG_LEVEL = 'info';
 
@@ -75,7 +75,7 @@ let def = {
     },
 
     /**
-     * Web server port or named pipe. Defaults to port 8008.
+     * Web server port or named pipe. Defaults to port 8080.
      *
      * If a number is specified, it must be at least `minPort` (and will be adjusted as
      *  such if it isn't). If a string is specified, it's expected to be a named pipe.

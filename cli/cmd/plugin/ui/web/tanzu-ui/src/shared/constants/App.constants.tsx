@@ -4,7 +4,7 @@ export const AppEnvironment = {
 };
 
 export const WebsocketAddress = {
-    DEV_LOCATION: 'localhost:8008',
+    DEV_LOCATION: 'localhost:8080',
     DEFAULT_PROTOCOL: 'ws',
     SECURE_PROTOCOL: 'wss',
 };
