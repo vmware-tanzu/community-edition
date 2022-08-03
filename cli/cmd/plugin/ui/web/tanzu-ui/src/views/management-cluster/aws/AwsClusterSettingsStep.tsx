@@ -148,8 +148,10 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
 
     return (
         <FormProvider {...methods}>
-            <div className="cluster-settings-container" cds-layout="m:lg">
-                <h3>Management Cluster settings</h3>
+            <div className="cluster-settings-container" cds-layout="p:lg">
+                <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
+                    Management Cluster settings
+                </h3>
                 <div cds-layout="grid gap:m" key="section-holder">
                     <div cds-layout="col:4" key="cluster-name-section">
                         <ClusterName
