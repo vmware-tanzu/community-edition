@@ -1,18 +1,17 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import { FieldError, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons } from '@cds/core/icon';
 import { CdsButton } from '@cds/react/button';
+import { CdsIcon } from '@cds/react/icon';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
-import { CdsSelect } from '@cds/react/select';
 import { CdsTextarea } from '@cds/react/textarea';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 // App imports
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../../shared/types/types';
-import { getResource } from '../../../providers/vsphere/VsphereResources.reducer';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import {
     NodeInstanceType,
@@ -23,8 +22,9 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
-import { VSphereVirtualMachine } from '../../../../swagger-api';
+import { VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import SpinnerSelect from '../../../../shared/components/Select/SpinnerSelect';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -67,6 +67,8 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm, updateTabStatus } = props;
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const vsphereClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
+    const [osImagesLoading, setOsImagesLoading] = useState(false);
+    const [osImages, setOsImages] = useState<VSphereVirtualMachine[]>([]);
     const methods = useForm<VsphereClusterSettingFormInputs>({
         resolver: yupResolver(vsphereClusterSettingsFormSchema),
         mode: 'all',
@@ -83,7 +85,11 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     if (updateTabStatus) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
-    const osImages = (getResource('osImages', vsphereState) || []) as VSphereVirtualMachine[];
+
+    useEffect(() => {
+        fetchOsImages();
+    }, [vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]]);
+
     const osTemplates = osImages.filter((osImage) => osImage.isTemplate);
     // if there's only ONE template, then pretend the user has selected it (unless we've already done that)
     if (osTemplates.length === 1 && vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMTEMPLATE] !== osTemplates[0].moid) {
@@ -106,7 +112,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         return Object.keys(errors).length === 0;
     };
 
-    const onSubmit: SubmitHandler<VsphereClusterSettingFormInputs> = (data) => {
+    const onSubmit: SubmitHandler<VsphereClusterSettingFormInputs> = () => {
         if (canContinue() && goToStep && currentStep && submitForm) {
             goToStep(currentStep + 1);
             submitForm(currentStep);
@@ -128,6 +134,24 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     const onInstanceTypeChange = (instanceType: string) => {
         onFieldChange(instanceType, VSPHERE_FIELDS.INSTANCETYPE);
         setSelectedInstanceTypeId(instanceType);
+    };
+
+    const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        fetchOsImages();
+    };
+
+    const fetchOsImages = async () => {
+        try {
+            setOsImagesLoading(true);
+            await VsphereService.getVSphereOsImages(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]).then((fetchedOsImages) => {
+                setOsImages(fetchedOsImages);
+            });
+        } catch (e: any) {
+            console.log(`Unable to retrieve OS Images`);
+        } finally {
+            setOsImagesLoading(false);
+        }
     };
 
     return (
@@ -153,11 +177,19 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                         />
                     </div>
                     <div cds-layout="col:12">
-                        {VmTemplateSection(VSPHERE_FIELDS.VMTEMPLATE, osTemplates, errors, register, onFieldChange)}
+                        {VmTemplateSection(
+                            VSPHERE_FIELDS.VMTEMPLATE,
+                            osTemplates,
+                            errors,
+                            register,
+                            osImagesLoading,
+                            handleRefresh,
+                            onFieldChange
+                        )}
                     </div>
                     <div cds-layout="col:12">{SshKeySection(VSPHERE_FIELDS.SSHKEY, errors, register, onFieldChange)}</div>
                 </div>
-                <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                <CdsButton cds-layout="m-t:lg" onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
                     NEXT
                 </CdsButton>
             </div>
@@ -188,26 +220,44 @@ function VmTemplateSection(
     vmTemplates: VSphereVirtualMachine[],
     errors: { [key: string]: FieldError | undefined },
     register: any,
+    osImagesLoading: boolean,
+    handleRefresh: (event: MouseEvent<HTMLAnchorElement>) => void,
     onOsImageSelected: (osImage: string, field: VSPHERE_CLUSTER_SETTING_STEP_FIELDS) => void
 ) {
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
         onOsImageSelected(event.target.value || '', field);
     };
+
     const fieldError = errors[field];
     return (
-        <div cds-layout="m:lg">
-            <CdsSelect layout="vertical" controlWidth="shrink">
-                <label>OS Image</label>
-                <select {...register(VSPHERE_FIELDS.VMTEMPLATE)} onChange={handleOsImageSelect}>
+        <CdsFormGroup layout="vertical-inline" control-width="shrink">
+            <div cds-layout="horizontal gap:lg align:vertical-center">
+                <SpinnerSelect
+                    className="select-md-width"
+                    disabled={false}
+                    label="OS Image"
+                    handleSelect={handleOsImageSelect}
+                    name={VSPHERE_FIELDS.VMTEMPLATE}
+                    controlMessage="OS Images will be retrieved after selecting a Datacenter"
+                    isLoading={osImagesLoading}
+                    register={register}
+                    error=""
+                >
                     {VmTemplateDropdownOptions(vmTemplates)}
-                </select>
-            </CdsSelect>
-            {fieldError && (
-                <div>
-                    &nbsp;<CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>
-                </div>
-            )}
-        </div>
+                </SpinnerSelect>
+                <a href="/" className={'btn-refresh icon-blue'} onClick={handleRefresh} cds-text="secondary">
+                    <CdsIcon shape="refresh" size="sm"></CdsIcon>{' '}
+                    <span cds-layout="m-t:sm" className="vertical-mid">
+                        REFRESH
+                    </span>
+                </a>
+                {fieldError && (
+                    <div>
+                        &nbsp;<CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>
+                    </div>
+                )}
+            </div>
+        </CdsFormGroup>
     );
 }
 
@@ -222,7 +272,7 @@ function SshKeySection(
     };
     const fieldError = errors[field];
     return (
-        <div cds-layout="m:lg">
+        <div cds-layout="m-t:lg">
             <CdsFormGroup layout="vertical">
                 <CdsTextarea layout="vertical">
                     <label>SSH key</label>
