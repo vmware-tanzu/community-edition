@@ -148,7 +148,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                 setOsImages(fetchedOsImages);
             });
         } catch (e: any) {
-            console.log(`Unabled to get ec2 key pair: ${e}`);
+            console.log(`Unable to retrieve OS Images`);
         } finally {
             setOsImagesLoading(false);
         }
@@ -238,7 +238,7 @@ function VmTemplateSection(
                     label="OS Image"
                     handleSelect={handleOsImageSelect}
                     name={VSPHERE_FIELDS.VMTEMPLATE}
-                    controlMessage="OS Images will be retrieved after selecting Datacenters"
+                    controlMessage="OS Images will be retrieved after selecting a Datacenter"
                     isLoading={osImagesLoading}
                     register={register}
                     error=""
