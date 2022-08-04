@@ -10,7 +10,7 @@ export const enum AWS_FIELDS {
     CLUSTER_NAME = 'CLUSTER_NAME',
     NODE_PROFILE = 'NODE_PROFILE',
     EC2_KEY_PAIR = 'EC2_KEY_PAIR',
-    IMAGE_INFO = 'IMAGE_INFO',
+    OS_IMAGE = 'OS_IMAGE',
 }
 
 export const enum AWS_NODE_PROFILE_NAMES {
