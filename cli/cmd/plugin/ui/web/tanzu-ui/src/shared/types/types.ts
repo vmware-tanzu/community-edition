@@ -15,6 +15,10 @@ export interface FormAction extends Action {
     field: string; // name of form field related to the action
 }
 
+export interface AwsResourceAction extends Action {
+    resourceName: string;
+}
+
 export interface DynamicFormAction extends FormAction {
     locationData?: any; // data needed for storing the payload, generally only used when store location is dynamic (cf CCVAR_CHANGE)
 }

@@ -8,17 +8,17 @@ import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/cor
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CdsFormGroup } from '@cds/react/forms';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
 // App import
 import './ManagementCredentials.scss';
 import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { AwsService } from '../../../../../swagger-api/services/AwsService';
+import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
 import { AwsStore } from '../../../../../state-management/stores/Store.aws';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import { FormAction } from '../../../../../shared/types/types';
+import { AwsResourceAction, FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
@@ -26,6 +26,7 @@ import ManagementCredentialProfile from './ManagementCredentialProfile';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -53,6 +54,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const {
         register,
         setValue,
+        getValues,
         handleSubmit,
         formState: { errors },
     } = methods;
@@ -72,6 +74,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
             setKeyPairLoading(false);
         }
     };
+
+    const [osImages, setOsImages] = useState<AWSVirtualMachine[]>([]);
+    const [errorMessage, setErrorMessage] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
@@ -95,6 +100,18 @@ function ManagementCredentials(props: Partial<StepProps>) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
+                awsDispatch({
+                    type: AWS_ADD_RESOURCES,
+                    resourceName: 'osImages',
+                    payload: osImages,
+                } as AwsResourceAction);
+                if (osImages[0]) {
+                    awsDispatch({
+                        type: INPUT_CHANGE,
+                        field: 'OS_IMAGE',
+                        payload: osImages[0],
+                    } as FormAction);
+                }
             }
         }
     };
@@ -151,6 +168,57 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchKeyPairs();
         }
+    };
+
+    useEffect(() => {
+        retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
+    }, [awsState[STORE_SECTION_FORM].REGION]);
+
+    function retrieveOsImages(region: string | undefined) {
+        try {
+            setOsImages([]);
+            AwsService.getAwsosImages(region).then((data) => {
+                setOsImages(data);
+                setErrorMessage((errorMessage) => {
+                    const copy = { ...errorMessage };
+                    delete copy['OS_IMAGE'];
+                    return copy;
+                });
+            });
+        } catch (e) {
+            setErrorMessage({
+                ...errorMessage,
+                OS_IMAGE: e,
+            });
+        }
+    }
+
+    function showErrorInfo() {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
+            return (
+                <div>
+                    <div className="error-text">Error Occurs</div>
+                    <br />
+                    {Object.keys(errorMessage).map((errorField) => {
+                        return (
+                            <CdsControlMessage status="error" key={errorField}>
+                                {errorMessage[errorField]}
+                            </CdsControlMessage>
+                        );
+                    })}
+                    <br />
+                </div>
+            );
+        }
+        return;
+    }
+
+    const canContinue = (): boolean => {
+        return (
+            connectionStatus === CONNECTION_STATUS.CONNECTED &&
+            getValues('EC2_KEY_PAIR') !== undefined &&
+            JSON.stringify(errorMessage) === '{}'
+        );
     };
 
     return (
@@ -220,8 +288,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
                             REFRESH
                         </span>
                     </a>
+                    <div cds-layout="col:6 align:horizontal-center">{showErrorInfo()}</div>
                 </div>
-                <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+
+                <CdsButton disabled={!canContinue()} onClick={handleSubmit(onSubmit)}>
+                    NEXT
+                </CdsButton>
             </CdsFormGroup>
         </div>
     );
