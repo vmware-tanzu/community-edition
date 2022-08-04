@@ -4,7 +4,6 @@ import React, { useContext, useState } from 'react';
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
 import { FormProvider, useForm } from 'react-hook-form';
-// import { CdsIcon } from '@cds/react/icon';
 import { CdsButton } from '@cds/react/button';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
