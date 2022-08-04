@@ -3,27 +3,31 @@ import React, { ChangeEvent } from 'react';
 
 // Library imports
 import { CdsControlMessage } from '@cds/react/forms';
-import { FieldError } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { CdsSelect } from '@cds/react/select';
 import * as yup from 'yup';
+import { AWSVirtualMachine } from '../../../../swagger-api';
 
-interface ImageProps<T> {
+interface ImageProps {
     osImageTitle: string;
     field: string;
-    errors: { [key: string]: FieldError | undefined };
-    register: any;
     onOsImageSelected: (osImage: string, fieldName?: string) => void;
-    images: T[];
+    images: AWSVirtualMachine[];
 }
 export function osImagesValidation() {
     return yup.string().nullable().required('Please select an OS image');
 }
 
-function OsImageSelect<T>(props: ImageProps<T>) {
-    const { osImageTitle, field, errors, register, images, onOsImageSelected } = props;
+function OsImageSelect(props: ImageProps) {
+    const { osImageTitle, field, images, onOsImageSelected } = props;
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
         onOsImageSelected(event.target.value || '', field);
     };
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext();
+
     const fieldError = errors[field];
     return (
         <div cds-layout="m:lg">

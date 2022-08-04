@@ -2,8 +2,8 @@
 import React from 'react';
 
 // App imports
-import { DockerProvider } from '../../../state-management/stores/Docker.store';
 import DockerManagementClusterBasic from './docker-mc-basic/DockerManagementClusterBasic';
+import { DockerProvider } from '../../../state-management/stores/Docker.store';
 import DockerLogo from '../../../assets/docker.svg';
 import './DockerManagementCluster.scss';
 

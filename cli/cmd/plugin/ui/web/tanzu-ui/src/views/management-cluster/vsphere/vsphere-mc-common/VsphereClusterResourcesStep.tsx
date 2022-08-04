@@ -11,11 +11,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 // App imports
+import { FormAction } from '../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { SelectionType, TreeSelectItem } from '../../../../shared/components/TreeSelect/TreeSelect.interface';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
 import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
 import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
@@ -27,7 +29,7 @@ import { VsphereStore } from '../Store.vsphere.mc';
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
     [VSPHERE_FIELDS.DataStore]: string;
-    [VSPHERE_FIELDS.VSphereNetworkName]: string;
+    [VSPHERE_FIELDS.NetworkName]: string;
     [VSPHERE_FIELDS.Pool]: string;
 }
 
@@ -36,7 +38,7 @@ const schema = yup
     .shape({
         [VSPHERE_FIELDS.VMFolder]: yup.string().required('Please select a VM folder.'),
         [VSPHERE_FIELDS.DataStore]: yup.string().required('Please select a Datastore.'),
-        [VSPHERE_FIELDS.VSphereNetworkName]: yup.string().required('Please select a vSphere network name.'),
+        [VSPHERE_FIELDS.NetworkName]: yup.string().required('Please select a vSphere network name.'),
         [VSPHERE_FIELDS.Pool]: yup.string().required('Please select a resource pool.'),
     })
     .required();
@@ -101,20 +103,27 @@ const treeDataMapper = (inputData: VSphereManagementObject[]) => {
 };
 
 export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
-    const { vsphereState } = useContext(VsphereStore);
+    const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const datacenter = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
 
-    const { currentStep, handleValueChange, deploy } = props;
+    const { currentStep, deploy, updateTabStatus, goToStep } = props;
+
+    const methods = useForm<VSphereClusterResourcesStepInputs>({
+        resolver: yupResolver(schema),
+        mode: 'all',
+    });
 
     const {
         register,
         formState: { errors },
         handleSubmit,
-        setValue,
         control,
-    } = useForm<VSphereClusterResourcesStepInputs>({
-        resolver: yupResolver(schema),
-    });
+    } = methods;
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
 
     const { data: vSphereFolders } = useVSphereFolders(datacenter);
     const { data: vSphereDatastores } = useVSphereDatastores(datacenter);
@@ -127,12 +136,15 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<VSphereClusterResourcesStepInputs> = (data) => {
-        deploy && deploy();
+        goToStep && goToStep((currentStep ?? 0) + 1);
     };
 
     const onChange = (field: any, value: string) => {
-        handleValueChange && handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
-        setValue(field, value, { shouldValidate: true });
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: value,
+        } as FormAction);
     };
 
     return (
@@ -159,9 +171,8 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
                     />
                 </div>
             </div>
-            <CdsButton cds-layout="col:start-1" status="success" onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                Create Management cluster
+            <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                NEXT
             </CdsButton>
         </div>
     );
@@ -214,8 +225,9 @@ function Datastore({
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>Datastore</label>
                 <select
-                    {...register(VSPHERE_FIELDS.DataStore)}
-                    onChange={(e) => onChange(VSPHERE_FIELDS.DataStore, e?.target?.value ?? '')}
+                    {...register(VSPHERE_FIELDS.DataStore, {
+                        onChange: (e: any) => onChange(VSPHERE_FIELDS.DataStore, e?.target?.value ?? ''),
+                    })}
                 >
                     <option />
                     {datastores.map((details: any) => (
@@ -248,8 +260,9 @@ function VSphereNetworkName({
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>VSphere network name</label>
                 <select
-                    {...register(VSPHERE_FIELDS.VSphereNetworkName)}
-                    onChange={(e) => onChange(VSPHERE_FIELDS.VSphereNetworkName, e?.target?.value ?? '')}
+                    {...register(VSPHERE_FIELDS.NetworkName, {
+                        onChange: (e: any) => onChange(VSPHERE_FIELDS.NetworkName, e?.target?.value ?? ''),
+                    })}
                 >
                     <option />
                     {vSphereNetworkNames.map((details: any) => (
@@ -258,8 +271,8 @@ function VSphereNetworkName({
                         </option>
                     ))}
                 </select>
-                {errors[VSPHERE_FIELDS.VSphereNetworkName] && (
-                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.VSphereNetworkName].message}</CdsControlMessage>
+                {errors[VSPHERE_FIELDS.NetworkName] && (
+                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.NetworkName].message}</CdsControlMessage>
                 )}
             </CdsSelect>
         </div>

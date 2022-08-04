@@ -2,7 +2,6 @@ import { AZURE_NODE_PROFILE_NAMES } from '../../../views/management-cluster/azur
 import { KeyOfStringToString } from '../../types/types';
 
 export const AZURE_DEFAULT_VALUES = {
-    CLUSTER_NAME: '',
     NODE_PROFILE: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
     CEIP_OPT_IN: false,
     CONTROL_PLANE_FLAVOR: 'dev',

@@ -2,73 +2,37 @@
 import React, { ReactElement, useState } from 'react';
 
 // Library imports
-import { FieldError } from 'react-hook-form';
 import StepWizard, { StepWizardChildProps } from 'react-step-wizard';
 import _ from 'lodash';
 
 // App imports
-import { FormAction, StoreDispatch } from '../../types/types';
 import { STATUS } from '../../constants/App.constants';
 import StepNav from './StepNav';
 import './Wizard.scss';
 
 interface WizardProps {
     tabNames: string[];
-    state: { [key: string]: any };
-    dispatch: StoreDispatch;
     children: ReactElement<any, any>[];
 }
 export interface StepProps extends StepWizardChildProps {
-    tabStatus: STATUS[];
-    setTabStatus: (status: STATUS[]) => void;
-    key: number;
     deploy?: () => void;
-    submitForm: (data: any | undefined) => void;
-    handleValueChange: (
-        type: string,
-        field: string,
-        value: any,
-        currentStep: number | undefined,
-        errors: { [key: string]: FieldError | undefined },
-        locationData?: any
-    ) => void;
+    key: number;
     provider: string;
+    tabStatus: STATUS[];
     setTabStatus: (status: STATUS[]) => void;
     submitForm: (data: any | undefined) => void;
-    tabStatus: STATUS[];
+    updateTabStatus: (currentStep: number | undefined, validForm: boolean) => void;
 }
 function Wizard(props: WizardProps) {
-    const { tabNames, children, dispatch } = props;
-
-    const handleValueChange = (
-        type: string,
-        field: string,
-        value: string,
-        currentStep: number | undefined,
-        errors: { [key: string]: FieldError | undefined },
-        locationData?: any
-    ) => {
-        // update status bar for the wizard tab
-        if (errors[field] && currentStep) {
-            const status = [...tabStatus];
-            status[currentStep - 1] = STATUS.INVALID;
-            setTabStatus(status);
-        } else if (Object.keys(errors).length === 0 && currentStep) {
-            const status = [...tabStatus];
-            status[currentStep - 1] = STATUS.VALID;
-            setTabStatus(status);
-        }
-        // update the field in the data store.
-        dispatch({
-            type,
-            field,
-            payload: value,
-            locationData,
-        } as FormAction);
-    };
+    const { tabNames, children } = props;
 
     const [tabStatus, setTabStatus] = useState([STATUS.CURRENT, ..._.times(children.length - 1, () => STATUS.DISABLED)]);
 
+    const updateTabStatus = (currentStep: number, validForm: boolean) => {
+        const status = [...tabStatus];
+        status[currentStep - 1] = validForm ? STATUS.VALID : STATUS.INVALID;
+        setTabStatus(status);
+    };
     const submitForm = (currentStep: number) => {
         const status = [...tabStatus];
         status[currentStep] = STATUS.TOUCHED;
@@ -84,7 +48,7 @@ function Wizard(props: WizardProps) {
                         setTabStatus,
                         key: index,
                         submitForm,
-                        handleValueChange,
+                        updateTabStatus,
                     })
                 )}
             </StepWizard>

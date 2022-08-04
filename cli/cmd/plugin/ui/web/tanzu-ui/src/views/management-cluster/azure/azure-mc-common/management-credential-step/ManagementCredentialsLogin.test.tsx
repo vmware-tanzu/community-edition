@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ManagementCredentialsLogin from './ManagementCredentialsLogin';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import { FormProvider } from 'react-hook-form';
 
 const azureEnvironment = ['Public Cloud', 'US Government Cloud'];
 const formFieldItem = [
@@ -18,7 +19,12 @@ const useFormMock = {
             errors: {},
         },
         setValue: jest.fn(),
-        register: jest.fn(),
+        register: (name: string, obj: any) => {
+            return {
+                name,
+                ...obj,
+            };
+        },
     }),
 };
 const methods = useFormMock.useForm();
@@ -28,13 +34,14 @@ const handleConnect = jest.fn();
 describe('Login component', () => {
     it('should render', async () => {
         const view = render(
-            <ManagementCredentialsLogin
-                status={CONNECTION_STATUS.DISCONNECTED}
-                handleConnect={jest.fn}
-                methods={methods}
-                handleInputChange={handleInputChange}
-                message={''}
-            />
+            <FormProvider {...methods}>
+                <ManagementCredentialsLogin
+                    status={CONNECTION_STATUS.DISCONNECTED}
+                    handleConnect={jest.fn}
+                    handleInputChange={handleInputChange}
+                    message={''}
+                />
+            </FormProvider>
         );
         await waitFor(() => {
             expect(view).toBeDefined();
@@ -43,13 +50,14 @@ describe('Login component', () => {
 
     it('should contain all Azure Environment', async () => {
         render(
-            <ManagementCredentialsLogin
-                status={CONNECTION_STATUS.DISCONNECTED}
-                handleConnect={jest.fn}
-                methods={methods}
-                handleInputChange={handleInputChange}
-                message={''}
-            />
+            <FormProvider {...methods}>
+                <ManagementCredentialsLogin
+                    status={CONNECTION_STATUS.DISCONNECTED}
+                    handleConnect={jest.fn}
+                    handleInputChange={handleInputChange}
+                    message={''}
+                />
+            </FormProvider>
         );
         for (let i = 0; i < azureEnvironment.length; i++) {
             const profileEl = screen.getByText(azureEnvironment[i]);
@@ -59,13 +67,14 @@ describe('Login component', () => {
 
     it('should handle form field change', async () => {
         render(
-            <ManagementCredentialsLogin
-                status={CONNECTION_STATUS.DISCONNECTED}
-                handleConnect={jest.fn}
-                methods={methods}
-                handleInputChange={handleInputChange}
-                message={''}
-            />
+            <FormProvider {...methods}>
+                <ManagementCredentialsLogin
+                    status={CONNECTION_STATUS.DISCONNECTED}
+                    handleConnect={jest.fn}
+                    handleInputChange={handleInputChange}
+                    message={''}
+                />
+            </FormProvider>
         );
         for (let i = 0; i < formFieldItem.length; i++) {
             const input = screen.getByPlaceholderText(formFieldItem[i].placeholder);
@@ -81,24 +90,26 @@ describe('Login component', () => {
 
     it('should show connected', async () => {
         render(
-            <ManagementCredentialsLogin
-                status={CONNECTION_STATUS.DISCONNECTED}
-                handleConnect={handleConnect}
-                methods={methods}
-                handleInputChange={handleInputChange}
-                message={''}
-            />
+            <FormProvider {...methods}>
+                <ManagementCredentialsLogin
+                    status={CONNECTION_STATUS.DISCONNECTED}
+                    handleConnect={handleConnect}
+                    handleInputChange={handleInputChange}
+                    message={''}
+                />
+            </FormProvider>
         );
         fireEvent.click(screen.getByText('CONNECT'));
         expect(handleConnect).toHaveBeenCalled();
         render(
-            <ManagementCredentialsLogin
-                status={CONNECTION_STATUS.CONNECTED}
-                handleConnect={handleConnect}
-                methods={methods}
-                handleInputChange={handleInputChange}
-                message={'Connected to Azure'}
-            />
+            <FormProvider {...methods}>
+                <ManagementCredentialsLogin
+                    status={CONNECTION_STATUS.CONNECTED}
+                    handleConnect={handleConnect}
+                    handleInputChange={handleInputChange}
+                    message={'Connected to Azure'}
+                />
+            </FormProvider>
         );
         fireEvent.click(screen.getByText('Connected to Azure'));
     });

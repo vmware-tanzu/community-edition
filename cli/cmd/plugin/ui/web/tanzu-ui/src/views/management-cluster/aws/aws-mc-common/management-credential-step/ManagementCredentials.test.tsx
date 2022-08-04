@@ -60,22 +60,22 @@ describe('ManagementCredential component', () => {
     afterAll(() => server.close());
 
     it('should render', async () => {
-        const view = render(<ManagementCredentials handleValueChange={jest.fn} />);
+        const view = render(<ManagementCredentials />);
         await waitFor(() => {
             expect(view).toBeDefined();
         });
     });
     it('should have credential profile selected by default', async () => {
-        render(<ManagementCredentials handleValueChange={jest.fn} />);
+        render(<ManagementCredentials />);
         expect(await screen.findByText('profile1')).toBeInTheDocument();
     });
     it('should show one time credential', async () => {
-        render(<ManagementCredentials handleValueChange={jest.fn} />);
+        render(<ManagementCredentials />);
         await user.click(screen.getByDisplayValue('ONE_TIME'));
         expect(screen.getByText('Access key ID')).toBeInTheDocument();
     });
     it('should connect to aws', async () => {
-        render(<ManagementCredentials handleValueChange={jest.fn} />);
+        render(<ManagementCredentials />);
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
@@ -83,7 +83,7 @@ describe('ManagementCredential component', () => {
         expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
     });
     it('should select a key pair', async () => {
-        render(<ManagementCredentials handleValueChange={jest.fn} />);
+        render(<ManagementCredentials />);
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
@@ -98,7 +98,7 @@ describe('ManagementCredential component', () => {
         expect((el as HTMLOptionElement).selected).toBeTruthy();
     });
     it('should click on refresh button', async () => {
-        render(<ManagementCredentials handleValueChange={jest.fn} />);
+        render(<ManagementCredentials />);
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
@@ -121,7 +121,7 @@ describe('ManagementCredential component', () => {
     });
     describe('should change the button from connected to connect', () => {
         it('change input value', async () => {
-            render(<ManagementCredentials handleValueChange={jest.fn} />);
+            render(<ManagementCredentials />);
             await user.click(screen.getByDisplayValue('ONE_TIME'));
             await screen.findByText('us-east-1');
             fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
@@ -132,7 +132,7 @@ describe('ManagementCredential component', () => {
             expect(await screen.findByText('CONNECT')).toBeInTheDocument();
         });
         it('change profile value', async () => {
-            render(<ManagementCredentials handleValueChange={jest.fn} />);
+            render(<ManagementCredentials />);
             await screen.findByText('us-east-1');
             fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
             fireEvent.click(screen.getByText('CONNECT'));

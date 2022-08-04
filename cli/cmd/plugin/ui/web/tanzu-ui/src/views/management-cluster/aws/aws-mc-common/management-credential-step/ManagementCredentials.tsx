@@ -6,7 +6,7 @@ import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/core/icon';
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
@@ -18,7 +18,6 @@ import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialProfile from './ManagementCredentialProfile';
-import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
@@ -26,6 +25,8 @@ import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect
 import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
 import { AwsResourceAction, FormAction } from '../../../../../shared/types/types';
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
+import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+import ManagementCredentialOneTime from './ManagementCredentialOneTime';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -37,6 +38,7 @@ export interface FormInputs {
     ACCESS_KEY_ID: string;
     EC2_KEY_PAIR: string;
 }
+type FormField = 'PROFILE' | 'REGION' | 'SECRET_ACCESS_KEY' | 'SESSION_TOKEN' | 'ACCESS_KEY_ID' | 'EC2_KEY_PAIR';
 
 /* eslint-disable no-unused-vars */
 enum CREDENTIAL_TYPE {
@@ -45,7 +47,7 @@ enum CREDENTIAL_TYPE {
 }
 
 function ManagementCredentials(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
+    const { currentStep, goToStep, submitForm } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
@@ -53,23 +55,19 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
+        mode: 'all',
     });
     const {
         register,
-        handleSubmit,
         setValue,
+        getValues,
+        handleSubmit,
         formState: { errors },
     } = methods;
 
     const [type, setType] = useState<CREDENTIAL_TYPE>(CREDENTIAL_TYPE.PROFILE);
 
-    const [regions, setRegions] = useState<string[]>([]);
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
-
-    useEffect(() => {
-        // fetch regions
-        AwsService.getAwsRegions().then((data) => setRegions(data));
-    }, []);
 
     const fetchKeyPairs = async () => {
         try {
@@ -113,9 +111,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
                         field: 'OS_IMAGE',
                         payload: osImages[0],
                     } as FormAction);
-                    if (handleValueChange) {
-                        handleValueChange(INPUT_CHANGE, 'OS_IMAGE', osImages[0], currentStep, errors);
-                    }
                 }
             }
         }
@@ -147,49 +142,24 @@ function ManagementCredentials(props: Partial<StepProps>) {
             setMessage(`Unable to connect to AWS: ${err.body.message}`);
         }
     };
-    const resetField = (field: string) => {
-        if (handleValueChange && awsState[STORE_SECTION_FORM][field]) {
-            handleValueChange(INPUT_CHANGE, field, '', currentStep, errors);
-            setValue('EC2_KEY_PAIR', '');
-        }
-    };
-    const handleSelectProfile = (profile: string) => {
-        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        resetField('EC2_KEY_PAIR');
-        if (handleValueChange) {
-            setTimeout(() => {
-                handleValueChange(INPUT_CHANGE, 'PROFILE', profile, currentStep, errors);
-            });
-        }
-    };
-
-    const handleSelectRegion = (region: string) => {
-        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        resetField('EC2_KEY_PAIR');
-        if (handleValueChange) {
-            setTimeout(() => {
-                handleValueChange(INPUT_CHANGE, 'REGION', region, currentStep, errors);
-            });
-        }
-        retrieveOsImages(region);
-    };
 
     const handleSelectKeyPair = (event: ChangeEvent<HTMLSelectElement>) => {
-        setValue('EC2_KEY_PAIR', event.target.value, { shouldValidate: true });
-        if (handleValueChange) {
-            setTimeout(() => {
-                handleValueChange(INPUT_CHANGE, 'EC2_KEY_PAIR', event.target.value, currentStep, errors);
-            });
-        }
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.EC2_KEY_PAIR,
+            payload: event.target.value,
+        } as FormAction);
     };
 
-    const handleInputChange = (field: string, value: string) => {
+    const resetEc2KeyPair = () => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        resetField('EC2_KEY_PAIR');
-        if (handleValueChange) {
-            setTimeout(() => {
-                handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
-            });
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR] !== '') {
+            setValue(AWS_FIELDS.EC2_KEY_PAIR as FormField, '');
+            awsDispatch({
+                type: INPUT_CHANGE,
+                field: AWS_FIELDS.EC2_KEY_PAIR,
+                payload: '',
+            } as FormAction);
         }
     };
 
@@ -199,6 +169,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
             fetchKeyPairs();
         }
     };
+
+    useEffect(() => {
+        retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
+    }, [awsState[STORE_SECTION_FORM].REGION]);
 
     function retrieveOsImages(region: string | undefined) {
         try {
@@ -239,6 +213,14 @@ function ManagementCredentials(props: Partial<StepProps>) {
         return;
     }
 
+    const canContinue = (): boolean => {
+        return (
+            connectionStatus === CONNECTION_STATUS.CONNECTED &&
+            getValues('EC2_KEY_PAIR') !== undefined &&
+            JSON.stringify(errorMessage) === '{}'
+        );
+    };
+
     return (
         <div className="wizard-content-container">
             <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
@@ -257,28 +239,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     <input type="radio" value={CREDENTIAL_TYPE.ONE_TIME} checked={type === CREDENTIAL_TYPE.ONE_TIME} readOnly />
                 </CdsRadio>
             </CdsRadioGroup>
-            {type === CREDENTIAL_TYPE.PROFILE && (
-                <ManagementCredentialProfile
-                    handleSelectProfile={handleSelectProfile}
-                    handleSelectRegion={handleSelectRegion}
-                    initialProfile={awsState[STORE_SECTION_FORM].PROFILE}
-                    initialRegion={awsState[STORE_SECTION_FORM].REGION}
-                    regions={regions}
-                    methods={methods}
-                />
-            )}
-            {type === CREDENTIAL_TYPE.ONE_TIME && (
-                <ManagementCredentialOneTime
-                    initialRegion={awsState[STORE_SECTION_FORM].REGION}
-                    initialSecretAccessKey={awsState[STORE_SECTION_FORM].SECRET_ACCESS_KEY}
-                    initialSessionToken={awsState[STORE_SECTION_FORM].SESSION_TOKEN}
-                    initialAccessKeyId={awsState[STORE_SECTION_FORM].ACCESS_KEY_ID}
-                    handleSelectRegion={handleSelectRegion}
-                    handleInputChange={handleInputChange}
-                    regions={regions}
-                    methods={methods}
-                />
-            )}
+            <FormProvider {...methods}>
+                {type === CREDENTIAL_TYPE.PROFILE && <ManagementCredentialProfile selectCallback={resetEc2KeyPair} />}
+                {type === CREDENTIAL_TYPE.ONE_TIME && <ManagementCredentialOneTime selectCallback={resetEc2KeyPair} />}
+            </FormProvider>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="p-t:lg" className="aws-button-container">
                     <CdsButton
@@ -327,7 +291,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     <div cds-layout="col:6 align:horizontal-center">{showErrorInfo()}</div>
                 </div>
 
-                <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+                <CdsButton disabled={!canContinue()} onClick={handleSubmit(onSubmit)}>
+                    NEXT
+                </CdsButton>
             </CdsFormGroup>
         </div>
     );

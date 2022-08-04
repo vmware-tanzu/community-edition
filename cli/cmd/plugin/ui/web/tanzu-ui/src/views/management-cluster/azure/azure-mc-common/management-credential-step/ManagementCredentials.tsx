@@ -3,7 +3,7 @@ import React, { ChangeEvent, useContext, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsTextarea } from '@cds/react/textarea';
@@ -11,6 +11,7 @@ import { CdsTextarea } from '@cds/react/textarea';
 // App import
 import { AzureAccountParams, AzureLocation, AzureService } from '../../../../../swagger-api';
 import { AzureStore } from '../../../../../state-management/stores/Azure.store';
+import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
@@ -20,6 +21,7 @@ import './ManagementCredentials.scss';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 export interface FormInputs {
     TENANT_ID: string;
@@ -35,10 +37,11 @@ const placeholderText = `Begins with 'ssh-rsa', 'ecdsa-sha2-nistp256', 'ecdsa-sh
 nistp384', 'ecdsa-sha2-nistp521', 'ssh-ed25519', 'sk-ecdsa-sha2-nistp256@openssh.com', or 'sk-ssh-ed25519@openssh.com'`;
 
 function ManagementCredentials(props: Partial<StepProps>) {
-    const { handleValueChange, currentStep, goToStep, submitForm } = props;
-    const { azureState } = useContext(AzureStore);
+    const { currentStep, goToStep, submitForm, updateTabStatus } = props;
+    const { azureState, azureDispatch } = useContext(AzureStore);
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
+        mode: 'all',
     });
     const {
         register,
@@ -51,11 +54,18 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [message, setMessage] = useState('');
     const [regionLoading, setRegionLoading] = useState(false);
 
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
+
     const resetField = (field: FormField) => {
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, field, '', currentStep, errors);
-            setValue(field, '');
-        }
+        setValue(AZURE_FIELDS.REGION as FormField, '');
+        azureDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: '',
+        } as FormAction);
     };
 
     const handleInputChange = (field: FormField, value: string) => {
@@ -65,10 +75,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 resetField(AZURE_FIELDS.REGION);
             }
         }
-        setValue(field, value, { shouldValidate: true });
-        if (handleValueChange) {
-            handleValueChange(INPUT_CHANGE, field, value, currentStep, errors);
-        }
+        azureDispatch({
+            type: INPUT_CHANGE,
+            field,
+            payload: value,
+        } as FormAction);
     };
 
     const retrieveRegions = async () => {
@@ -123,49 +134,50 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     creating Microsoft Azure credentials
                 </a>
             </p>
-            <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <ManagementCredentialsLogin
-                    status={connectionStatus}
-                    message={message}
-                    methods={methods}
-                    handleConnect={handleConnect}
-                    handleInputChange={handleInputChange}
-                />
-                <div cds-layout="horizontal gap:lg">
-                    <SpinnerSelect
-                        label="Region"
-                        className="select-sm-width"
-                        disabled={connectionStatus !== CONNECTION_STATUS.CONNECTED}
-                        handleSelect={(e: ChangeEvent<HTMLSelectElement>) => handleInputChange(AZURE_FIELDS.REGION, e.target.value)}
-                        name="REGION"
-                        isLoading={regionLoading}
-                        register={register}
-                        error={errors['REGION']?.message}
-                    >
-                        <option></option>
-                        {regions.map((region) => (
-                            <option key={region.name} value={region.name}>
-                                {region.displayName}
-                            </option>
-                        ))}
-                    </SpinnerSelect>
-                    <CdsTextarea layout="vertical" status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}>
-                        <label>SSH public key</label>
-                        <textarea
-                            {...register(AZURE_FIELDS.SSH_PUBLIC_KEY)}
-                            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                                handleInputChange(AZURE_FIELDS.SSH_PUBLIC_KEY, e.target.value)
-                            }
-                            defaultValue={azureState[STORE_SECTION_FORM].SSH_PUBLIC_KEY}
-                            placeholder={placeholderText}
-                        ></textarea>
-                        {errors[AZURE_FIELDS.SSH_PUBLIC_KEY] && (
-                            <CdsControlMessage status="error">{errors[AZURE_FIELDS.SSH_PUBLIC_KEY]?.message}</CdsControlMessage>
-                        )}
-                    </CdsTextarea>
-                </div>
-                <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
-            </CdsFormGroup>
+            <FormProvider {...methods}>
+                <CdsFormGroup layout="vertical-inline" control-width="shrink">
+                    <ManagementCredentialsLogin
+                        status={connectionStatus}
+                        message={message}
+                        handleConnect={handleConnect}
+                        handleInputChange={handleInputChange}
+                    />
+                    <div cds-layout="horizontal gap:lg">
+                        <SpinnerSelect
+                            label="Region"
+                            className="select-sm-width"
+                            disabled={connectionStatus !== CONNECTION_STATUS.CONNECTED}
+                            handleSelect={(e: ChangeEvent<HTMLSelectElement>) => handleInputChange(AZURE_FIELDS.REGION, e.target.value)}
+                            name={AZURE_FIELDS.REGION}
+                            isLoading={regionLoading}
+                            register={register}
+                            error={errors[AZURE_FIELDS.REGION]?.message}
+                        >
+                            <option></option>
+                            {regions.map((region) => (
+                                <option key={region.name} value={region.name}>
+                                    {region.displayName}
+                                </option>
+                            ))}
+                        </SpinnerSelect>
+                        <CdsTextarea status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}>
+                            <label>SSH public key</label>
+                            <textarea
+                                {...register(AZURE_FIELDS.SSH_PUBLIC_KEY)}
+                                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                                    handleInputChange(AZURE_FIELDS.SSH_PUBLIC_KEY, e.target.value)
+                                }
+                                defaultValue={azureState[STORE_SECTION_FORM].SSH_PUBLIC_KEY}
+                                placeholder={placeholderText}
+                            ></textarea>
+                            {errors[AZURE_FIELDS.SSH_PUBLIC_KEY] && (
+                                <CdsControlMessage status="error">{errors[AZURE_FIELDS.SSH_PUBLIC_KEY]?.message}</CdsControlMessage>
+                            )}
+                        </CdsTextarea>
+                    </div>
+                    <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
+                </CdsFormGroup>
+            </FormProvider>
         </div>
     );
 }
