@@ -292,7 +292,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function Title() {
         return (
             <div cds-layout="col:12">
-                <h2>vSphere Credentials</h2>
+                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                    vSphere Credentials
+                </h2>
             </div>
         );
     }

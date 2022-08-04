@@ -46,7 +46,9 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
     };
     return (
         <div className="wizard-content-container">
-            <h2 cds-layout="m-t:lg">Docker prerequisite</h2>
+            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                Docker prerequisite
+            </h2>
             <p cds-layout="m-y:lg" className="description">
                 Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB.
             </p>

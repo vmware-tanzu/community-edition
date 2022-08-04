@@ -63,7 +63,9 @@ function DockerClusterSettings(props: Partial<StepProps>) {
     return (
         <FormProvider {...methods}>
             <div className="wizard-content-container">
-                <h2 cds-layout="m-t:lg">Docker Management Cluster Settings</h2>
+                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                    Docker Management Cluster Settings
+                </h2>
                 <div cds-layout="grid gap:m p-b:lg" key="section-holder">
                     <div cds-layout="col:4" key="cluster-name-section">
                         <ClusterName

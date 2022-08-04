@@ -14,7 +14,7 @@ export enum VSPHERE_FIELDS {
 
     VMFolder = 'vmFolder',
     DataStore = 'datastore',
-    VSphereNetworkName = 'vSphereNetworkName',
+    NetworkName = 'vSphereNetworkName',
     Pool = 'pool',
 }
 

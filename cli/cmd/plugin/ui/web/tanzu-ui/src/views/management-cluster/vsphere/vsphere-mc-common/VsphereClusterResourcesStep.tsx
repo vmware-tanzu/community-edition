@@ -11,11 +11,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 // App imports
+import { FormAction } from '../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { SelectionType, TreeSelectItem } from '../../../../shared/components/TreeSelect/TreeSelect.interface';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
 import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
 import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
@@ -23,13 +25,11 @@ import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereN
 import { VSphereDatastore, VSphereFolder, VSphereManagementObject, VSphereNetwork } from '../../../../swagger-api';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
-import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { FormAction } from '../../../../shared/types/types';
 
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
     [VSPHERE_FIELDS.DataStore]: string;
-    [VSPHERE_FIELDS.VSphereNetworkName]: string;
+    [VSPHERE_FIELDS.NetworkName]: string;
     [VSPHERE_FIELDS.Pool]: string;
 }
 
@@ -38,7 +38,7 @@ const schema = yup
     .shape({
         [VSPHERE_FIELDS.VMFolder]: yup.string().required('Please select a VM folder.'),
         [VSPHERE_FIELDS.DataStore]: yup.string().required('Please select a Datastore.'),
-        [VSPHERE_FIELDS.VSphereNetworkName]: yup.string().required('Please select a vSphere network name.'),
+        [VSPHERE_FIELDS.NetworkName]: yup.string().required('Please select a vSphere network name.'),
         [VSPHERE_FIELDS.Pool]: yup.string().required('Please select a resource pool.'),
     })
     .required();
@@ -106,7 +106,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const datacenter = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
 
-    const { currentStep, deploy, updateTabStatus } = props;
+    const { currentStep, deploy, updateTabStatus, goToStep } = props;
 
     const methods = useForm<VSphereClusterResourcesStepInputs>({
         resolver: yupResolver(schema),
@@ -136,7 +136,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<VSphereClusterResourcesStepInputs> = (data) => {
-        deploy && deploy();
+        goToStep && goToStep((currentStep ?? 0) + 1);
     };
 
     const onChange = (field: any, value: string) => {
@@ -149,7 +149,9 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
 
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
-            <h3>vSphere Cluster Resources</h3>
+            <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
+                vSphere Cluster Resources
+            </h3>
             <div cds-layout="vertical gap:md align:stretch">
                 <p>The following are settings for VMWare vSphere that could be changed from their default values or enabled.</p>
 
@@ -171,9 +173,8 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
                     />
                 </div>
             </div>
-            <CdsButton cds-layout="col:start-1" status="success" onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                Create Management cluster
+            <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                NEXT
             </CdsButton>
         </div>
     );
@@ -261,8 +262,8 @@ function VSphereNetworkName({
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>VSphere network name</label>
                 <select
-                    {...register(VSPHERE_FIELDS.VSphereNetworkName, {
-                        onChange: (e: any) => onChange(VSPHERE_FIELDS.VSphereNetworkName, e?.target?.value ?? ''),
+                    {...register(VSPHERE_FIELDS.NetworkName, {
+                        onChange: (e: any) => onChange(VSPHERE_FIELDS.NetworkName, e?.target?.value ?? ''),
                     })}
                 >
                     <option />
@@ -272,8 +273,8 @@ function VSphereNetworkName({
                         </option>
                     ))}
                 </select>
-                {errors[VSPHERE_FIELDS.VSphereNetworkName] && (
-                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.VSphereNetworkName].message}</CdsControlMessage>
+                {errors[VSPHERE_FIELDS.NetworkName] && (
+                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.NetworkName].message}</CdsControlMessage>
                 )}
             </CdsSelect>
         </div>

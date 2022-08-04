@@ -243,6 +243,9 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
     }
 
     function ClusterCidr() {
+        const errorClusterServiceCidr = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_SERVICE_CIDR];
+        const errorClusterPodCidr = errors[UNMANAGED_CLUSTER_FIELDS.CLUSTER_POD_CIDR];
+
         return (
             <div cds-layout="horizontal gap:xl p-y:md">
                 <div cds-layout="col:4">

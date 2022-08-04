@@ -66,7 +66,7 @@ function createYupSchemaObject() {
 }
 
 export function AzureClusterSettingsStep(props: Partial<StepProps>) {
-    const { updateTabStatus, currentStep, deploy } = props;
+    const { updateTabStatus, currentStep, submitForm, goToStep } = props;
     const { azureState, azureDispatch } = useContext(AzureStore);
     const [notification, setNotification] = useState<Notification | null>(null);
     const azureClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
@@ -106,12 +106,13 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<AzureClusterSettingFormInputs> = (data) => {
-        if (canContinue() && deploy) {
-            deploy();
+        if (canContinue() && goToStep && currentStep && submitForm) {
+            submitForm(currentStep);
+            goToStep(currentStep + 1);
         }
     };
 
-    const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: string) => {
+    const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: any) => {
         azureDispatch({
             type: INPUT_CHANGE,
             field,
@@ -154,7 +155,9 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     return (
         <FormProvider {...methods}>
             <div className="wizard-content-container">
-                <h2 cds-layout="m-t:lg">Azure Management Cluster Settings</h2>
+                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                    Azure Management Cluster Settings
+                </h2>
                 <div cds-layout="grid gap:m" key="section-holder">
                     <div cds-layout="col:4" key="cluster-name-section">
                         <ClusterName
@@ -186,9 +189,8 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                         />
                     </div>
                 </div>
-                <CdsButton cds-layout="col:start-1" status="success" onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
-                    <CdsIcon shape="cluster" size="sm"></CdsIcon>
-                    Create Management cluster
+                <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                    NEXT
                 </CdsButton>
             </div>
         </FormProvider>

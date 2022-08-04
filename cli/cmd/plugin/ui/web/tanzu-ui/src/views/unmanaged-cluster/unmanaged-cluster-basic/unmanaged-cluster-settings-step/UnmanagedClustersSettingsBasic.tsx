@@ -36,6 +36,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     });
     const {
         handleSubmit,
+        setValue,
         formState: { errors },
     } = methods;
 
