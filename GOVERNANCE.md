@@ -5,7 +5,7 @@ This document defines the project governance for Tanzu Community Edition, an ope
 
 ## Overview
 
-VMware Tanzu Community Edition is a full-featured, easy to manage Kubernetes platform for learners and users. It is a freely available, community supported, open source distribution of VMware Tanzu that can be installed and configured in minutes on your local workstation or your favorite cloud.
+VMware Tanzu Community Edition is a full-featured, easy to manage Tanzu platform for learners and users. It is a freely available, community supported, open source distribution of VMware Tanzu that can be installed and configured in minutes on your local workstation or your favorite cloud.
 
 We are committed to the project not only delivering the distribution, but also building an open, inclusive, and productive vendor driven open source community; together, we will advance a reliable, nimble, and extensible foundation for modern applications.
 

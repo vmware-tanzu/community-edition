@@ -35,7 +35,7 @@ export default function Intro() {
         <Box sx={{ mt: 2, mx: 15 }}>
           <Typography>
             Tanzu Community Edition is a full-featured, easy-to-manage
-            Kubernetes platform for all technical practitioners, from developers
+            Tanzu platform for all technical practitioners, from developers
             to platform operators and architects. It is a community supported,
             open source distribution including VMware Tanzu’s ecosystem and
             beyond, that can be installed and configured in minutes on your
