@@ -3,7 +3,7 @@
 
 # Tanzu Community Edition
 
-Tanzu Community Edition is a fully-featured, easy to manage, Kubernetes platform
+Tanzu Community Edition is a fully-featured, easy to manage, Tanzu platform
 for learners and users. It is a freely available, community supported, and open
 source distribution of VMware Tanzu. It can be installed and deployed in minutes to your
 local workstation or favorite infrastructure provider. Along with cluster
