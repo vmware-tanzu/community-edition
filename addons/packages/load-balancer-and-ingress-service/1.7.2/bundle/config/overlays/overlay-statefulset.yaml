@@ -62,7 +62,7 @@ spec:
             - name: CTRL_VERSION
               valueFrom:
                 configMapKeyRef:
-                  name: avi-k8s-config
+                  name: avi-version-config
                   key: controllerVersion
 #@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:

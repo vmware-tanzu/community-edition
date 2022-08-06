@@ -15,10 +15,6 @@ data:
   primaryInstance: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.primary_instance)
 #@ end
   controllerIP: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.controller_ip)
-#@ if values.loadBalancerAndIngressService.config.controller_settings.controller_version:
-  #@overlay/match missing_ok=True
-  controllerVersion: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.controller_version)
-#@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.cni_plugin:
   #@overlay/match missing_ok=True
   cniPlugin: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.cni_plugin)
@@ -119,3 +115,22 @@ data:
   #@overlay/match missing_ok=True
   enableMCI: #@ values.loadBalancerAndIngressService.config.l7_settings.enable_MCI
 #@ end
+
+#@ def avi_version_config():
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: avi-version-config
+  namespace: #@ values.loadBalancerAndIngressService.namespace
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/versioned: ""
+    kapp.k14s.io/num-versions: "5"
+data:
+#@ if values.loadBalancerAndIngressService.config.controller_settings.controller_version:
+  #@overlay/match missing_ok=True
+  controllerVersion: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.controller_version)
+#@ end
+#@ end
+
+--- #@ avi_version_config()
