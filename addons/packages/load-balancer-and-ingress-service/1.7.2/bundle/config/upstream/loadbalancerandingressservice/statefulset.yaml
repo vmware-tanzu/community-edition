@@ -28,7 +28,7 @@ spec:
       containers:
         - name: ako
           securityContext: {}
-          image: projects-stg.registry.vmware.com/tkg/ako:v1.7.2_vmware.1
+          image: projects-stg.registry.vmware.com/tkg/ako:v1.7.2_vmware.2
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
