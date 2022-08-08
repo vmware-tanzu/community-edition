@@ -4,11 +4,11 @@ import { AWS_ADD_RESOURCES, AWS_DELETE_RESOURCES } from '../../../state-manageme
 
 export const STORE_SECTION_AWS_RESOURCES = 'resources';
 
-// The resources reducer builds up state by ensuring an object associated with action.datacenter,
+// The resources reducer builds up state by ensuring an object associated with action.region,
 // and then assigning object[action.resourceName] = action.payload.
 // So if the action object were:
-// { datacenter: dc-10, resourceName: osImages, payload: [obj1, obj2, obj3] }, then we would expect
-// to see state['dc-10']['osImages'] === [obj1, obj2, obj3]
+// { region: us-east-1, resourceName: osImages, payload: [obj1, obj2, obj3] }, then we would expect
+// to see state['us-east-1']['osImages'] === [obj1, obj2, obj3]
 function awsResourcesReducer(state: any, action: AwsResourceAction) {
     const newState = { ...state };
     if (!action.resourceName) {
