@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 
-import { LazyLog } from 'react-lazylog';
+import { LazyLog, ScrollFollow } from 'react-lazylog';
 import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 // App imports
@@ -156,21 +156,29 @@ function DeployProgress() {
 
     return (
         <>
-            <div cds-layout="vertical gap:md gap@md:lg col:12">
-                <div cds-layout="grid col:12 p:lg gap:md gap@md:lg" className="section-raised">
-                    <div cds-text="title" cds-layout="col:12">
+            <div cds-layout="horizontal gap:md gap@md:lg col:12 p-t:lg align:stretch">
+                <div cds-layout="col:12 p:lg gap:md gap@md:lg" className="section-raised">
+                    <div cds-text="title" cds-layout="col:12 p-b:sm">
                         {displayPageTitle()}
                     </div>
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
-                    {displayDeployTimeline()}
-                    <div className="log-container" cds-layout="col:9">
-                        <LazyLog
-                            selectableLines
-                            formatPart={(log: string) => {
-                                return setLogLineCssClass(log);
-                            }}
-                            text={logMessageHistory.join('\n')}
-                        />
+                    <div cds-layout="horizontal cols:12 gap:md p-y:md align:fill">
+                        {displayDeployTimeline()}
+                        <div className="log-container">
+                            <ScrollFollow
+                                startFollowing={true}
+                                render={({ follow }) => (
+                                    <LazyLog
+                                        selectableLines
+                                        formatPart={(log: string) => {
+                                            return setLogLineCssClass(log);
+                                        }}
+                                        text={logMessageHistory.join('\n')}
+                                        follow={follow}
+                                    />
+                                )}
+                            />
+                        </div>
                     </div>
                     <nav cds-layout="col:12">
                         <Link to="/">
@@ -209,7 +217,7 @@ function DeployProgress() {
     function displayDeployTimeline() {
         if (clusterType === DeploymentTypes.MANAGEMENT_CLUSTER) {
             return (
-                <div cds-layout="col:3 p-b:md">
+                <div className="vertical-timeline" cds-layout="p-b:md">
                     <span cds-text="section">
                         <DeployTimeline data={statusMessageHistory} />
                     </span>
