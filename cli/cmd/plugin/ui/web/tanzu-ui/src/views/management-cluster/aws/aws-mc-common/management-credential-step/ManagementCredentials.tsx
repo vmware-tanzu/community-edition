@@ -41,7 +41,7 @@ export interface FormInputs {
 type FormField = 'PROFILE' | 'REGION' | 'SECRET_ACCESS_KEY' | 'SESSION_TOKEN' | 'ACCESS_KEY_ID' | 'EC2_KEY_PAIR';
 
 function ManagementCredentials(props: Partial<StepProps>) {
-    const { currentStep, goToStep, submitForm } = props;
+    const { currentStep, goToStep, submitForm, defaultService } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
@@ -104,11 +104,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     payload: osImages,
                 } as AwsResourceAction);
                 if (osImages[0]) {
-                    awsDispatch({
-                        type: INPUT_CHANGE,
-                        field: 'OS_IMAGE',
-                        payload: osImages[0],
-                    } as FormAction);
+                    defaultService?.setDefaultOsImage(osImages[0]);
                 }
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
@@ -171,31 +167,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        if (awsState[STORE_SECTION_FORM].REGION) {
-            retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
+        if (awsState[STORE_SECTION_FORM].REGION !== '') {
+            const retrieveOsImages = async () => {
+                setOsImages(await defaultService?.retrieveOsImages(awsState[STORE_SECTION_FORM].REGION));
+            };
+            retrieveOsImages();
         }
     }, [awsState[STORE_SECTION_FORM].REGION]);
-
-    function retrieveOsImages(region: string) {
-        try {
-            setOsImages([]);
-            if (region !== '') {
-                AwsService.getAwsosImages(region).then((data) => {
-                    setOsImages(data);
-                    setErrorMessage((errorMessage) => {
-                        const copy = { ...errorMessage };
-                        delete copy['OS_IMAGE'];
-                        return copy;
-                    });
-                });
-            }
-        } catch (e) {
-            setErrorMessage({
-                ...errorMessage,
-                OS_IMAGE: e,
-            });
-        }
-    }
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
