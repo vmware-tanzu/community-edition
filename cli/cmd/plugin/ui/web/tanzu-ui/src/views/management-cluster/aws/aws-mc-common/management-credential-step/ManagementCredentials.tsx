@@ -98,8 +98,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
-                goToStep(currentStep + 1);
-                submitForm(currentStep);
                 awsDispatch({
                     type: AWS_ADD_RESOURCES,
                     resourceName: 'osImages',
@@ -112,6 +110,8 @@ function ManagementCredentials(props: Partial<StepProps>) {
                         payload: osImages[0],
                     } as FormAction);
                 }
+                goToStep(currentStep + 1);
+                submitForm(currentStep);
             }
         }
     };
@@ -171,20 +171,24 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
+        if (awsState[STORE_SECTION_FORM].REGION) {
+            retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
+        }
     }, [awsState[STORE_SECTION_FORM].REGION]);
 
-    function retrieveOsImages(region: string | undefined) {
+    function retrieveOsImages(region: string) {
         try {
             setOsImages([]);
-            AwsService.getAwsosImages(region).then((data) => {
-                setOsImages(data);
-                setErrorMessage((errorMessage) => {
-                    const copy = { ...errorMessage };
-                    delete copy['OS_IMAGE'];
-                    return copy;
+            if (region !== '') {
+                AwsService.getAwsosImages(region).then((data) => {
+                    setOsImages(data);
+                    setErrorMessage((errorMessage) => {
+                        const copy = { ...errorMessage };
+                        delete copy['OS_IMAGE'];
+                        return copy;
+                    });
                 });
-            });
+            }
         } catch (e) {
             setErrorMessage({
                 ...errorMessage,

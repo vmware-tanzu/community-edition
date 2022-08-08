@@ -59,8 +59,13 @@ interface AwsClusterSettingFormInputs {
     [AWS_FIELDS.OS_IMAGE]: string;
 }
 
+function yupStringRequired(errorMessage: string) {
+    return yup.string().nullable().required(errorMessage);
+}
+
 function createYupSchemaObject() {
     return {
+        OS_IMAGE: yupStringRequired('Please select an OS image'),
         NODE_PROFILE: nodeInstanceTypeValidation(),
         CLUSTER_NAME: clusterNameValidation(),
     };
@@ -102,6 +107,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     const osImages = (getResource('osImages', awsState) || []) as AWSVirtualMachine[];
     let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM].NODE_PROFILE;
 
+    if (awsState[STORE_SECTION_FORM].OS_IMAGE) {
+        setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM].OS_IMAGE.name);
+    }
     if (!initialSelectedInstanceTypeId) {
         initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
         setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
