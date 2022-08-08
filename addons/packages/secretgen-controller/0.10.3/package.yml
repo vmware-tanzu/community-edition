@@ -1,0 +1,63 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: secretgen-controller.carvel.dev.0.10.3
+spec:
+  refName: secretgen-controller.carvel.dev
+  version: 0.10.3
+  releaseNotes: https://github.com/vmware-tanzu/carvel-secretgen-controller/releases/tag/v0.10.3
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy secretgen-controller
+          default: secretgen-controller
+        create_namespace:
+          type: boolean
+          description: Whether to create namespace specified for secretgen-controller
+          default: true
+        deployment:
+          type: object
+          additionalProperties: false
+          description: Configuration for secretgen-controller deployment
+          properties:
+            updateStrategy:
+              type: string
+              description: Update strategy of deployments, empty uses default strategy
+              default: ""
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: 1
+                maxSurge:
+                  type: integer
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: 0
+            nodeSelector:
+              nullable: true
+              description: NodeSelector configuration applied to all the deployments
+              default: null
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: ghcr.io/vmware-tanzu/carvel-secretgen-controller-package-bundle@sha256:f9e6b9f888f2ffd454fdb5afad4f119f0b7c8deccf465fc9ca3fa3a5c882ad73
+      template:
+      - ytt:
+          paths:
+          - config
+      - kbld:
+          paths:
+          - .imgpkg/images.yml
+          - '-'
+      deploy:
+      - kapp: {}
