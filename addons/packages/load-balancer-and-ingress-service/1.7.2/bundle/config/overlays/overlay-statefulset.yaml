@@ -29,6 +29,9 @@ spec:
       app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
   template:
     metadata:
+      #@overlay/match missing_ok=True
+      annotations:
+        ako.tanzu.vmware.com/avi-controller-version: #@ "v-{}".format(values.loadBalancerAndIngressService.config.controller_settings.controller_version)
       labels:
         app.kubernetes.io/name: #@ values.loadBalancerAndIngressService.name
     spec:
