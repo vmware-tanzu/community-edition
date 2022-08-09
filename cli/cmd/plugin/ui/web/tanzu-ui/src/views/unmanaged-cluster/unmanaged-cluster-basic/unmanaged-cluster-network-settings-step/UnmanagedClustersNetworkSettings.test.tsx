@@ -28,10 +28,6 @@ describe('UnmanagedNetworksettings component', () => {
         render(<UnmanagedClusterNetworkSettings />);
         expect(await screen.findByText('Cluster service CIDR')).toBeInTheDocument();
     });
-    it('should verify cluster service CIDR form', async () => {
-        render(<UnmanagedClusterNetworkSettings />);
-        expect(await screen.findByText('Cluster service CIDR')).toBeInTheDocument();
-    });
     it('should have cluster POD CIDR form', async () => {
         render(<UnmanagedClusterNetworkSettings />);
         expect(await screen.findByText('Cluster POD CIDR')).toBeInTheDocument();
