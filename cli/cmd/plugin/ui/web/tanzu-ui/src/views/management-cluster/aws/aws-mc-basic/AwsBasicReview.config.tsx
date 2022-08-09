@@ -30,7 +30,7 @@ const configGroupClusterSettings: ConfigGroup = {
         { label: 'Node Type', field: AWS_FIELDS.NODE_PROFILE },
         {
             label: 'OS Image',
-            field: AWS_FIELDS.IMAGE_INFO,
+            field: AWS_FIELDS.OS_IMAGE,
             longValue: true,
             transform: (pair) => {
                 return { ...pair, value: pair.value?.name ?? '' };
