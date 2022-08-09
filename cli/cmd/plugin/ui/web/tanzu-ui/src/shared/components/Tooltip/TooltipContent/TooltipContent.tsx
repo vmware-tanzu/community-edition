@@ -1,8 +1,8 @@
 import React from 'react';
 import './TooltipContent.scss';
 
-type Position = 'left' | 'right' | 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right';
-type Size = 'small' | 'medium' | 'large';
+export type Position = 'left' | 'right' | 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right';
+export type Size = 'small' | 'medium' | 'large';
 
 interface TooltipProps {
     position: Position;

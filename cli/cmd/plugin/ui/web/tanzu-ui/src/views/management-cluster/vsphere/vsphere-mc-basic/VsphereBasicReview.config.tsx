@@ -1,4 +1,4 @@
-import { CommonValueDisplayFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
+import { CommonConfigTransformationFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
 import { ConfigDisplayData } from '../../../../shared/components/ConfigReview/ConfigDisplay';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 
@@ -12,7 +12,7 @@ const configGroupsBasic: ConfigGroup[] = [
             {
                 label: 'Password',
                 field: VSPHERE_FIELDS.PASSWORD,
-                createValueDisplay: CommonValueDisplayFunctions.MASK,
+                transform: CommonConfigTransformationFunctions.MASK,
             },
         ],
     },
@@ -25,7 +25,7 @@ const configGroupsBasic: ConfigGroup[] = [
             {
                 label: 'SSH key',
                 field: VSPHERE_FIELDS.SSHKEY,
-                createValueDisplay: CommonValueDisplayFunctions.TRUNCATE(24),
+                transform: CommonConfigTransformationFunctions.TRUNCATE(24),
             },
         ],
     },

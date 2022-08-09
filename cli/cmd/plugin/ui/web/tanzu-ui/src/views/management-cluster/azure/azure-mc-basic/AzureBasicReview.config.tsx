@@ -1,4 +1,4 @@
-import { CommonValueDisplayFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
+import { CommonConfigTransformationFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
 import { ConfigDisplayData } from '../../../../shared/components/ConfigReview/ConfigDisplay';
 import { OsImage } from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { AZURE_FIELDS } from './AzureManagementClusterBasic.constants';
@@ -12,7 +12,7 @@ const configGroupCredentials: ConfigGroup = {
         { label: 'Subscription Id', field: AZURE_FIELDS.SUBSCRIPTION_ID },
         { label: 'Environment', field: AZURE_FIELDS.AZURE_ENVIRONMENT },
         { label: 'Region', field: AZURE_FIELDS.REGION },
-        { label: 'Public SSH Key', field: AZURE_FIELDS.SSH_PUBLIC_KEY, createValueDisplay: CommonValueDisplayFunctions.TRUNCATE(24) },
+        { label: 'Public SSH Key', field: AZURE_FIELDS.SSH_PUBLIC_KEY, transform: CommonConfigTransformationFunctions.TRUNCATE(24) },
     ],
 };
 
@@ -25,7 +25,9 @@ const configGroupClusterSettings: ConfigGroup = {
             label: 'OS Image',
             field: AZURE_FIELDS.OS_IMAGE,
             longValue: true,
-            createValueDisplay: (osImageInfo: OsImage) => osImageInfo?.name ?? '',
+            transform: (pair) => {
+                return { ...pair, value: pair.value?.name ?? '' };
+            },
         },
     ],
 };
