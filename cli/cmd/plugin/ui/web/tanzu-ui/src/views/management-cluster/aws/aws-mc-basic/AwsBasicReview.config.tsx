@@ -1,4 +1,4 @@
-import { CommonValueDisplayFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
+import { CommonConfigTransformationFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
 import { AWS_FIELDS } from './AwsManagementClusterBasic.constants';
 import { ConfigDisplayData } from '../../../../shared/components/ConfigReview/ConfigDisplay';
 import { OsImage } from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
@@ -6,9 +6,9 @@ import { OsImage } from '../../../../shared/components/FormInputComponents/OsIma
 const configGroupOneTimeCredentials: ConfigGroup = {
     label: 'One-time credentials',
     pairs: [
-        { label: 'Access Key', field: AWS_FIELDS.SECRET_ACCESS_KEY, createValueDisplay: CommonValueDisplayFunctions.MASK },
-        { label: 'Key Id', field: AWS_FIELDS.ACCESS_KEY_ID, createValueDisplay: CommonValueDisplayFunctions.MASK },
-        { label: 'Session token', field: AWS_FIELDS.SESSION_TOKEN, createValueDisplay: CommonValueDisplayFunctions.MASK },
+        { label: 'Access Key', field: AWS_FIELDS.SECRET_ACCESS_KEY, transform: CommonConfigTransformationFunctions.MASK },
+        { label: 'Key Id', field: AWS_FIELDS.ACCESS_KEY_ID, transform: CommonConfigTransformationFunctions.MASK },
+        { label: 'Session token', field: AWS_FIELDS.SESSION_TOKEN, transform: CommonConfigTransformationFunctions.MASK },
         { label: 'Region', field: AWS_FIELDS.REGION },
         { label: 'EC2 key pair', field: AWS_FIELDS.EC2_KEY_PAIR },
     ],
@@ -30,9 +30,11 @@ const configGroupClusterSettings: ConfigGroup = {
         { label: 'Node Type', field: AWS_FIELDS.NODE_PROFILE },
         {
             label: 'OS Image',
-            field: AWS_FIELDS.IMAGE_INFO,
+            field: AWS_FIELDS.OS_IMAGE,
             longValue: true,
-            createValueDisplay: (osImageInfo: OsImage) => osImageInfo?.name ?? '',
+            transform: (pair) => {
+                return { ...pair, value: pair.value?.name ?? '' };
+            },
         },
     ],
 };

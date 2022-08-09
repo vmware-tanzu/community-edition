@@ -49,6 +49,9 @@ describe('ManagementCredential component', () => {
         }),
         rest.post('/api/provider/aws', (req, res, ctx) => {
             return res(ctx.status(200));
+        }),
+        rest.get('api/provider/aws/osimages', (req, res, ctx) => {
+            return res(ctx.status(200));
         })
     );
 
