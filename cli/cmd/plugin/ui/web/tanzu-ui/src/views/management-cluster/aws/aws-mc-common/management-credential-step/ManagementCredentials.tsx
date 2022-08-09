@@ -201,7 +201,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
             return (
                 <div>
-                    <div className="error-text">Error Occurs</div>
+                    <div className="error-text">Error Occurred</div>
                     <br />
                     {Object.keys(errorMessage).map((errorField) => {
                         return (
