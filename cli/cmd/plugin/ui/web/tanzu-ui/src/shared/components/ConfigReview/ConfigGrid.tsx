@@ -1,27 +1,43 @@
 // React imports
 import React from 'react';
+// Library imports
+import { CdsIcon } from '@cds/react/icon';
 // App imports
 import './ConfigReview.scss';
-
-const GRIDCELLS_PER_LABEL = 2;
-const GRIDCELLS_PER_VALUE = 4;
-const GRIDCELLS_PER_PAIR = GRIDCELLS_PER_LABEL + GRIDCELLS_PER_VALUE;
-const PAIRS_PER_LINE = 2;
+import '../../../scss/utils.scss';
+import { TooltipDefault } from '../Tooltip/TooltipDefault';
 
 export interface ConfigGridProps {
     groups: ConfigGroup[];
 }
+
+export type ConfigDisplayFunction = (pair: ConfigPair) => ConfigPair;
+
 export interface ConfigPair {
     label: string;
     field?: string; // used for retrieving the data from a store object
-    value?: string; // may be hard-coded or dynamically retrieved from store object using field attribute
-    createValueDisplay?: (value: any) => string; // used to modify the value into a more display-friendly string
+    value?: any; // may be hard-coded or dynamically retrieved from store object using field attribute
+    transform?: ConfigDisplayFunction; // used to modify the pair data into a more display-friendly data
     longValue?: boolean; // if a long value is expected, we use 3 columns to display it
+    tooltip?: string;
 }
 
-export const CommonValueDisplayFunctions = {
-    MASK: (value: string) => '*'.repeat(value ? value.length : 0),
-    TRUNCATE: (nChars: number) => (value: string) => value && value.length > nChars ? `${value.substring(0, nChars - 3)}...` : value,
+export const CommonConfigTransformationFunctions = {
+    MASK: (pair: ConfigPair) => {
+        const value = '*'.repeat(pair?.value ? pair.value.length : 0);
+        return { ...pair, value };
+    },
+    TRUNCATE: (nChars: number) => (pair: ConfigPair) => {
+        const result = { ...pair };
+        if (!pair.value || pair.value.length <= nChars) {
+            return result;
+        }
+        if (!pair.tooltip) {
+            result.tooltip = pair.value;
+        }
+        result.value = `${pair.value.substring(0, nChars - 3)}...`;
+        return result;
+    },
 };
 
 export interface ConfigGroup {
@@ -39,11 +55,9 @@ export function ConfigGrid(props: ConfigGridProps) {
 }
 
 function ConfigGroupDisplay(group: ConfigGroup) {
-    const totalCellsPerLine = PAIRS_PER_LINE * GRIDCELLS_PER_PAIR;
-    const cdsLayout = `col:${totalCellsPerLine}`;
     return (
         <>
-            <div cds-layout={cdsLayout} className="config-group">
+            <div cds-layout="col:12" className="config-group">
                 {group?.label}
             </div>
             {ConfigLinesDisplay(group.pairs)}
@@ -80,10 +94,8 @@ function ConfigSingleLineDisplay(pairs: ConfigPair[]): JSX.Element[] {
         result.push(ConfigPairDisplay(pairs[0]));
         result.push(ConfigPairDisplay(pairs[1]));
     } else if (pairs.length === 1) {
-        if (pairs[0].longValue) {
-            result.push(ConfigLongValueDisplay(pairs[0]));
-        } else {
-            result.push(ConfigPairDisplay(pairs[0]));
+        result.push(ConfigPairDisplay(pairs[0]));
+        if (!pairs[0].longValue) {
             result.push(ConfigPairDisplay(undefined));
         }
     }
@@ -92,35 +104,33 @@ function ConfigSingleLineDisplay(pairs: ConfigPair[]): JSX.Element[] {
 }
 
 function ConfigPairDisplay(pair: ConfigPair | undefined) {
-    const displayValue = pair?.value && pair?.createValueDisplay ? pair.createValueDisplay(pair.value) : pair?.value;
-    // NOTE: the &nbsp; are there to ensure the background is painted when there is no data; a simple space does not work
+    const displayValue = pair?.value ?? '';
+    const displayLabel = pair?.label ?? '';
+    let outerDivCols = 6;
+    let labelDivCols = 6;
+    let valueDivCols = 6;
+    if (pair?.longValue) {
+        outerDivCols = 12;
+        labelDivCols = 3;
+        valueDivCols = 9;
+    }
+    // NOTE: the blank() ensure the background is painted when there is no data; a simple space does not work
     return (
-        <div cds-layout="col:6" className="config-pair">
+        <div cds-layout={`col:${outerDivCols}`} className="config-pair">
             <div cds-layout="grid align:horizontal-stretch">
-                <div cds-layout="col:4" className="config-label">
-                    {pair?.label ? pair.label + ':' : ''}&nbsp;
+                <div cds-layout={`col:${labelDivCols}`} className="config-label">
+                    {displayLabel ? displayLabel + ':' : blank()}
                 </div>
-                <div cds-layout="col:8" className="config-value">
-                    {displayValue}&nbsp;
+                <div cds-layout={`col:${valueDivCols}`} className="config-value">
+                    {displayValue ?? blank()}
+                    {pair?.tooltip && <TooltipDefault tooltipMessage={pair.tooltip} positionClass="top-left" iconSize="sm" />}
+                    {!pair?.tooltip && <CdsIcon className="hide-me" shape="info-circle" size="sm"></CdsIcon>}
                 </div>
             </div>
         </div>
     );
 }
 
-function ConfigLongValueDisplay(pair: ConfigPair | undefined) {
-    const displayValue = pair?.value && pair?.createValueDisplay ? pair.createValueDisplay(pair.value) : pair?.value;
-    // NOTE: the &nbsp; are there to ensure the background is painted when there is no data; a simple space does not work
-    return (
-        <div cds-layout="col:12" className="config-pair">
-            <div cds-layout="grid align:horizontal-stretch">
-                <div cds-layout="col:2" className="config-label">
-                    {pair?.label ? pair.label + ':' : ''}&nbsp;
-                </div>
-                <div cds-layout="col:10" className="config-value">
-                    {displayValue}&nbsp;
-                </div>
-            </div>
-        </div>
-    );
+function blank() {
+    return <div>&nbsp;</div>;
 }
