@@ -106,7 +106,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 if (osImages[0]) {
                     awsDispatch({
                         type: INPUT_CHANGE,
-                        field: 'OS_IMAGE',
+                        field: AWS_FIELDS.OS_IMAGE,
                         payload: osImages[0],
                     } as FormAction);
                 }
@@ -184,7 +184,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     setOsImages(data);
                     setErrorMessage((errorMessage) => {
                         const copy = { ...errorMessage };
-                        delete copy['OS_IMAGE'];
+                        delete copy[AWS_FIELDS.OS_IMAGE];
                         return copy;
                     });
                 });
@@ -192,7 +192,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         } catch (e) {
             setErrorMessage({
                 ...errorMessage,
-                OS_IMAGE: e,
+                [AWS_FIELDS.OS_IMAGE]: e,
             });
         }
     }
@@ -220,7 +220,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const canContinue = (): boolean => {
         return (
             connectionStatus === CONNECTION_STATUS.CONNECTED &&
-            getValues('EC2_KEY_PAIR') !== undefined &&
+            getValues(AWS_FIELDS.EC2_KEY_PAIR) !== undefined &&
             JSON.stringify(errorMessage) === '{}'
         );
     };
