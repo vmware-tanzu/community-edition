@@ -197,7 +197,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
                                         onClick={deployUnmanagedCluster}
                                         disabled={connectionStatus === CONNECTION_STATUS.CONNECTING}
                                     >
-                                        <CdsIcon shape="cluster" size="sm"></CdsIcon>
+                                        <CdsIcon shape="cluster" size="sm" data-testid="create-cluster-btn"></CdsIcon>
                                         Create Unmanaged cluster
                                     </CdsButton>
                                 </div>
