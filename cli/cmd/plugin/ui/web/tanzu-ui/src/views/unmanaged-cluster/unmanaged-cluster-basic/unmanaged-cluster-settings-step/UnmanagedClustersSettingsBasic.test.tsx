@@ -13,7 +13,6 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('Unmanagedsettings component', () => {
-
     it('should render', async () => {
         const view = render(<UnmanagedClusterSettings />);
         await waitFor(() => {
@@ -22,6 +21,6 @@ describe('Unmanagedsettings component', () => {
     });
     it('should have next button', async () => {
         render(<UnmanagedClusterSettings />);
-        expect(await screen.getByText('NEXT')).toBeInTheDocument();
+        expect(screen.getByText('NEXT')).toBeInTheDocument();
     });
 });
