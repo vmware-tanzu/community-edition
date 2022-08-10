@@ -12,9 +12,6 @@ const initialState = {
         // Auth - Credential Profile
         PROFILE: '',
 
-        // Region
-        REGION: '',
-
         // Auth - General
         EC2_KEY_PAIR: '',
 
@@ -22,6 +19,8 @@ const initialState = {
         SECRET_ACCESS_KEY: '',
         SESSION_TOKEN: '',
         ACCESS_KEY_ID: '',
+        // Region
+        REGION: '',
     },
     [STORE_SECTION_AWS_RESOURCES]: {},
 };

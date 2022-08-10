@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // Library imports
 import { CdsAccordion, CdsAccordionContent, CdsAccordionHeader, CdsAccordionPanel } from '@cds/react/accordion';
 // App imports
-import { ConfigGrid, ConfigGroup } from './ConfigGrid';
+import { ConfigGrid, ConfigGroup, ConfigPair } from './ConfigGrid';
 import './ConfigReview.scss';
 
 export interface ConfigDisplayData {
@@ -25,18 +25,18 @@ export function ConfigDisplay(props: ConfigDisplayProps) {
         setOpen((prevState) => !prevState);
     };
 
-    if (props.store) {
-        populateConfigData(props.data.groups, props.store);
-    }
+    const groups = transformConfigData(props.data.groups, props.store);
+    const header = props.data.label;
+    const about = props.data.about;
 
     return (
         <div className="config-section" cds-layout="m-y:sm">
             <CdsAccordion className="accordion-normal">
                 <CdsAccordionPanel expanded={open} cds-motion="off" onExpandedChange={toggleOpen}>
-                    <CdsAccordionHeader>{props.data.label}</CdsAccordionHeader>
+                    <CdsAccordionHeader>{header}</CdsAccordionHeader>
                     <CdsAccordionContent>
-                        <div className="config-about">{props.data.about}</div>
-                        <ConfigGrid groups={props.data.groups} />
+                        <div className="config-about">{about}</div>
+                        <ConfigGrid groups={groups} />
                     </CdsAccordionContent>
                 </CdsAccordionPanel>
             </CdsAccordion>
@@ -44,12 +44,19 @@ export function ConfigDisplay(props: ConfigDisplayProps) {
     );
 }
 
-function populateConfigData(groups: ConfigGroup[], dataObject: any) {
-    groups.forEach((group) => {
-        group?.pairs?.forEach((pair) => {
-            if (pair.field) {
-                pair.value = dataObject[pair.field];
-            }
-        });
-    });
+function transformConfigData(groups: ConfigGroup[], dataObject: any): ConfigGroup[] {
+    return groups.map((group) => transformConfigGroup(group, dataObject));
+}
+
+function transformConfigGroup(group: ConfigGroup, dataObject: any): ConfigGroup {
+    return { ...group, pairs: group.pairs?.map((pair) => transformConfigPair(pair, dataObject)) };
+}
+
+function transformConfigPair(pair: ConfigPair, dataObject: any): ConfigPair {
+    const result = { ...pair };
+    // if there is no given value, but there is a field and a dataObject, use the dataObject to get a value
+    if (!pair.value && pair.field && dataObject) {
+        result.value = dataObject[pair.field];
+    }
+    return result.transform ? result.transform(result) : result;
 }

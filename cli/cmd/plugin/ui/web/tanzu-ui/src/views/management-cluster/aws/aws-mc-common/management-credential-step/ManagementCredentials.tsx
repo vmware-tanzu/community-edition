@@ -167,20 +167,39 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        if (awsState[STORE_SECTION_FORM].REGION !== '') {
-            const retrieveOsImages = async () => {
-                setOsImages(await defaultService?.retrieveOsImages(awsState[STORE_SECTION_FORM].REGION));
-            };
-            retrieveOsImages();
+        if (awsState[STORE_SECTION_FORM].REGION) {
+            retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
         }
     }, [awsState[STORE_SECTION_FORM].REGION]);
+
+    function retrieveOsImages(region: string) {
+        try {
+            setOsImages([]);
+            if (region !== '') {
+                AwsService.getAwsosImages(region).then((data) => {
+                    setOsImages(data);
+                    setErrorMessage((errorMessage) => {
+                        const copy = { ...errorMessage };
+                        delete copy[AWS_FIELDS.OS_IMAGE];
+                        return copy;
+                    });
+                });
+            }
+        } catch (e) {
+            setErrorMessage({
+                ...errorMessage,
+                [AWS_FIELDS.OS_IMAGE]: e,
+            });
+        }
+    }
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
             return (
                 <div>
-                    <div className="error-text">Error Occurs</div>
+                    <div className="error-text">Error Occurred</div>
                     <br />
+                    ge
                     {Object.keys(errorMessage).map((errorField) => {
                         return (
                             <CdsControlMessage status="error" key={errorField}>
@@ -198,7 +217,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const canContinue = (): boolean => {
         return (
             connectionStatus === CONNECTION_STATUS.CONNECTED &&
-            getValues('EC2_KEY_PAIR') !== undefined &&
+            getValues(AWS_FIELDS.EC2_KEY_PAIR) !== undefined &&
             JSON.stringify(errorMessage) === '{}'
         );
     };
