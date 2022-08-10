@@ -28,7 +28,6 @@ import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
 import { AwsDefaults } from '../default-service/AwsDefaults.service';
-import { getResource, STORE_SECTION_AWS_RESOURCES } from '../../../../../views/providers/aws/AwsResources.reducer';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
