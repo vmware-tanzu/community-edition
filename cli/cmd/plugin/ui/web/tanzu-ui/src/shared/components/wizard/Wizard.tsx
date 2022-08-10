@@ -22,7 +22,6 @@ export interface StepProps extends StepWizardChildProps {
     setTabStatus: (status: STATUS[]) => void;
     submitForm: (data: any | undefined) => void;
     updateTabStatus: (currentStep: number | undefined, validForm: boolean) => void;
-    defaultService: { [key: string]: any };
 }
 function Wizard(props: WizardProps) {
     const { tabNames, children } = props;

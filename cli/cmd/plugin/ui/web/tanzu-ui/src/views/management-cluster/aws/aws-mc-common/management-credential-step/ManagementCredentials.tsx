@@ -27,6 +27,8 @@ import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
+import { AwsDefaults } from '../default-service/AwsDefaults.service';
+import { getResource, STORE_SECTION_AWS_RESOURCES } from '../../../../../views/providers/aws/AwsResources.reducer';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -41,7 +43,7 @@ export interface FormInputs {
 type FormField = 'PROFILE' | 'REGION' | 'SECRET_ACCESS_KEY' | 'SESSION_TOKEN' | 'ACCESS_KEY_ID' | 'EC2_KEY_PAIR';
 
 function ManagementCredentials(props: Partial<StepProps>) {
-    const { currentStep, goToStep, submitForm, defaultService } = props;
+    const { currentStep, goToStep, submitForm } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
@@ -98,14 +100,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
-                awsDispatch({
-                    type: AWS_ADD_RESOURCES,
-                    resourceName: 'osImages',
-                    payload: osImages,
-                } as AwsResourceAction);
-                if (osImages[0]) {
-                    defaultService?.setDefaultOsImage(osImages[0]);
-                }
+                AwsDefaults.setDefaultOsImage(awsState, awsDispatch);
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
@@ -183,6 +178,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
                         delete copy[AWS_FIELDS.OS_IMAGE];
                         return copy;
                     });
+                    awsDispatch({
+                        type: AWS_ADD_RESOURCES,
+                        resourceName: 'osImages',
+                        payload: data,
+                    } as AwsResourceAction);
                 });
             }
         } catch (e) {
@@ -199,7 +199,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 <div>
                     <div className="error-text">Error Occurred</div>
                     <br />
-                    ge
                     {Object.keys(errorMessage).map((errorField) => {
                         return (
                             <CdsControlMessage status="error" key={errorField}>
