@@ -6,10 +6,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // App imports
-import { UNMANAGED_CLUSTER_FIELDS } from '../../unmanaged-cluster-common/UnmanagedCluster.constants';
-import { UNMANAGED_PLACEHOLDER_VALUES } from '../../unmanaged-cluster-common/unmanaged.defaults';
+import { UmcProvider } from '../../../../state-management/stores/Store.umc';
 import UnmanagedClusterNetworkSettings from './UnmanagedClustersNetworkSettings';
-import { act } from 'react-dom/test-utils';
 
 const testUnamangedClusterNodeToHostPortMapping = [
     {
@@ -23,15 +21,15 @@ const testUnamangedClusterNodeToHostPortMapping = [
         ip: '122.0.0.2',
         nodePort: '60',
         hostPort: '60',
-        protocol: 'udp',
-        combined: '122.0.0.2:60:60/udp',
+        protocol: 'tcp',
+        combined: '122.0.0.2:60:60/tcp',
     },
     {
         ip: '124.0.0.5',
         nodePort: '92',
         hostPort: '92',
-        protocol: 'sctp',
-        combined: '124.0.0.5:92:92/sctp',
+        protocol: 'tcp',
+        combined: '124.0.0.5:92:92/tcp',
     },
 ];
 
@@ -64,24 +62,24 @@ describe('UnmanagedNetworksettings component', () => {
         render(<UnmanagedClusterNetworkSettings />);
         expect(await screen.findByText('Node to host port mapping')).toBeInTheDocument();
     });
+    //Missing test for protocol change needs to be added after hostport event change
     it('make node to host port mapping string out of all input values', async () => {
-        render(<UnmanagedClusterNetworkSettings />);
+        render(<UmcProvider>
+            <UnmanagedClusterNetworkSettings />
+        </UmcProvider>);
         await screen.findByText('IP Address');
-        const input = screen.getByPlaceholderText('127.0.0.1');
-        fireEvent.change(input, { target: { value: '127.0.0.4' } });
-        // fireEvent.change(screen.getByPlaceholderText('Node port'), {
-        //     target: { value: testUnamangedClusterNodeToHostPortMapping[0].nodePort },
-        // });
-        // fireEvent.change(screen.getByPlaceholderText('Host port'), {
-        //     target: { value: testUnamangedClusterNodeToHostPortMapping[0].hostPort },
-        // });
-        // fireEvent.change(screen.getByText('tcp'), {
-        //     target: { value: testUnamangedClusterNodeToHostPortMapping[0].protocol },
-        // });
-        console.log(screen.getByLabelText(/IP Address/i));
-        console.log(testUnamangedClusterNodeToHostPortMapping[0].combined);
-        let result = await screen.findByText(testUnamangedClusterNodeToHostPortMapping[0].ip);
-        expect(result).toBeInTheDocument();
+        const ip_input = screen.getByPlaceholderText('127.0.0.1');
+        const node_input = screen.getByPlaceholderText('Node port');
+        const host_input = screen.getByPlaceholderText('Host port');
+        
+        for (var unmanagedClusterMapping of testUnamangedClusterNodeToHostPortMapping) {
+            fireEvent.change(ip_input, { target: { value: unmanagedClusterMapping.ip } });
+            fireEvent.change(node_input, { target: { value: unmanagedClusterMapping.nodePort } });
+            fireEvent.change(host_input, { target: { value: unmanagedClusterMapping.hostPort } });
+            const result = await screen.findByText(unmanagedClusterMapping.combined);
+            expect(result).toBeInTheDocument();
+        }
+        
     });
     it('should have create button', async () => {
         render(<UnmanagedClusterNetworkSettings />);
