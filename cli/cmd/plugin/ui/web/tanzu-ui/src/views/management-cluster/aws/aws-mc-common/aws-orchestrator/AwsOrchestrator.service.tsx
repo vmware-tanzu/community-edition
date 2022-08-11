@@ -21,7 +21,7 @@ export class AwsOrchestrator {
 function clearOsImages(props: AwsOrchestratorProps) {
     props.awsDispatch({
         type: AWS_ADD_RESOURCES,
-        resourceName: 'osImages',
+        resourceName: AWS_FIELDS.OS_IMAGE,
         payload: [],
     } as AwsResourceAction);
 }
@@ -29,7 +29,7 @@ function clearOsImages(props: AwsOrchestratorProps) {
 function saveOsImages(props: AwsOrchestratorProps, osImages: AWSVirtualMachine[]) {
     props.awsDispatch({
         type: AWS_ADD_RESOURCES,
-        resourceName: 'osImages',
+        resourceName: AWS_FIELDS.OS_IMAGE,
         payload: osImages,
     } as AwsResourceAction);
 }

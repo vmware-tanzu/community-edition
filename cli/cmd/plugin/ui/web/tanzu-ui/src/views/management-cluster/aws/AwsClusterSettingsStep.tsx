@@ -104,7 +104,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
         } as FormAction);
     };
 
-    const osImages = (getResource('osImages', awsState) || []) as AWSVirtualMachine[];
+    const osImages = (getResource(AWS_FIELDS.OS_IMAGE, awsState) || []) as AWSVirtualMachine[];
     let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM].NODE_PROFILE;
 
     if (awsState[STORE_SECTION_FORM].OS_IMAGE) {
