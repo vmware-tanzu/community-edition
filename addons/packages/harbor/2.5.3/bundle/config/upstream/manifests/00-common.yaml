@@ -5,34 +5,3 @@ metadata:
   name: harbor
   labels:
     app: harbor
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  namespace: harbor
-  name: harbor
-  labels:
-    app: harbor
-rules:
-  - apiGroups:
-      - policy
-    resources:
-      - podsecuritypolicies
-    verbs:
-      - use
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  namespace: harbor
-  name: harbor
-  labels:
-    app: harbor
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: harbor
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: harbor

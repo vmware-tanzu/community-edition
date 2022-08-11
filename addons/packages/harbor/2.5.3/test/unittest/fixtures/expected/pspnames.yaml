@@ -177,7 +177,7 @@ spec:
           secretName: harbor-token-service
       - name: ca-download
         secret:
-          secretName: harbor-tls-2
+          secretName: harbor-tls
       - name: core-internal-certs
         secret:
           secretName: harbor-core-internal-tls
@@ -391,7 +391,7 @@ spec:
   virtualhost:
     fqdn: harbor.yourdomain.com
     tls:
-      secretName: harbor-tls-2
+      secretName: harbor-tls
   routes:
   - conditions:
     - prefix: /
@@ -453,7 +453,7 @@ spec:
   virtualhost:
     fqdn: notary.harbor.yourdomain.com
     tls:
-      secretName: harbor-tls-2
+      secretName: harbor-tls
   routes:
   - conditions:
     - prefix: /
@@ -1745,3 +1745,59 @@ spec:
     name: harbor-ca-issuer
     kind: Issuer
     group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-tls-cert
+  namespace: harbor
+spec:
+  secretName: harbor-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor.yourdomain.com
+  - notary.harbor.yourdomain.com
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: psp:harbor:harbor
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - psptest1
+  - psptest2
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: psp:harbor:harbor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:harbor:harbor
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: harbor

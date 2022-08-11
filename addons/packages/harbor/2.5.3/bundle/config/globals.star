@@ -71,5 +71,13 @@ def get_resource_names_for_role(names):
   end
 end
 
+def getClusterRoleName():
+   return "psp:" + data.values.namespace + ":harbor"
+end
+
+def getClusterRoleBindingName():
+   return "psp:" + data.values.namespace + ":harbor"
+end
+
 #export
 globals = data.values
