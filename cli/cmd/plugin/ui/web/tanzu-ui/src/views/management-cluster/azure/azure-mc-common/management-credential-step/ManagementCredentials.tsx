@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -22,7 +22,7 @@ import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.c
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-
+import { AzureOrchestrator } from '../azure-orchestrator/AzureOrchestrator.service';
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;
     [AZURE_FIELDS.CLIENT_ID]: string;
@@ -120,6 +120,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
             }
         }
     };
+
+    useEffect(() => {
+        if (azureState[STORE_SECTION_FORM].REGION) {
+            AzureOrchestrator.initOsImage(azureState, azureDispatch);
+        }
+    }, [azureState[STORE_SECTION_FORM].REGION]);
+
     return (
         <div className="wizard-content-container azure-credential">
             <h2 cds-layout="m-t:md m-b:xl" cds-text="title">

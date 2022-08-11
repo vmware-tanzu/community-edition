@@ -26,6 +26,7 @@ import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTa
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
 import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
+import { getResource } from '../../../providers/azure/AzureResources.reducer';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [
@@ -74,7 +75,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         resolver: yupResolver(azureClusterSettingsFormSchema),
         mode: 'all',
     });
-    const [images, setImages] = useState<AzureVirtualMachine[]>([]);
+    // const [images, setImages] = useState<AzureVirtualMachine[]>([]);
     const {
         handleSubmit,
         formState: { errors },
@@ -85,6 +86,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     if (updateTabStatus) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
+    const osImages = (getResource('osImages', azureState) || []) as AzureVirtualMachine[];
 
     let initialSelectedNodeProfileId = azureState[AZURE_FIELDS.NODE_PROFILE];
     if (!initialSelectedNodeProfileId) {
@@ -129,28 +131,28 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         setSelectedInstanceTypeId(instanceType);
     };
 
-    useEffect(() => {
-        const setImageInfo = (image: any) => {
-            azureDispatch({
-                type: INPUT_CHANGE,
-                field: AZURE_FIELDS.OS_IMAGE,
-                payload: image,
-            } as FormAction);
-        };
-        const fetchOsImage = async () => {
-            try {
-                const data = await AzureService.getAzureOsImages();
-                setImages(data);
-                setImageInfo(data[0]);
-            } catch (e: any) {
-                setNotification({
-                    status: NotificationStatus.DANGER,
-                    message: `Unable to retrieve OS Images: ${e}`,
-                } as Notification);
-            }
-        };
-        fetchOsImage();
-    }, [azureDispatch]);
+    // useEffect(() => {
+    //     const setImageInfo = (image: any) => {
+    //         azureDispatch({
+    //             type: INPUT_CHANGE,
+    //             field: AZURE_FIELDS.OS_IMAGE,
+    //             payload: image,
+    //         } as FormAction);
+    //     };
+    //     const fetchOsImage = async () => {
+    //         try {
+    //             const data = await AzureService.getAzureOsImages();
+    //             setImages(data);
+    //             setImageInfo(data[0]);
+    //         } catch (e: any) {
+    //             setNotification({
+    //                 status: NotificationStatus.DANGER,
+    //                 message: `Unable to retrieve OS Images: ${e}`,
+    //             } as Notification);
+    //         }
+    //     };
+    //     fetchOsImage();
+    // }, [azureDispatch]);
 
     return (
         <FormProvider {...methods}>
@@ -181,7 +183,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                     <div cds-layout="col:12">
                         <OsImageSelect
                             osImageTitle={'Azure Machine Image'}
-                            images={images}
+                            images={osImages}
                             field={AZURE_FIELDS.OS_IMAGE}
                             onOsImageSelected={(value) => {
                                 onFieldChange(AZURE_FIELDS.OS_IMAGE, value);
