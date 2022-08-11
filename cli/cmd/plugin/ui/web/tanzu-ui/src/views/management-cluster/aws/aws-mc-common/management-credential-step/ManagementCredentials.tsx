@@ -160,20 +160,19 @@ function ManagementCredentials(props: Partial<StepProps>) {
     useEffect(() => {
         if (awsState[STORE_SECTION_FORM].REGION) {
             const initOsImages = async () => {
-                AwsOrchestrator.initOsImages({ awsState, awsDispatch })
-                    .then(() => {
-                        setErrorMessage((errorMessage) => {
-                            const copy = { ...errorMessage };
-                            delete copy[AWS_FIELDS.OS_IMAGE];
-                            return copy;
-                        });
-                    })
-                    .catch((e) => {
-                        setErrorMessage({
-                            ...errorMessage,
-                            [AWS_FIELDS.OS_IMAGE]: e,
-                        });
+                try {
+                    await AwsOrchestrator.initOsImages({ awsState, awsDispatch });
+                    setErrorMessage((errorMessage) => {
+                        const copy = { ...errorMessage };
+                        delete copy[AWS_FIELDS.OS_IMAGE];
+                        return copy;
                     });
+                } catch (e: any) {
+                    setErrorMessage({
+                        ...errorMessage,
+                        [AWS_FIELDS.OS_IMAGE]: e,
+                    });
+                }
             };
             initOsImages();
         }
