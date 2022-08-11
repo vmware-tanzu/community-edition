@@ -159,7 +159,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     useEffect(() => {
         if (awsState[STORE_SECTION_FORM].REGION) {
-            AwsOrchestrator.initOsImage(awsState, awsDispatch)
+            AwsOrchestrator.initOsImages({ awsState, awsDispatch })
                 .then(() => {
                     setErrorMessage((errorMessage) => {
                         const copy = { ...errorMessage };
