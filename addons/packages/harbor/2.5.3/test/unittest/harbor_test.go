@@ -199,4 +199,15 @@ var _ = Describe("Harbor Ytt Templates", func() {
 			ExpectOutputEqualToFile("tls-cert-with-data-with-tls-secret-label.yaml")
 		})
 	})
+
+	Context("configuring pspNames", func() {
+		BeforeEach(func() {
+			values = ValuesFromFile("pspnames.yaml")
+		})
+
+		It("renders with a tlsSecretLabels for given tls cert data", func() {
+			Expect(err).NotTo(HaveOccurred())
+			ExpectOutputEqualToFile("pspnames.yaml")
+		})
+	})
 })
