@@ -1,4 +1,3 @@
-// React imports
 import { AWSVirtualMachine } from '../../../../../swagger-api';
 
 export class AwsDefaults {

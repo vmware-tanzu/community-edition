@@ -1,4 +1,3 @@
-// React imports
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
 import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
