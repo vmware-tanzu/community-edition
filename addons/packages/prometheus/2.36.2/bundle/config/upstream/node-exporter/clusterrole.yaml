@@ -7,8 +7,8 @@ metadata:
     app: prometheus
   name: prometheus-node-exporter
 rules:
-- apiGroups: ['']
+- apiGroups: ['policy']
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - node-exporter
+  - prometheus-node-exporter
