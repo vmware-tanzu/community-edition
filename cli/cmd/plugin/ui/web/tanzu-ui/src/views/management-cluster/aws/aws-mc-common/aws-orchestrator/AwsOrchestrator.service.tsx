@@ -12,13 +12,9 @@ interface AwsOrchestratorProps {
 }
 export class AwsOrchestrator {
     static async initOsImages(props: AwsOrchestratorProps) {
-        // clear previous os images
         clearOsImages(props);
-        // retrieve os images
         const osImages = await AwsService.getAwsosImages(props.awsState[STORE_SECTION_FORM].REGION);
-        // save os images in store
         saveOsImages(props, osImages);
-        // set default os image
         setDefaultOsImage(props, osImages);
     }
 }
