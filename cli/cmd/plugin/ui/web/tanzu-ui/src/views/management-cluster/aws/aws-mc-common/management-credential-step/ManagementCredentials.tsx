@@ -13,12 +13,12 @@ import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 // App import
 import './ManagementCredentials.scss';
 import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
+import { AwsService } from '../../../../../swagger-api';
 import { AwsStore } from '../../../../../state-management/stores/Store.aws';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import { AwsResourceAction, FormAction } from '../../../../../shared/types/types';
+import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
@@ -26,7 +26,7 @@ import ManagementCredentialProfile from './ManagementCredentialProfile';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
+import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -75,7 +75,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
-    const [osImages, setOsImages] = useState<AWSVirtualMachine[]>([]);
     const [errorMessage, setErrorMessage] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
@@ -98,18 +97,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
-                awsDispatch({
-                    type: AWS_ADD_RESOURCES,
-                    resourceName: 'osImages',
-                    payload: osImages,
-                } as AwsResourceAction);
-                if (osImages[0]) {
-                    awsDispatch({
-                        type: INPUT_CHANGE,
-                        field: AWS_FIELDS.OS_IMAGE,
-                        payload: osImages[0],
-                    } as FormAction);
-                }
                 goToStep(currentStep + 1);
                 submitForm(currentStep);
             }
@@ -172,30 +159,24 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     useEffect(() => {
         if (awsState[STORE_SECTION_FORM].REGION) {
-            retrieveOsImages(awsState[STORE_SECTION_FORM].REGION);
-        }
-    }, [awsState[STORE_SECTION_FORM].REGION]);
-
-    function retrieveOsImages(region: string) {
-        try {
-            setOsImages([]);
-            if (region !== '') {
-                AwsService.getAwsosImages(region).then((data) => {
-                    setOsImages(data);
+            const initOsImages = async () => {
+                try {
+                    await AwsOrchestrator.initOsImages({ awsState, awsDispatch });
                     setErrorMessage((errorMessage) => {
                         const copy = { ...errorMessage };
                         delete copy[AWS_FIELDS.OS_IMAGE];
                         return copy;
                     });
-                });
-            }
-        } catch (e) {
-            setErrorMessage({
-                ...errorMessage,
-                [AWS_FIELDS.OS_IMAGE]: e,
-            });
+                } catch (e: any) {
+                    setErrorMessage({
+                        ...errorMessage,
+                        [AWS_FIELDS.OS_IMAGE]: e,
+                    });
+                }
+            };
+            initOsImages();
         }
-    }
+    }, [awsState[STORE_SECTION_FORM].REGION]);
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
