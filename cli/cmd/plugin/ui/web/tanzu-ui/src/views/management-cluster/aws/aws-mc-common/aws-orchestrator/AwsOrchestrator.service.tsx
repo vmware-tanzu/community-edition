@@ -15,16 +15,14 @@ export class AwsOrchestrator {
         clearPreviousValues(props, AWS_FIELDS.OS_IMAGE);
         const osImages = await AwsService.getAwsosImages(props.awsState[STORE_SECTION_FORM].REGION);
         saveCurrentValues(props, AWS_FIELDS.OS_IMAGE, osImages);
-        const defaultOsImage = AwsDefaults.selectDefalutOsImage(osImages);
-        setDefaultValue(props, AWS_FIELDS.OS_IMAGE, defaultOsImage);
+        setDefaultOsImage(props, osImages);
     }
 
     static async initEC2KeyPairs(props: AwsOrchestratorProps) {
         clearPreviousValues(props, AWS_FIELDS.EC2_KEY_PAIR);
         const keyPairs = await AwsService.getAwsKeyPairs();
         saveCurrentValues(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
-        const defaultKeyPair = AwsDefaults.selectDefalutEC2KeyPairs(keyPairs);
-        setDefaultValue(props, AWS_FIELDS.EC2_KEY_PAIR, defaultKeyPair);
+        setDefaultEC2KeyPair(props, keyPairs);
         return keyPairs;
     }
 }
@@ -45,10 +43,18 @@ function saveCurrentValues(props: AwsOrchestratorProps, resourceName: AWS_FIELDS
     } as AwsResourceAction);
 }
 
-function setDefaultValue(props: AwsOrchestratorProps, field: AWS_FIELDS, payload: any) {
+function setDefaultOsImage(props: AwsOrchestratorProps, osImages: AWSVirtualMachine[]) {
     props.awsDispatch({
         type: INPUT_CHANGE,
-        field: field,
-        payload: payload,
+        field: AWS_FIELDS.OS_IMAGE,
+        payload: AwsDefaults.selectDefalutOsImage(osImages),
+    } as FormAction);
+}
+
+function setDefaultEC2KeyPair(props: AwsOrchestratorProps, keyPairs: AWSKeyPair[]) {
+    props.awsDispatch({
+        type: INPUT_CHANGE,
+        field: AWS_FIELDS.EC2_KEY_PAIR,
+        payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
     } as FormAction);
 }
