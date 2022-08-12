@@ -21,7 +21,6 @@ export class AwsOrchestrator {
             saveCurrentDiscoveryData(props, AWS_FIELDS.OS_IMAGE, osImages);
             setDefaultOsImage(props, osImages);
             setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
-            // throw '404';
         } catch (e) {
             setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.OS_IMAGE));
         }
@@ -36,7 +35,6 @@ export class AwsOrchestrator {
             setDefaultEC2KeyPair(props, keyPairs);
             setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
             setKeyPairs(keyPairs);
-            // throw '40411';
         } catch (e) {
             setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.EC2_KEY_PAIR));
         }
