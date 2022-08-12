@@ -88,11 +88,27 @@ function ManagementCredentials(props: Partial<StepProps>) {
             // };
             // initEC2KeyPairs();
 
-            const initEC2KeyPairs = async () => {
-                const keyPairs = await AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch, errorMessage, setErrorMessage });
-                setKeyPairs(keyPairs);
-            };
-            initEC2KeyPairs();
+            // const initEC2KeyPairs = async () => {
+            //     const keyPairs = await AwsOrchestrator.initEC2KeyPairs(
+            //         {
+            //             awsState,
+            //             awsDispatch,
+            //             errorMessage,
+            //             setErrorMessage,
+            //         },
+            //         setKeyPairs
+            //     );
+            // };
+            // initEC2KeyPairs();
+            AwsOrchestrator.initEC2KeyPairs(
+                {
+                    awsState,
+                    awsDispatch,
+                    errorMessage,
+                    setErrorMessage,
+                },
+                setKeyPairs
+            );
         }
     }, [connectionStatus]);
 
@@ -167,6 +183,15 @@ function ManagementCredentials(props: Partial<StepProps>) {
         event.preventDefault();
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             // AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch });
+            AwsOrchestrator.initEC2KeyPairs(
+                {
+                    awsState,
+                    awsDispatch,
+                    errorMessage,
+                    setErrorMessage,
+                },
+                setKeyPairs
+            );
         }
     };
 

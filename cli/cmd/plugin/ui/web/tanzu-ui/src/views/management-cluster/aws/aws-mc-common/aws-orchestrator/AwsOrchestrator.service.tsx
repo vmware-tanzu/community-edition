@@ -10,7 +10,6 @@ interface AwsOrchestratorProps {
     awsState: { [key: string]: any };
     awsDispatch: StoreDispatch;
     errorMessage: { [key: string]: any };
-    // setErrorMessage: (callBack: (errorMessage: { [key: string]: any }) => { [key: string]: any }) => void;
     setErrorMessage: (newErrorMessage: { [key: string]: any }) => void;
 }
 export class AwsOrchestrator {
@@ -28,7 +27,7 @@ export class AwsOrchestrator {
         }
     }
 
-    static async initEC2KeyPairs(props: AwsOrchestratorProps) {
+    static async initEC2KeyPairs(props: AwsOrchestratorProps, setKeyPairs: (keyPairs: AWSKeyPair[]) => void) {
         const { awsState, setErrorMessage, errorMessage } = props;
         try {
             clearPreviousDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR);
@@ -36,20 +35,11 @@ export class AwsOrchestrator {
             saveCurrentDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
             setDefaultEC2KeyPair(props, keyPairs);
             setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
-            return keyPairs;
-
+            setKeyPairs(keyPairs);
             // throw '40411';
         } catch (e) {
             setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.EC2_KEY_PAIR));
-
-            return [];
         }
-
-        // clearPreviousDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR);
-        // const keyPairs = await AwsService.getAwsKeyPairs();
-        // saveCurrentDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
-        // setDefaultEC2KeyPair(props, keyPairs);
-        // return keyPairs;
     }
 }
 
