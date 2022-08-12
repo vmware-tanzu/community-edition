@@ -63,23 +63,30 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
 
-    const fetchKeyPairs = async () => {
-        try {
-            setKeyPairLoading(true);
-            const keyPairs = await AwsService.getAwsKeyPairs();
-            setKeyPairs(keyPairs);
-        } catch (e: any) {
-            console.log(`Unabled to get ec2 key pair: ${e}`);
-        } finally {
-            setKeyPairLoading(false);
-        }
-    };
-
     const [errorMessage, setErrorMessage] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            fetchKeyPairs();
+            const initEC2KeyPairs = async () => {
+                try {
+                    setKeyPairLoading(true);
+                    const keyPairs = await AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch });
+                    setKeyPairs(keyPairs);
+                    setErrorMessage((errorMessage) => {
+                        const copy = { ...errorMessage };
+                        delete copy[AWS_FIELDS.OS_IMAGE];
+                        return copy;
+                    });
+                } catch (e: any) {
+                    setErrorMessage({
+                        ...errorMessage,
+                        [AWS_FIELDS.OS_IMAGE]: e,
+                    });
+                } finally {
+                    setKeyPairLoading(false);
+                }
+            };
+            initEC2KeyPairs();
         }
     }, [connectionStatus]);
 
@@ -153,7 +160,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            fetchKeyPairs();
+            AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch });
         }
     };
 
