@@ -67,24 +67,30 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
+            // const initEC2KeyPairs = async () => {
+            //     try {
+            //         setKeyPairLoading(true);
+            //         const keyPairs = await AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch, errorMessage, setErrorMessage });
+            //         setKeyPairs(keyPairs);
+            //         setErrorMessage((errorMessage) => {
+            //             const copy = { ...errorMessage };
+            //             delete copy[AWS_FIELDS.EC2_KEY_PAIR];
+            //             return copy;
+            //         });
+            //     } catch (e: any) {
+            //         setErrorMessage({
+            //             ...errorMessage,
+            //             [AWS_FIELDS.EC2_KEY_PAIR]: e,
+            //         });
+            //     } finally {
+            //         setKeyPairLoading(false);
+            //     }
+            // };
+            // initEC2KeyPairs();
+
             const initEC2KeyPairs = async () => {
-                try {
-                    setKeyPairLoading(true);
-                    const keyPairs = await AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch });
-                    setKeyPairs(keyPairs);
-                    setErrorMessage((errorMessage) => {
-                        const copy = { ...errorMessage };
-                        delete copy[AWS_FIELDS.OS_IMAGE];
-                        return copy;
-                    });
-                } catch (e: any) {
-                    setErrorMessage({
-                        ...errorMessage,
-                        [AWS_FIELDS.OS_IMAGE]: e,
-                    });
-                } finally {
-                    setKeyPairLoading(false);
-                }
+                const keyPairs = await AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch, errorMessage, setErrorMessage });
+                setKeyPairs(keyPairs);
             };
             initEC2KeyPairs();
         }
@@ -160,28 +166,29 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch });
+            // AwsOrchestrator.initEC2KeyPairs({ awsState, awsDispatch });
         }
     };
 
     useEffect(() => {
         if (awsState[STORE_SECTION_FORM].REGION) {
-            const initOsImages = async () => {
-                try {
-                    await AwsOrchestrator.initOsImages({ awsState, awsDispatch });
-                    setErrorMessage((errorMessage) => {
-                        const copy = { ...errorMessage };
-                        delete copy[AWS_FIELDS.OS_IMAGE];
-                        return copy;
-                    });
-                } catch (e: any) {
-                    setErrorMessage({
-                        ...errorMessage,
-                        [AWS_FIELDS.OS_IMAGE]: e,
-                    });
-                }
-            };
-            initOsImages();
+            // const initOsImages = async () => {
+            //     try {
+            //         await AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorMessage, setErrorMessage });
+            //         setErrorMessage((errorMessage) => {
+            //             const copy = { ...errorMessage };
+            //             delete copy[AWS_FIELDS.OS_IMAGE];
+            //             return copy;
+            //         });
+            //     } catch (e: any) {
+            //         setErrorMessage({
+            //             ...errorMessage,
+            //             [AWS_FIELDS.OS_IMAGE]: e,
+            //         });
+            //     }
+            // };
+            // initOsImages();
+            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorMessage, setErrorMessage });
         }
     }, [awsState[STORE_SECTION_FORM].REGION]);
 

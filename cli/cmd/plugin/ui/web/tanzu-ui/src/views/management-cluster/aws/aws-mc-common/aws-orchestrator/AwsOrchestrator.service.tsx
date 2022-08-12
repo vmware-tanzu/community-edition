@@ -9,25 +9,51 @@ import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 interface AwsOrchestratorProps {
     awsState: { [key: string]: any };
     awsDispatch: StoreDispatch;
+    errorMessage: { [key: string]: any };
+    // setErrorMessage: (callBack: (errorMessage: { [key: string]: any }) => { [key: string]: any }) => void;
+    setErrorMessage: (newErrorMessage: { [key: string]: any }) => void;
 }
 export class AwsOrchestrator {
     static async initOsImages(props: AwsOrchestratorProps) {
-        clearPreviousValues(props, AWS_FIELDS.OS_IMAGE);
-        const osImages = await AwsService.getAwsosImages(props.awsState[STORE_SECTION_FORM].REGION);
-        saveCurrentValues(props, AWS_FIELDS.OS_IMAGE, osImages);
-        setDefaultOsImage(props, osImages);
+        const { awsState, setErrorMessage, errorMessage } = props;
+        try {
+            clearPreviousDiscoveryData(props, AWS_FIELDS.OS_IMAGE);
+            const osImages = await AwsService.getAwsosImages(awsState[STORE_SECTION_FORM].REGION);
+            saveCurrentDiscoveryData(props, AWS_FIELDS.OS_IMAGE, osImages);
+            setDefaultOsImage(props, osImages);
+            setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
+            // throw '404';
+        } catch (e) {
+            setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.OS_IMAGE));
+        }
     }
 
     static async initEC2KeyPairs(props: AwsOrchestratorProps) {
-        clearPreviousValues(props, AWS_FIELDS.EC2_KEY_PAIR);
-        const keyPairs = await AwsService.getAwsKeyPairs();
-        saveCurrentValues(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
-        setDefaultEC2KeyPair(props, keyPairs);
-        return keyPairs;
+        const { awsState, setErrorMessage, errorMessage } = props;
+        try {
+            clearPreviousDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR);
+            const keyPairs = await AwsService.getAwsKeyPairs();
+            saveCurrentDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
+            setDefaultEC2KeyPair(props, keyPairs);
+            setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
+            return keyPairs;
+
+            // throw '40411';
+        } catch (e) {
+            setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.EC2_KEY_PAIR));
+
+            return [];
+        }
+
+        // clearPreviousDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR);
+        // const keyPairs = await AwsService.getAwsKeyPairs();
+        // saveCurrentDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
+        // setDefaultEC2KeyPair(props, keyPairs);
+        // return keyPairs;
     }
 }
 
-function clearPreviousValues(props: AwsOrchestratorProps, resourceName: AWS_FIELDS) {
+function clearPreviousDiscoveryData(props: AwsOrchestratorProps, resourceName: AWS_FIELDS) {
     props.awsDispatch({
         type: AWS_ADD_RESOURCES,
         resourceName: resourceName,
@@ -35,7 +61,7 @@ function clearPreviousValues(props: AwsOrchestratorProps, resourceName: AWS_FIEL
     } as AwsResourceAction);
 }
 
-function saveCurrentValues(props: AwsOrchestratorProps, resourceName: AWS_FIELDS, currentValues: any[]) {
+function saveCurrentDiscoveryData(props: AwsOrchestratorProps, resourceName: AWS_FIELDS, currentValues: any[]) {
     props.awsDispatch({
         type: AWS_ADD_RESOURCES,
         resourceName: resourceName,
@@ -57,4 +83,17 @@ function setDefaultEC2KeyPair(props: AwsOrchestratorProps, keyPairs: AWSKeyPair[
         field: AWS_FIELDS.EC2_KEY_PAIR,
         payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
     } as FormAction);
+}
+
+function removeErrorInfo(errorMessage: { [key: string]: any }, field: AWS_FIELDS) {
+    const copy = { ...errorMessage };
+    delete copy[field];
+    return copy;
+}
+
+function addErrorInfo(errorMessage: { [key: string]: any }, error: any, field: AWS_FIELDS) {
+    return {
+        ...errorMessage,
+        [field]: error,
+    };
 }
