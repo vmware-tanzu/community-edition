@@ -1,6 +1,8 @@
 @import '../../../../src/scss/animations/slide-left';
 
 .contextual-help-container {
+    height: 0;
+
     .container {
         .search::placeholder {
             color: var(--cds-global-color-white);
