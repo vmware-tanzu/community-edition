@@ -9,79 +9,79 @@ import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 interface AwsOrchestratorProps {
     awsState: { [key: string]: any };
     awsDispatch: StoreDispatch;
-    errorMessage: { [key: string]: any };
-    setErrorMessage: (newErrorMessage: { [key: string]: any }) => void;
+    errorObject: { [key: string]: any };
+    setErrorObject: (newErrorObject: { [key: string]: any }) => void;
 }
 export class AwsOrchestrator {
     static async initOsImages(props: AwsOrchestratorProps) {
-        const { awsState, setErrorMessage, errorMessage } = props;
+        const { awsState, awsDispatch, setErrorObject, errorObject } = props;
         try {
-            clearPreviousDiscoveryData(props, AWS_FIELDS.OS_IMAGE);
             const osImages = await AwsService.getAwsosImages(awsState[STORE_SECTION_FORM].REGION);
-            saveCurrentDiscoveryData(props, AWS_FIELDS.OS_IMAGE, osImages);
-            setDefaultOsImage(props, osImages);
-            setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
+            saveCurrentResourceData(awsDispatch, AWS_FIELDS.OS_IMAGE, osImages);
+            setDefaultOsImage(awsDispatch, osImages);
+            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.OS_IMAGE));
         } catch (e) {
-            setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.OS_IMAGE));
+            clearPreviousResourceData(awsDispatch, AWS_FIELDS.OS_IMAGE);
+            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.OS_IMAGE));
         }
     }
 
     static async initEC2KeyPairs(props: AwsOrchestratorProps, setKeyPairs: (keyPairs: AWSKeyPair[]) => void) {
-        const { awsState, setErrorMessage, errorMessage } = props;
+        const { awsState, awsDispatch, setErrorObject, errorObject } = props;
         try {
-            clearPreviousDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR);
             const keyPairs = await AwsService.getAwsKeyPairs();
-            saveCurrentDiscoveryData(props, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
-            setDefaultEC2KeyPair(props, keyPairs);
-            setErrorMessage(removeErrorInfo(errorMessage, AWS_FIELDS.OS_IMAGE));
+            saveCurrentResourceData(awsDispatch, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
+            setDefaultEC2KeyPair(awsDispatch, keyPairs);
+            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.OS_IMAGE));
             setKeyPairs(keyPairs);
         } catch (e) {
-            setErrorMessage(addErrorInfo(errorMessage, e, AWS_FIELDS.EC2_KEY_PAIR));
+            clearPreviousResourceData(awsDispatch, AWS_FIELDS.EC2_KEY_PAIR);
+            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.EC2_KEY_PAIR));
         }
     }
 }
 
-function clearPreviousDiscoveryData(props: AwsOrchestratorProps, resourceName: AWS_FIELDS) {
-    props.awsDispatch({
+function clearPreviousResourceData(awsDispatch: StoreDispatch, resourceName: AWS_FIELDS) {
+    awsDispatch({
         type: AWS_ADD_RESOURCES,
         resourceName: resourceName,
         payload: [],
     } as AwsResourceAction);
 }
 
-function saveCurrentDiscoveryData(props: AwsOrchestratorProps, resourceName: AWS_FIELDS, currentValues: any[]) {
-    props.awsDispatch({
+function saveCurrentResourceData(awsDispatch: StoreDispatch, resourceName: AWS_FIELDS, currentValues: any[]) {
+    awsDispatch({
         type: AWS_ADD_RESOURCES,
         resourceName: resourceName,
         payload: currentValues,
     } as AwsResourceAction);
 }
 
-function setDefaultOsImage(props: AwsOrchestratorProps, osImages: AWSVirtualMachine[]) {
-    props.awsDispatch({
+function setDefaultOsImage(awsDispatch: StoreDispatch, osImages: AWSVirtualMachine[]) {
+    awsDispatch({
         type: INPUT_CHANGE,
         field: AWS_FIELDS.OS_IMAGE,
         payload: AwsDefaults.selectDefalutOsImage(osImages),
     } as FormAction);
 }
 
-function setDefaultEC2KeyPair(props: AwsOrchestratorProps, keyPairs: AWSKeyPair[]) {
-    props.awsDispatch({
+function setDefaultEC2KeyPair(awsDispatch: StoreDispatch, keyPairs: AWSKeyPair[]) {
+    awsDispatch({
         type: INPUT_CHANGE,
         field: AWS_FIELDS.EC2_KEY_PAIR,
         payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
     } as FormAction);
 }
 
-function removeErrorInfo(errorMessage: { [key: string]: any }, field: AWS_FIELDS) {
-    const copy = { ...errorMessage };
+function removeErrorInfo(errorObject: { [key: string]: any }, field: AWS_FIELDS) {
+    const copy = { ...errorObject };
     delete copy[field];
     return copy;
 }
 
-function addErrorInfo(errorMessage: { [key: string]: any }, error: any, field: AWS_FIELDS) {
+function addErrorInfo(errorObject: { [key: string]: any }, error: any, field: AWS_FIELDS) {
     return {
-        ...errorMessage,
+        ...errorObject,
         [field]: error,
     };
 }

@@ -63,7 +63,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
 
-    const [errorMessage, setErrorMessage] = useState<{ [key: string]: any }>({});
+    const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
@@ -73,8 +73,8 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     {
                         awsState,
                         awsDispatch,
-                        errorMessage,
-                        setErrorMessage,
+                        errorObject,
+                        setErrorObject,
                     },
                     setKeyPairs
                 );
@@ -160,8 +160,8 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     {
                         awsState,
                         awsDispatch,
-                        errorMessage,
-                        setErrorMessage,
+                        errorObject,
+                        setErrorObject,
                     },
                     setKeyPairs
                 );
@@ -173,20 +173,20 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     useEffect(() => {
         if (awsState[STORE_SECTION_FORM].REGION) {
-            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorMessage, setErrorMessage });
+            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         }
     }, [awsState[STORE_SECTION_FORM].REGION]);
 
     function showErrorInfo() {
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
             return (
                 <div>
                     <div className="error-text">Error Occurred</div>
                     <br />
-                    {Object.keys(errorMessage).map((errorField) => {
+                    {Object.keys(errorObject).map((errorField) => {
                         return (
                             <CdsControlMessage status="error" key={errorField}>
-                                {errorMessage[errorField]}
+                                {errorObject[errorField]}
                             </CdsControlMessage>
                         );
                     })}
@@ -201,7 +201,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         return (
             connectionStatus === CONNECTION_STATUS.CONNECTED &&
             getValues(AWS_FIELDS.EC2_KEY_PAIR) !== undefined &&
-            JSON.stringify(errorMessage) === '{}'
+            JSON.stringify(errorObject) === '{}'
         );
     };
 
