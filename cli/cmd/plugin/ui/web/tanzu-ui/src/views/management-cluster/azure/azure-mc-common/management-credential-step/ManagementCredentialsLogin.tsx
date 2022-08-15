@@ -9,7 +9,6 @@ import { CdsSelect } from '@cds/react/select';
 import { useFormContext } from 'react-hook-form';
 
 // App imports
-import { FormField } from './ManagementCredentials';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { AzureStore } from '../../../../../state-management/stores/Azure.store';
 import { AzureClouds } from '../../../../../shared/constants/App.constants';
@@ -21,7 +20,7 @@ import TextInputWithError from '../../../../../shared/components/Input/TextInput
 interface Props {
     status: CONNECTION_STATUS;
     message: string;
-    handleInputChange: (field: FormField, value: string) => void;
+    handleInputChange: (field: string, value: string) => void;
     handleConnect: () => void;
 }
 

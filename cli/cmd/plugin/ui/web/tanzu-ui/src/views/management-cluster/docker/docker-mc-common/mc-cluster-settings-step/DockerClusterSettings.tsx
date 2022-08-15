@@ -59,7 +59,6 @@ function DockerClusterSettings(props: Partial<StepProps>) {
             payload: clusterName,
         } as FormAction);
     };
-
     return (
         <FormProvider {...methods}>
             <div className="wizard-content-container">

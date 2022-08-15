@@ -12,6 +12,7 @@ import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.const
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+import { DOCKER_FIELDS } from '../../views/management-cluster/docker/docker-mc-basic/DockerManagementClusterBasic.constants';
 
 const useDockerDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -22,14 +23,15 @@ const useDockerDeployment = () => {
     };
 
     const getDockerRequestPayload = () => {
+        const formData = dockerState[STORE_SECTION_FORM];
         const dockerClusterParams: DockerManagementClusterParams = {
-            clusterName: dockerState[STORE_SECTION_FORM].CLUSTER_NAME,
+            clusterName: formData[DOCKER_FIELDS.CLUSTER_NAME],
             networking: {
                 clusterDNSName: '',
                 clusterNodeCIDR: '',
-                clusterServiceCIDR: dockerState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR,
-                clusterPodCIDR: dockerState[STORE_SECTION_FORM].CLUSTER_POD_CIDR,
-                cniType: dockerState[STORE_SECTION_FORM].CNI_TYPE,
+                clusterServiceCIDR: formData[DOCKER_FIELDS.CLUSTER_SERVICE_CIDR],
+                clusterPodCIDR: formData[DOCKER_FIELDS.CLUSTER_POD_CIDR],
+                cniType: formData[DOCKER_FIELDS.CNI_TYPE],
             },
             identityManagement: {
                 idm_type: IdentityManagementConfig.idm_type.NONE,

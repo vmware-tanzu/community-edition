@@ -7,18 +7,19 @@ import azureReducer from '../reducers/Wizard.reducer';
 import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 import { AzureCloud } from '../../shared/constants/App.constants';
 import { AZURE_DEFAULT_VALUES } from '../../shared/constants/defaults/azure.defaults';
+import { AZURE_FIELDS } from '../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
-        TENANT_ID: '',
-        CLIENT_ID: '',
-        CLIENT_SECRET: '',
-        SUBSCRIPTION_ID: '',
-        AZURE_ENVIRONMENT: AzureCloud.PUBLIC,
-        REGION: '',
-        SSH_PUBLIC_KEY: '',
-        OS_IMAGE: {},
-        CLUSTER_NAME: '',
+        [AZURE_FIELDS.TENANT_ID]: '',
+        [AZURE_FIELDS.CLIENT_ID]: '',
+        [AZURE_FIELDS.CLIENT_SECRET]: '',
+        [AZURE_FIELDS.SUBSCRIPTION_ID]: '',
+        [AZURE_FIELDS.AZURE_ENVIRONMENT]: AzureCloud.PUBLIC,
+        [AZURE_FIELDS.REGION]: '',
+        [AZURE_FIELDS.SSH_PUBLIC_KEY]: '',
+        [AZURE_FIELDS.OS_IMAGE]: {},
+        [AZURE_FIELDS.CLUSTER_NAME]: '',
         ...AZURE_DEFAULT_VALUES,
     },
 };
