@@ -18,27 +18,25 @@ function AwsManagementCluster() {
 
     return (
         <AwsProvider>
-            <div className="aws-management-container" cds-layout="grid col:12">
-                <div cds-layout="col:12">
-                    <div cds-layout="col:12 p-b:lg">
-                        <span cds-text="title">
-                            <CdsIconButton
-                                cds-layout="p-t:md"
-                                action="flat"
-                                status="primary"
-                                onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}
-                            >
-                                <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
-                            </CdsIconButton>
-                            <img src={AwsLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
-                            Create a Management Cluster on Amazon Web Services
-                        </span>
-                    </div>
-
-                    {/* Disable Basic/Advanced banner until advanced settings available */}
-                    {/* <ConfigBanner /> */}
-                    <AwsManagementClusterBasic />
+            <div className="aws-management-container" cds-layout="col:12">
+                <div cds-layout="p-b:lg">
+                    <span cds-text="title">
+                        <CdsIconButton
+                            cds-layout="p-t:md"
+                            action="flat"
+                            status="primary"
+                            onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}
+                        >
+                            <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
+                        </CdsIconButton>
+                        <img src={AwsLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
+                        Create a Management Cluster on Amazon Web Services
+                    </span>
                 </div>
+
+                {/* Disable Basic/Advanced banner until advanced settings available */}
+                {/* <ConfigBanner /> */}
+                <AwsManagementClusterBasic />
             </div>
         </AwsProvider>
     );

@@ -23,22 +23,17 @@ function UnmanagedClusterWizard() {
 
     return (
         <UmcProvider>
-            <div cds-layout="grid col:12">
-                <div cds-layout="col:12">
-                    <div cds-layout="col:12 p-b:lg">
-                        <div cds-layout="horizontal align:vertical-center">
-                            <CdsIconButton action="flat" status="primary" onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
-                                <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
-                            </CdsIconButton>
-                            <CdsIcon cds-layout="m-r:sm" shape="computer" size="xl" className="icon-blue"></CdsIcon>
-                            <span cds-text="title">Create an Unmanaged Cluster</span>
-                        </div>
+            <div cds-layout="col:12">
+                <div cds-layout="p-b:lg">
+                    <div cds-layout="horizontal align:vertical-center">
+                        <CdsIconButton action="flat" status="primary" onClick={() => navigate(NavRoutes.UNMANAGED_CLUSTER_INVENTORY)}>
+                            <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
+                        </CdsIconButton>
+                        <CdsIcon cds-layout="m-r:sm" shape="computer" size="xl" className="icon-blue"></CdsIcon>
+                        <span cds-text="title">Create an Unmanaged Cluster</span>
                     </div>
-                    <div cds-layout="vertical align:stretch">{RenderBasicAdvanced()}</div>
                 </div>
-                <div cds-layout="col:4" className="image-container">
-                    <div className="mgmt-cluster-admins-img"></div>
-                </div>
+                <div cds-layout="vertical align:stretch">{RenderBasicAdvanced()}</div>
             </div>
         </UmcProvider>
     );

@@ -18,27 +18,25 @@ function AzureManagementCluster() {
 
     return (
         <AzureProvider>
-            <div cds-layout="grid col:12">
-                <div cds-layout="col:12">
-                    <div cds-layout="col:12 p-b:lg">
-                        <span cds-text="title">
-                            <CdsIconButton
-                                cds-layout="p-t:md"
-                                action="flat"
-                                status="primary"
-                                onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}
-                            >
-                                <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
-                            </CdsIconButton>
-                            <img src={AzureLogo} className="logo logo-42" cds-layout="m-r:md" alt="azure logo" />
-                            Create a Management Cluster on Azure
-                        </span>
-                    </div>
-
-                    {/* Disable Basic/Advanced banner until advanced settings available */}
-                    {/* <ConfigBanner /> */}
-                    <AzureManagementClusterBasic />
+            <div cds-layout="col:12">
+                <div cds-layout="p-b:lg">
+                    <span cds-text="title">
+                        <CdsIconButton
+                            cds-layout="p-t:md"
+                            action="flat"
+                            status="primary"
+                            onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_SELECT_PROVIDER)}
+                        >
+                            <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
+                        </CdsIconButton>
+                        <img src={AzureLogo} className="logo logo-42" cds-layout="m-r:md" alt="azure logo" />
+                        Create a Management Cluster on Azure
+                    </span>
                 </div>
+
+                {/* Disable Basic/Advanced banner until advanced settings available */}
+                {/* <ConfigBanner /> */}
+                <AzureManagementClusterBasic />
             </div>
         </AzureProvider>
     );
