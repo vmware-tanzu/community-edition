@@ -36,7 +36,6 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
     });
     const {
         handleSubmit,
-        setValue,
         formState: { errors },
     } = methods;
 
@@ -84,7 +83,7 @@ function UnmanagedClusterSettings(props: Partial<StepProps>) {
                     </div>
                 </div>
                 <div cds-layout="p-t:lg">
-                    <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
+                    <CdsButton onClick={handleSubmit(onSubmit)} disabled={!canContinue()} data-testid="next-step-btn">
                         NEXT
                     </CdsButton>
                 </div>
