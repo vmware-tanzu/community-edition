@@ -106,7 +106,7 @@ function UnmanagedClusterInventory() {
             <div cds-layout="vertical gap:lg">
                 <div cds-text="title">
                     <CdsIcon cds-layout="m-r:sm" shape="computer" size="xl" className="icon-blue"></CdsIcon>
-                    Unmanaged Cluster
+                    Unmanaged Clusters
                 </div>
                 <div cds-text="subsection">
                     Unmanaged clusters are a single node, local workstation cluster suitable for a development/test environment. It requires
