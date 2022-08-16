@@ -45,7 +45,7 @@ function ManagementCredentialOneTime(props: Props) {
     };
 
     useEffect(() => {
-        // reset();
+        reset();
         clearCredentialProfile();
         // fetch regions
         const fetchRegions = async () => {
@@ -60,7 +60,6 @@ function ManagementCredentialOneTime(props: Props) {
             }
         };
         fetchRegions();
-        reset();
     }, []);
 
     const onInputValueChange = (field: string, value: string) => {

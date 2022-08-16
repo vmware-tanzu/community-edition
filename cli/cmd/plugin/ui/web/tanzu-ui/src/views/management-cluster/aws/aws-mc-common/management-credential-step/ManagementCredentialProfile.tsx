@@ -55,7 +55,7 @@ function ManagementCredentialProfile(props: Props) {
     };
 
     useEffect(() => {
-        // reset();
+        reset();
         clearOneTimeCredentials();
         // fetch regions
         const fetchRegions = async () => {
@@ -70,7 +70,6 @@ function ManagementCredentialProfile(props: Props) {
             }
         };
         fetchRegions();
-        reset();
     }, []);
     useEffect(() => {
         // fetch profiles
