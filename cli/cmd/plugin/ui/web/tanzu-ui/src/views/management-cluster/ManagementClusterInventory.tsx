@@ -196,8 +196,8 @@ function ManagementClusterInventory() {
 
     return (
         <>
-            <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:12 grid">
-                <div cds-layout="vertical col:8 gap:lg">
+            <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:8 grid">
+                <div cds-layout="vertical col:12 gap:lg">
                     <div cds-text="title" cds-layout="horizontal align:vertical-center">
                         <CdsIcon cds-layout="m-r:sm" shape="blocks-group" size="lg"></CdsIcon>
                         Management Clusters
@@ -217,7 +217,7 @@ function ManagementClusterInventory() {
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     {MainContent()}
                 </div>
-                {renderConfirmDeleteModal()}
+                {renderConfirmDeleteModal()}d
             </div>
             <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
             {renderConfirmDeleteModal()}
