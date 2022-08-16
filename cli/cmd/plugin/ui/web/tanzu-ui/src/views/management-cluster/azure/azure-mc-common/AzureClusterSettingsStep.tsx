@@ -75,7 +75,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         resolver: yupResolver(azureClusterSettingsFormSchema),
         mode: 'all',
     });
-    // const [images, setImages] = useState<AzureVirtualMachine[]>([]);
+
     const {
         handleSubmit,
         formState: { errors },
@@ -86,7 +86,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     if (updateTabStatus) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
-    const osImages = (getResource('osImages', azureState) || []) as AzureVirtualMachine[];
+    const osImages = (getResource(AZURE_FIELDS.OS_IMAGE, azureState) || []) as AzureVirtualMachine[];
 
     let initialSelectedNodeProfileId = azureState[AZURE_FIELDS.NODE_PROFILE];
     if (!initialSelectedNodeProfileId) {
@@ -130,29 +130,6 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
         onFieldChange(AZURE_FIELDS.NODE_PROFILE, instanceType);
         setSelectedInstanceTypeId(instanceType);
     };
-
-    // useEffect(() => {
-    //     const setImageInfo = (image: any) => {
-    //         azureDispatch({
-    //             type: INPUT_CHANGE,
-    //             field: AZURE_FIELDS.OS_IMAGE,
-    //             payload: image,
-    //         } as FormAction);
-    //     };
-    //     const fetchOsImage = async () => {
-    //         try {
-    //             const data = await AzureService.getAzureOsImages();
-    //             setImages(data);
-    //             setImageInfo(data[0]);
-    //         } catch (e: any) {
-    //             setNotification({
-    //                 status: NotificationStatus.DANGER,
-    //                 message: `Unable to retrieve OS Images: ${e}`,
-    //             } as Notification);
-    //         }
-    //     };
-    //     fetchOsImage();
-    // }, [azureDispatch]);
 
     return (
         <FormProvider {...methods}>

@@ -52,6 +52,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
     const [regionLoading, setRegionLoading] = useState(false);
+    const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
 
     // update tab status bar
     if (updateTabStatus) {
@@ -121,11 +122,32 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
-    useEffect(() => {
-        if (azureState[STORE_SECTION_FORM].REGION) {
-            AzureOrchestrator.initOsImage(azureState, azureDispatch);
+    function showErrorInfo() {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
+            console.log(errorObject);
+            return (
+                <div>
+                    <div className="error-text">Error Occurred</div>
+                    <br />
+                    {Object.keys(errorObject).map((errorField) => {
+                        return (
+                            <CdsControlMessage status="error" key={errorField}>
+                                {errorObject[errorField]}
+                            </CdsControlMessage>
+                        );
+                    })}
+                    <br />
+                </div>
+            );
         }
-    }, [azureState[STORE_SECTION_FORM].REGION]);
+        return;
+    }
+
+    useEffect(() => {
+        if (azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]) {
+            AzureOrchestrator.initOsImages({ azureState, azureDispatch, errorObject, setErrorObject });
+        }
+    }, [azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]]);
 
     return (
         <div className="wizard-content-container azure-credential">
@@ -182,6 +204,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                                 <CdsControlMessage status="error">{errors[AZURE_FIELDS.SSH_PUBLIC_KEY]?.message}</CdsControlMessage>
                             )}
                         </CdsTextarea>
+                        <div cds-layout="col:6 align:horizontal-center">{showErrorInfo()}</div>
                     </div>
                     <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
                 </CdsFormGroup>
