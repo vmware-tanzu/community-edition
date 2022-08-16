@@ -54,7 +54,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
             [AWS_FIELDS.ACCESS_KEY_ID]: '',
             [AWS_FIELDS.SESSION_TOKEN]: '',
             [AWS_FIELDS.PROFILE]: '',
-            // [AWS_FIELDS.REGION]: '',
+            [AWS_FIELDS.REGION]: '',
             [AWS_FIELDS.EC2_KEY_PAIR]: '',
         },
     });
@@ -103,8 +103,16 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        console.log('ggggggg');
-        console.log(getValues(AWS_FIELDS.SECRET_ACCESS_KEY));
+        const valueList = getValues();
+        for (const i in valueList) {
+            console.log(i);
+            awsDispatch({
+                type: INPUT_CHANGE,
+                field: i,
+                payload: valueList[i],
+            } as FormAction);
+        }
+
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
@@ -181,8 +189,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        if (awsState[STORE_SECTION_FORM].REGION) {
-            console.log('llllllll');
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]) {
             AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         }
     }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);

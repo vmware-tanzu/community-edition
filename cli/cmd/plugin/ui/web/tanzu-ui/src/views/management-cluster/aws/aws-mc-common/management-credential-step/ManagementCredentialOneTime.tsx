@@ -31,22 +31,10 @@ function ManagementCredentialOneTime(props: Props) {
 
     const [regions, setRegions] = useState<string[]>([]);
     const [regionLoading, setRegionLoading] = useState(false);
-    const clearCredentialProfile = () => {
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field: AWS_FIELDS.PROFILE,
-            payload: '',
-        } as FormAction);
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field: AWS_FIELDS.REGION,
-            payload: '',
-        } as FormAction);
-    };
 
     useEffect(() => {
         reset();
-        // clearCredentialProfile();
+        onInputValueChange(AWS_FIELDS.REGION, '');
         // fetch regions
         const fetchRegions = async () => {
             try {
@@ -70,13 +58,6 @@ function ManagementCredentialOneTime(props: Props) {
         } as FormAction);
     };
 
-    const onRegionChange = (field: string, value: string) => {
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field,
-            payload: value,
-        } as FormAction);
-    };
     return (
         <div className="credential-one-time-container">
             <p cds-layout="m-y:lg">
@@ -91,21 +72,18 @@ function ManagementCredentialOneTime(props: Props) {
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SECRET_ACCESS_KEY]}
                             label="Secret access key"
                             name={AWS_FIELDS.SECRET_ACCESS_KEY}
-                            handleInputChange={onInputValueChange}
                             maskText
                         />
                         <TextInputWithError
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.ACCESS_KEY_ID]}
                             label="Access key ID"
                             name={AWS_FIELDS.ACCESS_KEY_ID}
-                            handleInputChange={onInputValueChange}
                             maskText
                         />
                         <TextInputWithError
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SESSION_TOKEN]}
                             label="Session token"
                             name={AWS_FIELDS.SESSION_TOKEN}
-                            handleInputChange={onInputValueChange}
                             maskText
                         />
                     </div>
@@ -114,7 +92,7 @@ function ManagementCredentialOneTime(props: Props) {
                             label="AWS region"
                             className="select-sm-width"
                             handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
-                                onRegionChange(AWS_FIELDS.REGION, e.target.value);
+                                onInputValueChange(AWS_FIELDS.REGION, e.target.value);
                                 selectCallback();
                             }}
                             name={AWS_FIELDS.REGION}

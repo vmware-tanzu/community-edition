@@ -31,32 +31,10 @@ function ManagementCredentialProfile(props: Props) {
     const [profilesLoading, setProfilesLoading] = useState(false);
     const [regions, setRegions] = useState<string[]>([]);
     const [regionLoading, setRegionLoading] = useState(false);
-    const clearOneTimeCredentials = () => {
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field: AWS_FIELDS.SECRET_ACCESS_KEY,
-            payload: '',
-        } as FormAction);
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field: AWS_FIELDS.ACCESS_KEY_ID,
-            payload: '',
-        } as FormAction);
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field: AWS_FIELDS.SESSION_TOKEN,
-            payload: '',
-        } as FormAction);
-        awsDispatch({
-            type: INPUT_CHANGE,
-            field: AWS_FIELDS.REGION,
-            payload: '',
-        } as FormAction);
-    };
 
     useEffect(() => {
         reset();
-        // clearOneTimeCredentials();
+        onSelectChange(AWS_FIELDS.REGION, '');
         // fetch regions
         const fetchRegions = async () => {
             try {
@@ -127,7 +105,7 @@ function ManagementCredentialProfile(props: Props) {
                         label="AWS credential profile"
                         className="select-sm-width"
                         handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
-                            onSelectChange(AWS_FIELDS.PROFILE, e.target.value);
+                            // onSelectChange(AWS_FIELDS.PROFILE, e.target.value);
                             selectCallback();
                         }}
                         name={AWS_FIELDS.PROFILE}
