@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // Library imports
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
@@ -110,11 +110,13 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
         setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
     }
-    if (!initialSelectedInstanceTypeId) {
-        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-    }
+    useEffect(() => {
+        if (!initialSelectedInstanceTypeId) {
+            initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
+            setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+            onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+        }
+    }, []);
 
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
