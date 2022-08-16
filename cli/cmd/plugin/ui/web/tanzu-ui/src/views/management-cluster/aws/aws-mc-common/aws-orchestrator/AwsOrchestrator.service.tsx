@@ -1,17 +1,20 @@
+// App imports
+import { AwsDefaults } from '../default-service/AwsDefaults.service';
+import { AwsResourceAction, FormAction, StoreDispatch } from '../../../../../shared/types/types';
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
+import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
 import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
-import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { AWS_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
-import { AwsResourceAction, FormAction, StoreDispatch } from '../../../../../shared/types/types';
-import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+
 interface AwsOrchestratorProps {
     awsState: { [key: string]: any };
     awsDispatch: StoreDispatch;
     errorObject: { [key: string]: any };
     setErrorObject: (newErrorObject: { [key: string]: any }) => void;
 }
+
 export class AwsOrchestrator {
     static async initOsImages(props: AwsOrchestratorProps) {
         const { awsState, awsDispatch, setErrorObject, errorObject } = props;

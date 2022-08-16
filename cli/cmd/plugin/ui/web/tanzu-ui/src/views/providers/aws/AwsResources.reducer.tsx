@@ -1,6 +1,7 @@
+// App imports
 import { AwsResourceAction } from '../../../shared/types/types';
-import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
 import { AWS_ADD_RESOURCES, AWS_DELETE_RESOURCES } from '../../../state-management/actions/Resources.actions';
+import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
 
 export const STORE_SECTION_AWS_RESOURCES = 'resources';
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 // App imports
 import { AzureManagementClusterParams, AzureService, ConfigFileInfo } from '../../swagger-api';
-import { AzureStore } from '../../state-management/stores/Azure.store';
+import { AzureStore } from '../../views/management-cluster/azure/store/Azure.store.mc';
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { NavRoutes } from '../constants/NavRoutes.constants';

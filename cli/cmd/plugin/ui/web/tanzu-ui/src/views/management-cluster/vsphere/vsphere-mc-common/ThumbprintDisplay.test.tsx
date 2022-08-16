@@ -1,5 +1,8 @@
+// React imports
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+
+// App imports
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 
 const testServerName = 'TEST_SERVER';

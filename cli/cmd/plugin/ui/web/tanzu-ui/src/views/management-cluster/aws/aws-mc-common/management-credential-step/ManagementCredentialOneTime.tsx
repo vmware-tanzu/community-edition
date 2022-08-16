@@ -6,15 +6,15 @@ import { CdsFormGroup } from '@cds/react/forms';
 import { useFormContext } from 'react-hook-form';
 
 // App imports
-import './ManagementCredentialOneTime.scss';
-import { AwsStore } from '../../../../../state-management/stores/Store.aws';
-import TextInputWithError from '../../../../../shared/components/Input/TextInputWithError';
-import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { AwsService } from '../../../../../swagger-api';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { AwsStore } from '../../store/Aws.store.mc';
+import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { FormAction } from '../../../../../shared/types/types';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import TextInputWithError from '../../../../../shared/components/Input/TextInputWithError';
+import './ManagementCredentialOneTime.scss';
 
 interface Props {
     selectCallback: () => void;

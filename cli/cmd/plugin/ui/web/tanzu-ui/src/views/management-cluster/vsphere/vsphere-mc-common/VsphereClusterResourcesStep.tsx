@@ -4,10 +4,9 @@ import React, { useContext } from 'react';
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsControlMessage } from '@cds/react/forms';
-import { CdsIcon } from '@cds/react/icon';
 import { CdsSelect } from '@cds/react/select';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports

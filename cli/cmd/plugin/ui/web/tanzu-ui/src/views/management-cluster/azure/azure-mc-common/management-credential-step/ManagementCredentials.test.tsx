@@ -1,8 +1,12 @@
+// React imports
 import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+
+// Library imports
 import { rest } from 'msw';
 import { setupServer } from 'msw/lib/node';
 
+// App imports
 import ManagementCredentials from './ManagementCredentials';
 
 const regionsMock = ['West US', 'North central US', 'South central US', 'Central US', 'East US', 'East US 2'];

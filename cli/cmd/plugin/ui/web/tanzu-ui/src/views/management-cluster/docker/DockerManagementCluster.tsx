@@ -8,10 +8,10 @@ import { CdsIconButton } from '@cds/react/button';
 
 // App imports
 import DockerManagementClusterBasic from './docker-mc-basic/DockerManagementClusterBasic';
-import { DockerProvider } from '../../../state-management/stores/Docker.store';
+import { DockerProvider } from './store/Docker.store.mc';
 import DockerLogo from '../../../assets/docker.svg';
-import './DockerManagementCluster.scss';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
+import './DockerManagementCluster.scss';
 
 function DockerManagementCluster() {
     const navigate = useNavigate();

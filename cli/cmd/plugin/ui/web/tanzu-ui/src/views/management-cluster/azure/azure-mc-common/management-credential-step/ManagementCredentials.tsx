@@ -3,25 +3,25 @@ import React, { ChangeEvent, useContext, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsTextarea } from '@cds/react/textarea';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 // App import
 import { AzureAccountParams, AzureLocation, AzureService } from '../../../../../swagger-api';
-import { AzureStore } from '../../../../../state-management/stores/Azure.store';
-import { FormAction } from '../../../../../shared/types/types';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../../../shared/components/wizard/Wizard';
-import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { managementCredentialFormSchema } from './management.credential.form.schema';
-import ManagementCredentialsLogin from './ManagementCredentialsLogin';
-import './ManagementCredentials.scss';
+import { AzureStore } from '../../store/Azure.store.mc';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import { FormAction } from '../../../../../shared/types/types';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { managementCredentialFormSchema } from './management.credential.form.schema';
+import ManagementCredentialsLogin from './ManagementCredentialsLogin';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import { StepProps } from '../../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import './ManagementCredentials.scss';
 
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;

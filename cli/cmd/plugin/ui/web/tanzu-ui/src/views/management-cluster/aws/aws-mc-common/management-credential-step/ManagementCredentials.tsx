@@ -5,18 +5,18 @@ import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/core/icon';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
 // App import
-import './ManagementCredentials.scss';
-import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsService } from '../../../../../swagger-api';
-import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { AwsStore } from '../../store/Aws.store.mc';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -26,7 +26,7 @@ import ManagementCredentialProfile from './ManagementCredentialProfile';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
+import './ManagementCredentials.scss';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 

@@ -2,11 +2,11 @@
 import React from 'react';
 
 // App imports
+import DockerClusterSettings from '../docker-mc-common/mc-cluster-settings-step/DockerClusterSettings';
 import { DOCKER_MC_BASIC_TAB_NAMES } from './DockerManagementClusterBasic.constants';
-import Wizard from '../../../../shared/components/wizard/Wizard';
 import McPrerequisiteStep from '../docker-mc-common/mc-prerequisite-step/McPrerequisiteStep';
 import useDockerDeployment from '../../../../shared/services/dockerDeployment';
-import DockerClusterSettings from '../docker-mc-common/mc-cluster-settings-step/DockerClusterSettings';
+import Wizard from '../../../../shared/components/wizard/Wizard';
 
 function DockerManagementClusterBasic() {
     const { deployOnDocker } = useDockerDeployment();

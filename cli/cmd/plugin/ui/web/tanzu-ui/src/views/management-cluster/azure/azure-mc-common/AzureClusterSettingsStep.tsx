@@ -3,29 +3,27 @@ import React, { useContext, useState, useEffect } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import { CdsIcon } from '@cds/react/icon';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
 // App imports
-
+import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
+import { AzureStore } from '../store/Azure.store.mc';
 import { AZURE_FIELDS, AZURE_NODE_PROFILE_NAMES } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
-import { AzureStore } from '../../../../state-management/stores/Azure.store';
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
+import { FormAction } from '../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import {
     NodeInstanceType,
     nodeInstanceTypeValidation,
     NodeProfile,
 } from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
-import { StepProps } from '../../../../shared/components/wizard/Wizard';
-import PageNotification, { Notification, NotificationStatus } from '../../../../shared/components/PageNotification/PageNotification';
-import { FormAction } from '../../../../shared/types/types';
-import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
-import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
 import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
+import PageNotification, { Notification, NotificationStatus } from '../../../../shared/components/PageNotification/PageNotification';
+import { StepProps } from '../../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 // NOTE: icons must be imported
 const nodeInstanceTypes: NodeInstanceType[] = [

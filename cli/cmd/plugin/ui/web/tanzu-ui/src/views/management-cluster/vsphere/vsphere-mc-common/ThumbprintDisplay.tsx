@@ -1,5 +1,8 @@
-import { CdsControlMessage } from '@cds/react/forms';
+// React imports
 import React from 'react';
+
+// Library imports
+import { CdsControlMessage } from '@cds/react/forms';
 
 export interface ThumbprintDisplayInputs {
     serverName: string;
