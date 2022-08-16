@@ -27,7 +27,7 @@ export class AwsOrchestrator {
     }
 
     static async initEC2KeyPairs(props: AwsOrchestratorProps, setKeyPairs: (keyPairs: AWSKeyPair[]) => void) {
-        const { awsState, awsDispatch, setErrorObject, errorObject } = props;
+        const { awsDispatch, setErrorObject, errorObject } = props;
         try {
             const keyPairs = await AwsService.getAwsKeyPairs();
             saveCurrentResourceData(awsDispatch, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
