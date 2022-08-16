@@ -95,7 +95,7 @@ function UnmanagedClusterInventory() {
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     {MainContent()}
                 </div>
-                <div cds-layout="col@sm:4 col:4 container:fill"></div>
+                <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
                 {renderConfirmDeleteModal()}
             </div>
         </div>
