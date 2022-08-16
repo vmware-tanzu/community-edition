@@ -86,7 +86,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     if (updateTabStatus) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
-    const osImages = (getResource('osImages', azureState) || []) as AzureVirtualMachine[];
+    const osImages = (getResource(AZURE_FIELDS.OS_IMAGE, azureState) || []) as AzureVirtualMachine[];
 
     let initialSelectedNodeProfileId = azureState[AZURE_FIELDS.NODE_PROFILE];
     if (!initialSelectedNodeProfileId) {
