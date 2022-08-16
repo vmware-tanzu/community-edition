@@ -34,6 +34,7 @@ const useFormMock = {
                 ...obj,
             };
         },
+        reset: jest.fn(),
     }),
 };
 const methods = useFormMock.useForm();

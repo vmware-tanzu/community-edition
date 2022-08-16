@@ -49,6 +49,14 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
         mode: 'all',
+        defaultValues: {
+            [AWS_FIELDS.SECRET_ACCESS_KEY]: '',
+            [AWS_FIELDS.ACCESS_KEY_ID]: '',
+            [AWS_FIELDS.SESSION_TOKEN]: '',
+            [AWS_FIELDS.PROFILE]: '',
+            [AWS_FIELDS.REGION]: '',
+            [AWS_FIELDS.EC2_KEY_PAIR]: '',
+        },
     });
     const {
         register,

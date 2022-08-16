@@ -22,6 +22,7 @@ function ManagementCredentialProfile(props: Props) {
     const { selectCallback } = props;
     const { awsDispatch } = useContext(AwsStore);
     const {
+        reset,
         register,
         formState: { errors },
     } = useFormContext();
@@ -30,8 +31,32 @@ function ManagementCredentialProfile(props: Props) {
     const [profilesLoading, setProfilesLoading] = useState(false);
     const [regions, setRegions] = useState<string[]>([]);
     const [regionLoading, setRegionLoading] = useState(false);
+    const clearOneTimeCredentials = () => {
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.SECRET_ACCESS_KEY,
+            payload: '',
+        } as FormAction);
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.ACCESS_KEY_ID,
+            payload: '',
+        } as FormAction);
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.SESSION_TOKEN,
+            payload: '',
+        } as FormAction);
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.REGION,
+            payload: '',
+        } as FormAction);
+    };
 
     useEffect(() => {
+        // reset();
+        clearOneTimeCredentials();
         // fetch regions
         const fetchRegions = async () => {
             try {
@@ -45,6 +70,7 @@ function ManagementCredentialProfile(props: Props) {
             }
         };
         fetchRegions();
+        reset();
     }, []);
     useEffect(() => {
         // fetch profiles

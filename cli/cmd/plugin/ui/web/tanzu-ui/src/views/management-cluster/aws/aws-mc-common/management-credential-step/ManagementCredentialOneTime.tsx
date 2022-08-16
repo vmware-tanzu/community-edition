@@ -24,14 +24,29 @@ function ManagementCredentialOneTime(props: Props) {
     const { selectCallback } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const {
+        reset,
         register,
         formState: { errors },
     } = useFormContext();
 
     const [regions, setRegions] = useState<string[]>([]);
     const [regionLoading, setRegionLoading] = useState(false);
+    const clearCredentialProfile = () => {
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.PROFILE,
+            payload: '',
+        } as FormAction);
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.REGION,
+            payload: '',
+        } as FormAction);
+    };
 
     useEffect(() => {
+        // reset();
+        clearCredentialProfile();
         // fetch regions
         const fetchRegions = async () => {
             try {
@@ -45,6 +60,7 @@ function ManagementCredentialOneTime(props: Props) {
             }
         };
         fetchRegions();
+        reset();
     }, []);
 
     const onInputValueChange = (field: string, value: string) => {
@@ -108,6 +124,13 @@ function ManagementCredentialOneTime(props: Props) {
                         </SpinnerSelect>
                     </div>
                 </div>
+                {/* <button
+                    onClick={() => {
+                        reset();
+                    }}
+                >
+                    reset
+                </button> */}
             </CdsFormGroup>
         </div>
     );
