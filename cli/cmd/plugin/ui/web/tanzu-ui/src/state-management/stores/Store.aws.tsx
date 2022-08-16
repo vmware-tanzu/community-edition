@@ -6,21 +6,23 @@ import awsReducer from '../../views/providers/aws/Aws.reducer';
 import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 import { StoreDispatch } from '../../shared/types/types';
 import { STORE_SECTION_AWS_RESOURCES } from '../../views/providers/aws/AwsResources.reducer';
+import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
         // Auth - Credential Profile
-        PROFILE: '',
+        [AWS_FIELDS.PROFILE]: '',
 
         // Auth - General
-        EC2_KEY_PAIR: '',
+        [AWS_FIELDS.EC2_KEY_PAIR]: '',
 
         // Auth - Temporary Credentials
-        SECRET_ACCESS_KEY: '',
-        SESSION_TOKEN: '',
-        ACCESS_KEY_ID: '',
+        [AWS_FIELDS.SECRET_ACCESS_KEY]: '',
+        [AWS_FIELDS.SESSION_TOKEN]: '',
+        [AWS_FIELDS.ACCESS_KEY_ID]: '',
         // Region
-        REGION: '',
+        [AWS_FIELDS.REGION]: '',
+        ...AWS_DEFAULT_VALUES,
     },
     [STORE_SECTION_AWS_RESOURCES]: {},
 };

@@ -43,7 +43,7 @@ export function clusterNameValidation() {
  * @param placeholderClusterName -optional value of the placeholder
  */
 export function ClusterName(props: ClusterNameProps) {
-    const { clusterNameChange, placeholderClusterName, defaultClusterName } = props;
+    const { clusterNameChange, placeholderClusterName, defaultClusterName, field } = props;
     const onClusterNameChange = (field: string, value: string) => {
         clusterNameChange(value);
     };
@@ -53,7 +53,7 @@ export function ClusterName(props: ClusterNameProps) {
                 <div cds-layout="horizontal gap:lg align:vertical-center p-b:sm">
                     <TextInputWithError
                         label="Cluster name"
-                        name={AZURE_FIELDS.CLUSTER_NAME}
+                        name={field}
                         handleInputChange={onClusterNameChange}
                         placeholder={placeholderClusterName}
                         defaultValue={defaultClusterName}

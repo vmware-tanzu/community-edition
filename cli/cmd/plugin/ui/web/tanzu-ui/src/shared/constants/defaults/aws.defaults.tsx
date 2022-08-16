@@ -1,30 +1,30 @@
 import { KeyOfStringToString } from '../../types/types';
-import { AWS_NODE_PROFILE_NAMES } from '../../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
+import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 
 export const AWS_DEFAULT_VALUES = {
     // Cluster Data
-    CLUSTER_NAME: 'my-aws-cluster',
-    CLUSTER_PLAN: 'dev',
+    [AWS_FIELDS.CLUSTER_NAME]: 'my-aws-cluster',
+    [AWS_FIELDS.CLUSTER_PLAN]: 'dev',
 
     // VPC New
     // VPC_NAME: 'temp-vpc-name',
-    VPC_CIDR: '10.0.0.0/16',
+    [AWS_FIELDS.VPC_CIDR]: '10.0.0.0/16',
 
     // other?
-    CREATE_CLOUDFORMATION_STACK: true,
-    ENABLE_AUDIT_LOGGING: true,
-    ENABLE_BASTION_HOST: true,
-    ENABLE_CEIP_PARTICIPATION: false,
-    ENABLE_MACHINE_HEALTH_CHECK: true,
+    [AWS_FIELDS.CREATE_CLOUDFORMATION_STACK]: true,
+    [AWS_FIELDS.ENABLE_AUDIT_LOGGING]: true,
+    [AWS_FIELDS.ENABLE_BASTION_HOST]: true,
+    [AWS_FIELDS.ENABLE_CEIP_PARTICIPATION]: false,
+    [AWS_FIELDS.ENABLE_MACHINE_HEALTH_CHECK]: true,
 
     // Kubernetes Networking
-    CLUSTER_NETWORKING_CNI_PROVIDER: 'antrea',
-    CLUSTER_SERVICE_CIDR: '100.64.0.0/13',
-    CLUSTER_POD_CIDR: '100.96.0.0/11',
+    [AWS_FIELDS.CLUSTER_NETWORKING_CNI_PROVIDER]: 'antrea',
+    [AWS_FIELDS.CLUSTER_SERVICE_CIDR]: '100.64.0.0/13',
+    [AWS_FIELDS.CLUSTER_POD_CIDR]: '100.96.0.0/11',
 
     // HTTP Proxy & Load Balancer
-    HTTP_PROXY_ENABLED: false,
-    LOAD_BALANCER_SCHEME_INTERNAL: false,
+    [AWS_FIELDS.HTTP_PROXY_ENABLED]: false,
+    [AWS_FIELDS.LOAD_BALANCER_SCHEME_INTERNAL]: false,
 };
 
 const AWS_DEFAULT_INSTANCE_TYPES: KeyOfStringToString = {
