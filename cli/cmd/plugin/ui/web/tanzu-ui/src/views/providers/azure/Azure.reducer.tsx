@@ -1,5 +1,3 @@
-// App imports
-
 // Azure MC reducer
 import { formReducerDescriptor } from '../../../state-management/reducers/Form.reducer';
 import { groupedReducers } from '../../../shared/utilities/Reducer.utils';

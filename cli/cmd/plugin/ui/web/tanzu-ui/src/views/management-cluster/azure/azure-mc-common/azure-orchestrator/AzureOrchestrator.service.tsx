@@ -14,7 +14,7 @@ interface AzureOrchestratorProps {
 }
 export class AzureOrchestrator extends React.Component {
     static async initOsImages(props: AzureOrchestratorProps) {
-        const { azureState, azureDispatch, setErrorObject, errorObject } = props;
+        const { azureDispatch, setErrorObject, errorObject } = props;
         try {
             const osImages = await AzureService.getAzureOsImages();
             saveCurrentResourceData(azureDispatch, AZURE_FIELDS.OS_IMAGE, osImages);
