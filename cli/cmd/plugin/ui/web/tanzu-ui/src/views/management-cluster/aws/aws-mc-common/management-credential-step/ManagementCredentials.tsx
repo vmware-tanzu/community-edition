@@ -105,7 +105,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
         const valueList = getValues();
         for (const i in valueList) {
-            console.log(i);
             awsDispatch({
                 type: INPUT_CHANGE,
                 field: i,
