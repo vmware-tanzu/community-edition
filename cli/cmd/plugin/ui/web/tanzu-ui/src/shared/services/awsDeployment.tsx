@@ -13,6 +13,7 @@ import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
 import { retrieveAwsInstanceType } from '../constants/defaults/aws.defaults';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 
 const useAwsDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -24,49 +25,50 @@ const useAwsDeployment = () => {
 
     // TODO: more dynamic population of this payload
     const getAwsRequestPayload = () => {
+        const awsData = awsState[STORE_SECTION_FORM];
         const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
-                profileName: awsState[STORE_SECTION_FORM].PROFILE,
-                sessionToken: awsState[STORE_SECTION_FORM].SESSION_TOKEN,
-                region: awsState[STORE_SECTION_FORM].REGION,
-                accessKeyID: awsState[STORE_SECTION_FORM].ACCESS_KEY_ID,
-                secretAccessKey: awsState[STORE_SECTION_FORM].SECRET_ACCESS_KEY,
+                profileName: awsData[AWS_FIELDS.PROFILE],
+                sessionToken: awsData[AWS_FIELDS.SESSION_TOKEN],
+                region: awsData[AWS_FIELDS.REGION],
+                accessKeyID: awsData[AWS_FIELDS.ACCESS_KEY_ID],
+                secretAccessKey: awsData[AWS_FIELDS.SECRET_ACCESS_KEY],
             },
             loadbalancerSchemeInternal: false,
-            sshKeyName: awsState[STORE_SECTION_FORM].EC2_KEY_PAIR,
+            sshKeyName: awsData[AWS_FIELDS.EC2_KEY_PAIR],
             // TODO: may need to do discover around existing cloudformation stack
             createCloudFormationStack: false,
-            clusterName: awsState[STORE_SECTION_FORM].CLUSTER_NAME,
-            controlPlaneFlavor: awsState[STORE_SECTION_FORM].CLUSTER_PLAN,
-            controlPlaneNodeType: retrieveAwsInstanceType(awsState[STORE_SECTION_FORM].NODE_PROFILE),
-            bastionHostEnabled: awsState[STORE_SECTION_FORM].ENABLE_BASTION_HOST,
-            machineHealthCheckEnabled: awsState[STORE_SECTION_FORM].ENABLE_MACHINE_HEALTH_CHECK,
+            clusterName: awsData[AWS_FIELDS.CLUSTER_NAME],
+            controlPlaneFlavor: awsData[AWS_FIELDS.CLUSTER_PLAN],
+            controlPlaneNodeType: retrieveAwsInstanceType(awsData[AWS_FIELDS.NODE_PROFILE]),
+            bastionHostEnabled: awsData[AWS_FIELDS.ENABLE_BASTION_HOST],
+            machineHealthCheckEnabled: awsData[AWS_FIELDS.ENABLE_MACHINE_HEALTH_CHECK],
             vpc: {
-                cidr: awsState[STORE_SECTION_FORM].VPC_CIDR,
+                cidr: awsData[AWS_FIELDS.VPC_CIDR],
                 vpcID: '',
                 // TODO: single subregion name populated from region selection; but does not support multi-az/HA
                 azs: [
                     {
-                        name: awsState[STORE_SECTION_FORM].REGION + 'a',
-                        workerNodeType: retrieveAwsInstanceType(awsState[STORE_SECTION_FORM].NODE_PROFILE),
+                        name: awsData[AWS_FIELDS.REGION] + 'a',
+                        workerNodeType: retrieveAwsInstanceType(awsData[AWS_FIELDS.NODE_PROFILE]),
                         publicSubnetID: '',
                         privateSubnetID: '',
                     },
                 ],
             },
-            enableAuditLogging: awsState[STORE_SECTION_FORM].ENABLE_AUDIT_LOGGING,
+            enableAuditLogging: awsData[AWS_FIELDS.ENABLE_AUDIT_LOGGING],
             networking: {
                 networkName: '',
                 clusterDNSName: '',
                 clusterNodeCIDR: '',
-                clusterServiceCIDR: awsState[STORE_SECTION_FORM].CLUSTER_SERVICE_CIDR,
-                clusterPodCIDR: awsState[STORE_SECTION_FORM].CLUSTER_POD_CIDR,
-                cniType: awsState[STORE_SECTION_FORM].CLUSTER_NETWORKING_CNI_PROVIDER,
+                clusterServiceCIDR: awsData[AWS_FIELDS.CLUSTER_SERVICE_CIDR],
+                clusterPodCIDR: awsData[AWS_FIELDS.CLUSTER_POD_CIDR],
+                cniType: awsData[AWS_FIELDS.CLUSTER_NETWORKING_CNI_PROVIDER],
             },
-            ceipOptIn: awsState[STORE_SECTION_FORM].ENABLE_CEIP_PARTICIPATION,
+            ceipOptIn: awsData[AWS_FIELDS.ENABLE_CEIP_PARTICIPATION],
             labels: {},
             // TODO: define a default OS image to set via aws.defaults.tsx
-            os: awsState[STORE_SECTION_FORM].OS_IMAGE,
+            os: awsData[AWS_FIELDS.OS_IMAGE],
             annotations: {
                 description: '',
                 location: '',

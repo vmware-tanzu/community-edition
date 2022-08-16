@@ -31,14 +31,13 @@ import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
 export interface FormInputs {
-    PROFILE: string;
-    REGION: string;
-    SECRET_ACCESS_KEY: string;
-    SESSION_TOKEN: string;
-    ACCESS_KEY_ID: string;
-    EC2_KEY_PAIR: string;
+    [AWS_FIELDS.PROFILE]: string;
+    [AWS_FIELDS.REGION]: string;
+    [AWS_FIELDS.SECRET_ACCESS_KEY]: string;
+    [AWS_FIELDS.SESSION_TOKEN]: string;
+    [AWS_FIELDS.ACCESS_KEY_ID]: string;
+    [AWS_FIELDS.EC2_KEY_PAIR]: string;
 }
-type FormField = 'PROFILE' | 'REGION' | 'SECRET_ACCESS_KEY' | 'SESSION_TOKEN' | 'ACCESS_KEY_ID' | 'EC2_KEY_PAIR';
 
 function ManagementCredentials(props: Partial<StepProps>) {
     const { currentStep, goToStep, submitForm } = props;
@@ -142,7 +141,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const resetEc2KeyPair = () => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         if (awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR] !== '') {
-            setValue(AWS_FIELDS.EC2_KEY_PAIR as FormField, '');
+            setValue(AWS_FIELDS.EC2_KEY_PAIR, '');
             awsDispatch({
                 type: INPUT_CHANGE,
                 field: AWS_FIELDS.EC2_KEY_PAIR,
@@ -175,7 +174,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (awsState[STORE_SECTION_FORM].REGION) {
             AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         }
-    }, [awsState[STORE_SECTION_FORM].REGION]);
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
@@ -231,7 +230,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 <div cds-layout="p-t:lg" className="aws-button-container">
                     <CdsButton
                         onClick={handleConnect}
-                        disabled={connectionStatus === CONNECTION_STATUS.CONNECTED || !awsState[STORE_SECTION_FORM].REGION}
+                        disabled={connectionStatus === CONNECTION_STATUS.CONNECTED || !awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]}
                     >
                         <CdsIcon shape="connect" size="md"></CdsIcon>
                         CONNECT
@@ -244,11 +243,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
                         disabled={connectionStatus !== CONNECTION_STATUS.CONNECTED}
                         label="EC2 key pair"
                         handleSelect={handleSelectKeyPair}
-                        name="EC2_KEY_PAIR"
+                        name={AWS_FIELDS.EC2_KEY_PAIR}
                         controlMessage="EC2 key pairs will be retrieved when connected to AWS."
                         isLoading={keyPairLoading}
                         register={register}
-                        error={errors['EC2_KEY_PAIR']?.message}
+                        error={errors[AWS_FIELDS.EC2_KEY_PAIR]?.message}
                     >
                         <option></option>
                         {keypairs.map((keypair) => (

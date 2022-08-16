@@ -29,7 +29,7 @@ import UseUpdateTabStatus from '../../../shared/components/wizard/UseUpdateTabSt
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
-type AWS_CLUSTER_SETTING_STEP_FIELDS = 'NODE_PROFILE' | 'OS_IMAGE' | 'CLUSTER_NAME';
+type AWS_CLUSTER_SETTING_STEP_FIELDS = AWS_FIELDS.NODE_PROFILE | AWS_FIELDS.OS_IMAGE | AWS_FIELDS.CLUSTER_NAME;
 
 const nodeInstanceTypes: NodeInstanceType[] = [
     {
@@ -65,9 +65,9 @@ function yupStringRequired(errorMessage: string) {
 
 function createYupSchemaObject() {
     return {
-        OS_IMAGE: yupStringRequired('Please select an OS image'),
-        NODE_PROFILE: nodeInstanceTypeValidation(),
-        CLUSTER_NAME: clusterNameValidation(),
+        [AWS_FIELDS.OS_IMAGE]: yupStringRequired('Please select an OS image'),
+        [AWS_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
+        [AWS_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
     };
 }
 
@@ -105,10 +105,10 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const osImages = (getResource(AWS_FIELDS.OS_IMAGE, awsState) || []) as AWSVirtualMachine[];
-    let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM].NODE_PROFILE;
+    let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE];
 
-    if (awsState[STORE_SECTION_FORM].OS_IMAGE) {
-        setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM].OS_IMAGE.name);
+    if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
+        setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
     }
     if (!initialSelectedInstanceTypeId) {
         initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;

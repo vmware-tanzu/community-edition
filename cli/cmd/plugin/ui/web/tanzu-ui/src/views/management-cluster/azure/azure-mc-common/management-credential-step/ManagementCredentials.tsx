@@ -24,15 +24,14 @@ import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 export interface FormInputs {
-    TENANT_ID: string;
-    CLIENT_ID: string;
-    CLIENT_SECRET: string;
-    SUBSCRIPTION_ID: string;
-    AZURE_ENVIRONMENT: string;
-    REGION: string;
-    SSH_PUBLIC_KEY: string;
+    [AZURE_FIELDS.TENANT_ID]: string;
+    [AZURE_FIELDS.CLIENT_ID]: string;
+    [AZURE_FIELDS.CLIENT_SECRET]: string;
+    [AZURE_FIELDS.SUBSCRIPTION_ID]: string;
+    [AZURE_FIELDS.AZURE_ENVIRONMENT]: string;
+    [AZURE_FIELDS.REGION]: string;
+    [AZURE_FIELDS.SSH_PUBLIC_KEY]: string;
 }
-export type FormField = 'TENANT_ID' | 'CLIENT_ID' | 'CLIENT_SECRET' | 'SUBSCRIPTION_ID' | 'AZURE_ENVIRONMENT' | 'REGION' | 'SSH_PUBLIC_KEY';
 const placeholderText = `Begins with 'ssh-rsa', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-
 nistp384', 'ecdsa-sha2-nistp521', 'ssh-ed25519', 'sk-ecdsa-sha2-nistp256@openssh.com', or 'sk-ssh-ed25519@openssh.com'`;
 
@@ -59,8 +58,8 @@ function ManagementCredentials(props: Partial<StepProps>) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
 
-    const resetField = (field: FormField) => {
-        setValue(AZURE_FIELDS.REGION as FormField, '');
+    const resetField = (field: string) => {
+        setValue(AZURE_FIELDS.REGION, '');
         azureDispatch({
             type: INPUT_CHANGE,
             field,
@@ -68,7 +67,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         } as FormAction);
     };
 
-    const handleInputChange = (field: FormField, value: string) => {
+    const handleInputChange = (field: string, value: string) => {
         if (field !== AZURE_FIELDS.SSH_PUBLIC_KEY && field !== AZURE_FIELDS.REGION) {
             setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
             if (azureState[STORE_SECTION_FORM].REGION) {
@@ -95,11 +94,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
     const handleConnect = async () => {
         const params: AzureAccountParams = {
-            subscriptionId: azureState[STORE_SECTION_FORM].SUBSCRIPTION_ID,
-            tenantId: azureState[STORE_SECTION_FORM].TENANT_ID,
-            clientId: azureState[STORE_SECTION_FORM].CLIENT_ID,
-            clientSecret: azureState[STORE_SECTION_FORM].CLIENT_SECRET,
-            azureCloud: azureState[STORE_SECTION_FORM].AZURE_ENVIRONMENT,
+            subscriptionId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
+            tenantId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
+            clientId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
+            clientSecret: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
+            azureCloud: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
         };
         try {
             setConnectionStatus(CONNECTION_STATUS.CONNECTING);

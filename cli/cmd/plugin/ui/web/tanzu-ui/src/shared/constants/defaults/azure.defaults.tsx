@@ -1,26 +1,29 @@
-import { AZURE_NODE_PROFILE_NAMES } from '../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
+import {
+    AZURE_FIELDS,
+    AZURE_NODE_PROFILE_NAMES,
+} from '../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 import { KeyOfStringToString } from '../../types/types';
 
 export const AZURE_DEFAULT_VALUES = {
-    NODE_PROFILE: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
-    CEIP_OPT_IN: false,
-    CONTROL_PLANE_FLAVOR: 'dev',
-    PRIVATE_AZURE_CLUSTER: false,
-    ACTIVATE_AUDIT_LOGGING: false,
-    MACHINE_HEALTH_CHECK_ENABLED: true,
-    RESOURCE_GROUP: 'tanzu-resource-group-default',
+    [AZURE_FIELDS.NODE_PROFILE]: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
+    [AZURE_FIELDS.CEIP_OPT_IN]: false,
+    [AZURE_FIELDS.CONTROL_PLANE_FLAVOR]: 'dev',
+    [AZURE_FIELDS.PRIVATE_AZURE_CLUSTER]: false,
+    [AZURE_FIELDS.ACTIVATE_AUDIT_LOGGING]: false,
+    [AZURE_FIELDS.MACHINE_HEALTH_CHECK_ENABLED]: true,
+    [AZURE_FIELDS.RESOURCE_GROUP]: 'tanzu-resource-group-default',
     // VNET
-    VNET_NAME: 'tanzu-vnet-name-default',
-    VNET_CIDR: '10.0.0.0/16',
-    CONTROL_PLANE_SUBNET: 'tanzu-control-plane-subnet-default',
-    CONTROL_PLANE_SUBNET_CIDR: '10.0.0.0/24',
-    WORKER_NODE_SUBNET: 'tanzu-worker-node-subnet-default',
-    WORKER_NODE_SUBNET_CIDR: '10.0.1.0/24',
+    [AZURE_FIELDS.VNET_NAME]: 'tanzu-vnet-name-default',
+    [AZURE_FIELDS.VNET_CIDR]: '10.0.0.0/16',
+    [AZURE_FIELDS.CONTROL_PLANE_SUBNET]: 'tanzu-control-plane-subnet-default',
+    [AZURE_FIELDS.CONTROL_PLANE_SUBNET_CIDR]: '10.0.0.0/24',
+    [AZURE_FIELDS.WORKER_NODE_SUBNET]: 'tanzu-worker-node-subnet-default',
+    [AZURE_FIELDS.WORKER_NODE_SUBNET_CIDR]: '10.0.1.0/24',
     // Network
-    CNI_TYPE: 'antrea', // TODO: refactor to use CniProviders Const
-    CLUSTER_POD_CIDR: '100.96.0.0/11',
-    CLUSTER_SERVICE_CIDR: '100.64.0.0/13',
-    ACTIVATE_PROXY_SETTINGS: false,
+    [AZURE_FIELDS.CNI_TYPE]: 'antrea', // TODO: refactor to use CniProviders Const
+    [AZURE_FIELDS.CLUSTER_POD_CIDR]: '100.96.0.0/11',
+    [AZURE_FIELDS.CLUSTER_SERVICE_CIDR]: '100.64.0.0/13',
+    [AZURE_FIELDS.ACTIVATE_PROXY_SETTINGS]: false,
 };
 
 const AZURE_DEFAULT_INSTANCE_TYPES: KeyOfStringToString = {

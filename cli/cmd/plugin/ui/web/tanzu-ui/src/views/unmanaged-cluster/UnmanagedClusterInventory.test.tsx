@@ -57,7 +57,6 @@ describe('UnmanagedClusterInventory component', () => {
 
     test('should always display a button to create an unmanaged cluster', async () => {
         render(<UnmanagedClusterInventory />);
-
         expect(await screen.findByText('create an unmanaged cluster')).toBeInTheDocument();
     });
 

@@ -13,6 +13,7 @@ import { retrieveAzureInstanceType } from '../constants/defaults/azure.defaults'
 import { Store } from '../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
+import { AZURE_FIELDS } from '../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 
 const useAzureDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -26,36 +27,36 @@ const useAzureDeployment = () => {
         const formInfo = azureState[STORE_SECTION_FORM];
         const azureClusterParams: AzureManagementClusterParams = {
             azureAccountParams: {
-                subscriptionId: formInfo.SUBSCRIPTION_ID,
-                tenantId: formInfo.TENANT_ID,
-                clientId: formInfo.CLIENT_ID,
-                clientSecret: formInfo.CLIENT_SECRET,
-                azureCloud: formInfo.AZURE_ENVIRONMENT,
+                subscriptionId: formInfo[AZURE_FIELDS.SUBSCRIPTION_ID],
+                tenantId: formInfo[AZURE_FIELDS.TENANT_ID],
+                clientId: formInfo[AZURE_FIELDS.CLIENT_ID],
+                clientSecret: formInfo[AZURE_FIELDS.CLIENT_SECRET],
+                azureCloud: formInfo[AZURE_FIELDS.AZURE_ENVIRONMENT],
             },
-            ceipOptIn: formInfo.CEIP_OPT_IN,
-            clusterName: formInfo.CLUSTER_NAME,
-            controlPlaneFlavor: formInfo.CONTROL_PLANE_FLAVOR,
-            controlPlaneMachineType: retrieveAzureInstanceType(formInfo.NODE_PROFILE),
-            controlPlaneSubnet: formInfo.CONTROL_PLANE_SUBNET,
-            controlPlaneSubnetCidr: formInfo.CONTROL_PLANE_SUBNET_CIDR,
-            enableAuditLogging: formInfo.ACTIVATE_AUDIT_LOGGING,
-            isPrivateCluster: formInfo.PRIVATE_AZURE_CLUSTER,
-            location: formInfo.REGION,
-            machineHealthCheckEnabled: formInfo.MACHINE_HEALTH_CHECK_ENABLED,
+            ceipOptIn: formInfo[AZURE_FIELDS.CEIP_OPT_IN],
+            clusterName: formInfo[AZURE_FIELDS.CLUSTER_NAME],
+            controlPlaneFlavor: formInfo[AZURE_FIELDS.CONTROL_PLANE_FLAVOR],
+            controlPlaneMachineType: retrieveAzureInstanceType(formInfo[AZURE_FIELDS.NODE_PROFILE]),
+            controlPlaneSubnet: formInfo[AZURE_FIELDS.CONTROL_PLANE_SUBNET],
+            controlPlaneSubnetCidr: formInfo[AZURE_FIELDS.CONTROL_PLANE_SUBNET_CIDR],
+            enableAuditLogging: formInfo[AZURE_FIELDS.ACTIVATE_AUDIT_LOGGING],
+            isPrivateCluster: formInfo[AZURE_FIELDS.PRIVATE_AZURE_CLUSTER],
+            location: formInfo[AZURE_FIELDS.REGION],
+            machineHealthCheckEnabled: formInfo[AZURE_FIELDS.MACHINE_HEALTH_CHECK_ENABLED],
             networking: {
-                clusterPodCIDR: formInfo.CLUSTER_POD_CIDR,
-                clusterServiceCIDR: formInfo.CLUSTER_SERVICE_CIDR,
-                cniType: formInfo.CNI_TYPE,
+                clusterPodCIDR: formInfo[AZURE_FIELDS.CLUSTER_POD_CIDR],
+                clusterServiceCIDR: formInfo[AZURE_FIELDS.CLUSTER_SERVICE_CIDR],
+                cniType: formInfo[AZURE_FIELDS.CNI_TYPE],
             },
-            os: formInfo.OS_IMAGE,
-            resourceGroup: formInfo.RESOURCE_GROUP,
-            sshPublicKey: formInfo.SSH_PUBLIC_KEY,
-            vnetCidr: formInfo.VNET_CIDR,
-            vnetName: formInfo.VNET_NAME,
-            vnetResourceGroup: formInfo.RESOURCE_GROUP,
-            workerMachineType: retrieveAzureInstanceType(formInfo.NODE_PROFILE),
-            workerNodeSubnet: formInfo.WORKER_NODE_SUBNET,
-            workerNodeSubnetCidr: formInfo.WORKER_NODE_SUBNET_CIDR,
+            os: formInfo[AZURE_FIELDS.OS_IMAGE],
+            resourceGroup: formInfo[AZURE_FIELDS.RESOURCE_GROUP],
+            sshPublicKey: formInfo[AZURE_FIELDS.SSH_PUBLIC_KEY],
+            vnetCidr: formInfo[AZURE_FIELDS.VNET_CIDR],
+            vnetName: formInfo[AZURE_FIELDS.VNET_NAME],
+            vnetResourceGroup: formInfo[AZURE_FIELDS.RESOURCE_GROUP],
+            workerMachineType: retrieveAzureInstanceType(formInfo[AZURE_FIELDS.NODE_PROFILE]),
+            workerNodeSubnet: formInfo[AZURE_FIELDS.WORKER_NODE_SUBNET],
+            workerNodeSubnetCidr: formInfo[AZURE_FIELDS.WORKER_NODE_SUBNET_CIDR],
         };
         return azureClusterParams;
     };

@@ -28,8 +28,8 @@ ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 interface FormInputs {
     [UNMANAGED_CLUSTER_FIELDS.CLUSTER_NAME]: string;
-    [UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]: string;
-    [UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]: string;
+    [UNMANAGED_CLUSTER_FIELDS.CONTROL_PLANE_NODE_COUNT]: number;
+    [UNMANAGED_CLUSTER_FIELDS.WORKER_NODE_COUNT]: number;
 }
 
 const unmanagedClusterProviders = [

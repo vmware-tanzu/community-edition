@@ -90,11 +90,8 @@ describe('ManagementCredential component', () => {
         expect(await screen.findByText('Connected to AWS')).toBeInTheDocument();
         expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
         const el = await screen.findByText('us-west-2-kp');
-        const keypairEl = screen.getByTestId('ec2_key_pair-select');
-        // eslint-disable-next-line testing-library/no-unnecessary-act
-        await act(async () => {
-            await fireEvent.change(keypairEl, { target: { value: 'us-west-2-kp' } });
-        });
+        const keypairEl = screen.getByTestId('ec2keypair-select');
+        await fireEvent.change(keypairEl, { target: { value: 'us-west-2-kp' } });
         expect((el as HTMLOptionElement).selected).toBeTruthy();
     });
     it('should click on refresh button', async () => {
