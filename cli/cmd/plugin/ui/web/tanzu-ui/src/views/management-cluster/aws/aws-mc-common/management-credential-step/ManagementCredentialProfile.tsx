@@ -56,7 +56,7 @@ function ManagementCredentialProfile(props: Props) {
 
     useEffect(() => {
         reset();
-        clearOneTimeCredentials();
+        // clearOneTimeCredentials();
         // fetch regions
         const fetchRegions = async () => {
             try {
