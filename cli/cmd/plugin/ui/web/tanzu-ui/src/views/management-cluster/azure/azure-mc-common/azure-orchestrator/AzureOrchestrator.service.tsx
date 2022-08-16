@@ -1,4 +1,4 @@
-import React from 'react';
+// App imports
 import { AzureService, AzureVirtualMachine } from '../../../../../swagger-api';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -12,7 +12,7 @@ interface AzureOrchestratorProps {
     errorObject: { [key: string]: any };
     setErrorObject: (newErrorObject: { [key: string]: any }) => void;
 }
-export class AzureOrchestrator extends React.Component {
+export class AzureOrchestrator {
     static async initOsImages(props: AzureOrchestratorProps) {
         const { azureDispatch, setErrorObject, errorObject } = props;
         try {
