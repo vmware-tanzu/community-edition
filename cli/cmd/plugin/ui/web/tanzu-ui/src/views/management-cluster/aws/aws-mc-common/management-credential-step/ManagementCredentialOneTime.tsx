@@ -24,6 +24,7 @@ function ManagementCredentialOneTime(props: Props) {
     const { selectCallback } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const {
+        reset,
         register,
         formState: { errors },
     } = useFormContext();
@@ -32,6 +33,8 @@ function ManagementCredentialOneTime(props: Props) {
     const [regionLoading, setRegionLoading] = useState(false);
 
     useEffect(() => {
+        reset();
+        onInputValueChange(AWS_FIELDS.REGION, '');
         // fetch regions
         const fetchRegions = async () => {
             try {
@@ -54,6 +57,7 @@ function ManagementCredentialOneTime(props: Props) {
             payload: value,
         } as FormAction);
     };
+
     return (
         <div className="credential-one-time-container">
             <p cds-layout="m-y:lg">
@@ -68,21 +72,18 @@ function ManagementCredentialOneTime(props: Props) {
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SECRET_ACCESS_KEY]}
                             label="Secret access key"
                             name={AWS_FIELDS.SECRET_ACCESS_KEY}
-                            handleInputChange={onInputValueChange}
                             maskText
                         />
                         <TextInputWithError
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.ACCESS_KEY_ID]}
                             label="Access key ID"
                             name={AWS_FIELDS.ACCESS_KEY_ID}
-                            handleInputChange={onInputValueChange}
                             maskText
                         />
                         <TextInputWithError
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SESSION_TOKEN]}
                             label="Session token"
                             name={AWS_FIELDS.SESSION_TOKEN}
-                            handleInputChange={onInputValueChange}
                             maskText
                         />
                     </div>
