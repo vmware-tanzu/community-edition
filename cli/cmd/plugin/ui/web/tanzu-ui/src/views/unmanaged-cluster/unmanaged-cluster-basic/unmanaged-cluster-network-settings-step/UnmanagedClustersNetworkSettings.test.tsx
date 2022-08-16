@@ -64,22 +64,23 @@ describe('UnmanagedNetworksettings component', () => {
     });
     //Missing test for protocol change needs to be added after hostport event change
     it('make node to host port mapping string out of all input values', async () => {
-        render(<UmcProvider>
-            <UnmanagedClusterNetworkSettings />
-        </UmcProvider>);
+        render(
+            <UmcProvider>
+                <UnmanagedClusterNetworkSettings />
+            </UmcProvider>
+        );
         await screen.findByText('IP Address');
         const ip_input = screen.getByPlaceholderText('127.0.0.1');
         const node_input = screen.getByPlaceholderText('Node port');
         const host_input = screen.getByPlaceholderText('Host port');
-        
-        for (var unmanagedClusterMapping of testUnamangedClusterNodeToHostPortMapping) {
+
+        for (const unmanagedClusterMapping of testUnamangedClusterNodeToHostPortMapping) {
             fireEvent.change(ip_input, { target: { value: unmanagedClusterMapping.ip } });
             fireEvent.change(node_input, { target: { value: unmanagedClusterMapping.nodePort } });
             fireEvent.change(host_input, { target: { value: unmanagedClusterMapping.hostPort } });
             const result = await screen.findByText(unmanagedClusterMapping.combined);
             expect(result).toBeInTheDocument();
         }
-        
     });
     it('should have create button', async () => {
         render(<UnmanagedClusterNetworkSettings />);

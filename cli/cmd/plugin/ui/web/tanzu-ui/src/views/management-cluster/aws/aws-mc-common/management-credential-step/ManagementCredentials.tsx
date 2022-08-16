@@ -62,23 +62,24 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
 
-    const fetchKeyPairs = async () => {
-        try {
-            setKeyPairLoading(true);
-            const keyPairs = await AwsService.getAwsKeyPairs();
-            setKeyPairs(keyPairs);
-        } catch (e: any) {
-            console.log(`Unabled to get ec2 key pair: ${e}`);
-        } finally {
-            setKeyPairLoading(false);
-        }
-    };
-
-    const [errorMessage, setErrorMessage] = useState<{ [key: string]: any }>({});
+    const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            fetchKeyPairs();
+            const initEC2KeyPairs = async () => {
+                setKeyPairLoading(true);
+                await AwsOrchestrator.initEC2KeyPairs(
+                    {
+                        awsState,
+                        awsDispatch,
+                        errorObject,
+                        setErrorObject,
+                    },
+                    setKeyPairs
+                );
+                setKeyPairLoading(false);
+            };
+            initEC2KeyPairs();
         }
     }, [connectionStatus]);
 
@@ -152,41 +153,39 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            fetchKeyPairs();
+            const initEC2KeyPairs = async () => {
+                setKeyPairLoading(true);
+                await AwsOrchestrator.initEC2KeyPairs(
+                    {
+                        awsState,
+                        awsDispatch,
+                        errorObject,
+                        setErrorObject,
+                    },
+                    setKeyPairs
+                );
+                setKeyPairLoading(false);
+            };
+            initEC2KeyPairs();
         }
     };
 
     useEffect(() => {
-        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]) {
-            const initOsImages = async () => {
-                try {
-                    await AwsOrchestrator.initOsImages({ awsState, awsDispatch });
-                    setErrorMessage((errorMessage) => {
-                        const copy = { ...errorMessage };
-                        delete copy[AWS_FIELDS.OS_IMAGE];
-                        return copy;
-                    });
-                } catch (e: any) {
-                    setErrorMessage({
-                        ...errorMessage,
-                        [AWS_FIELDS.OS_IMAGE]: e,
-                    });
-                }
-            };
-            initOsImages();
+        if (awsState[STORE_SECTION_FORM].REGION) {
+            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         }
     }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);
 
     function showErrorInfo() {
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorMessage) !== '{}') {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
             return (
                 <div>
                     <div className="error-text">Error Occurred</div>
                     <br />
-                    {Object.keys(errorMessage).map((errorField) => {
+                    {Object.keys(errorObject).map((errorField) => {
                         return (
                             <CdsControlMessage status="error" key={errorField}>
-                                {errorMessage[errorField]}
+                                {errorObject[errorField]}
                             </CdsControlMessage>
                         );
                     })}
@@ -201,7 +200,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         return (
             connectionStatus === CONNECTION_STATUS.CONNECTED &&
             getValues(AWS_FIELDS.EC2_KEY_PAIR) !== undefined &&
-            JSON.stringify(errorMessage) === '{}'
+            JSON.stringify(errorObject) === '{}'
         );
     };
 
