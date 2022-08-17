@@ -13,7 +13,6 @@ import { AzureAccountParams, AzureLocation, AzureService, ApiError } from '../..
 import { AzureOrchestrator } from '../azure-orchestrator/AzureOrchestrator.service';
 import { AzureStore } from '../../store/Azure.store.mc';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
-import { clearPreviousResourceData } from '../../../default-orchestrator/DefaultOrchestrator';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -24,6 +23,7 @@ import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { clearPreviousResourceData } from '../../../default-orchestrator/DefaultOrchestrator';
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;
     [AZURE_FIELDS.CLIENT_ID]: string;
@@ -124,17 +124,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const isConnected = () => {
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            return true;
-        }
-        return false;
+        return connectionStatus === CONNECTION_STATUS.CONNECTED;
     };
 
     const hasError = () => {
-        if (Object.keys(errorObject).length > 0) {
-            return true;
-        }
-        return false;
+        return Object.keys(errorObject).length > 0;
     };
 
     function showErrorInfo() {
