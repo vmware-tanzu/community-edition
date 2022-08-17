@@ -3,9 +3,9 @@ import React, { useContext, useState } from 'react';
 
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons, clusterIcon } from '@cds/core/icon';
+import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { CdsSelect } from '@cds/react/select';
 import { FormProvider, useForm } from 'react-hook-form';
-import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 

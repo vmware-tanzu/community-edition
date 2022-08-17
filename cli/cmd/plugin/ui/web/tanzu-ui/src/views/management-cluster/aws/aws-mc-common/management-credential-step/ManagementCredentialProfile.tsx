@@ -7,12 +7,12 @@ import { useFormContext } from 'react-hook-form';
 
 // App imports
 import { AwsService } from '../../../../../swagger-api/services/AwsService';
-import './ManagementCredentialProfile.scss';
-import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { AwsStore } from '../../store/Aws.store.mc';
 import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { FormAction } from '../../../../../shared/types/types';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import './ManagementCredentialProfile.scss';
 
 interface Props {
     selectCallback: () => void;

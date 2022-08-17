@@ -1,5 +1,6 @@
-import { VsphereResourceAction } from '../../../shared/types/types';
+// App imports
 import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
+import { VsphereResourceAction } from '../../../shared/types/types';
 import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../state-management/actions/Resources.actions';
 
 export const STORE_SECTION_VSPHERE_RESOURCES = 'resources';

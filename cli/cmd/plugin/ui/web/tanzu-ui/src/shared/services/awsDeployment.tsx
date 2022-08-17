@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
 import { Store } from '../../state-management/stores/Store';
-import { AwsStore } from '../../state-management/stores/Store.aws';
+import { AwsStore } from '../../views/management-cluster/aws/store/Aws.store.mc';
 import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagementConfig } from '../../swagger-api';
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';

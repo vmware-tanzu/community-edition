@@ -6,12 +6,12 @@ import { ClarityIcons, clusterIcon, cloudScaleIcon, applicationsIcon } from '@cd
 
 // App imports
 import './RolloverBanner.scss';
+import ClusterExperience from '../../../assets/cluster-experience-bg.svg';
 import RolloverBannerItem from './RolloverBannerItem/RolloverBannerItem';
 import TceLogo from '../../../assets/tce-logo.svg';
 import TceExperienceBg from '../../../assets/tce-experience-bg.svg';
 import TapExperience from '../../../assets/tap-experience-bg.svg';
 import TmcExperience from '../../../assets/tmc-experience-bg.svg';
-import ClusterExperience from '../../../assets/cluster-experience-bg.svg';
 
 ClarityIcons.addIcons(clusterIcon, cloudScaleIcon, applicationsIcon);
 

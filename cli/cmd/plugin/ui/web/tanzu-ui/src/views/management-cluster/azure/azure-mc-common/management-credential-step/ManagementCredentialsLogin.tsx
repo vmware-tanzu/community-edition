@@ -9,13 +9,13 @@ import { CdsSelect } from '@cds/react/select';
 import { useFormContext } from 'react-hook-form';
 
 // App imports
-import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { AzureStore } from '../../../../../state-management/stores/Azure.store';
+import { AzureStore } from '../../store/Azure.store.mc';
 import { AzureClouds } from '../../../../../shared/constants/App.constants';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import './ManagementCredentialsLogin.scss';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import TextInputWithError from '../../../../../shared/components/Input/TextInputWithError';
+import './ManagementCredentialsLogin.scss';
 
 interface Props {
     status: CONNECTION_STATUS;

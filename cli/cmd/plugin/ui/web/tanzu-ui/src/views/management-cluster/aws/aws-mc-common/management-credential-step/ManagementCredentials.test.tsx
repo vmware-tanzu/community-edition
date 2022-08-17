@@ -2,7 +2,6 @@
 import React from 'react';
 
 // Library imports
-import { act } from 'react-dom/test-utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/lib/node';

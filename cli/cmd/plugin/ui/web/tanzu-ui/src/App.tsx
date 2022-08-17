@@ -1,15 +1,14 @@
-import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
-
-import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
 // React imports
 import React, { useContext, useEffect } from 'react';
 import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 
+// App imports
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
-import ContextualHelp from './shared/components/ContextualHelp/ContextualHelp';
+import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
+import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
 import { ContextualHelpActions } from './state-management/actions/Ui.actions';
-// App imports
+import ContextualHelp from './shared/components/ContextualHelp/ContextualHelp';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
 import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
 import GettingStarted from './views/getting-started/GettingStarted';

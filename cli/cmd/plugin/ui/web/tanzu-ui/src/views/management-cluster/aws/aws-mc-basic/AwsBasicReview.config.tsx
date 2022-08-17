@@ -1,7 +1,7 @@
-import { CommonConfigTransformationFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
+// App imports
 import { AWS_FIELDS } from './AwsManagementClusterBasic.constants';
+import { CommonConfigTransformationFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
 import { ConfigDisplayData } from '../../../../shared/components/ConfigReview/ConfigDisplay';
-import { OsImage } from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 
 const configGroupOneTimeCredentials: ConfigGroup = {
     label: 'One-time credentials',

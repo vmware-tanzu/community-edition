@@ -7,11 +7,11 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsIconButton } from '@cds/react/button';
 
 // App imports
-import { AwsProvider } from '../../../state-management/stores/Store.aws';
-import AwsManagementClusterBasic from './aws-mc-basic/AwsManagementClusterBasic';
-import './AwsManagementCluster.scss';
 import AwsLogo from '../../../assets/aws.svg';
+import AwsManagementClusterBasic from './aws-mc-basic/AwsManagementClusterBasic';
+import { AwsProvider } from './store/Aws.store.mc';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
+import './AwsManagementCluster.scss';
 
 function AwsManagementCluster() {
     const navigate = useNavigate();

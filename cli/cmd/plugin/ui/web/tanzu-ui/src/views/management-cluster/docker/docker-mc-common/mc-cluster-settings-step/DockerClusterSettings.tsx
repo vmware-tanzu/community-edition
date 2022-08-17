@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { clusterNameValidation, ClusterName } from '../../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
-import { DockerStore } from '../../../../../state-management/stores/Docker.store';
+import { DockerStore } from '../../store/Docker.store.mc';
 import { DOCKER_FIELDS } from '../../docker-mc-basic/DockerManagementClusterBasic.constants';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';

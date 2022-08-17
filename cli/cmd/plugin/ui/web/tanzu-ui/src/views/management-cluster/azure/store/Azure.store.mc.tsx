@@ -2,12 +2,12 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
-import { StoreDispatch } from '../../shared/types/types';
-import azureReducer from '../reducers/Wizard.reducer';
-import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
-import { AzureCloud } from '../../shared/constants/App.constants';
-import { AZURE_DEFAULT_VALUES } from '../../shared/constants/defaults/azure.defaults';
-import { AZURE_FIELDS } from '../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
+import azureReducer from '../../../../state-management/reducers/Wizard.reducer';
+import { AzureCloud } from '../../../../shared/constants/App.constants';
+import { AZURE_DEFAULT_VALUES } from '../../../../shared/constants/defaults/azure.defaults';
+import { AZURE_FIELDS } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
+import { StoreDispatch } from '../../../../shared/types/types';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {

@@ -1,11 +1,13 @@
 // React imports
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
+
 // App imports
-import { AzureStore } from '../../../../state-management/stores/Azure.store';
+import { AzureStore } from '../store/Azure.store.mc';
 import { AzureConfigDisplayConfig, AzureConfigDisplayDefaults } from './AzureBasicReview.config';
 import { ConfigDisplay } from '../../../../shared/components/ConfigReview/ConfigDisplay';
 import { NavRoutes } from '../../../../shared/constants/NavRoutes.constants';

@@ -7,11 +7,11 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsIconButton } from '@cds/react/button';
 
 // App imports
-import { AzureProvider } from '../../../state-management/stores/Azure.store';
+import { AzureProvider } from './store/Azure.store.mc';
 import AzureLogo from '../../../assets/azure.svg';
 import AzureManagementClusterBasic from './azure-mc-basic/AzureManagementClusterBasic';
-import './AzureManagementCluster.scss';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
+import './AzureManagementCluster.scss';
 
 function AzureManagementCluster() {
     const navigate = useNavigate();

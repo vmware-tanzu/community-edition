@@ -2,10 +2,10 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
-import { StoreDispatch } from '../../shared/types/types';
-import dockerReducer from '../reducers/Wizard.reducer';
-import { DOCKER_DEFAULT_VALUES } from '../../shared/constants/defaults/docker.defaults';
-import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
+import dockerReducer from '../../../../state-management/reducers/Wizard.reducer';
+import { DOCKER_DEFAULT_VALUES } from '../../../../shared/constants/defaults/docker.defaults';
+import { StoreDispatch } from '../../../../shared/types/types';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
