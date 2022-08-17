@@ -6,6 +6,7 @@ import { StoreDispatch } from '../../shared/types/types';
 import azureReducer from '../../views/providers/azure/Azure.reducer';
 import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
 import { AzureCloud } from '../../shared/constants/App.constants';
+import { AZURE_DEFAULT_VALUES } from '../../shared/constants/defaults/azure.defaults';
 import { STORE_SECTION_AZURE_RESOURCES } from '../../views/providers/azure/AzureResources.reducer';
 import { AZURE_FIELDS } from '../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 
@@ -20,6 +21,7 @@ const initialState = {
         [AZURE_FIELDS.SSH_PUBLIC_KEY]: '',
         [AZURE_FIELDS.OS_IMAGE]: {},
         [AZURE_FIELDS.CLUSTER_NAME]: '',
+        ...AZURE_DEFAULT_VALUES,
     },
     [STORE_SECTION_AZURE_RESOURCES]: {},
 };

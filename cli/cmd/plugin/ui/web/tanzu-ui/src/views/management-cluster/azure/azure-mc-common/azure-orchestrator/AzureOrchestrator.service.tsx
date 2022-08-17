@@ -10,7 +10,6 @@ import {
     removeErrorInfo,
     addErrorInfo,
 } from '../../../default-orchestrator/DefaultOrchestrator';
-// import { RESOURCE } from '../../../state-management/actions/Resources.actions';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 interface AzureOrchestratorProps {
     azureState: { [key: string]: any };

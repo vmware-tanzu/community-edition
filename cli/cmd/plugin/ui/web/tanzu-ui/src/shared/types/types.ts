@@ -34,7 +34,3 @@ export interface KeyOfStringToString {
 }
 
 export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, Action>>>;
-
-// export interface Fields {
-//     fields: AZURE_FIELDS | AWS_FIELDS;
-// }

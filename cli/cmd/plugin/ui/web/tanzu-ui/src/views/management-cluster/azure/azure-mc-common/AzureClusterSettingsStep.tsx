@@ -9,7 +9,6 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
 // App imports
-
 import { AZURE_FIELDS, AZURE_NODE_PROFILE_NAMES } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { AzureStore } from '../../../../state-management/stores/Azure.store';
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
@@ -24,7 +23,7 @@ import PageNotification, { Notification, NotificationStatus } from '../../../../
 import { FormAction } from '../../../../shared/types/types';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
-import { AzureService, AzureVirtualMachine } from '../../../../swagger-api';
+import { AzureVirtualMachine } from '../../../../swagger-api';
 import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { getResource } from '../../../providers/azure/AzureResources.reducer';
 

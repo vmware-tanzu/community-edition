@@ -10,7 +10,7 @@ import {
     addErrorInfo,
 } from '../../../default-orchestrator/DefaultOrchestrator';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-import { ResourceAction, FormAction, StoreDispatch } from '../../../../../shared/types/types';
+import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 
 interface AwsOrchestratorProps {
@@ -48,22 +48,6 @@ export class AwsOrchestrator {
     }
 }
 
-// function clearPreviousResourceData(awsDispatch: StoreDispatch, resourceName: AWS_FIELDS) {
-//     awsDispatch({
-//         type: AWS_ADD_RESOURCES,
-//         resourceName: resourceName,
-//         payload: [],
-//     } as ResourceAction);
-// }
-
-// function saveCurrentResourceData(awsDispatch: StoreDispatch, resourceName: AWS_FIELDS, currentValues: any[]) {
-//     awsDispatch({
-//         type: AWS_ADD_RESOURCES,
-//         resourceName: resourceName,
-//         payload: currentValues,
-//     } as ResourceAction);
-// }
-
 function setDefaultOsImage(awsDispatch: StoreDispatch, osImages: AWSVirtualMachine[]) {
     awsDispatch({
         type: INPUT_CHANGE,
@@ -79,16 +63,3 @@ function setDefaultEC2KeyPair(awsDispatch: StoreDispatch, keyPairs: AWSKeyPair[]
         payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
     } as FormAction);
 }
-
-// function removeErrorInfo(errorObject: { [key: string]: any }, field: AWS_FIELDS) {
-//     const copy = { ...errorObject };
-//     delete copy[field];
-//     return copy;
-// }
-
-// function addErrorInfo(errorObject: { [key: string]: any }, error: any, field: AWS_FIELDS) {
-//     return {
-//         ...errorObject,
-//         [field]: error,
-//     };
-// }

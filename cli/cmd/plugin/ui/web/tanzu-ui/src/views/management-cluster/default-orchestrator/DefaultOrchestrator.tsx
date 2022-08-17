@@ -1,7 +1,4 @@
-// import { ResourceAction, FormAction, StoreDispatch } from '../../../../../shared/types/types';
-import { ResourceAction, FormAction, StoreDispatch } from '../../../shared/types/types';
-// import { AZURE_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
-// import { AZURE_ADD_RESOURCES } from '../../../state-management/actions/Resources.actions';
+import { ResourceAction, StoreDispatch } from '../../../shared/types/types';
 import { RESOURCE } from '../../../state-management/actions/Resources.actions';
 import { AWS_FIELDS } from '../aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AZURE_FIELDS } from '../azure/azure-mc-basic/AzureManagementClusterBasic.constants';
@@ -26,14 +23,6 @@ export function saveCurrentResourceData(
         payload: currentValues,
     } as ResourceAction);
 }
-
-// function setDefaultOsImage(azureDispatch: StoreDispatch, osImages: AzureVirtualMachine[]) {
-//     azureDispatch({
-//         type: INPUT_CHANGE,
-//         field: AZURE_FIELDS.OS_IMAGE,
-//         payload: AzureDefaults.selectDefaultOsImage(osImages),
-//     } as FormAction);
-// }
 
 export function removeErrorInfo(errorObject: { [key: string]: any }, field: AWS_FIELDS | AZURE_FIELDS) {
     const copy = { ...errorObject };
