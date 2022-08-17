@@ -23,6 +23,8 @@ import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNo
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import { AzureOrchestrator } from '../azure-orchestrator/AzureOrchestrator.service';
+import { clearPreviousResourceData } from '../../../default-orchestrator/DefaultOrchestrator';
+import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;
     [AZURE_FIELDS.CLIENT_ID]: string;
@@ -164,6 +166,8 @@ function ManagementCredentials(props: Partial<StepProps>) {
     useEffect(() => {
         if (azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]) {
             AzureOrchestrator.initOsImages({ azureState, azureDispatch, errorObject, setErrorObject });
+        } else {
+            clearPreviousResourceData(azureDispatch, RESOURCE.AZURE_ADD_RESOURCES, AZURE_FIELDS.OS_IMAGE);
         }
     }, [azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]]);
 
