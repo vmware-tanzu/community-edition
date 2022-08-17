@@ -3,9 +3,15 @@ import { AzureService, AzureVirtualMachine } from '../../../../../swagger-api';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { AzureDefaults } from '../default-service/AzureDefaults.service';
-import { AzureResourceAction, FormAction, StoreDispatch } from '../../../../../shared/types/types';
-import { AZURE_ADD_RESOURCES } from '../../../../../state-management/actions/Resources.actions';
-
+import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
+import {
+    clearPreviousResourceData,
+    saveCurrentResourceData,
+    removeErrorInfo,
+    addErrorInfo,
+} from '../../../default-orchestrator/DefaultOrchestrator';
+// import { RESOURCE } from '../../../state-management/actions/Resources.actions';
+import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 interface AzureOrchestratorProps {
     azureState: { [key: string]: any };
     azureDispatch: StoreDispatch;
@@ -17,49 +23,20 @@ export class AzureOrchestrator {
         const { azureDispatch, setErrorObject, errorObject } = props;
         try {
             const osImages = await AzureService.getAzureOsImages();
-            saveCurrentResourceData(azureDispatch, AZURE_FIELDS.OS_IMAGE, osImages);
+            saveCurrentResourceData(azureDispatch, RESOURCE.AZURE_ADD_RESOURCES, AZURE_FIELDS.OS_IMAGE, osImages);
             setDefaultOsImage(azureDispatch, osImages);
             setErrorObject(removeErrorInfo(errorObject, AZURE_FIELDS.OS_IMAGE));
         } catch (e) {
-            clearPreviousResourceData(azureDispatch, AZURE_FIELDS.OS_IMAGE);
+            clearPreviousResourceData(azureDispatch, RESOURCE.AZURE_ADD_RESOURCES, AZURE_FIELDS.OS_IMAGE);
             setErrorObject(addErrorInfo(errorObject, e, AZURE_FIELDS.OS_IMAGE));
         }
     }
-}
-
-function clearPreviousResourceData(azureDispatch: StoreDispatch, resourceName: AZURE_FIELDS) {
-    azureDispatch({
-        type: AZURE_ADD_RESOURCES,
-        resourceName: resourceName,
-        payload: [],
-    } as AzureResourceAction);
-}
-
-function saveCurrentResourceData(azureDispatch: StoreDispatch, resourceName: AZURE_FIELDS, currentValues: any[]) {
-    azureDispatch({
-        type: AZURE_ADD_RESOURCES,
-        resourceName: resourceName,
-        payload: currentValues,
-    } as AzureResourceAction);
 }
 
 function setDefaultOsImage(azureDispatch: StoreDispatch, osImages: AzureVirtualMachine[]) {
     azureDispatch({
         type: INPUT_CHANGE,
         field: AZURE_FIELDS.OS_IMAGE,
-        payload: AzureDefaults.selectDefalutOsImage(osImages),
+        payload: AzureDefaults.selectDefaultOsImage(osImages),
     } as FormAction);
-}
-
-function removeErrorInfo(errorObject: { [key: string]: any }, field: AZURE_FIELDS) {
-    const copy = { ...errorObject };
-    delete copy[field];
-    return copy;
-}
-
-function addErrorInfo(errorObject: { [key: string]: any }, error: any, field: AZURE_FIELDS) {
-    return {
-        ...errorObject,
-        [field]: error,
-    };
 }

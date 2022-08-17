@@ -9,7 +9,7 @@ import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsTextarea } from '@cds/react/textarea';
 
 // App import
-import { AzureAccountParams, AzureLocation, AzureService } from '../../../../../swagger-api';
+import { AzureAccountParams, AzureLocation, AzureService, ApiError } from '../../../../../swagger-api';
 import { AzureStore } from '../../../../../state-management/stores/Azure.store';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -52,7 +52,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
     const [regionLoading, setRegionLoading] = useState(false);
-    const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
+    const [errorObject, setErrorObject] = useState<{ [fieldName: string]: ApiError }>({});
 
     // update tab status bar
     if (updateTabStatus) {
@@ -122,9 +122,22 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
+    const isConnected = () => {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
+            return true;
+        }
+        return false;
+    };
+
+    const hasError = () => {
+        if (Object.keys(errorObject).length > 0) {
+            return true;
+        }
+        return false;
+    };
+
     function showErrorInfo() {
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
-            console.log(errorObject);
+        if (isConnected() && hasError()) {
             return (
                 <div>
                     <div className="error-text">Error Occurred</div>
@@ -132,7 +145,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     {Object.keys(errorObject).map((errorField) => {
                         return (
                             <CdsControlMessage status="error" key={errorField}>
-                                {errorObject[errorField]}
+                                {errorObject[errorField].status}
+                                &nbsp;
+                                {errorObject[errorField].statusText}
+                                &nbsp;
+                                {errorObject[errorField].body.message}
+                                <br />
                             </CdsControlMessage>
                         );
                     })}

@@ -1,6 +1,6 @@
-import { AzureResourceAction } from '../../../shared/types/types';
+import { ResourceAction } from '../../../shared/types/types';
 import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
-import { AZURE_ADD_RESOURCES, AZURE_DELETE_RESOURCES } from '../../../state-management/actions/Resources.actions';
+import { RESOURCE } from '../../../state-management/actions/Resources.actions';
 
 export const STORE_SECTION_AZURE_RESOURCES = 'resources';
 
@@ -9,15 +9,15 @@ export const STORE_SECTION_AZURE_RESOURCES = 'resources';
 // So if the action object were:
 // { region: us-east-1, resourceName: osImages, payload: [obj1, obj2, obj3] }, then we would expect
 // to see state['us-east-1']['osImages'] === [obj1, obj2, obj3]
-function azureResourcesReducer(state: any, action: AzureResourceAction) {
+function azureResourcesReducer(state: any, action: ResourceAction) {
     const newState = { ...state };
     if (!action.resourceName) {
         console.error(`azureResourcesReducer received action ${JSON.stringify(action)} which has no resourceName!`);
         return newState;
     }
-    if (action.type === AZURE_ADD_RESOURCES) {
+    if (action.type === RESOURCE.AZURE_ADD_RESOURCES) {
         newState[action.resourceName] = action.payload;
-    } else if (action.type === AZURE_DELETE_RESOURCES) {
+    } else if (action.type === RESOURCE.AZURE_DELETE_RESOURCES) {
         delete newState[action.resourceName];
     }
     console.log(`New resources state: ${JSON.stringify(newState)} after action ${JSON.stringify(action)}`);
@@ -35,5 +35,5 @@ export const azureResourceReducerDescriptor = {
     name: 'azure resource reducer',
     reducer: azureResourcesReducer,
     storeSection: STORE_SECTION_AZURE_RESOURCES,
-    actionTypes: [AZURE_ADD_RESOURCES, AZURE_DELETE_RESOURCES],
+    actionTypes: [RESOURCE.AZURE_ADD_RESOURCES, RESOURCE.AZURE_DELETE_RESOURCES],
 } as ReducerDescriptor;

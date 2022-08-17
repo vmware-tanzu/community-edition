@@ -1,3 +1,6 @@
+// import { Fields } from '../../../shared/types/types';
+import { Fields } from '../../../../shared/types/types';
+
 export const AZURE_MC_BASIC_TAB_NAMES = ['Azure Credentials', 'Cluster Settings', 'Review'];
 
 /* eslint-disable no-unused-vars */
