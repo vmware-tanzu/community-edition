@@ -1,7 +1,6 @@
-// App imports
+import { ResourceAction } from '../../../shared/types/types';
 import { ReducerDescriptor } from '../../../shared/utilities/Reducer.utils';
-import { VsphereResourceAction } from '../../../shared/types/types';
-import { VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES } from '../../../state-management/actions/Resources.actions';
+import { RESOURCE } from '../../../state-management/actions/Resources.actions';
 
 export const STORE_SECTION_VSPHERE_RESOURCES = 'resources';
 
@@ -10,15 +9,15 @@ export const STORE_SECTION_VSPHERE_RESOURCES = 'resources';
 // So if the action object were:
 // { datacenter: dc-10, resourceName: osImages, payload: [obj1, obj2, obj3] }, then we would expect
 // to see state['dc-10']['osImages'] === [obj1, obj2, obj3]
-function vsphereResourcesReducer(state: any, action: VsphereResourceAction) {
+function vsphereResourcesReducer(state: any, action: ResourceAction) {
     const newState = { ...state };
     if (!action.resourceName) {
         console.error(`vsphereResourcesReducer received action ${JSON.stringify(action)} which has no resourceName!`);
         return newState;
     }
-    if (action.type === VSPHERE_ADD_RESOURCES) {
+    if (action.type === RESOURCE.VSPHERE_ADD_RESOURCES) {
         newState[action.resourceName] = action.payload;
-    } else if (action.type === VSPHERE_DELETE_RESOURCES) {
+    } else if (action.type === RESOURCE.VSPHERE_DELETE_RESOURCES) {
         delete newState[action.resourceName];
     }
     console.log(`New resources state: ${JSON.stringify(newState)} after action ${JSON.stringify(action)}`);
@@ -36,5 +35,5 @@ export const vsphereResourceReducerDescriptor = {
     name: 'vsphere resource reducer',
     reducer: vsphereResourcesReducer,
     storeSection: STORE_SECTION_VSPHERE_RESOURCES,
-    actionTypes: [VSPHERE_ADD_RESOURCES, VSPHERE_DELETE_RESOURCES],
+    actionTypes: [RESOURCE.VSPHERE_ADD_RESOURCES, RESOURCE.VSPHERE_DELETE_RESOURCES],
 } as ReducerDescriptor;

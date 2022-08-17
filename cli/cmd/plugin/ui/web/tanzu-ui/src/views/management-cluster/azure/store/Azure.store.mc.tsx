@@ -2,11 +2,12 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
-import azureReducer from '../../../../state-management/reducers/Wizard.reducer';
+import azureReducer from '../../../../views/providers/azure/Azure.reducer';
 import { AzureCloud } from '../../../../shared/constants/App.constants';
 import { AZURE_DEFAULT_VALUES } from '../../../../shared/constants/defaults/azure.defaults';
 import { AZURE_FIELDS } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { StoreDispatch } from '../../../../shared/types/types';
+import { STORE_SECTION_AZURE_RESOURCES } from '../../../providers/azure/AzureResources.reducer';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
         [AZURE_FIELDS.CLUSTER_NAME]: '',
         ...AZURE_DEFAULT_VALUES,
     },
+    [STORE_SECTION_AZURE_RESOURCES]: {},
 };
 
 const AzureStore = createContext<{

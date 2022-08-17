@@ -23,9 +23,9 @@ import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validati
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
-import { VSPHERE_ADD_RESOURCES } from '../../../../state-management/actions/Resources.actions';
+import { RESOURCE } from '../../../../state-management/actions/Resources.actions';
 import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
-import { FormAction, VsphereResourceAction } from '../../../../shared/types/types';
+import { FormAction, ResourceAction } from '../../../../shared/types/types';
 import { VsphereStore } from '../Store.vsphere.mc';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
@@ -186,11 +186,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             goToStep(currentStep + 1);
             submitForm(currentStep);
             vsphereDispatch({
-                type: VSPHERE_ADD_RESOURCES,
+                type: RESOURCE.VSPHERE_ADD_RESOURCES,
                 datacenter: selectedDatacenter,
                 resourceName: 'osImages',
                 payload: osImages,
-            } as VsphereResourceAction);
+            } as ResourceAction);
         }
     };
 

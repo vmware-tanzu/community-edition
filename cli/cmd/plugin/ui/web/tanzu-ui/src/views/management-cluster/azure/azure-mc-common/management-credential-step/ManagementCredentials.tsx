@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -9,7 +9,8 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // App import
-import { AzureAccountParams, AzureLocation, AzureService } from '../../../../../swagger-api';
+import { AzureAccountParams, AzureLocation, AzureService, ApiError } from '../../../../../swagger-api';
+import { AzureOrchestrator } from '../azure-orchestrator/AzureOrchestrator.service';
 import { AzureStore } from '../../store/Azure.store.mc';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
@@ -17,12 +18,12 @@ import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialsLogin from './ManagementCredentialsLogin';
+import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import './ManagementCredentials.scss';
-
+import { clearPreviousResourceData } from '../../../default-orchestrator/DefaultOrchestrator';
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;
     [AZURE_FIELDS.CLIENT_ID]: string;
@@ -52,6 +53,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
     const [regionLoading, setRegionLoading] = useState(false);
+    const [errorObject, setErrorObject] = useState<{ [fieldName: string]: ApiError }>({});
 
     // update tab status bar
     if (updateTabStatus) {
@@ -120,6 +122,48 @@ function ManagementCredentials(props: Partial<StepProps>) {
             }
         }
     };
+
+    const isConnected = () => {
+        return connectionStatus === CONNECTION_STATUS.CONNECTED;
+    };
+
+    const hasError = () => {
+        return Object.keys(errorObject).length > 0;
+    };
+
+    function showErrorInfo() {
+        if (isConnected() && hasError()) {
+            return (
+                <div>
+                    <div className="error-text">Error Occurred</div>
+                    <br />
+                    {Object.keys(errorObject).map((errorField) => {
+                        return (
+                            <CdsControlMessage status="error" key={errorField}>
+                                {errorObject[errorField].status}
+                                &nbsp;
+                                {errorObject[errorField].statusText}
+                                &nbsp;
+                                {errorObject[errorField].body.message}
+                                <br />
+                            </CdsControlMessage>
+                        );
+                    })}
+                    <br />
+                </div>
+            );
+        }
+        return;
+    }
+
+    useEffect(() => {
+        if (azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]) {
+            AzureOrchestrator.initOsImages({ azureState, azureDispatch, errorObject, setErrorObject });
+        } else {
+            clearPreviousResourceData(azureDispatch, RESOURCE.AZURE_ADD_RESOURCES, AZURE_FIELDS.OS_IMAGE);
+        }
+    }, [azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]]);
+
     return (
         <div className="wizard-content-container azure-credential">
             <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
@@ -175,6 +219,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                                 <CdsControlMessage status="error">{errors[AZURE_FIELDS.SSH_PUBLIC_KEY]?.message}</CdsControlMessage>
                             )}
                         </CdsTextarea>
+                        <div cds-layout="col:6 align:horizontal-center">{showErrorInfo()}</div>
                     </div>
                     <CdsButton onClick={handleSubmit(onSubmit)}>NEXT</CdsButton>
                 </CdsFormGroup>
