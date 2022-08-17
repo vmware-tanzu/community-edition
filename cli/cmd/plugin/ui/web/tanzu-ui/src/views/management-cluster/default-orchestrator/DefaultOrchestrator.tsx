@@ -3,8 +3,8 @@ import { RESOURCE } from '../../../state-management/actions/Resources.actions';
 import { AWS_FIELDS } from '../aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AZURE_FIELDS } from '../azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 
-export function clearPreviousResourceData(azureDispatch: StoreDispatch, actionType: RESOURCE, resourceName: AWS_FIELDS | AZURE_FIELDS) {
-    azureDispatch({
+export function clearPreviousResourceData(dispatch: StoreDispatch, actionType: RESOURCE, resourceName: AWS_FIELDS | AZURE_FIELDS) {
+    dispatch({
         type: actionType,
         resourceName: resourceName,
         payload: [],
@@ -12,12 +12,12 @@ export function clearPreviousResourceData(azureDispatch: StoreDispatch, actionTy
 }
 
 export function saveCurrentResourceData(
-    azureDispatch: StoreDispatch,
+    dispatch: StoreDispatch,
     actionType: RESOURCE,
     resourceName: AWS_FIELDS | AZURE_FIELDS,
     currentValues: any[]
 ) {
-    azureDispatch({
+    dispatch({
         type: actionType,
         resourceName: resourceName,
         payload: currentValues,
