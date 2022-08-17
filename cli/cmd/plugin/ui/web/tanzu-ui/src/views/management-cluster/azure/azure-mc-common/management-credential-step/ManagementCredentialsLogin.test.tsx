@@ -1,8 +1,13 @@
+// React imports
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import ManagementCredentialsLogin from './ManagementCredentialsLogin';
-import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+
+// Library imports
 import { FormProvider } from 'react-hook-form';
+
+// App imports
+import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import ManagementCredentialsLogin from './ManagementCredentialsLogin';
 
 const azureEnvironment = ['Public Cloud', 'US Government Cloud'];
 const formFieldItem = [

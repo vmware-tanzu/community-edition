@@ -1,6 +1,7 @@
 // React imports
 import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import { FieldError, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+
 // Library imports
 import { blockIcon, blocksGroupIcon, ClarityIcons } from '@cds/core/icon';
 import { CdsButton } from '@cds/react/button';
@@ -9,6 +10,7 @@ import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsTextarea } from '@cds/react/textarea';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
+
 // App imports
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../../shared/types/types';
@@ -92,20 +94,27 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
 
     const osTemplates = osImages.filter((osImage) => osImage.isTemplate);
     // if there's only ONE template, then pretend the user has selected it (unless we've already done that)
-    if (osTemplates.length === 1 && vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMTEMPLATE] !== osTemplates[0].moid) {
-        const moid = osTemplates[0].moid || '';
-        setValue(VSPHERE_FIELDS.VMTEMPLATE, moid);
-        vsphereDispatch({
-            type: INPUT_CHANGE,
-            field: VSPHERE_FIELDS.VMTEMPLATE,
-            payload: moid,
-        } as FormAction);
-    }
+    useEffect(() => {
+        if (osTemplates.length === 1 && vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMTEMPLATE] !== osTemplates[0].moid) {
+            const moid = osTemplates[0].moid || '';
+            setValue(VSPHERE_FIELDS.VMTEMPLATE, moid);
+            vsphereDispatch({
+                type: INPUT_CHANGE,
+                field: VSPHERE_FIELDS.VMTEMPLATE,
+                payload: moid,
+            } as FormAction);
+        }
+    }, []);
+
     let initialSelectedInstanceTypeId = vsphereState[VSPHERE_FIELDS.INSTANCETYPE];
-    if (!initialSelectedInstanceTypeId) {
-        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-        setValue(VSPHERE_FIELDS.INSTANCETYPE, initialSelectedInstanceTypeId);
-    }
+
+    useEffect(() => {
+        if (!initialSelectedInstanceTypeId) {
+            initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
+            setValue(VSPHERE_FIELDS.INSTANCETYPE, initialSelectedInstanceTypeId);
+        }
+    }, []);
+
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
     const canContinue = (): boolean => {

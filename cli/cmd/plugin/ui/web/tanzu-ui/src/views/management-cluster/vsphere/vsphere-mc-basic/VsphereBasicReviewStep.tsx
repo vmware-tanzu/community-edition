@@ -1,9 +1,11 @@
 // React imports
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
+
 // App imports
 import { configDisplayBasic, configDisplayDefaults } from './VsphereBasicReview.config';
 import { ConfigDisplay } from '../../../../shared/components/ConfigReview/ConfigDisplay';

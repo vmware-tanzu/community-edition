@@ -6,11 +6,11 @@ import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 
 // App imports
+import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { CriService } from '../../../../../swagger-api';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
-import './McPrerequisiteStep.scss';
 import { STATUS } from '../../../../../shared/constants/App.constants';
-import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import './McPrerequisiteStep.scss';
 
 function McPrerequisiteStep(props: Partial<StepProps>) {
     const { currentStep, goToStep, setTabStatus, tabStatus } = props;

@@ -1,30 +1,29 @@
 // React imports
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // Library imports
+import { CdsButton } from '@cds/react/button';
 import { ClarityIcons, blockIcon, blocksGroupIcon, clusterIcon } from '@cds/core/icon';
 import { FormProvider, useForm } from 'react-hook-form';
-import { CdsButton } from '@cds/react/button';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
 // App imports
-import { AwsStore } from '../../../state-management/stores/Store.aws';
+import { AwsStore } from './store/Aws.store.mc';
 import { AWSVirtualMachine } from '../../../swagger-api';
 import { AWS_FIELDS } from './aws-mc-basic/AwsManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../shared/types/types';
+import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import { StepProps } from '../../../shared/components/wizard/Wizard';
-import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import {
     NodeProfile,
     NodeInstanceType,
     nodeInstanceTypeValidation,
 } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
-
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
-import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
+import { StepProps } from '../../../shared/components/wizard/Wizard';
+import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
@@ -110,11 +109,13 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
         setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
     }
-    if (!initialSelectedInstanceTypeId) {
-        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-    }
+    useEffect(() => {
+        if (!initialSelectedInstanceTypeId) {
+            initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
+            setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+            onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+        }
+    }, []);
 
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 

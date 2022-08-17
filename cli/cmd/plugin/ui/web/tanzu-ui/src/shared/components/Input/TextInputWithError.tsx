@@ -15,7 +15,7 @@ interface Props {
     handleInputChange: (field: any, value: string) => void;
     maskText?: boolean;
 }
-function TextInputWithError(props: Props) {
+function TextInputWithError(props: Partial<Props>) {
     const { className, defaultValue, label, name, handleInputChange, placeholder, maskText } = props;
     const {
         register,
@@ -25,9 +25,9 @@ function TextInputWithError(props: Props) {
         <CdsInput layout="vertical" control-width="shrink">
             <label>{label}</label>
             <input
-                {...register(name, {
+                {...register(name as string, {
                     onChange: (e: ChangeEvent<HTMLInputElement>) => {
-                        handleInputChange(name, e.target.value);
+                        if (handleInputChange) handleInputChange(name, e.target.value);
                     },
                 })}
                 name={name}

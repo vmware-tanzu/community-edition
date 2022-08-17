@@ -1,3 +1,4 @@
+// App imports
 import { VSphereVirtualMachine } from '../../../../swagger-api';
 
 // analyzeOsImages takes a datacenter name, a URL (for messaging) and an array of osImages. It returns an object that includes

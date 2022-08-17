@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // App imports
 import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
-import { DockerStore } from '../../state-management/stores/Docker.store';
+import { DockerStore } from '../../views/management-cluster/docker/store/Docker.store.mc';
 import { Store } from '../../state-management/stores/Store';
 import { DockerService, ConfigFileInfo, DockerManagementClusterParams, IdentityManagementConfig } from '../../swagger-api';
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';

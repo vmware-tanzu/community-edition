@@ -5,18 +5,18 @@ import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/core/icon';
+import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
 
 // App import
-import './ManagementCredentials.scss';
-import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsService } from '../../../../../swagger-api';
-import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { AwsStore } from '../../store/Aws.store.mc';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -26,7 +26,7 @@ import ManagementCredentialProfile from './ManagementCredentialProfile';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
+import './ManagementCredentials.scss';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -49,6 +49,14 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
         mode: 'all',
+        defaultValues: {
+            [AWS_FIELDS.SECRET_ACCESS_KEY]: '',
+            [AWS_FIELDS.ACCESS_KEY_ID]: '',
+            [AWS_FIELDS.SESSION_TOKEN]: '',
+            [AWS_FIELDS.PROFILE]: '',
+            [AWS_FIELDS.REGION]: '',
+            [AWS_FIELDS.EC2_KEY_PAIR]: '',
+        },
     });
     const {
         register,
@@ -95,6 +103,15 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
+        const valueList = getValues();
+        for (const i in valueList) {
+            awsDispatch({
+                type: INPUT_CHANGE,
+                field: i,
+                payload: valueList[i],
+            } as FormAction);
+        }
+
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
@@ -171,7 +188,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        if (awsState[STORE_SECTION_FORM].REGION) {
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]) {
             AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         }
     }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);

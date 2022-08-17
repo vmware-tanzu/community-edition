@@ -1,7 +1,7 @@
+// App imports
+import { AZURE_FIELDS } from './AzureManagementClusterBasic.constants';
 import { CommonConfigTransformationFunctions, ConfigGroup } from '../../../../shared/components/ConfigReview/ConfigGrid';
 import { ConfigDisplayData } from '../../../../shared/components/ConfigReview/ConfigDisplay';
-import { OsImage } from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
-import { AZURE_FIELDS } from './AzureManagementClusterBasic.constants';
 
 const configGroupCredentials: ConfigGroup = {
     label: 'Azure Credentials',

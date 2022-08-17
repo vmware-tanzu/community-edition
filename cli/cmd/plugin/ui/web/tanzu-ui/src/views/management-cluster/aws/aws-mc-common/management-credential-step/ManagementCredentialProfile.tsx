@@ -7,12 +7,12 @@ import { useFormContext } from 'react-hook-form';
 
 // App imports
 import { AwsService } from '../../../../../swagger-api/services/AwsService';
-import './ManagementCredentialProfile.scss';
-import { AwsStore } from '../../../../../state-management/stores/Store.aws';
+import { AwsStore } from '../../store/Aws.store.mc';
 import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { FormAction } from '../../../../../shared/types/types';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
+import './ManagementCredentialProfile.scss';
 
 interface Props {
     selectCallback: () => void;
@@ -22,6 +22,7 @@ function ManagementCredentialProfile(props: Props) {
     const { selectCallback } = props;
     const { awsDispatch } = useContext(AwsStore);
     const {
+        reset,
         register,
         formState: { errors },
     } = useFormContext();
@@ -32,6 +33,8 @@ function ManagementCredentialProfile(props: Props) {
     const [regionLoading, setRegionLoading] = useState(false);
 
     useEffect(() => {
+        reset();
+        onSelectChange(AWS_FIELDS.REGION, '');
         // fetch regions
         const fetchRegions = async () => {
             try {
@@ -102,7 +105,6 @@ function ManagementCredentialProfile(props: Props) {
                         label="AWS credential profile"
                         className="select-sm-width"
                         handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
-                            onSelectChange(AWS_FIELDS.PROFILE, e.target.value);
                             selectCallback();
                         }}
                         name={AWS_FIELDS.PROFILE}

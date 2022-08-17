@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import { CdsButton } from '@cds/react/button';
 
 // App imports
-import TceLogoAndTitle from '../../assets/tce-logo-and-title.svg';
 import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
+import TceLogoAndTitle from '../../assets/tce-logo-and-title.svg';
 import RolloverBanner from './RolloverBanner/RolloverBanner';
 import './Welcome.scss';
 

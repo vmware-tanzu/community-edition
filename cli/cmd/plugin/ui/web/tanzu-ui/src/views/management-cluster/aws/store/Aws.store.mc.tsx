@@ -1,12 +1,13 @@
 // React imports
 import React, { createContext, ReactNode, useReducer } from 'react';
+
 // App imports
-import { AWS_DEFAULT_VALUES } from '../../shared/constants/defaults/aws.defaults';
-import awsReducer from '../../views/providers/aws/Aws.reducer';
-import { STORE_SECTION_FORM } from '../reducers/Form.reducer';
-import { StoreDispatch } from '../../shared/types/types';
-import { STORE_SECTION_AWS_RESOURCES } from '../../views/providers/aws/AwsResources.reducer';
-import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
+import awsReducer from '../../../../views/providers/aws/Aws.reducer';
+import { AWS_DEFAULT_VALUES } from '../../../../shared/constants/defaults/aws.defaults';
+import { AWS_FIELDS } from '../../../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
+import { StoreDispatch } from '../../../../shared/types/types';
+import { STORE_SECTION_AWS_RESOURCES } from '../../../../views/providers/aws/AwsResources.reducer';
+import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {

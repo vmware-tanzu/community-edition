@@ -1,16 +1,16 @@
 // App imports
 import { AzureService, AzureVirtualMachine } from '../../../../../swagger-api';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { AzureDefaults } from '../default-service/AzureDefaults.service';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
+import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 import {
     clearPreviousResourceData,
     saveCurrentResourceData,
     removeErrorInfo,
     addErrorInfo,
 } from '../../../default-orchestrator/DefaultOrchestrator';
-import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 interface AzureOrchestratorProps {
     azureState: { [key: string]: any };
     azureDispatch: StoreDispatch;
