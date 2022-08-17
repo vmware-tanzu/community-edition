@@ -1,5 +1,5 @@
 // App imports
-import { AzureService, AzureVirtualMachine } from '../../../../../swagger-api';
+import { AzureService, AzureVirtualMachine, ApiError } from '../../../../../swagger-api';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { AzureDefaults } from '../default-service/AzureDefaults.service';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -14,8 +14,8 @@ import {
 interface AzureOrchestratorProps {
     azureState: { [key: string]: any };
     azureDispatch: StoreDispatch;
-    errorObject: { [key: string]: any };
-    setErrorObject: (newErrorObject: { [key: string]: any }) => void;
+    errorObject: { [fieldName: string]: ApiError };
+    setErrorObject: (newErrorObject: { [fieldName: string]: ApiError }) => void;
 }
 export class AzureOrchestrator {
     static async initOsImages(props: AzureOrchestratorProps) {
