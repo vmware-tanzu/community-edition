@@ -3,11 +3,11 @@ import React, { useContext, useEffect } from 'react';
 import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 
 // App imports
+import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
 import AwsManagementCluster from './views/management-cluster/aws/AwsManagementCluster';
 import AzureManagementCluster from './views/management-cluster/azure/AzureManagementCluster';
-import { APP_ENV_CHANGE, APP_ROUTE_CHANGE } from './state-management/actions/App.actions';
-import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
 import { ContextualHelpActions } from './state-management/actions/Ui.actions';
+import * as ContextualHelpUtils from './shared/components/ContextualHelp/ContextualHelp.utils';
 import ContextualHelp from './shared/components/ContextualHelp/ContextualHelp';
 import DeployProgress from './shared/components/DeployProgress/DeployProgress';
 import DockerManagementCluster from './views/management-cluster/docker/DockerManagementCluster';
@@ -29,11 +29,6 @@ function App() {
     const { dispatch } = useContext(Store);
     const location = useLocation();
     const currentPath = location.pathname;
-
-    // TODO: this is for testing/setup of dark mode; sets body theme to dark
-    // Will be refactored
-    document.body.setAttribute('cds-theme', 'dark');
-    document.body.setAttribute('class', 'dark');
 
     // set router path in store
     useEffect(() => {
