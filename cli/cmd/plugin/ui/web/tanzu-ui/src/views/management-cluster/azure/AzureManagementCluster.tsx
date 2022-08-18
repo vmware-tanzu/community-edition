@@ -8,7 +8,6 @@ import { CdsIconButton } from '@cds/react/button';
 
 // App imports
 import { AzureProvider } from './store/Azure.store.mc';
-import AzureLogo from '../../../assets/azure.svg';
 import AzureManagementClusterBasic from './azure-mc-basic/AzureManagementClusterBasic';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
 import './AzureManagementCluster.scss';
@@ -29,7 +28,7 @@ function AzureManagementCluster() {
                         >
                             <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
                         </CdsIconButton>
-                        <img src={AzureLogo} className="logo logo-42" cds-layout="m-r:md" alt="azure logo" />
+                        <img className="azure-log-img logo logo-42" cds-layout="m-r:md" alt="azure logo" />
                         Create a Management Cluster on Azure
                     </span>
                 </div>

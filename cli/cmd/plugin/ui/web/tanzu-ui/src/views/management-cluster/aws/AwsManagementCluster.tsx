@@ -7,7 +7,6 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsIconButton } from '@cds/react/button';
 
 // App imports
-import AwsLogo from '../../../assets/aws.svg';
 import AwsManagementClusterBasic from './aws-mc-basic/AwsManagementClusterBasic';
 import { AwsProvider } from './store/Aws.store.mc';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
@@ -29,7 +28,7 @@ function AwsManagementCluster() {
                         >
                             <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
                         </CdsIconButton>
-                        <img src={AwsLogo} className="logo logo-42" cds-layout="m-r:md" alt="aws logo" />
+                        <img className="aws-logo-img logo logo-42" cds-layout="m-r:md" alt="aws logo" />
                         Create a Management Cluster on Amazon Web Services
                     </span>
                 </div>

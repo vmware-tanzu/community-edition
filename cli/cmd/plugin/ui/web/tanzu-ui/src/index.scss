@@ -1,4 +1,5 @@
 @use 'src/scss/icons';
+@use 'src/scss/logosAndImages';
 @use 'src/scss/vars';
 @use 'src/scss/utils';
 
@@ -101,38 +102,6 @@ main {
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
-}
-
-.mgmt-cluster-admins-img {
-    display: inline-block;
-    background-image: url('assets/admins-at-work.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-top: 30px;
-    width: 100%;
-    height: 100%;
-}
-
-.aws-logo-sm {
-    background-image: url('assets/aws.svg');
-    background-repeat: no-repeat;
-    background-position: center 10px;
-}
-.docker-logo-sm {
-    background-image: url('assets/docker.svg');
-    background-repeat: no-repeat;
-    background-position: center 10px;
-}
-.vsphere-logo-sm {
-    background-image: url('assets/vsphere.svg');
-    background-repeat: no-repeat;
-    background-position: center 10px;
-}
-
-.azure-logo-sm {
-    background-image: url('assets/azure.svg');
-    background-repeat: no-repeat;
-    background-position: center 10px;
 }
 
 // custom elements
