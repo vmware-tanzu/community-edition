@@ -24,7 +24,7 @@ const initialState = {
         // Region
         [AWS_FIELDS.REGION]: '',
         ...AWS_DEFAULT_VALUES,
-        // NodeProfile
+        // Node Profile
         [AWS_FIELDS.NODE_PROFILE]: '',
         //Node Type
         [AWS_FIELDS.NODE_TYPE]: '',

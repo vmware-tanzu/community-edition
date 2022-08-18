@@ -9,19 +9,14 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
 // App imports
-// import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsStore } from './store/Aws.store.mc';
 import { AWSVirtualMachine } from '../../../swagger-api';
 import { AWS_FIELDS } from './aws-mc-basic/AwsManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../shared/types/types';
-import { getResource, STORE_SECTION_AWS_RESOURCES } from '../../../views/providers/aws/AwsResources.reducer';
+import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import {
-    NodeProfile,
-    NodeInstanceType,
-    nodeInstanceTypeValidation,
-} from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { NodeProfile, nodeInstanceTypeValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
@@ -31,29 +26,6 @@ import { nodeInstanceTypes } from './aws-mc-common/aws-orchestrator/AwsOrchestra
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 type AWS_CLUSTER_SETTING_STEP_FIELDS = AWS_FIELDS.NODE_PROFILE | AWS_FIELDS.OS_IMAGE | AWS_FIELDS.CLUSTER_NAME;
-
-// const nodeInstanceTypes: NodeInstanceType[] = [
-//     {
-//         id: 'SINGLE_NODE',
-//         label: 'Single node',
-//         icon: 'block',
-//         description: 'Create a single control plane node with a medium instance type',
-//     },
-//     {
-//         id: 'HIGH_AVAILABILITY',
-//         label: 'High availability',
-//         icon: 'blocks-group',
-//         description: 'Create a multi-node control plane with a medium instance type',
-//     },
-//     {
-//         id: 'PRODUCTION_READY',
-//         label: 'Production-ready (High availability)',
-//         icon: 'blocks-group',
-//         isSolidIcon: true,
-//         description: 'Create a multi-node control plane with a large instance type',
-//     },
-// ];
-
 interface AwsClusterSettingFormInputs {
     [AWS_FIELDS.CLUSTER_NAME]: string;
     [AWS_FIELDS.NODE_PROFILE]: string;

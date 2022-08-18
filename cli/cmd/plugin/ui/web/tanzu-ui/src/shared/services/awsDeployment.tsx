@@ -11,9 +11,7 @@ import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagem
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
-import { retrieveAwsInstanceType } from '../constants/defaults/aws.defaults';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
-// import { STORE_SECTION_AWS_RESOURCES } from '../../../../views/providers/aws/AwsResources.reducer';
 import { STORE_SECTION_AWS_RESOURCES } from '../../views/providers/aws/AwsResources.reducer';
 import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 
@@ -85,8 +83,6 @@ const useAwsDeployment = () => {
 
     const deployOnAws = async () => {
         const awsClusterParams: AWSManagementClusterParams = getAwsRequestPayload();
-        console.log('payload result');
-        console.log(awsClusterParams);
         try {
             const configFileInfo: ConfigFileInfo = await AwsService.applyTkgConfigForAws(awsClusterParams);
             await AwsService.createAwsManagementCluster(awsClusterParams);

@@ -7,11 +7,6 @@ import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actio
 import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-// import {
-//     NodeProfile,
-//     NodeInstanceType,
-//     nodeInstanceTypeValidation,
-// } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { NodeInstanceType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import {
     clearPreviousResourceData,
@@ -77,7 +72,7 @@ export class AwsOrchestrator {
     }
 
     static async initNodeProfile(props: AwsOrchestratorProps) {
-        const { awsState, awsDispatch, setErrorObject, errorObject } = props;
+        const { awsDispatch, setErrorObject, errorObject } = props;
         try {
             const nodeInstance = await AwsService.getAwsNodeTypes();
             const nodeProfileList: { [key: string]: string } = {
@@ -86,12 +81,14 @@ export class AwsOrchestrator {
                 [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
             };
             Object.keys(nodeProfileList).map((nodeProfile) => {
-                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeInstanceType(nodeInstance, nodeProfile);
+                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeNodeType(nodeInstance, nodeProfile);
             });
             saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
-            setDefaultNodeInstanceType(awsDispatch, nodeProfileList[nodeInstanceTypes[0].id]);
+            setDefaultNodeType(awsDispatch, nodeProfileList[nodeInstanceTypes[0].id]);
+            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.NODE_TYPE));
         } catch (e) {
-            console.log(e);
+            clearPreviousResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
+            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.NODE_TYPE));
         }
     }
 }
@@ -112,7 +109,7 @@ function setDefaultEC2KeyPair(awsDispatch: StoreDispatch, keyPairs: AWSKeyPair[]
     } as FormAction);
 }
 
-function setDefaultNodeInstanceType(awsDispatch: StoreDispatch, nodeProfile: string) {
+function setDefaultNodeType(awsDispatch: StoreDispatch, nodeProfile: string) {
     awsDispatch({
         type: INPUT_CHANGE,
         field: AWS_FIELDS.NODE_TYPE,

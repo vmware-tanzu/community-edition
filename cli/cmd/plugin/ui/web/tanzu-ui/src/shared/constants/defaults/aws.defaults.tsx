@@ -3,7 +3,6 @@ import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../../views/management-cl
 
 export const AWS_DEFAULT_VALUES = {
     // Cluster Data
-    // [AWS_FIELDS.CLUSTER_NAME]: 'my-aws-cluster',
     [AWS_FIELDS.CLUSTER_PLAN]: 'dev',
 
     // VPC New
@@ -34,11 +33,11 @@ const AWS_DEFAULT_INSTANCE_TYPES: KeyOfStringToString = {
 };
 
 /**
- * @method validateDefaultInstanceType
+ * @method validateDefaultNodeType
  * @param nodeProfile - node profile name set by ManagementClusterSettings.tsx; references key of AWS_DEFAULT_INSTANCE_TYPES
  * defaults map.
  * Returns default aws instance type string corresponding to selected node profile.
  */
-export function validateDefaultInstanceType(nodeProfile: string): string {
+export function validateDefaultNodeType(nodeProfile: string): string {
     return AWS_DEFAULT_INSTANCE_TYPES[nodeProfile];
 }
