@@ -13,6 +13,7 @@ const initialState = {
         appRoute: '',
     },
     [STORE_SECTION_UI]: {
+        theme: '',
         navExpanded: true,
         isDeployInProgress: false,
         currentRoute: '',
