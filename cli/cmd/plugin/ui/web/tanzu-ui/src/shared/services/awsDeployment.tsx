@@ -13,6 +13,8 @@ import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
 import { retrieveAwsInstanceType } from '../constants/defaults/aws.defaults';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
+// import { STORE_SECTION_AWS_RESOURCES } from '../../../../views/providers/aws/AwsResources.reducer';
+import { STORE_SECTION_AWS_RESOURCES } from '../../views/providers/aws/AwsResources.reducer';
 import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 
 const useAwsDeployment = () => {
@@ -26,6 +28,7 @@ const useAwsDeployment = () => {
     // TODO: more dynamic population of this payload
     const getAwsRequestPayload = () => {
         const awsData = awsState[STORE_SECTION_FORM];
+        const nodeType = awsState[STORE_SECTION_AWS_RESOURCES][AWS_FIELDS.NODE_TYPE];
         const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
                 profileName: awsData[AWS_FIELDS.PROFILE],
@@ -40,7 +43,7 @@ const useAwsDeployment = () => {
             createCloudFormationStack: false,
             clusterName: awsData[AWS_FIELDS.CLUSTER_NAME],
             controlPlaneFlavor: awsData[AWS_FIELDS.CLUSTER_PLAN],
-            controlPlaneNodeType: retrieveAwsInstanceType(awsData[AWS_FIELDS.NODE_PROFILE]),
+            controlPlaneNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]],
             bastionHostEnabled: awsData[AWS_FIELDS.ENABLE_BASTION_HOST],
             machineHealthCheckEnabled: awsData[AWS_FIELDS.ENABLE_MACHINE_HEALTH_CHECK],
             vpc: {
@@ -50,7 +53,7 @@ const useAwsDeployment = () => {
                 azs: [
                     {
                         name: awsData[AWS_FIELDS.REGION] + 'a',
-                        workerNodeType: retrieveAwsInstanceType(awsData[AWS_FIELDS.NODE_PROFILE]),
+                        workerNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]],
                         publicSubnetID: '',
                         privateSubnetID: '',
                     },
@@ -82,6 +85,8 @@ const useAwsDeployment = () => {
 
     const deployOnAws = async () => {
         const awsClusterParams: AWSManagementClusterParams = getAwsRequestPayload();
+        console.log('payload result');
+        console.log(awsClusterParams);
         try {
             const configFileInfo: ConfigFileInfo = await AwsService.applyTkgConfigForAws(awsClusterParams);
             await AwsService.createAwsManagementCluster(awsClusterParams);

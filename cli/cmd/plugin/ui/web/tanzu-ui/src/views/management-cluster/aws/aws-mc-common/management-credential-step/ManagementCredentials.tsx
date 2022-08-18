@@ -193,6 +193,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);
 
+    useEffect(() => {
+        AwsOrchestrator.initNodeProfile({ awsState, awsDispatch, errorObject, setErrorObject });
+    }, []);
+
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
             return (

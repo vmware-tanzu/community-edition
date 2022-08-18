@@ -1,7 +1,7 @@
 // App imports
 import { AWSVirtualMachine } from '../../../../../swagger-api';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
-
+import { validateDefaultInstanceType } from '../../../../../shared/constants/defaults/aws.defaults';
 export class AwsDefaults {
     // The strategy of deciding default os image
     static selectDefalutOsImage = (osImages: AWSVirtualMachine[]) => {
@@ -10,5 +10,13 @@ export class AwsDefaults {
 
     static selectDefalutEC2KeyPairs = (keyPairs: AWSKeyPair[]) => {
         return keyPairs && keyPairs.length > 0 ? keyPairs[0].name : undefined;
+    };
+
+    static setDefaultNodeInstanceType = (nodeTypeList: string[], nodeProfile: string) => {
+        if (nodeTypeList.indexOf(validateDefaultInstanceType(nodeProfile)) > -1) {
+            return validateDefaultInstanceType(nodeProfile);
+        } else {
+            return nodeTypeList[nodeTypeList.length / 2];
+        }
     };
 }

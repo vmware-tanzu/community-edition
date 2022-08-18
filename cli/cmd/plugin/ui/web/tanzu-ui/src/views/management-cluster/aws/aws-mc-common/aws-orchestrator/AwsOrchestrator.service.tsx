@@ -2,11 +2,17 @@
 import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
-import { AWS_FIELDS } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
+// import {
+//     NodeProfile,
+//     NodeInstanceType,
+//     nodeInstanceTypeValidation,
+// } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { NodeInstanceType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import {
     clearPreviousResourceData,
     saveCurrentResourceData,
@@ -19,6 +25,28 @@ interface AwsOrchestratorProps {
     errorObject: { [key: string]: any };
     setErrorObject: (newErrorObject: { [key: string]: any }) => void;
 }
+
+export const nodeInstanceTypes: NodeInstanceType[] = [
+    {
+        id: 'SINGLE_NODE',
+        label: 'Single node',
+        icon: 'block',
+        description: 'Create a single control plane node with a medium instance type',
+    },
+    {
+        id: 'HIGH_AVAILABILITY',
+        label: 'High availability',
+        icon: 'blocks-group',
+        description: 'Create a multi-node control plane with a medium instance type',
+    },
+    {
+        id: 'PRODUCTION_READY',
+        label: 'Production-ready (High availability)',
+        icon: 'blocks-group',
+        isSolidIcon: true,
+        description: 'Create a multi-node control plane with a large instance type',
+    },
+];
 
 export class AwsOrchestrator {
     static async initOsImages(props: AwsOrchestratorProps) {
@@ -47,6 +75,25 @@ export class AwsOrchestrator {
             setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.EC2_KEY_PAIR));
         }
     }
+
+    static async initNodeProfile(props: AwsOrchestratorProps) {
+        const { awsState, awsDispatch, setErrorObject, errorObject } = props;
+        try {
+            const nodeInstance = await AwsService.getAwsNodeTypes();
+            const nodeProfileList: { [key: string]: string } = {
+                [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: '',
+                [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: '',
+                [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
+            };
+            Object.keys(nodeProfileList).map((nodeProfile) => {
+                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeInstanceType(nodeInstance, nodeProfile);
+            });
+            saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
+            setDefaultNodeInstanceType(awsDispatch, nodeProfileList[nodeInstanceTypes[0].id]);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }
 
 function setDefaultOsImage(awsDispatch: StoreDispatch, osImages: AWSVirtualMachine[]) {
@@ -62,5 +109,13 @@ function setDefaultEC2KeyPair(awsDispatch: StoreDispatch, keyPairs: AWSKeyPair[]
         type: INPUT_CHANGE,
         field: AWS_FIELDS.EC2_KEY_PAIR,
         payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
+    } as FormAction);
+}
+
+function setDefaultNodeInstanceType(awsDispatch: StoreDispatch, nodeProfile: string) {
+    awsDispatch({
+        type: INPUT_CHANGE,
+        field: AWS_FIELDS.NODE_TYPE,
+        payload: nodeProfile,
     } as FormAction);
 }

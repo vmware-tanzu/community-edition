@@ -9,12 +9,13 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
 // App imports
+// import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsStore } from './store/Aws.store.mc';
 import { AWSVirtualMachine } from '../../../swagger-api';
 import { AWS_FIELDS } from './aws-mc-basic/AwsManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../shared/types/types';
-import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
+import { getResource, STORE_SECTION_AWS_RESOURCES } from '../../../views/providers/aws/AwsResources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import {
     NodeProfile,
@@ -25,32 +26,33 @@ import OsImageSelect from '../../../shared/components/FormInputComponents/OsImag
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { nodeInstanceTypes } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 type AWS_CLUSTER_SETTING_STEP_FIELDS = AWS_FIELDS.NODE_PROFILE | AWS_FIELDS.OS_IMAGE | AWS_FIELDS.CLUSTER_NAME;
 
-const nodeInstanceTypes: NodeInstanceType[] = [
-    {
-        id: 'SINGLE_NODE',
-        label: 'Single node',
-        icon: 'block',
-        description: 'Create a single control plane node with a medium instance type',
-    },
-    {
-        id: 'HIGH_AVAILABILITY',
-        label: 'High availability',
-        icon: 'blocks-group',
-        description: 'Create a multi-node control plane with a medium instance type',
-    },
-    {
-        id: 'PRODUCTION_READY',
-        label: 'Production-ready (High availability)',
-        icon: 'blocks-group',
-        isSolidIcon: true,
-        description: 'Create a multi-node control plane with a large instance type',
-    },
-];
+// const nodeInstanceTypes: NodeInstanceType[] = [
+//     {
+//         id: 'SINGLE_NODE',
+//         label: 'Single node',
+//         icon: 'block',
+//         description: 'Create a single control plane node with a medium instance type',
+//     },
+//     {
+//         id: 'HIGH_AVAILABILITY',
+//         label: 'High availability',
+//         icon: 'blocks-group',
+//         description: 'Create a multi-node control plane with a medium instance type',
+//     },
+//     {
+//         id: 'PRODUCTION_READY',
+//         label: 'Production-ready (High availability)',
+//         icon: 'blocks-group',
+//         isSolidIcon: true,
+//         description: 'Create a multi-node control plane with a large instance type',
+//     },
+// ];
 
 interface AwsClusterSettingFormInputs {
     [AWS_FIELDS.CLUSTER_NAME]: string;
@@ -109,12 +111,14 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
         setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
     }
+
+    if (!initialSelectedInstanceTypeId) {
+        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
+        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+    }
+
     useEffect(() => {
-        if (!initialSelectedInstanceTypeId) {
-            initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-            setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-            onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-        }
+        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
     }, []);
 
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
