@@ -26,6 +26,7 @@ import ManagementCredentialProfile from './ManagementCredentialProfile';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import './ManagementCredentials.scss';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
@@ -40,7 +41,7 @@ export interface FormInputs {
 }
 
 function ManagementCredentials(props: Partial<StepProps>) {
-    const { currentStep, goToStep, submitForm } = props;
+    const { currentStep, goToStep, submitForm, updateTabStatus } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
@@ -71,6 +72,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
 
     const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
+
+    // update tab status bar
+    if (updateTabStatus) {
+        UseUpdateTabStatus(errors, currentStep, updateTabStatus);
+    }
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
@@ -141,6 +147,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
             await AwsService.setAwsEndpoint(params);
             setConnectionStatus(CONNECTION_STATUS.CONNECTED);
             setMessage('Connected to AWS');
+            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         } catch (err: any) {
             setConnectionStatus(CONNECTION_STATUS.ERROR);
             setMessage(`Unable to connect to AWS: ${err.body.message}`);
@@ -158,7 +165,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const resetEc2KeyPair = () => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         if (awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR] !== '') {
-            setValue(AWS_FIELDS.EC2_KEY_PAIR, '');
+            setValue(AWS_FIELDS.EC2_KEY_PAIR, '', { shouldValidate: true });
             awsDispatch({
                 type: INPUT_CHANGE,
                 field: AWS_FIELDS.EC2_KEY_PAIR,
@@ -186,16 +193,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
             initEC2KeyPairs();
         }
     };
-
-    useEffect(() => {
-        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]) {
-            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
-        }
-    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);
-
-    useEffect(() => {
-        AwsOrchestrator.initNodeProfile({ awsState, awsDispatch, errorObject, setErrorObject });
-    }, []);
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {

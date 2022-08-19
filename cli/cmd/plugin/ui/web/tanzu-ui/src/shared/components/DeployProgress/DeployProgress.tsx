@@ -206,7 +206,7 @@ function DeployProgress() {
 
             return (
                 <span>
-                    <img src={providerData.logo} className="logo logo-42" cds-layout="m-r:md" alt={`${provider} logo`} />
+                    <img className={`${providerData.logoClass} logo logo-42`} cds-layout="m-r:md" alt={`${provider} logo`} />
                     Creating Management Cluster on {providerData.name}
                 </span>
             );

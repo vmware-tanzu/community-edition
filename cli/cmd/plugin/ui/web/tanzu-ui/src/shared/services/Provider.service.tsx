@@ -11,24 +11,29 @@ export interface ProviderInfo {
 export interface ProviderData {
     name: string;
     logo: string;
+    logoClass: string;
 }
 
 const providerInfo: ProviderInfo = {
     aws: {
         name: 'AWS',
         logo: AwsLogo,
+        logoClass: 'aws-logo-img',
     },
     azure: {
         name: 'Azure',
         logo: AzureLogo,
+        logoClass: 'azure-logo-img',
     },
     docker: {
         name: 'Docker',
         logo: DockerLogo,
+        logoClass: 'docker-logo-img',
     },
     vsphere: {
         name: 'vSphere',
         logo: VSphereLogo,
+        logoClass: 'vsphere-logo-img',
     },
 };
 

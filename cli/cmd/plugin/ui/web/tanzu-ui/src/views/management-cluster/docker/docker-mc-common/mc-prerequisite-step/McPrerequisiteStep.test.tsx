@@ -70,7 +70,7 @@ describe('McPrerequisiteStep', () => {
         const mockProps = {
             tabStatus: [STATUS.INVALID],
             currentStep: 1,
-            setTabStatus: jest.fn(),
+            submitForm: jest.fn(),
             goToStep: jest.fn(),
         };
 
@@ -79,7 +79,7 @@ describe('McPrerequisiteStep', () => {
         const nextBtn = await screen.findByText('NEXT');
         await screen.findByText('Running Docker daemon');
         fireEvent.click(nextBtn);
-        expect(mockProps.setTabStatus).toHaveBeenCalled();
+        expect(mockProps.submitForm).toHaveBeenCalled();
         expect(mockProps.goToStep).toHaveBeenCalled();
     });
 });

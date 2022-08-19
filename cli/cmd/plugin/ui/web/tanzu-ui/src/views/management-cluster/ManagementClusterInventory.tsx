@@ -217,7 +217,7 @@ function ManagementClusterInventory() {
                     <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
                     {MainContent()}
                 </div>
-                {renderConfirmDeleteModal()}d
+                {renderConfirmDeleteModal()}
             </div>
             <div cds-layout="col:4" className="mgmt-cluster-admins-img"></div>
             {renderConfirmDeleteModal()}

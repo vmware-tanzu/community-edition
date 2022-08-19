@@ -26,6 +26,7 @@ import { Store } from '../../../state-management/stores/Store';
 import { STORE_SECTION_UI } from '../../../state-management/reducers/Ui.reducer';
 import { STORE_SECTION_APP } from '../../../state-management/reducers/App.reducer';
 import { TOGGLE_NAV } from '../../../state-management/actions/Ui.actions';
+import ThemeToggle from '../ThemeToggle/ThemeToggle.component';
 
 ClarityIcons.addIcons(clusterIcon, chatBubbleIcon, compassIcon, computerIcon, deployIcon, homeIcon, listIcon, nodeIcon, nodesIcon);
 
@@ -130,6 +131,9 @@ function SideNavigation(this: any) {
                     Contribute
                     <CdsIcon shape="pop-out" size="sm"></CdsIcon>
                 </a>
+            </CdsNavigationItem>
+            <CdsNavigationItem slot="cds-navigation-end">
+                <ThemeToggle />
             </CdsNavigationItem>
         </CdsNavigation>
 
