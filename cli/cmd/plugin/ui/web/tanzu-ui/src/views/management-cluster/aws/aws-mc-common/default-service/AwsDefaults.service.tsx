@@ -12,10 +12,11 @@ export class AwsDefaults {
         return keyPairs && keyPairs.length > 0 ? keyPairs[0].name : undefined;
     };
 
-    static setDefaultNodeNodeType = (nodeTypeList: string[], nodeProfile: string) => {
+    static setDefaultNodeType = (nodeTypeList: string[], nodeProfile: string) => {
         if (nodeTypeList.indexOf(validateDefaultNodeType(nodeProfile)) > -1) {
             return validateDefaultNodeType(nodeProfile);
         } else {
+            // TODO: refactor to select optimal nodeType when preferred default not found
             return nodeTypeList[nodeTypeList.length / 2];
         }
     };

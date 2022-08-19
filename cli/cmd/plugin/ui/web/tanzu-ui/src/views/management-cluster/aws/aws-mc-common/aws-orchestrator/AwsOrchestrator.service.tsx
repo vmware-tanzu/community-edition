@@ -81,7 +81,7 @@ export class AwsOrchestrator {
                 [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
             };
             Object.keys(nodeProfileList).map((nodeProfile) => {
-                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeNodeType(nodeInstance, nodeProfile);
+                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeInstance, nodeProfile);
             });
             saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
             setDefaultNodeType(awsDispatch, nodeProfileList[nodeInstanceTypes[0].id]);
