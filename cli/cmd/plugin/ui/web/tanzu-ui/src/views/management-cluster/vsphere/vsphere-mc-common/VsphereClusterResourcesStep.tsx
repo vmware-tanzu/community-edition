@@ -105,7 +105,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
     const datacenter = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
 
-    const { currentStep, deploy, updateTabStatus, goToStep } = props;
+    const { currentStep, updateTabStatus, goToStep, submitForm } = props;
 
     const methods = useForm<VSphereClusterResourcesStepInputs>({
         resolver: yupResolver(schema),
@@ -136,6 +136,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
 
     const onSubmit: SubmitHandler<VSphereClusterResourcesStepInputs> = (data) => {
         goToStep && goToStep((currentStep ?? 0) + 1);
+        submitForm && submitForm(currentStep);
     };
 
     const onChange = (field: any, value: string) => {

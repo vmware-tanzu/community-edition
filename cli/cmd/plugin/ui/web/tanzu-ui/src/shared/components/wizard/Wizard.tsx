@@ -35,7 +35,10 @@ function Wizard(props: WizardProps) {
     };
     const submitForm = (currentStep: number) => {
         const status = [...tabStatus];
-        status[currentStep] = STATUS.TOUCHED;
+        status[currentStep - 1] = STATUS.VALID;
+        if (status[currentStep] === STATUS.DISABLED) {
+            status[currentStep] = STATUS.TOUCHED;
+        }
         setTabStatus(status);
     };
 

@@ -71,7 +71,7 @@ function createYupSchemaObject() {
 }
 
 function AwsClusterSettingsStep(props: Partial<StepProps>) {
-    const { updateTabStatus, currentStep, goToStep } = props;
+    const { updateTabStatus, currentStep, goToStep, submitForm } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const awsClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AwsClusterSettingFormInputs>({
@@ -90,8 +90,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     }
 
     const goToNextStep = () => {
-        if (goToStep && currentStep) {
+        if (goToStep && submitForm && currentStep) {
             goToStep(currentStep + 1);
+            submitForm(currentStep);
         }
     };
 
