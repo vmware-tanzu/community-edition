@@ -147,6 +147,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
             await AwsService.setAwsEndpoint(params);
             setConnectionStatus(CONNECTION_STATUS.CONNECTED);
             setMessage('Connected to AWS');
+            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         } catch (err: any) {
             setConnectionStatus(CONNECTION_STATUS.ERROR);
             setMessage(`Unable to connect to AWS: ${err.body.message}`);
@@ -192,12 +193,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
             initEC2KeyPairs();
         }
     };
-
-    useEffect(() => {
-        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]) {
-            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
-        }
-    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);
 
     function showErrorInfo() {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && JSON.stringify(errorObject) !== '{}') {
