@@ -9,11 +9,10 @@ import { CdsIcon } from '@cds/react/icon';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { CriService } from '../../../../../swagger-api';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
-import { STATUS } from '../../../../../shared/constants/App.constants';
 import './McPrerequisiteStep.scss';
 
 function McPrerequisiteStep(props: Partial<StepProps>) {
-    const { currentStep, goToStep, setTabStatus, tabStatus } = props;
+    const { currentStep, goToStep, submitForm } = props;
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
     const connect = useCallback(async () => {
@@ -35,12 +34,9 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
 
     const handleNext = () => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            if (tabStatus && currentStep && setTabStatus) {
-                tabStatus[currentStep - 1] = STATUS.VALID;
-                setTabStatus(tabStatus);
-            }
-            if (goToStep && currentStep) {
+            if (goToStep && submitForm && currentStep) {
                 goToStep(currentStep + 1);
+                submitForm(currentStep);
             }
         }
     };
