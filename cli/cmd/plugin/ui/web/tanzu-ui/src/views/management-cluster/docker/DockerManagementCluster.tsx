@@ -9,7 +9,6 @@ import { CdsIconButton } from '@cds/react/button';
 // App imports
 import DockerManagementClusterBasic from './docker-mc-basic/DockerManagementClusterBasic';
 import { DockerProvider } from './store/Docker.store.mc';
-import DockerLogo from '../../../assets/docker.svg';
 import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
 import './DockerManagementCluster.scss';
 
@@ -29,7 +28,7 @@ function DockerManagementCluster() {
                         >
                             <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
                         </CdsIconButton>
-                        <img src={DockerLogo} className="logo logo-42" cds-layout="m-r:md" alt="docker logo" />
+                        <img className="docker-logo-img logo logo-42" cds-layout="m-r:md" alt="docker logo" />
                         Create a Management Cluster on Docker
                     </span>
                 </div>

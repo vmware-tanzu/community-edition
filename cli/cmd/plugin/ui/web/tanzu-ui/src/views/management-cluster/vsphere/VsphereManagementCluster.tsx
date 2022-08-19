@@ -7,10 +7,9 @@ import { CdsIcon } from '@cds/react/icon';
 import { CdsIconButton } from '@cds/react/button';
 
 // App imports
-import VsphereLogo from '../../../assets/vsphere.svg';
+import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
 import VsphereManagementClusterBasic from './vsphere-mc-basic/VsphereManagementClusterBasic';
 import { VsphereProvider } from './Store.vsphere.mc';
-import { NavRoutes } from '../../../shared/constants/NavRoutes.constants';
 
 function VsphereManagementCluster() {
     const navigate = useNavigate();
@@ -28,7 +27,7 @@ function VsphereManagementCluster() {
                         >
                             <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
                         </CdsIconButton>
-                        <img src={VsphereLogo} className="logo logo-42" cds-layout="m-r:md" alt="vsphere logo" />
+                        <img className="vsphere-logo-img logo logo-42" cds-layout="m-r:md" alt="vsphere logo" />
                         Create a Management Cluster on vSphere
                     </span>
                 </div>
