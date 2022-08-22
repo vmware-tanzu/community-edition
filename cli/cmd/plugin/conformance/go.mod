@@ -9,7 +9,7 @@ replace github.com/vmware-tanzu/community-edition => ../../../../
 require (
 	github.com/spf13/cobra v1.5.0
 	github.com/vmware-tanzu/community-edition v0.9.1
-	github.com/vmware-tanzu/sonobuoy v0.56.8
+	github.com/vmware-tanzu/sonobuoy v0.56.10
 )
 
 require (
@@ -62,11 +62,11 @@ require (
 	github.com/spf13/viper v1.10.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
+	golang.org/x/net v0.0.0-20220726230323-06994584191e // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
-	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210611083556-38a9dc6acbc6 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
