@@ -107,7 +107,8 @@ NAME                      PACKAGE-NAME                                         P
 
 App Toolkit is a meta-package that predominantly passes configuration down to the packages it installs.
 
-|Value | Required/Optional | Default | Description |
+| Value | Required/Optional | Default | Description |
+| ----- | ----------------- | ------- | ----------- |
 | cartographer_catalog | Required | | [See Cartographer catalog documentation](https://tanzucommunityedition.io/docs/v0.12/package-readme-cartographer-catalog-0.3.0/#configuration)|
 | contour | Required | | [See Contour documentation](https://tanzucommunityedition.io/docs/v0.11/package-readme-contour-1.20.1/#configuration-reference) |
 | excluded_packages | Optional | None | Allows installers to skip deploying named packages, specified as an array of package names |
