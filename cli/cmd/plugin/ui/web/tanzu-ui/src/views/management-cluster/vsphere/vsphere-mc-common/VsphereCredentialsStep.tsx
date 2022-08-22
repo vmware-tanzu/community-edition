@@ -487,7 +487,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
     }
 
-    function handleRecheckOsImages() {
-        retrieveOsImages(selectedDatacenter);
+    async function handleRecheckOsImages() {
+        await retrieveOsImages(selectedDatacenter);
     }
 }

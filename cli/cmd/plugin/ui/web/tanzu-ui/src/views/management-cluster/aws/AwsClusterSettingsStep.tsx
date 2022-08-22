@@ -17,11 +17,11 @@ import { FormAction } from '../../../shared/types/types';
 import { getResource } from '../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import { NodeProfile, nodeProfileValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { nodeProfiles } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { nodeProfiles } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
