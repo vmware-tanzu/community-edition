@@ -26,8 +26,6 @@ const initialState = {
         ...AWS_DEFAULT_VALUES,
         // Node Profile
         [AWS_FIELDS.NODE_PROFILE]: '',
-        //Node Type
-        [AWS_FIELDS.NODE_TYPE]: '',
     },
     [STORE_SECTION_AWS_RESOURCES]: {},
 };

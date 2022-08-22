@@ -7,7 +7,7 @@ import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actio
 import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-import { NodeInstanceType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import {
     clearPreviousResourceData,
     saveCurrentResourceData,
@@ -21,7 +21,7 @@ interface AwsOrchestratorProps {
     setErrorObject: (newErrorObject: { [key: string]: any }) => void;
 }
 
-export const nodeInstanceTypes: NodeInstanceType[] = [
+export const nodeProfiles: NodeProfileType[] = [
     {
         id: 'SINGLE_NODE',
         label: 'Single node',
@@ -84,7 +84,6 @@ export class AwsOrchestrator {
                 nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeInstance, nodeProfile);
             });
             saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
-            setDefaultNodeType(awsDispatch, nodeProfileList[nodeInstanceTypes[0].id]);
             setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.NODE_TYPE));
         } catch (e) {
             clearPreviousResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
@@ -106,13 +105,5 @@ function setDefaultEC2KeyPair(awsDispatch: StoreDispatch, keyPairs: AWSKeyPair[]
         type: INPUT_CHANGE,
         field: AWS_FIELDS.EC2_KEY_PAIR,
         payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
-    } as FormAction);
-}
-
-function setDefaultNodeType(awsDispatch: StoreDispatch, nodeProfile: string) {
-    awsDispatch({
-        type: INPUT_CHANGE,
-        field: AWS_FIELDS.NODE_TYPE,
-        payload: nodeProfile,
     } as FormAction);
 }

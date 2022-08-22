@@ -2,6 +2,8 @@ import { KeyOfStringToString } from '../../types/types';
 import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 
 export const AWS_DEFAULT_VALUES = {
+    // Cluster Name
+    [AWS_FIELDS.CLUSTER_NAME]: '',
     // Cluster Data
     [AWS_FIELDS.CLUSTER_PLAN]: 'dev',
 

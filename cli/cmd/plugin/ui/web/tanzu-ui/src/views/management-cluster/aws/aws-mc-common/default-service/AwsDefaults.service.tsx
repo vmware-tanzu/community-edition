@@ -17,7 +17,7 @@ export class AwsDefaults {
             return validateDefaultNodeType(nodeProfile);
         } else {
             // TODO: refactor to select optimal nodeType when preferred default not found
-            return nodeTypeList[nodeTypeList.length / 2];
+            return nodeTypeList[Math.round(nodeTypeList.length / 2)];
         }
     };
 }

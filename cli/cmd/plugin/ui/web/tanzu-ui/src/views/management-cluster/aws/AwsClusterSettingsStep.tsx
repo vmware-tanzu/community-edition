@@ -21,7 +21,7 @@ import OsImageSelect from '../../../shared/components/FormInputComponents/OsImag
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { nodeInstanceTypes } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
+import { nodeProfiles } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
@@ -79,25 +79,25 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const osImages = (getResource(AWS_FIELDS.OS_IMAGE, awsState) || []) as AWSVirtualMachine[];
-    let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE];
+    let initialSelectedNodeProfileId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE];
 
     if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
         setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
     }
 
-    if (!initialSelectedInstanceTypeId) {
-        initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+    if (!initialSelectedNodeProfileId) {
+        initialSelectedNodeProfileId = nodeProfiles[0].id;
+        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }
 
     useEffect(() => {
-        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }, []);
 
-    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
+    const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
 
     const onInstanceTypeChange = (instanceType: string) => {
-        setSelectedInstanceTypeId(instanceType);
+        setSelectedNodeProfileId(instanceType);
         onFieldChange(AWS_FIELDS.NODE_PROFILE, instanceType);
     };
 
@@ -121,9 +121,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                     <div cds-layout="col:8" key="instance-type-section">
                         <NodeProfile
                             field={AWS_FIELDS.NODE_PROFILE}
-                            nodeInstanceTypes={nodeInstanceTypes}
+                            nodeInstanceTypes={nodeProfiles}
                             nodeInstanceTypeChange={onInstanceTypeChange}
-                            selectedInstanceId={selectedInstanceTypeId}
+                            selectedInstanceId={selectedNodeProfileId}
                         />
                     </div>
                     <div cds-layout="col:12">
