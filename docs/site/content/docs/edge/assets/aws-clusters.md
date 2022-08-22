@@ -116,7 +116,7 @@ Kubernetes.
     > For your record, the configuration settings have been saved to
     > `${HOME}/.config/tanzu/tkg/clusterconfigs`.
 
-1. Deploy the cluster.
+1. Deploy the cluster. (This process can take circa 20 minutes or more).
 
     > If you experience issues deploying your cluster, visit the [Troubleshooting
     > documentation](../tanzu-diagnostics).
