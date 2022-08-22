@@ -25,9 +25,7 @@ const configGroupClusterSettings: ConfigGroup = {
             label: 'OS Image',
             field: AZURE_FIELDS.OS_IMAGE,
             longValue: true,
-            transform: (pair) => {
-                return { ...pair, value: pair.value?.name ?? '' };
-            },
+            transform: CommonConfigTransformationFunctions.NAME,
         },
     ],
 };
@@ -51,5 +49,5 @@ const configGroupsDefault: ConfigGroup[] = [
 export const AzureConfigDisplayDefaults: ConfigDisplayData = {
     label: 'Configuration Defaults',
     groups: configGroupsDefault,
-    about: 'These are default values that are common to most Azure clusters. If you need to change any of them, use an advanced configuration option.',
+    about: 'These default values are common to most Azure clusters. If you need to change them, use an advanced configuration option.',
 };

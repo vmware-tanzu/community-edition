@@ -157,7 +157,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                 setOsImages(fetchedOsImages);
             });
         } catch (e: any) {
-            console.log(`Unable to retrieve OS Images`);
+            console.log(`Unable to retrieve OS Images: ${JSON.stringify(e)}`);
         } finally {
             setOsImagesLoading(false);
         }

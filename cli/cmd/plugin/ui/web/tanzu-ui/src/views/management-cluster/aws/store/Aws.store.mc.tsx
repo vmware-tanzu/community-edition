@@ -6,8 +6,8 @@ import awsReducer from '../../../../views/providers/aws/Aws.reducer';
 import { AWS_DEFAULT_VALUES } from '../../../../shared/constants/defaults/aws.defaults';
 import { AWS_FIELDS } from '../../../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 import { StoreDispatch } from '../../../../shared/types/types';
-import { STORE_SECTION_AWS_RESOURCES } from '../../../../views/providers/aws/AwsResources.reducer';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { STORE_SECTION_RESOURCES } from '../../../../state-management/reducers/Resources.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
@@ -25,7 +25,7 @@ const initialState = {
         [AWS_FIELDS.REGION]: '',
         ...AWS_DEFAULT_VALUES,
     },
-    [STORE_SECTION_AWS_RESOURCES]: {},
+    [STORE_SECTION_RESOURCES]: {},
 };
 
 const AwsStore = createContext<{

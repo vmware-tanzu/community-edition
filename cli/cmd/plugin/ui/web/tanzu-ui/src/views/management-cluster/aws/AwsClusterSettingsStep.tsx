@@ -14,7 +14,7 @@ import { AWSVirtualMachine } from '../../../swagger-api';
 import { AWS_FIELDS } from './aws-mc-basic/AwsManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../shared/types/types';
-import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
+import { getResource } from '../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import {
     NodeProfile,
@@ -103,26 +103,27 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
         } as FormAction);
     };
 
-    const osImages = (getResource(AWS_FIELDS.OS_IMAGE, awsState) || []) as AWSVirtualMachine[];
-    let initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE];
-
-    if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
-        setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
-    }
-    useEffect(() => {
-        if (!initialSelectedInstanceTypeId) {
-            initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-            setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-            onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-        }
-    }, []);
-
+    // NOTE: we assume that the osImages were set in the store during the credentials step
+    const osImages = getResource<AWSVirtualMachine[]>(AWS_FIELDS.OS_IMAGE, awsState) || [];
+    const initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE] || nodeInstanceTypes[0].id;
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
     const onInstanceTypeChange = (instanceType: string) => {
         setSelectedInstanceTypeId(instanceType);
         onFieldChange(AWS_FIELDS.NODE_PROFILE, instanceType);
     };
+
+    useEffect(() => {
+        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+    }, []);
+
+    useEffect(() => {
+        // NOTE: the local value of the form is the OS_IMAGE.name; if the OS_IMAGE changes in the store, update it in the form
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
+            setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
+        }
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]]);
 
     return (
         <FormProvider {...methods}>
@@ -157,6 +158,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                             onOsImageSelected={(value) => {
                                 onFieldChange(AWS_FIELDS.OS_IMAGE, value);
                             }}
+                            selectedImage={awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]}
                         />
                     </div>
 

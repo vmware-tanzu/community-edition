@@ -22,7 +22,7 @@ const configGroupsBasic: ConfigGroup[] = [
         pairs: [
             { label: 'Name', field: VSPHERE_FIELDS.CLUSTERNAME },
             { label: 'Node Type', field: VSPHERE_FIELDS.INSTANCETYPE },
-            { label: 'OS Image', field: VSPHERE_FIELDS.VMTEMPLATE },
+            { label: 'OS Image', field: VSPHERE_FIELDS.VMTEMPLATE, transform: CommonConfigTransformationFunctions.NAME },
             {
                 label: 'SSH key',
                 field: VSPHERE_FIELDS.SSHKEY,
@@ -40,10 +40,10 @@ const configGroupsBasic: ConfigGroup[] = [
     {
         label: 'Resources',
         pairs: [
-            { label: 'VM Folder', field: VSPHERE_FIELDS.VMFolder },
-            { label: 'Data Store', field: VSPHERE_FIELDS.DataStore },
-            { label: 'Network', field: VSPHERE_FIELDS.NetworkName },
-            { label: 'Pool', field: VSPHERE_FIELDS.Pool },
+            { label: 'VM Folder', field: VSPHERE_FIELDS.VMFolder, transform: CommonConfigTransformationFunctions.NAME },
+            { label: 'Data Store', field: VSPHERE_FIELDS.DataStore, transform: CommonConfigTransformationFunctions.NAME },
+            { label: 'Network', field: VSPHERE_FIELDS.Network, transform: CommonConfigTransformationFunctions.NAME },
+            { label: 'Pool', field: VSPHERE_FIELDS.Pool, transform: CommonConfigTransformationFunctions.NAME },
         ],
     },
 ];

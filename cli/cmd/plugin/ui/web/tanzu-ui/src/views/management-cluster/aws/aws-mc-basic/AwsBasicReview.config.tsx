@@ -10,7 +10,7 @@ const configGroupOneTimeCredentials: ConfigGroup = {
         { label: 'Key Id', field: AWS_FIELDS.ACCESS_KEY_ID, transform: CommonConfigTransformationFunctions.MASK },
         { label: 'Session token', field: AWS_FIELDS.SESSION_TOKEN, transform: CommonConfigTransformationFunctions.MASK },
         { label: 'Region', field: AWS_FIELDS.REGION },
-        { label: 'EC2 key pair', field: AWS_FIELDS.EC2_KEY_PAIR },
+        { label: 'EC2 key pair', field: AWS_FIELDS.EC2_KEY_PAIR, transform: CommonConfigTransformationFunctions.NAME },
     ],
 };
 
@@ -19,7 +19,7 @@ const configGroupCredentialProfile: ConfigGroup = {
     pairs: [
         { label: 'Profile', field: AWS_FIELDS.PROFILE },
         { label: 'Region', field: AWS_FIELDS.REGION },
-        { label: 'EC2 key pair', field: AWS_FIELDS.EC2_KEY_PAIR },
+        { label: 'EC2 key pair', field: AWS_FIELDS.EC2_KEY_PAIR, transform: CommonConfigTransformationFunctions.NAME },
     ],
 };
 
@@ -32,9 +32,7 @@ const configGroupClusterSettings: ConfigGroup = {
             label: 'OS Image',
             field: AWS_FIELDS.OS_IMAGE,
             longValue: true,
-            transform: (pair) => {
-                return { ...pair, value: pair.value?.name ?? '' };
-            },
+            transform: CommonConfigTransformationFunctions.NAME,
         },
     ],
 };

@@ -3,10 +3,10 @@ import React, { createContext, ReactNode, useReducer } from 'react';
 
 // App imports
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
+import { STORE_SECTION_RESOURCES } from '../../../state-management/reducers/Resources.reducer';
 import { StoreDispatch } from '../../../shared/types/types';
 import { VSPHERE_FIELDS } from './VsphereManagementCluster.constants';
 import vsphereReducer from '../../providers/vsphere/Vsphere.reducer';
-import { STORE_SECTION_VSPHERE_RESOURCES } from '../../providers/vsphere/VsphereResources.reducer';
 
 const initialState = {
     [STORE_SECTION_FORM]: {
@@ -15,7 +15,7 @@ const initialState = {
         [VSPHERE_FIELDS.PASSWORD]: '',
         [VSPHERE_FIELDS.DATACENTER]: '',
     },
-    [STORE_SECTION_VSPHERE_RESOURCES]: {},
+    [STORE_SECTION_RESOURCES]: {},
 };
 
 const VsphereStore = createContext<{

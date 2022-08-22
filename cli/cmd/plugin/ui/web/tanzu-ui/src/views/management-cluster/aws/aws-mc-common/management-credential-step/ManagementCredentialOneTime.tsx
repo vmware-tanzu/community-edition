@@ -73,18 +73,21 @@ function ManagementCredentialOneTime(props: Props) {
                             label="Secret access key"
                             name={AWS_FIELDS.SECRET_ACCESS_KEY}
                             maskText
+                            handleInputChange={onInputValueChange}
                         />
                         <TextInputWithError
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.ACCESS_KEY_ID]}
                             label="Access key ID"
                             name={AWS_FIELDS.ACCESS_KEY_ID}
                             maskText
+                            handleInputChange={onInputValueChange}
                         />
                         <TextInputWithError
                             defaultValue={awsState[STORE_SECTION_FORM][AWS_FIELDS.SESSION_TOKEN]}
                             label="Session token"
                             name={AWS_FIELDS.SESSION_TOKEN}
                             maskText
+                            handleInputChange={onInputValueChange}
                         />
                     </div>
                     <div cds-layout="vertical gap:lg align:vertical-top">

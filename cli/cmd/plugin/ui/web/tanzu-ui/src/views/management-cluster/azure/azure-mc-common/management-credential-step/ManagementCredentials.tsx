@@ -14,16 +14,16 @@ import { AzureOrchestrator } from '../azure-orchestrator/AzureOrchestrator.servi
 import { AzureStore } from '../../store/Azure.store.mc';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
+import { DefaultOrchestrator } from '../../../default-orchestrator/DefaultOrchestrator';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialsLogin from './ManagementCredentialsLogin';
-import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect';
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { clearPreviousResourceData } from '../../../default-orchestrator/DefaultOrchestrator';
+
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;
     [AZURE_FIELDS.CLIENT_ID]: string;
@@ -160,7 +160,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]) {
             AzureOrchestrator.initOsImages({ azureState, azureDispatch, errorObject, setErrorObject });
         } else {
-            clearPreviousResourceData(azureDispatch, RESOURCE.AZURE_ADD_RESOURCES, AZURE_FIELDS.OS_IMAGE);
+            DefaultOrchestrator.clearResourceData(azureDispatch, AZURE_FIELDS.OS_IMAGE);
         }
     }, [azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]]);
 

@@ -7,7 +7,7 @@ interface ReducerGroup {
 
 export interface ReducerDescriptor {
     name: string;
-    storeSection: string;
+    storeSection?: string; // the section of the store to update; if blank, uses entire store
     reducer: (state: any, action: Action) => any;
     actionTypes: string[];
 }
@@ -25,10 +25,14 @@ export const groupedReducers = (reducerGroup: ReducerGroup) => {
 };
 
 function applyAllReducers(action: Action, reducerDescriptorArray: ReducerDescriptor[], state: any) {
-    const newState = { ...state };
+    let newState = { ...state };
     reducerDescriptorArray.forEach((reducerDescriptor) => {
         const section = reducerDescriptor.storeSection;
-        newState[section] = reducerDescriptor.reducer(newState[section], action);
+        if (section) {
+            newState[section] = reducerDescriptor.reducer(newState[section], action);
+        } else {
+            newState = reducerDescriptor.reducer(newState, action);
+        }
     });
     return newState;
 }

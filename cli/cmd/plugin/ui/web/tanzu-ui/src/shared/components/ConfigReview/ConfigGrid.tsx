@@ -38,6 +38,11 @@ export const CommonConfigTransformationFunctions = {
         result.value = `${pair.value.substring(0, nChars - 3)}...`;
         return result;
     },
+    // The NAME transformer is used when the value is an object that has an attribute "name"
+    NAME: (pair: ConfigPair) => {
+        const value = pair?.value?.name || '';
+        return { ...pair, value };
+    },
 };
 
 export interface ConfigGroup {
@@ -114,6 +119,11 @@ function ConfigPairDisplay(pair: ConfigPair | undefined) {
         labelDivCols = 3;
         valueDivCols = 9;
     }
+
+    if (typeof displayValue !== 'string') {
+        console.error(`ConfigPairDisplay detects non-string display value for ${pair?.label}: ${JSON.stringify(displayValue)}`);
+    }
+
     // NOTE: the blank() ensure the background is painted when there is no data; a simple space does not work
     return (
         <div cds-layout={`col:${outerDivCols}`} className="config-pair">

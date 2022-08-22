@@ -21,6 +21,7 @@ function TextInputWithError(props: Partial<Props>) {
         register,
         formState: { errors },
     } = useFormContext();
+    const error = name ? errors[name] : undefined;
     return (
         <CdsInput layout="vertical" control-width="shrink">
             <label>{label}</label>
@@ -36,7 +37,7 @@ function TextInputWithError(props: Partial<Props>) {
                 className={className}
                 defaultValue={defaultValue}
             ></input>
-            {errors[name] && <CdsControlMessage status="error">{errors[name]?.message}</CdsControlMessage>}
+            {error && <CdsControlMessage status="error">{error.message}</CdsControlMessage>}
         </CdsInput>
     );
 }

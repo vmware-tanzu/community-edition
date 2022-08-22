@@ -1,5 +1,4 @@
 // App imports
-import { Deployments } from '../../shared/models/Deployments';
 import { FormAction } from '../../shared/types/types';
 import { INPUT_CHANGE } from '../actions/Form.actions';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
@@ -8,7 +7,6 @@ export const STORE_SECTION_FORM = 'dataForm';
 
 interface FormState {
     [key: string]: any;
-    deployments: Deployments;
 }
 
 function createNewState(state: FormState, action: FormAction): FormState {

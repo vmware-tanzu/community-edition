@@ -105,6 +105,7 @@ function ManagementCredentialProfile(props: Props) {
                         label="AWS credential profile"
                         className="select-sm-width"
                         handleSelect={(e: ChangeEvent<HTMLSelectElement>) => {
+                            onSelectChange(AWS_FIELDS.PROFILE, e.target.value);
                             selectCallback();
                         }}
                         name={AWS_FIELDS.PROFILE}
