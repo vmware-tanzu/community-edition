@@ -1,6 +1,8 @@
 // Clarity Core does not include the 'timeline' component as of 05/22
 // This copies majority of the clarity timeline css styles to avoid importing the clr-ui library
 
+@use 'src/scss/vars';
+
 .cds-timeline.cds-timeline-vertical {
     min-width: 9rem;
 }
@@ -28,8 +30,7 @@
 
     cds-icon[shape='circle'],
     cds-icon[shape='circle'] {
-        // TODO: enable light mode css
-        // color: #737373; <- light mode
+         color: vars.$timeline-circle;
     }
 
     cds-icon[shape='dot-circle'],
@@ -58,6 +59,7 @@
 }
 
 .cds-timeline-step-title {
+    color: vars.$timeline-text;
     font-size: var(--cds-global-typography-font-size-3);
     font-weight: var(--cds-global-typography-font-weight-medium);
     line-height: 0.9rem;
@@ -97,17 +99,6 @@
         min-width: 178px;
         margin-left: 12px;
         margin-top: 6px;
-    }
-
-    .dark {
-        .cds-timeline-step-title {
-            color: var(--cds-global-typography-color-500);
-            font-size: var(--cds-global-typography-font-size-3);
-            font-weight: var(--cds-global-typography-font-weight-medium);
-            line-height: 0.9rem;
-            margin-top: 0.4rem;
-            margin-bottom: 0.3rem;
-        }
     }
 }
 

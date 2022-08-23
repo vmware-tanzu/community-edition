@@ -1,2 +1,35 @@
 // Custom color variables
-$global-dark-header: hsl(206, 25%, 25%);
+$header-background: var(--primary-header-background);
+
+$icon-blue: var(--primary-icon-blue);
+$icon-aqua: var(--primary-icon-aqua);
+
+$text-blue: var(--primary-text-blue);
+$text-aqua: var(--primary-text-aqua);
+
+$timeline-circle: var(--primary-timeline-circle);
+$timeline-text: var(--primary-timeline-text);
+
+body {
+    --primary-header-background: var(--cds-global-color-blue-800);
+
+    --primary-icon-aqua: var(--cds-global-color-aqua-600);
+    --primary-icon-blue: var(--cds-global-color-blue-700);
+
+    --primary-text-aqua: var(--cds-global-color-aqua-600);
+    --primary-text-blue: var(--cds-global-color-blue-700);
+
+    --primary-timeline-circle: var(--cds-global-typography-color-200);
+}
+
+body.dark {
+    --primary-header-background: hsl(206, 25%, 25%);
+
+    --primary-icon-aqua: var(--cds-global-color-aqua-400);
+    --primary-icon-blue: var(--cds-global-color-blue-400);
+
+    --primary-text-aqua: var(--cds-global-color-aqua-400);
+    --primary-text-blue: var(--cds-global-color-blue-400);
+
+    --primary-timeline-circle: var(--cds-global-color-white);
+}

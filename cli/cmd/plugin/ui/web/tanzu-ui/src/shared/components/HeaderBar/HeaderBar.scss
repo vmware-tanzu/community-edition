@@ -1,9 +1,7 @@
 @use 'src/scss/vars';
 
-// Header base styles
 .header {
-    // uses clarity global var
-    background-color: var(--cds-global-color-blue-700);
+    background-color: vars.$header-background;
     color: #fff;
     min-height: 3rem;
 
@@ -24,12 +22,5 @@
             line-height: 3rem;
             text-decoration: none;
         }
-    }
-}
-
-// Dark mode overrides
-.dark {
-    .header {
-        background-color: vars.$global-dark-header;
     }
 }

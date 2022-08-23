@@ -199,7 +199,7 @@ function ManagementClusterInventory() {
             <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:8 grid">
                 <div cds-layout="vertical col:12 gap:lg">
                     <div cds-text="title" cds-layout="horizontal align:vertical-center">
-                        <CdsIcon cds-layout="m-r:sm" shape="blocks-group" size="lg"></CdsIcon>
+                        <CdsIcon cds-layout="m-r:sm" shape="blocks-group" size="lg" className="icon-blue"></CdsIcon>
                         Management Clusters
                     </div>
                     <div cds-text="subsection">
