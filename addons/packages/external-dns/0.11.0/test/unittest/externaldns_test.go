@@ -498,6 +498,34 @@ var _ = Describe("External DNS Ytt Templates", func() {
 			})
 		})
 	})
+
+	Describe("Observability", func() {
+		var output string
+		Describe("when not provided", func() {
+			BeforeEach(func() {
+				var err error
+				output, err = renderWithDataValuesFixture("minimal-configuration.yaml")
+				Expect(err).NotTo(HaveOccurred())
+			})
+			It("does not add pod labels", func() {
+				deploymentDoc := findDeploymentDoc(output)
+				// Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.metadata.annotations"))
+				Expect(deploymentDoc).NotTo(HaveYAMLPath("$.spec.template.metadata.labels.prometheus.io/scrape"))
+			})
+		})
+		Describe("when provided", func() {
+			It("renders a pod labels", func() {
+				var err error
+				output, err = renderWithDataValuesFixture("deployment-observability.yaml")
+				Expect(err).NotTo(HaveOccurred())
+				deploymentDoc := findDeploymentDoc(output)
+				Expect(deploymentDoc).To(HaveYAMLPathWithValue(
+					".spec.template.metadata.labels['prometheus.io/scrape']",
+					"true",
+				))
+			})
+		})
+	})
 })
 
 func valueAtYAMLPath(doc, yamlPath string) string {

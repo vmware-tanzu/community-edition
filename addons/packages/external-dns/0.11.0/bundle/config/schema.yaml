@@ -61,6 +61,9 @@ deployment:
   volumes:
     #@schema/type any=True
     - null
+  #@schema/desc "Labels to be added to all deployment pods"
+  #@schema/type any=True
+  podLabels: null
 #@schema/desc "Service account related configuration"
 serviceaccount:
   #@schema/desc "Annotations that can be set on the external-dns service account. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
