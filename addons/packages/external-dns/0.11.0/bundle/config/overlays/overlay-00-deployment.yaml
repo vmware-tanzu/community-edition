@@ -35,7 +35,7 @@ spec:
     #@overlay/merge missing_ok=True
     metadata:
       #@overlay/merge missing_ok=True
-      #@ if/end data.values.deployment.podLabels != None: 
+      #@ if/end data.values.deployment.podLabels != None:
       labels: #@ data.values.deployment.podLabels
     spec:
       containers:
