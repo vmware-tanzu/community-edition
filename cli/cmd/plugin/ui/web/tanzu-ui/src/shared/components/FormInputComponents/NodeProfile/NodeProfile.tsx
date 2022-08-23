@@ -39,7 +39,7 @@ function instanceTypeInList(field: string, instance: NodeProfileType, register: 
     return (
         <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={instance.id + '-cds-radio'} data-testid="cds-radio">
             <label>
-                {instance.label} selectedInstanceId = {selectedInstanceId}
+                {instance.label}
                 <CdsIcon
                     shape={instance.icon}
                     size="md"
