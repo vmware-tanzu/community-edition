@@ -12,11 +12,7 @@ import * as yup from 'yup';
 import { ClusterName, clusterNameValidation } from '../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { getSelectedManagementCluster } from './WorkloadClusterUtility';
 import ManagementClusterInfoBanner from './ManagementClusterInfoBanner';
-import {
-    NodeInstanceType,
-    nodeInstanceTypeValidation,
-    NodeProfile,
-} from '../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { NodeProfileType, nodeProfileValidation, NodeProfile } from '../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../shared/components/wizard/Wizard';
 import { VSPHERE_FIELDS } from '../management-cluster/vsphere/VsphereManagementCluster.constants';
 import { WcStore } from './Store.wc';
@@ -35,12 +31,12 @@ interface ClusterTopologyStepFormInputs {
 const clusterTopologyStepFormSchema = yup
     .object({
         [FIELD_NAME_WORKLOAD_CLUSTER_NAME]: clusterNameValidation(),
-        [FIELD_NAME_WORKER_NODE_INSTANCE_TYPE]: nodeInstanceTypeValidation(),
+        [FIELD_NAME_WORKER_NODE_INSTANCE_TYPE]: nodeProfileValidation(),
     })
     .required();
 
 // NOTE: icons must be imported
-const workerNodeInstanceTypes: NodeInstanceType[] = [
+const workerNodeInstanceTypes: NodeProfileType[] = [
     {
         id: 'basic-demo',
         label: 'Basic demo',

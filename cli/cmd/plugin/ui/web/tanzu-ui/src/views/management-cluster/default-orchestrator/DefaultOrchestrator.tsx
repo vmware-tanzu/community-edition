@@ -11,7 +11,7 @@ export function clearPreviousResourceData(dispatch: StoreDispatch, actionType: R
     } as ResourceAction);
 }
 
-export function saveCurrentResourceData(dispatch: StoreDispatch, actionType: RESOURCE, resourceName: string, currentValues: any[]) {
+export function saveCurrentResourceData(dispatch: StoreDispatch, actionType: RESOURCE, resourceName: string, currentValues: any) {
     dispatch({
         type: actionType,
         resourceName: resourceName,

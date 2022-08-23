@@ -97,6 +97,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     }, [connectionStatus]);
 
+    useEffect(() => {
+        AwsOrchestrator.initNodeProfile({ awsState, awsDispatch, errorObject, setErrorObject });
+    }, []);
+
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         setType(event.target.value as CREDENTIAL_TYPE);

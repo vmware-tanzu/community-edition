@@ -9,7 +9,7 @@ import { useFormContext } from 'react-hook-form';
 import * as yup from 'yup';
 import './NodeProfile.scss';
 
-export interface NodeInstanceType {
+export interface NodeProfileType {
     id: string;
     icon: string;
     isSolidIcon?: boolean;
@@ -19,7 +19,7 @@ export interface NodeInstanceType {
 
 interface NodeProfileProps {
     field: string;
-    nodeInstanceTypes: NodeInstanceType[];
+    nodeInstanceTypes: NodeProfileType[];
     nodeInstanceTypeChange: (nodeInstanceTypeId: string, fieldName?: string) => void;
     selectedInstanceId?: string;
     prompt?: string;
@@ -31,11 +31,11 @@ const DEFAULT_PROMPT = 'Select a node profile';
  * addNodeInstanceTypeValidation returns a "yup" validation to be used in the yup schema object
  * and associated with the field that is being used for the node instance type.
  */
-export function nodeInstanceTypeValidation() {
+export function nodeProfileValidation() {
     return yup.string().nullable().required('Please select an instance type for your cluster nodes');
 }
 
-function instanceTypeInList(field: string, instance: NodeInstanceType, register: any, selectedInstanceId?: string) {
+function instanceTypeInList(field: string, instance: NodeProfileType, register: any, selectedInstanceId?: string) {
     return (
         <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={instance.id + '-cds-radio'} data-testid="cds-radio">
             <label>
