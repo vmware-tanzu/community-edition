@@ -20,11 +20,20 @@ function ManagementClusterCard(props: ManagementClusterProps) {
         <div className="section-raised" cds-layout="grid cols:12 wrap:none" data-testid="management-cluster-card">
             <div cds-layout="vertical">
                 <div cds-layout="vertical" cds-text="subsection">
-                    <div cds-layout="horizontal">
-                        <div cds-layout="horizontal gap:sm align:vertical-center p:sm">
-                            <CdsIcon shape="blocks-group" size="md" className="icon-blue"></CdsIcon>
-                            <div cds-text="section">{name}</div>
+                    <div cds-layout="horizontal gap:sm align:vertical-center p:sm">
+                        <CdsIcon shape="blocks-group" size="md" className="icon-blue"></CdsIcon>
+                        <div cds-text="section" cds-layout="align:stretch">
+                            {name}
                         </div>
+                        <CdsButton
+                            action="flat-inline"
+                            status="danger"
+                            onClick={() => {
+                                confirmDeleteCallback(name);
+                            }}
+                        >
+                            Delete
+                        </CdsButton>
                     </div>
                     <CdsDivider></CdsDivider>
                     <div cds-layout="horizontal gap:md p:sm">
@@ -45,20 +54,6 @@ function ManagementClusterCard(props: ManagementClusterProps) {
                                 <div cds-text="body">{context}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <CdsDivider></CdsDivider>
-                <div cds-layout="vertical gap:md p:md">
-                    <div cds-layout="horizontal gap:xs p-r:lg">
-                        <CdsButton
-                            action="flat-inline"
-                            status="danger"
-                            onClick={() => {
-                                confirmDeleteCallback(name);
-                            }}
-                        >
-                            Delete
-                        </CdsButton>
                     </div>
                 </div>
             </div>

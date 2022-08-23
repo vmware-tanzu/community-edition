@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -13,6 +13,7 @@ import { AzureStore } from '../store/Azure.store.mc';
 import { AZURE_FIELDS, AZURE_NODE_PROFILE_NAMES } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../../shared/types/types';
+import { getResource } from '../../../providers/azure/AzureResources.reducer';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import {
     NodeProfileType,
@@ -24,8 +25,7 @@ import PageNotification, { Notification } from '../../../../shared/components/Pa
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { getResource } from '../../../providers/azure/AzureResources.reducer';
-// NOTE: icons must be imported
+
 const nodeInstanceTypes: NodeProfileType[] = [
     {
         id: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
@@ -156,7 +156,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                     </div>
                     <div cds-layout="col:12">
                         <OsImageSelect
-                            osImageTitle={'Azure Machine Image'}
+                            osImageLabel={'OS Image with Kubernetes'}
                             images={osImages}
                             field={AZURE_FIELDS.OS_IMAGE}
                             onOsImageSelected={(value) => {

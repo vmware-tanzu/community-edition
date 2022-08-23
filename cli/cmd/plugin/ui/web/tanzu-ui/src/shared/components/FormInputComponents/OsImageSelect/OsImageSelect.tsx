@@ -15,7 +15,7 @@ export interface OsImage {
 }
 
 interface ImageProps {
-    osImageTitle: string;
+    osImageLabel: string;
     field: string;
     onOsImageSelected: (osImage: OsImage | undefined, fieldName?: string) => void;
     images: OsImage[];
@@ -25,7 +25,7 @@ export function osImagesValidation() {
 }
 
 function OsImageSelect(props: ImageProps) {
-    const { osImageTitle, field, images, onOsImageSelected } = props;
+    const { osImageLabel, field, images, onOsImageSelected } = props;
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedOsImage = props.images.find((osImage) => osImage.name === event.target.value);
         onOsImageSelected(selectedOsImage, field);
@@ -38,9 +38,8 @@ function OsImageSelect(props: ImageProps) {
     const fieldError = errors[field];
     return (
         <div cds-layout="m:lg">
-            <h1>{osImageTitle}</h1>
-            <CdsSelect layout="compact" controlWidth="shrink">
-                <label>OS Image with Kubernetes </label>
+            <CdsSelect layout="vertical" controlWidth="shrink">
+                <label>{osImageLabel}</label>
                 <select {...register(field)} onChange={handleOsImageSelect}>
                     {images.map((image) => (
                         <option key={image.name}>{image.name}</option>

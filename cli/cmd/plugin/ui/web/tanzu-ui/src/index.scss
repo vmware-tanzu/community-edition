@@ -1,7 +1,7 @@
 @use 'src/scss/icons';
 @use 'src/scss/logosAndImages';
-@use 'src/scss/vars';
 @use 'src/scss/utils';
+@use 'src/scss/vars';
 
 body {
     margin: 0;
@@ -44,14 +44,13 @@ main {
     opacity: 50%;
 }
 
-// text custom colors
 .text-blue {
-    color: var(--cds-global-color-blue-400);
+    color: vars.$text-blue;
     text-decoration: none;
 }
 
 .text-aqua {
-    color: var(--cds-global-color-aqua-400);
+    color: vars.$text-aqua;
     text-decoration: none;
 }
 
@@ -79,11 +78,11 @@ main {
 
 // icon custom colors
 .icon-blue {
-    color: var(--cds-global-color-blue-400);
+    color: vars.$icon-blue;
 }
 
 .icon-aqua {
-    color: var(--cds-global-color-aqua-400);
+    color: vars.$icon-aqua;
 }
 
 .contextual-help-img {
