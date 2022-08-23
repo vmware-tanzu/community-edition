@@ -74,14 +74,14 @@ export class AwsOrchestrator {
     static async initNodeProfile(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
         try {
-            const nodeInstance = await AwsService.getAwsNodeTypes();
+            const nodeTypeList = await AwsService.getAwsNodeTypes();
             const nodeProfileList: { [key: string]: string } = {
                 [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: '',
                 [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: '',
                 [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
             };
             Object.keys(nodeProfileList).map((nodeProfile) => {
-                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeInstance, nodeProfile);
+                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeTypeList, nodeProfile);
             });
             saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
             setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.NODE_TYPE));

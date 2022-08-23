@@ -16,7 +16,7 @@ import { ClusterName, clusterNameValidation } from '../../../shared/components/F
 import { FormAction } from '../../../shared/types/types';
 import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import { NodeProfile, nodeInstanceTypeValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { NodeProfile, nodeProfileValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
@@ -39,7 +39,7 @@ function yupStringRequired(errorMessage: string) {
 function createYupSchemaObject() {
     return {
         [AWS_FIELDS.OS_IMAGE]: yupStringRequired('Please select an OS image'),
-        [AWS_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
+        [AWS_FIELDS.NODE_PROFILE]: nodeProfileValidation(),
         [AWS_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
     };
 }

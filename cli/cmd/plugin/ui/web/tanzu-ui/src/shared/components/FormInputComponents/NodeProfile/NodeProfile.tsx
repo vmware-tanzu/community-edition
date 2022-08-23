@@ -31,7 +31,7 @@ const DEFAULT_PROMPT = 'Select a node profile';
  * addNodeInstanceTypeValidation returns a "yup" validation to be used in the yup schema object
  * and associated with the field that is being used for the node instance type.
  */
-export function nodeInstanceTypeValidation() {
+export function nodeProfileValidation() {
     return yup.string().nullable().required('Please select an instance type for your cluster nodes');
 }
 
