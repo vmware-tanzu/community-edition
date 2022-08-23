@@ -30,4 +30,8 @@ export interface KeyOfStringToString {
     [key: string]: string;
 }
 
+export interface KeyOfStringToArray {
+    [key: string]: Array<string>;
+}
+
 export type StoreDispatch = Dispatch<ReducerAction<Reducer<any, Action>>>;

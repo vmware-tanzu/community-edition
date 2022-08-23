@@ -80,7 +80,7 @@ export class AwsOrchestrator {
                 [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: '',
                 [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
             };
-            Object.keys(nodeProfileList).map((nodeProfile) => {
+            Object.keys(nodeProfileList).forEach((nodeProfile) => {
                 nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeTypeList, nodeProfile);
             });
             saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
