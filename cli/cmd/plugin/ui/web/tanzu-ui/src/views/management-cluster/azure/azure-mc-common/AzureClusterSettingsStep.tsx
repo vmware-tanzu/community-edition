@@ -16,8 +16,8 @@ import { FormAction } from '../../../../shared/types/types';
 import { getResource } from '../../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import {
-    NodeInstanceType,
-    nodeInstanceTypeValidation,
+    NodeProfileType,
+    nodeProfileValidation,
     NodeProfile,
 } from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import OsImageSelect from '../../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
@@ -27,7 +27,7 @@ import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.r
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 
 // NOTE: icons must be imported
-const nodeInstanceTypes: NodeInstanceType[] = [
+const nodeInstanceTypes: NodeProfileType[] = [
     {
         id: AZURE_NODE_PROFILE_NAMES.SINGLE_NODE,
         label: 'Single node',
@@ -59,7 +59,7 @@ interface AzureClusterSettingFormInputs {
 
 function createYupSchemaObject() {
     return {
-        [AZURE_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
+        [AZURE_FIELDS.NODE_PROFILE]: nodeProfileValidation(),
         [AZURE_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
     };
 }

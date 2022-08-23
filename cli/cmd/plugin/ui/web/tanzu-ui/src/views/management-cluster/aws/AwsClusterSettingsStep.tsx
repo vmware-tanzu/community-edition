@@ -16,42 +16,16 @@ import { ClusterName, clusterNameValidation } from '../../../shared/components/F
 import { FormAction } from '../../../shared/types/types';
 import { getResource } from '../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
-import {
-    NodeProfile,
-    NodeInstanceType,
-    nodeInstanceTypeValidation,
-} from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { NodeProfile, nodeProfileValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { nodeProfiles } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
 ClarityIcons.addIcons(blockIcon, blocksGroupIcon, clusterIcon);
 
 type AWS_CLUSTER_SETTING_STEP_FIELDS = AWS_FIELDS.NODE_PROFILE | AWS_FIELDS.OS_IMAGE | AWS_FIELDS.CLUSTER_NAME;
-
-const nodeInstanceTypes: NodeInstanceType[] = [
-    {
-        id: 'SINGLE_NODE',
-        label: 'Single node',
-        icon: 'block',
-        description: 'Create a single control plane node with a medium instance type',
-    },
-    {
-        id: 'HIGH_AVAILABILITY',
-        label: 'High availability',
-        icon: 'blocks-group',
-        description: 'Create a multi-node control plane with a medium instance type',
-    },
-    {
-        id: 'PRODUCTION_READY',
-        label: 'Production-ready (High availability)',
-        icon: 'blocks-group',
-        isSolidIcon: true,
-        description: 'Create a multi-node control plane with a large instance type',
-    },
-];
-
 interface AwsClusterSettingFormInputs {
     [AWS_FIELDS.CLUSTER_NAME]: string;
     [AWS_FIELDS.NODE_PROFILE]: string;
@@ -65,13 +39,13 @@ function yupStringRequired(errorMessage: string) {
 function createYupSchemaObject() {
     return {
         [AWS_FIELDS.OS_IMAGE]: yupStringRequired('Please select an OS image'),
-        [AWS_FIELDS.NODE_PROFILE]: nodeInstanceTypeValidation(),
+        [AWS_FIELDS.NODE_PROFILE]: nodeProfileValidation(),
         [AWS_FIELDS.CLUSTER_NAME]: clusterNameValidation(),
     };
 }
 
 function AwsClusterSettingsStep(props: Partial<StepProps>) {
-    const { updateTabStatus, currentStep, goToStep } = props;
+    const { updateTabStatus, currentStep, goToStep, submitForm } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
     const awsClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AwsClusterSettingFormInputs>({
@@ -90,8 +64,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     }
 
     const goToNextStep = () => {
-        if (goToStep && currentStep) {
+        if (goToStep && submitForm && currentStep) {
             goToStep(currentStep + 1);
+            submitForm(currentStep);
         }
     };
 
@@ -103,13 +78,14 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
         } as FormAction);
     };
 
+
     // NOTE: we assume that the osImages were set in the store during the credentials step
     const osImages = getResource<AWSVirtualMachine[]>(AWS_FIELDS.OS_IMAGE, awsState) || [];
     const initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE] || nodeInstanceTypes[0].id;
     const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
 
     const onInstanceTypeChange = (instanceType: string) => {
-        setSelectedInstanceTypeId(instanceType);
+        setSelectedNodeProfileId(instanceType);
         onFieldChange(AWS_FIELDS.NODE_PROFILE, instanceType);
     };
 
@@ -145,9 +121,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                     <div cds-layout="col:8" key="instance-type-section">
                         <NodeProfile
                             field={AWS_FIELDS.NODE_PROFILE}
-                            nodeInstanceTypes={nodeInstanceTypes}
+                            nodeInstanceTypes={nodeProfiles}
                             nodeInstanceTypeChange={onInstanceTypeChange}
-                            selectedInstanceId={selectedInstanceTypeId}
+                            selectedInstanceId={selectedNodeProfileId}
                         />
                     </div>
                     <div cds-layout="col:12">

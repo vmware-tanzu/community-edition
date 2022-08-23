@@ -23,6 +23,7 @@ export const enum AWS_FIELDS {
     CLUSTER_POD_CIDR = 'clusterPodCidr',
     HTTP_PROXY_ENABLED = 'httpProxyEnabled',
     LOAD_BALANCER_SCHEME_INTERNAL = 'loadBalancerSchemeInternal',
+    NODE_TYPE = 'nodeType',
 }
 
 export const enum AWS_NODE_PROFILE_NAMES {

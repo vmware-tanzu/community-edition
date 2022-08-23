@@ -1,0 +1,69 @@
+.dark {
+    .tce-log-and-title-img {
+        content: url('../assets/tce-logo-and-title.svg');
+    }
+
+    .aws-logo-sm {
+        background-image: url('../assets/aws.svg');
+        background-repeat: no-repeat;
+        background-position: center 10px;
+    }
+
+    .aws-logo-img {
+        content: url('../assets/aws.svg');
+    }
+}
+
+.tce-log-and-title-img {
+    content: url('../assets/tce-logo-and-title-light.svg');
+}
+
+.aws-logo-img {
+    content: url('../assets/aws-light.svg');
+}
+
+.azure-log-img {
+    content: url('../assets/azure.svg');
+}
+
+.docker-logo-img {
+    content: url('../assets/docker.svg');
+}
+
+.vsphere-logo-img {
+    content: url('../assets/vsphere.svg');
+}
+
+.aws-logo-sm {
+    background-image: url('../assets/aws-light.svg');
+    background-repeat: no-repeat;
+    background-position: center 10px;
+}
+
+.azure-logo-sm {
+    background-image: url('../assets/azure.svg');
+    background-repeat: no-repeat;
+    background-position: center 10px;
+}
+
+.docker-logo-sm {
+    background-image: url('../assets/docker.svg');
+    background-repeat: no-repeat;
+    background-position: center 10px;
+}
+
+.vsphere-logo-sm {
+    background-image: url('../assets/vsphere.svg');
+    background-repeat: no-repeat;
+    background-position: center 10px;
+}
+
+.mgmt-cluster-admins-img {
+    display: inline-block;
+    background-image: url('../assets/admins-at-work.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 30px;
+    width: 100%;
+    height: 100%;
+}

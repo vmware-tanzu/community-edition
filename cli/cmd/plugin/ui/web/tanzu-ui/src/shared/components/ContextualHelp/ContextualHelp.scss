@@ -4,12 +4,21 @@
     height: 0;
 
     .container {
+        h3 {
+            color: var(--cds-global-color-white);
+        }
+
         .search::placeholder {
             color: var(--cds-global-color-white);
         }
 
         .content {
             overflow: auto;
+
+            .data-accordion-item-header-title,
+            .data-accordion-item-content {
+                color: var(--cds-global-color-white);
+            }
         }
 
         footer {

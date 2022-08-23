@@ -1,3 +1,16 @@
+// dark mode overrides
+.dark {
+    .wizard-tab-container {
+        .wizard-tab {
+            color: var(--cds-global-color-white);
+
+            &:hover {
+                background-color: var(--cds-global-color-construction-800);
+            }
+        }
+    }
+}
+
 .wizard-tab-container {
     .wizard-tab {
         position: relative;
@@ -9,10 +22,10 @@
         background-color: var(--cds-alias-object-app-background);
         font-size: var(--cds-global-typography-secondary-font-size);
         font-family: var(--cds-global-typography-header-font-family);
-        color: var(--cds-global-color-white);
+        color: var(--cds-global-typography-color-400);
         &:hover {
             cursor: pointer;
-            background-color: var(--cds-global-color-construction-800);
+            background-color: var(--cds-global-color-blue-50);
         }
         &:last-child {
             border-right: none;
