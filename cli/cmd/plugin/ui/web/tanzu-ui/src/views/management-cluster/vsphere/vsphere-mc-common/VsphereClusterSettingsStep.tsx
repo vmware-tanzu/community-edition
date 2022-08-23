@@ -16,9 +16,9 @@ import { ClusterName, clusterNameValidation } from '../../../../shared/component
 import { FormAction } from '../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import {
-    NodeInstanceType,
+    NodeProfileType,
     NodeProfile,
-    nodeInstanceTypeValidation,
+    nodeProfileValidation,
 } from '../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
@@ -29,7 +29,7 @@ import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTa
 import SpinnerSelect from '../../../../shared/components/Select/SpinnerSelect';
 
 // NOTE: icons must be imported
-const nodeInstanceTypes: NodeInstanceType[] = [
+const nodeInstanceTypes: NodeProfileType[] = [
     {
         id: 'single-node',
         label: 'Single node',
@@ -297,7 +297,7 @@ function createYupSchemaObject() {
     return {
         [VSPHERE_FIELDS.SSHKEY]: yupStringRequired('Please enter an SSH key'),
         [VSPHERE_FIELDS.VMTEMPLATE]: yupStringRequired('Please select an OS image'),
-        [VSPHERE_FIELDS.INSTANCETYPE]: nodeInstanceTypeValidation(),
+        [VSPHERE_FIELDS.INSTANCETYPE]: nodeProfileValidation(),
         [VSPHERE_FIELDS.CLUSTERNAME]: clusterNameValidation(),
     };
 }
