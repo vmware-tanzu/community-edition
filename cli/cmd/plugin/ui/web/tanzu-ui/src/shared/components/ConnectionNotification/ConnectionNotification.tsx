@@ -1,10 +1,13 @@
 // React imports
 import React from 'react';
+
 // Library imports
-import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
-// App imports
-import '../../../../src/scss/utils.scss';
 import { AlertStatusTypes } from '@cds/core/alert';
+import { CdsAlert, CdsAlertGroup } from '@cds/react/alert';
+
+// App imports
+import './ConnectionNotification.scss';
+import '../../../../src/scss/utils.scss';
 
 export enum CONNECTION_STATUS {
     DISCONNECTED,

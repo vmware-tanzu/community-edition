@@ -3,13 +3,13 @@ import React from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
-import { CdsIcon } from '@cds/react/icon';
 import { CdsDivider } from '@cds/react/divider';
+import { CdsIcon } from '@cds/react/icon';
 import { ClarityIcons, disconnectIcon, unknownStatusIcon } from '@cds/core/icon';
 
 // App imports
-import './UnmanagedClusterCard.scss';
 import { UnmanagedCluster } from '../../../../swagger-api';
+import './UnmanagedClusterCard.scss';
 
 ClarityIcons.addIcons(disconnectIcon, unknownStatusIcon);
 
@@ -35,11 +35,20 @@ function UnmanagedClusterCard(props: UnmanagedClusterProps) {
         >
             <div cds-layout="vertical">
                 <div cds-layout="vertical" cds-text="subsection">
-                    <div cds-layout="horizontal">
-                        <div cds-layout="horizontal gap:sm align:vertical-center p:sm">
-                            <CdsIcon shape="block" size="md" className="icon-blue"></CdsIcon>
-                            <div cds-text="section">{name}</div>
+                    <div cds-layout="horizontal gap:sm align:vertical-center p:sm">
+                        <CdsIcon shape="block" size="md" className="icon-blue"></CdsIcon>
+                        <div cds-text="section" cds-layout="align:stretch">
+                            {name}
                         </div>
+                        <CdsButton
+                            action="flat-inline"
+                            status="danger"
+                            onClick={() => {
+                                confirmDeleteCallback(name);
+                            }}
+                        >
+                            Delete
+                        </CdsButton>
                     </div>
                     <CdsDivider></CdsDivider>
                     <div cds-layout="horizontal gap:md p:sm">
@@ -67,25 +76,6 @@ function UnmanagedClusterCard(props: UnmanagedClusterProps) {
                                 <div cds-text="body">{status}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <CdsDivider></CdsDivider>
-                <div cds-layout="vertical gap:md p:md">
-                    <div cds-layout="horizontal gap:lg">
-                        <CdsButton action="flat-inline" size="md">
-                            Access This Cluster
-                        </CdsButton>
-                        <CdsButton
-                            action="flat"
-                            size="sm"
-                            cds-layout="m-x:md"
-                            status="danger"
-                            onClick={() => {
-                                confirmDeleteCallback(name);
-                            }}
-                        >
-                            Delete
-                        </CdsButton>
                     </div>
                 </div>
             </div>

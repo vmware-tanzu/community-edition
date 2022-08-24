@@ -15,7 +15,7 @@ export interface OsImage {
 }
 
 interface ImageProps {
-    osImageTitle: string;
+    osImageLabel: string;
     field: string;
     onOsImageSelected: (osImage: OsImage | undefined, fieldName?: string) => void;
     images: OsImage[];
@@ -39,7 +39,6 @@ function OsImageSelect(props: ImageProps) {
     const fieldError = errors[field];
     return (
         <div cds-layout="m:lg">
-            <h1>{osImageTitle}</h1>
             <CdsSelect layout="compact" controlWidth="shrink">
                 <label>OS Image with Kubernetes </label>
                 <select {...register(field)} onChange={handleOsImageSelect} value={selectedImage?.name}>

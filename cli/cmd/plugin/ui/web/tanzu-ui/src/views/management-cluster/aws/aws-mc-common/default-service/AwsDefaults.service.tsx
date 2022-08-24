@@ -2,7 +2,7 @@
 import { AWSVirtualMachine } from '../../../../../swagger-api';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { first } from '../../../../../shared/utilities/Array.util';
-import { validateDefaultNodeType } from '../../../../../shared/constants/defaults/aws.defaults';
+import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
 
 export class AwsDefaults {
     // The strategy of deciding default os image
@@ -15,11 +15,14 @@ export class AwsDefaults {
     };
 
     static setDefaultNodeType = (nodeTypeList: string[], nodeProfile: string) => {
-        if (nodeTypeList.indexOf(validateDefaultNodeType(nodeProfile)) > -1) {
-            return validateDefaultNodeType(nodeProfile);
-        } else {
-            // TODO: refactor to select optimal nodeType when preferred default not found
-            return nodeTypeList[Math.round(nodeTypeList.length / 2)];
+        const defaultNodeTypes = getDefaultNodeTypes(nodeProfile);
+        const nodeTypeSet = new Set(nodeTypeList);
+
+        for (let i = 0; i < defaultNodeTypes.length; i++) {
+            if (nodeTypeSet.has(defaultNodeTypes[i])) {
+                return defaultNodeTypes[i];
+            }
         }
+        return nodeTypeList[Math.round(nodeTypeList.length / 2)];
     };
 }

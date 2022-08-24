@@ -104,8 +104,8 @@ function UnmanagedClusterInventory() {
     function Header() {
         return (
             <div cds-layout="vertical gap:lg">
-                <div cds-text="title">
-                    <CdsIcon cds-layout="m-r:sm" shape="computer" size="xl" className="icon-blue"></CdsIcon>
+                <div cds-text="title" cds-layout="horizontal align:vertical-center">
+                    <CdsIcon cds-layout="m-r:sm" shape="computer" size="lg" className="icon-blue"></CdsIcon>
                     Unmanaged Clusters
                 </div>
                 <div cds-text="subsection">

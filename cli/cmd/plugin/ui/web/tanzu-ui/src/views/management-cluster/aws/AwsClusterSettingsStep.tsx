@@ -127,7 +127,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                     </div>
                     <div cds-layout="col:12">
                         <OsImageSelect
-                            osImageTitle="Amazon Machine Image(AMI)"
+                            osImageLabel="OS Image with Kubernetes"
                             images={osImages}
                             field={AWS_FIELDS.OS_IMAGE}
                             onOsImageSelected={(value) => {

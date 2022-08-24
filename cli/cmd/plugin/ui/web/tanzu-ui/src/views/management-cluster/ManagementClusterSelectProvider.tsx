@@ -4,10 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 // Library imports
 import { CdsCard } from '@cds/react/card';
+import { CdsIcon } from '@cds/react/icon';
+import { CdsIconButton } from '@cds/react/button';
 import { ClarityIcons, cloudIcon } from '@cds/core/icon';
 
 // App imports
 import './ManagementClusterSelectProvider.scss';
+import { NavRoutes } from '../../shared/constants/NavRoutes.constants';
 
 ClarityIcons.addIcons(cloudIcon);
 
@@ -38,10 +41,13 @@ const ManagementClusterSelectProvider: React.FC = () => {
     return (
         <div className="management-cluster-landing-container" cds-layout="vertical gap:md col@sm:12 grid">
             <div cds-layout="vertical col:8 gap:lg">
-                <div cds-text="title" cds-layout="m-t:md">
-                    Management Cluster
+                <div cds-layout="horizontal align:vertical-center">
+                    <CdsIconButton action="flat" status="primary" onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_INVENTORY)}>
+                        <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
+                    </CdsIconButton>
+                    <div cds-text="title">Management Cluster</div>
                 </div>
-                <div cds-text="body" cds-layout="p-y:md">
+                <div cds-text="body" cds-layout="p-b:md">
                     Managed Clusters is a deployment model that features one management cluster and multiple workload clusters. The
                     management cluster provides management and operations for Tanzu. It runs Cluster-API which is used to manage workload
                     clusters and multi-cluster services. The workload clusters are where developer’s workloads run.
