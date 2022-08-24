@@ -21,7 +21,7 @@ const configGroupsBasic: ConfigGroup[] = [
         label: 'Cluster settings',
         pairs: [
             { label: 'Name', field: VSPHERE_FIELDS.CLUSTERNAME },
-            { label: 'Node Type', field: VSPHERE_FIELDS.INSTANCETYPE },
+            { label: 'Node Type', field: VSPHERE_FIELDS.NODE_PROFILE_TYPE },
             { label: 'OS Image', field: VSPHERE_FIELDS.VMTEMPLATE, transform: CommonConfigTransformationFunctions.NAME },
             {
                 label: 'SSH key',

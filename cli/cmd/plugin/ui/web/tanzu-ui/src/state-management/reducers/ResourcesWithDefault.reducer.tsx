@@ -3,7 +3,7 @@ import { RESOURCE } from '../actions/Resources.actions';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
 import { resourceReducerDescriptor, STORE_SECTION_RESOURCES } from './Resources.reducer';
 import { formReducerDescriptor, STORE_SECTION_FORM } from './Form.reducer';
-import { INPUT_CHANGE } from '../actions/Form.actions';
+import { INPUT_CHANGE, INPUT_CLEAR } from '../actions/Form.actions';
 
 // This reducer updates TWO sections of the store: the resources section and the form section
 function resourcesWithDefaultReducer(state: any, action: ResourceWithDefaultAction) {
@@ -22,7 +22,8 @@ function updateResourcesSection(state: any, action: ResourceWithDefaultAction) {
 function updateFormSection(state: any, action: ResourceWithDefaultAction) {
     const newState = { ...state };
     const field = action.fieldName ?? action.resourceName;
-    const formAction = { type: INPUT_CHANGE, field, payload: action.defaultValue } as FormAction;
+    const actionType = action.type === RESOURCE.DELETE_RESOURCES_WITH_DEFAULT ? INPUT_CLEAR : INPUT_CHANGE;
+    const formAction = { type: actionType, field, payload: action.defaultValue } as FormAction;
     newState[STORE_SECTION_FORM] = formReducerDescriptor.reducer(newState[STORE_SECTION_FORM], formAction);
     return newState;
 }

@@ -25,7 +25,7 @@ export class DefaultOrchestrator {
             if (fxnSelectDefault) {
                 saveResourceDataWithDefault<RESOURCE_TYPE>({ resources, resourceName, fieldName, fxnSelectDefault, dispatch });
             } else {
-                saveResourceData(dispatch, RESOURCE.ADD_RESOURCES, resourceName, resources);
+                saveResourceData<RESOURCE_TYPE>(dispatch, RESOURCE.ADD_RESOURCES, resourceName, resources);
             }
             setErrorObject(removeErrorInfo(errorObject, fieldName));
             if (fxnReturnValues) {
@@ -59,13 +59,24 @@ export function clearPreviousResourceData(dispatch: StoreDispatch, actionType: R
     } as ResourceAction);
 }
 
-export function saveResourceData(dispatch: StoreDispatch, actionType: RESOURCE, resourceName: string, currentValues: any[]) {
-    console.log(`saveResourceData() dispatching event for ${resourceName}`);
-
+export function saveResourceData<RESOURCE_TYPE>(
+    dispatch: StoreDispatch,
+    actionType: RESOURCE,
+    resourceName: string,
+    currentValues: RESOURCE_TYPE[]
+) {
     dispatch({
         type: actionType,
         resourceName: resourceName,
         payload: currentValues,
+    } as ResourceAction);
+}
+
+export function saveSingleResourceObject(dispatch: StoreDispatch, actionType: RESOURCE, resourceName: string, resource: any) {
+    dispatch({
+        type: actionType,
+        resourceName: resourceName,
+        payload: resource,
     } as ResourceAction);
 }
 

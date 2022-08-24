@@ -154,9 +154,9 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                     <div cds-layout="col:8" key="instance-type-section">
                         <NodeProfile
                             field={AZURE_FIELDS.NODE_PROFILE}
-                            nodeInstanceTypes={nodeInstanceTypes}
-                            nodeInstanceTypeChange={onInstanceTypeChange}
-                            selectedInstanceId={selectedInstanceTypeId}
+                            nodeProfileTypes={nodeInstanceTypes}
+                            nodeProfileTypeChange={onInstanceTypeChange}
+                            selectedProfileId={selectedInstanceTypeId}
                         />
                     </div>
                     <div cds-layout="col:6">

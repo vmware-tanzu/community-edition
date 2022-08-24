@@ -29,7 +29,7 @@ import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTa
 import SpinnerSelect from '../../../../shared/components/Select/SpinnerSelect';
 
 // NOTE: icons must be imported
-const nodeInstanceTypes: NodeProfileType[] = [
+const nodeProfileTypes: NodeProfileType[] = [
     {
         id: 'single-node',
         label: 'Single node',
@@ -54,13 +54,13 @@ ClarityIcons.addIcons(blockIcon, blocksGroupIcon);
 
 type VSPHERE_CLUSTER_SETTING_STEP_FIELDS =
     | VSPHERE_FIELDS.CLUSTERNAME
-    | VSPHERE_FIELDS.INSTANCETYPE
+    | VSPHERE_FIELDS.NODE_PROFILE_TYPE
     | VSPHERE_FIELDS.SSHKEY
     | VSPHERE_FIELDS.VMTEMPLATE;
 
 interface VsphereClusterSettingFormInputs {
     [VSPHERE_FIELDS.CLUSTERNAME]: string;
-    [VSPHERE_FIELDS.INSTANCETYPE]: string;
+    [VSPHERE_FIELDS.NODE_PROFILE_TYPE]: string;
     [VSPHERE_FIELDS.SSHKEY]: string;
     [VSPHERE_FIELDS.VMTEMPLATE]: string;
 }
@@ -106,16 +106,16 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         }
     }, []);
 
-    let initialSelectedInstanceTypeId = vsphereState[VSPHERE_FIELDS.INSTANCETYPE];
+    let initialSelectedNodeProfileId = vsphereState[VSPHERE_FIELDS.NODE_PROFILE_TYPE];
 
     useEffect(() => {
-        if (!initialSelectedInstanceTypeId) {
-            initialSelectedInstanceTypeId = nodeInstanceTypes[0].id;
-            setValue(VSPHERE_FIELDS.INSTANCETYPE, initialSelectedInstanceTypeId);
+        if (!initialSelectedNodeProfileId) {
+            initialSelectedNodeProfileId = nodeProfileTypes[0].id;
+            setValue(VSPHERE_FIELDS.NODE_PROFILE_TYPE, initialSelectedNodeProfileId);
         }
     }, []);
 
-    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
+    const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
 
     const canContinue = (): boolean => {
         return Object.keys(errors).length === 0;
@@ -140,9 +140,9 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         onFieldChange(clusterName, VSPHERE_FIELDS.CLUSTERNAME);
     };
 
-    const onInstanceTypeChange = (instanceType: string) => {
-        onFieldChange(instanceType, VSPHERE_FIELDS.INSTANCETYPE);
-        setSelectedInstanceTypeId(instanceType);
+    const onNodeProfileChange = (profileId: string) => {
+        onFieldChange(profileId, VSPHERE_FIELDS.NODE_PROFILE_TYPE);
+        setSelectedNodeProfileId(profileId);
     };
 
     const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
@@ -177,12 +177,12 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                             placeholderClusterName={'my-vsphere-cluster'}
                         />
                     </div>
-                    <div cds-layout="col:6" key="instance-type-section">
+                    <div cds-layout="col:6" key="profile-type-section">
                         <NodeProfile
-                            field={VSPHERE_FIELDS.INSTANCETYPE}
-                            nodeInstanceTypes={nodeInstanceTypes}
-                            nodeInstanceTypeChange={onInstanceTypeChange}
-                            selectedInstanceId={selectedInstanceTypeId}
+                            field={VSPHERE_FIELDS.NODE_PROFILE_TYPE}
+                            nodeProfileTypes={nodeProfileTypes}
+                            nodeProfileTypeChange={onNodeProfileChange}
+                            selectedProfileId={selectedNodeProfileId}
                         />
                     </div>
                     <div cds-layout="col:12">
@@ -297,7 +297,7 @@ function createYupSchemaObject() {
     return {
         [VSPHERE_FIELDS.SSHKEY]: yupStringRequired('Please enter an SSH key'),
         [VSPHERE_FIELDS.VMTEMPLATE]: yupStringRequired('Please select an OS image'),
-        [VSPHERE_FIELDS.INSTANCETYPE]: nodeProfileValidation(),
+        [VSPHERE_FIELDS.NODE_PROFILE_TYPE]: nodeProfileValidation(),
         [VSPHERE_FIELDS.CLUSTERNAME]: clusterNameValidation(),
     };
 }

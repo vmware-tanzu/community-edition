@@ -78,20 +78,19 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
         } as FormAction);
     };
 
-
     // NOTE: we assume that the osImages were set in the store during the credentials step
     const osImages = getResource<AWSVirtualMachine[]>(AWS_FIELDS.OS_IMAGE, awsState) || [];
-    const initialSelectedInstanceTypeId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE] || nodeInstanceTypes[0].id;
-    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedInstanceTypeId);
+    const initialSelectedNodeProfileId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE] || nodeProfiles[0].id;
+    const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
 
-    const onInstanceTypeChange = (instanceType: string) => {
+    const onNodeProfileChange = (instanceType: string) => {
         setSelectedNodeProfileId(instanceType);
         onFieldChange(AWS_FIELDS.NODE_PROFILE, instanceType);
     };
 
     useEffect(() => {
-        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
-        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedInstanceTypeId);
+        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
+        onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }, []);
 
     useEffect(() => {
@@ -121,9 +120,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                     <div cds-layout="col:8" key="instance-type-section">
                         <NodeProfile
                             field={AWS_FIELDS.NODE_PROFILE}
-                            nodeInstanceTypes={nodeProfiles}
-                            nodeInstanceTypeChange={onInstanceTypeChange}
-                            selectedInstanceId={selectedNodeProfileId}
+                            nodeProfileTypes={nodeProfiles}
+                            nodeProfileTypeChange={onNodeProfileChange}
+                            selectedProfileId={selectedNodeProfileId}
                         />
                     </div>
                     <div cds-layout="col:12">

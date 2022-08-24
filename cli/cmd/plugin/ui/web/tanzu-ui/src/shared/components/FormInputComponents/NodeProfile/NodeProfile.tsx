@@ -19,60 +19,60 @@ export interface NodeProfileType {
 
 interface NodeProfileProps {
     field: string;
-    nodeInstanceTypes: NodeProfileType[];
-    nodeInstanceTypeChange: (nodeInstanceTypeId: string, fieldName?: string) => void;
-    selectedInstanceId?: string;
+    nodeProfileTypes: NodeProfileType[];
+    nodeProfileTypeChange: (nodeProfileId: string, fieldName?: string) => void;
+    selectedProfileId?: string;
     prompt?: string;
 }
 
 const DEFAULT_PROMPT = 'Select a node profile';
 
 /**
- * addNodeInstanceTypeValidation returns a "yup" validation to be used in the yup schema object
- * and associated with the field that is being used for the node instance type.
+ * nodeProfileValidation returns a "yup" validation to be used in the yup schema object
+ * and associated with the field that is being used for the node profile type.
  */
 export function nodeProfileValidation() {
-    return yup.string().nullable().required('Please select an instance type for your cluster nodes');
+    return yup.string().nullable().required('Please select an node profile for your cluster nodes');
 }
 
-function instanceTypeInList(field: string, instance: NodeProfileType, register: any, selectedInstanceId?: string) {
+function profileTypeInList(field: string, nodeProfile: NodeProfileType, register: any, selectedProfileId?: string) {
     return (
-        <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={instance.id + '-cds-radio'} data-testid="cds-radio">
+        <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={nodeProfile.id + '-cds-radio'} data-testid="cds-radio">
             <label>
-                {instance.label}
+                {nodeProfile.label}
                 <CdsIcon
-                    shape={instance.icon}
+                    shape={nodeProfile.icon}
                     size="md"
-                    className={selectedInstanceId === instance.id ? 'node-icon selected' : 'node-icon'}
-                    solid={instance.isSolidIcon}
+                    className={selectedProfileId === nodeProfile.id ? 'node-icon selected' : 'node-icon'}
+                    solid={nodeProfile.isSolidIcon}
                 ></CdsIcon>
-                <div className="radio-message">{instance.description}</div>
+                <div className="radio-message">{nodeProfile.description}</div>
             </label>
-            <input type="radio" key={instance.id} value={instance.id} checked={selectedInstanceId === instance.id} readOnly />
+            <input type="radio" key={nodeProfile.id} value={nodeProfile.id} checked={selectedProfileId === nodeProfile.id} readOnly />
         </CdsRadio>
     );
 }
 
 export function NodeProfile(props: NodeProfileProps) {
-    const { field, nodeInstanceTypes, nodeInstanceTypeChange, selectedInstanceId, prompt } = props;
+    const { field, nodeProfileTypes, nodeProfileTypeChange, selectedProfileId, prompt } = props;
     const {
         register,
         formState: { errors },
     } = useFormContext();
 
-    const onSelectNodeInstanceType = (event: ChangeEvent<HTMLSelectElement>) => {
-        nodeInstanceTypeChange(event.target.value || '', field);
+    const onSelectNodeProfileType = (event: ChangeEvent<HTMLSelectElement>) => {
+        nodeProfileTypeChange(event.target.value || '', field);
     };
 
     const fieldError = errors[field];
     const displayPrompt = prompt ? prompt : DEFAULT_PROMPT;
     return (
-        <div className="cluster-node-instance-container" cds-layout="m:lg">
+        <div className="cluster-node-profile-container" cds-layout="m:lg">
             <div cds-layout="col@sm:8 p-l:xl">
-                <CdsRadioGroup layout="vertical" onChange={onSelectNodeInstanceType}>
+                <CdsRadioGroup layout="vertical" onChange={onSelectNodeProfileType}>
                     <label>{displayPrompt}</label>
-                    {nodeInstanceTypes.map((instanceType) => {
-                        return instanceTypeInList(field, instanceType, register, selectedInstanceId);
+                    {nodeProfileTypes.map((profileType) => {
+                        return profileTypeInList(field, profileType, register, selectedProfileId);
                     })}
                 </CdsRadioGroup>
                 {fieldError && <CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>}
