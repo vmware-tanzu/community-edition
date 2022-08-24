@@ -503,7 +503,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
     }
 
-    async function handleRecheckOsImages() {
-        await retrieveOsImages(selectedDatacenter);
+    function handleRecheckOsImages() {
+        retrieveOsImages(selectedDatacenter);
     }
 }
