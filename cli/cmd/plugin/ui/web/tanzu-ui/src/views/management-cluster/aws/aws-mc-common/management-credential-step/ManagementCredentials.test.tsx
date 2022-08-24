@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 
 // App imports
 import ManagementCredentials from './ManagementCredentials';
+import { AwsProvider } from '../../store/Aws.store.mc';
 
 describe('ManagementCredential component', () => {
     const user = userEvent.setup();
@@ -85,7 +86,12 @@ describe('ManagementCredential component', () => {
         expect(screen.getByText('CONNECT')).toHaveAttribute('disabled');
     });
     it('should select a key pair', async () => {
-        render(<ManagementCredentials />);
+        // NOTE: we need the provider to supply the AwsState, where we store the EC2key pairs
+        render(
+            <AwsProvider>
+                <ManagementCredentials />
+            </AwsProvider>
+        );
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));
@@ -97,7 +103,12 @@ describe('ManagementCredential component', () => {
         expect((el as HTMLOptionElement).selected).toBeTruthy();
     });
     it('should click on refresh button', async () => {
-        render(<ManagementCredentials />);
+        // NOTE: we need the provider to supply the AwsState, where we store the EC2key pairs
+        render(
+            <AwsProvider>
+                <ManagementCredentials />
+            </AwsProvider>
+        );
         await screen.findByText('us-east-1');
         fireEvent.change(screen.getByTestId('region-select'), { target: { value: 'us-east-2' } });
         fireEvent.click(screen.getByText('CONNECT'));

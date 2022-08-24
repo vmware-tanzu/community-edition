@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -10,17 +10,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // App imports
-import { FormAction } from '../../../../shared/types/types';
+import { FormAction, StoreDispatch } from '../../../../shared/types/types';
+import { getResource } from '../../../../state-management/reducers/Resources.reducer';
+import { initDatastores, initFolders, initNetworks, initResources } from './VsphereOrchestrator.service';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { SelectionType, TreeSelectItem } from '../../../../shared/components/TreeSelect/TreeSelect.interface';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import TreeSelect from '../../../../shared/components/TreeSelect/TreeSelect';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import useVSphereComputeResources from '../../../../shared/hooks/VSphere/UseVSphereComputeResources';
-import useVSphereDatastores from '../../../../shared/hooks/VSphere/UseVSphereDatastores';
-import useVSphereFolders from '../../../../shared/hooks/VSphere/UseVSphereFolders';
-import useVSphereNetworkNames from '../../../../shared/hooks/VSphere/UseVSphereNetworkNames';
 import { VSphereDatastore, VSphereFolder, VSphereManagementObject, VSphereNetwork } from '../../../../swagger-api';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereStore } from '../Store.vsphere.mc';
@@ -28,7 +26,7 @@ import { VsphereStore } from '../Store.vsphere.mc';
 export interface VSphereClusterResourcesStepInputs {
     [VSPHERE_FIELDS.VMFolder]: string;
     [VSPHERE_FIELDS.DataStore]: string;
-    [VSPHERE_FIELDS.NetworkName]: string;
+    [VSPHERE_FIELDS.Network]: string;
     [VSPHERE_FIELDS.Pool]: string;
 }
 
@@ -37,7 +35,7 @@ const schema = yup
     .shape({
         [VSPHERE_FIELDS.VMFolder]: yup.string().required('Please select a VM folder.'),
         [VSPHERE_FIELDS.DataStore]: yup.string().required('Please select a Datastore.'),
-        [VSPHERE_FIELDS.NetworkName]: yup.string().required('Please select a vSphere network name.'),
+        [VSPHERE_FIELDS.Network]: yup.string().required('Please select a vSphere network name.'),
         [VSPHERE_FIELDS.Pool]: yup.string().required('Please select a resource pool.'),
     })
     .required();
@@ -77,7 +75,7 @@ const treeDataMapper = (inputData: VSphereManagementObject[]) => {
         return rootNodes;
     };
 
-    const treeData: TreeSelectItem[] = inputData.map((r) => ({
+    const treeData: TreeSelectItem[] = inputData?.map((r) => ({
         id: r.moid ?? '',
         label: r.name ?? '',
         value: parsePath(r) ?? '',
@@ -88,7 +86,7 @@ const treeDataMapper = (inputData: VSphereManagementObject[]) => {
     const nodeMap: Map<string, TreeSelectItem[]> = new Map();
     const resourceTree: TreeSelectItem[] = [];
 
-    treeData.forEach((resource) => {
+    treeData?.forEach((resource) => {
         const parentId = resource.parentId;
         if (parentId) {
             const a: TreeSelectItem[] = nodeMap.get(parentId) as TreeSelectItem[];
@@ -103,6 +101,7 @@ const treeDataMapper = (inputData: VSphereManagementObject[]) => {
 
 export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     const { vsphereState, vsphereDispatch } = useContext(VsphereStore);
+    const [errorObject, setErrorObject] = useState({});
     const datacenter = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER];
 
     const { currentStep, updateTabStatus, goToStep, submitForm } = props;
@@ -119,16 +118,21 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
         control,
     } = methods;
 
-    // update tab status bar
     if (updateTabStatus) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
 
-    const { data: vSphereFolders } = useVSphereFolders(datacenter);
-    const { data: vSphereDatastores } = useVSphereDatastores(datacenter);
-    const { data: vSphereNetworkNames } = useVSphereNetworkNames(datacenter);
-    const { data: vSphereComputeResources } = useVSphereComputeResources(datacenter);
-    const mappedVSphereComputeResources = treeDataMapper(vSphereComputeResources);
+    useEffect(() => {
+        initFolders(errorObject, setErrorObject, vsphereDispatch, datacenter);
+        initDatastores(errorObject, setErrorObject, vsphereDispatch, datacenter);
+        initNetworks(errorObject, setErrorObject, vsphereDispatch, datacenter);
+        initResources(errorObject, setErrorObject, vsphereDispatch, datacenter);
+    }, [vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]]);
+
+    const vSphereFolders = getResource<VSphereFolder[]>(VSPHERE_FIELDS.VMFolder, vsphereState) || [];
+    const vSphereDatastores = getResource<VSphereDatastore[]>(VSPHERE_FIELDS.DataStore, vsphereState) || [];
+    const vSphereNetworks = getResource<VSphereNetwork[]>(VSPHERE_FIELDS.Network, vsphereState) || [];
+    const mappedVSphereComputeResources = treeDataMapper(getResource<VSphereManagementObject[]>(VSPHERE_FIELDS.Pool, vsphereState) || []);
 
     const canContinue = () => {
         return Object.keys(errors).length === 0;
@@ -147,6 +151,27 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
         } as FormAction);
     };
 
+    const onSelectVmFolder = fxnOnSelectArrayObject<VSphereFolder>(
+        VSPHERE_FIELDS.VMFolder,
+        vsphereDispatch,
+        vSphereFolders,
+        (obj, selectedValue) => obj.moid === selectedValue
+    );
+
+    const onSelectDatastore = fxnOnSelectArrayObject<VSphereDatastore>(
+        VSPHERE_FIELDS.DataStore,
+        vsphereDispatch,
+        vSphereDatastores,
+        (datastore, selectedValue) => datastore.moid === selectedValue
+    );
+
+    const onSelectNetwork = fxnOnSelectArrayObject<VSphereNetwork>(
+        VSPHERE_FIELDS.Network,
+        vsphereDispatch,
+        vSphereNetworks,
+        (network, selectedValue) => network.moid === selectedValue
+    );
+
     return (
         <div className="cluster-settings-container" cds-layout="m:lg">
             <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
@@ -157,9 +182,27 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
 
                 <h3>Resources</h3>
                 <div cds-layout="horizontal gap:md align:stretch">
-                    <VMFolder register={register} onChange={onChange} errors={errors} vmFolders={vSphereFolders} />
-                    <Datastore register={register} onChange={onChange} errors={errors} datastores={vSphereDatastores} />
-                    <VSphereNetworkName register={register} onChange={onChange} errors={errors} vSphereNetworkNames={vSphereNetworkNames} />
+                    <VMFolder
+                        register={register}
+                        onSelect={onSelectVmFolder}
+                        errors={errors}
+                        vmFolders={vSphereFolders}
+                        selected={vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder]}
+                    />
+                    <Datastore
+                        register={register}
+                        onSelect={onSelectDatastore}
+                        errors={errors}
+                        datastores={vSphereDatastores}
+                        selected={vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore]}
+                    />
+                    <VSphereNetworkSelect
+                        register={register}
+                        onSelect={onSelectNetwork}
+                        errors={errors}
+                        vSphereNetworks={vSphereNetworks}
+                        selected={vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Network]}
+                    />
                 </div>
 
                 <div cds-layout="m-y:md">
@@ -180,26 +223,23 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     );
 }
 
-function VMFolder({
-    register,
-    onChange,
-    errors,
-    vmFolders,
-}: {
+interface VMFolderParams {
     register: any;
-    onChange: (field: string, value: string) => void;
+    onSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
     errors: any;
     vmFolders: VSphereFolder[];
-}) {
+    selected?: VSphereFolder;
+}
+function VMFolder({ register, onSelect, errors, vmFolders, selected }: VMFolderParams) {
     return (
         <div>
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>VM folder</label>
-                <select {...register(VSPHERE_FIELDS.VMFolder)} onChange={(e) => onChange(VSPHERE_FIELDS.VMFolder, e?.target?.value ?? '')}>
+                <select {...register(VSPHERE_FIELDS.VMFolder)} onChange={onSelect} value={selected?.moid}>
                     <option />
-                    {vmFolders.map((details: any) => (
-                        <option key={details.moid} value={details.moid}>
-                            {details.name}
+                    {vmFolders?.map((folder: any) => (
+                        <option key={folder.moid} value={folder.moid}>
+                            {folder.name}
                         </option>
                     ))}
                 </select>
@@ -211,28 +251,21 @@ function VMFolder({
     );
 }
 
-function Datastore({
-    register,
-    onChange,
-    errors,
-    datastores,
-}: {
+interface DatastoreParams {
     register: any;
-    onChange: (field: string, value: string) => void;
+    onSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
     errors: any;
     datastores: VSphereDatastore[];
-}) {
+    selected?: VSphereDatastore;
+}
+function Datastore({ register, onSelect, errors, datastores, selected }: DatastoreParams) {
     return (
         <div>
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>Datastore</label>
-                <select
-                    {...register(VSPHERE_FIELDS.DataStore, {
-                        onChange: (e: any) => onChange(VSPHERE_FIELDS.DataStore, e?.target?.value ?? ''),
-                    })}
-                >
+                <select {...register(VSPHERE_FIELDS.DataStore)} onChange={onSelect} value={selected?.moid}>
                     <option />
-                    {datastores.map((details: any) => (
+                    {datastores?.map((details: any) => (
                         <option key={details.moid} value={details.moid}>
                             {details.name}
                         </option>
@@ -246,37 +279,52 @@ function Datastore({
     );
 }
 
-function VSphereNetworkName({
-    register,
-    onChange,
-    errors,
-    vSphereNetworkNames,
-}: {
+interface VSphereNetworkSelectParams {
     register: any;
-    onChange: (field: string, value: string) => void;
+    onSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
     errors: any;
-    vSphereNetworkNames: VSphereNetwork[];
-}) {
+    vSphereNetworks: VSphereNetwork[];
+    selected?: VSphereNetwork;
+}
+function VSphereNetworkSelect({ register, onSelect, errors, vSphereNetworks, selected }: VSphereNetworkSelectParams) {
     return (
         <div>
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>VSphere network name</label>
-                <select
-                    {...register(VSPHERE_FIELDS.NetworkName, {
-                        onChange: (e: any) => onChange(VSPHERE_FIELDS.NetworkName, e?.target?.value ?? ''),
-                    })}
-                >
+                <select {...register(VSPHERE_FIELDS.Network)} onChange={onSelect} value={selected?.moid}>
                     <option />
-                    {vSphereNetworkNames.map((details: any) => (
+                    {vSphereNetworks?.map((details: any) => (
                         <option key={details.moid} value={details.moid}>
                             {details.name}
                         </option>
                     ))}
                 </select>
-                {errors[VSPHERE_FIELDS.NetworkName] && (
-                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.NetworkName].message}</CdsControlMessage>
+                {errors[VSPHERE_FIELDS.Network] && (
+                    <CdsControlMessage status="error">{errors[VSPHERE_FIELDS.Network].message}</CdsControlMessage>
                 )}
             </CdsSelect>
         </div>
     );
+}
+
+// TODO: move this function to a utility class for reuse
+// returns a function that can be used as an event handler for a select box,
+// which will find the target object (after the user selects a value) and then dispatch an event which stores the corresponding OBJECT
+// into the data store
+function fxnOnSelectArrayObject<OBJ>(
+    fieldName: string,
+    dispatch: StoreDispatch,
+    source: OBJ[],
+    matcher: (obj: OBJ, selectedId: string) => boolean
+) {
+    return (event: ChangeEvent<HTMLSelectElement>) => {
+        const selectedId = event.target.value;
+        const selectedObjectIndex = source.findIndex((obj) => matcher(obj, selectedId));
+        const selectedObject = selectedObjectIndex >= 0 ? source[selectedObjectIndex] : undefined;
+        dispatch({
+            type: INPUT_CHANGE,
+            field: fieldName,
+            payload: selectedObject,
+        } as FormAction);
+    };
 }

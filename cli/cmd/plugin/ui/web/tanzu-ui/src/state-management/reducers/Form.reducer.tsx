@@ -1,33 +1,41 @@
 // App imports
-import { Deployments } from '../../shared/models/Deployments';
 import { FormAction } from '../../shared/types/types';
-import { INPUT_CHANGE } from '../actions/Form.actions';
+import { INPUT_CHANGE, INPUT_CLEAR } from '../actions/Form.actions';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
 
 export const STORE_SECTION_FORM = 'dataForm';
 
 interface FormState {
     [key: string]: any;
-    deployments: Deployments;
 }
 
-function createNewState(state: FormState, action: FormAction): FormState {
+function setInputField(state: FormState, action: FormAction): FormState {
     return {
         ...state,
         [action.field]: action.payload,
     };
 }
 
+function clearInputField(state: FormState, action: FormAction): FormState {
+    const result = { ...state };
+    delete result[action.field];
+    return result;
+}
+
 function formReducer(state: FormState, action: FormAction) {
     let newState;
     switch (action.type) {
         case INPUT_CHANGE:
-            newState = createNewState(state, action);
+            newState = setInputField(state, action);
+            break;
+        case INPUT_CLEAR:
+            newState = clearInputField(state, action);
             break;
         default:
+            console.error(`formReducer ignoring unrecognized action: ${JSON.stringify(action)}`);
             newState = { ...state };
     }
-    console.log(`New form state: ${JSON.stringify(newState)}`);
+    console.log(`After ${action.type}, new form state: ${JSON.stringify(newState)}`);
     return newState;
 }
 

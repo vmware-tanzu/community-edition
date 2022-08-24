@@ -16,7 +16,7 @@ import TooltipContent from '../Tooltip/TooltipContent/TooltipContent';
 interface Props {
     label?: string;
     className?: string;
-    defaultValue?: string;
+    value?: string;
     error?: string;
     disabled?: boolean;
     controlMessage?: string;
@@ -28,20 +28,8 @@ interface Props {
     register: UseFormRegister<any>;
 }
 function SpinnerSelect(props: Props) {
-    const {
-        children,
-        controlMessage,
-        className,
-        defaultValue,
-        disabled,
-        error,
-        handleSelect,
-        label,
-        name,
-        register,
-        isLoading,
-        tooltipMessage,
-    } = props;
+    const { children, controlMessage, className, value, disabled, error, handleSelect, label, name, register, isLoading, tooltipMessage } =
+        props;
     return (
         <div className="select-container">
             <CdsSelect layout="compact">
@@ -61,7 +49,7 @@ function SpinnerSelect(props: Props) {
                     {...register(name, {
                         onChange: handleSelect,
                     })}
-                    defaultValue={defaultValue}
+                    value={value}
                     data-testid={name.toLowerCase() + '-select'}
                     disabled={isLoading || disabled}
                 >

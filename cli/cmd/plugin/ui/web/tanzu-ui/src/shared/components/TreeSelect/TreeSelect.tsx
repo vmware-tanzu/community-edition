@@ -108,7 +108,7 @@ function TreeItem({
 }) {
     return (
         <div className="tree-container" cds-layout="vertical">
-            <ul className="tree-list" cds-layout={children.length ? 'p-l:lg m-y:xs' : 'p-l:xll m-l:xs m-y:xs'}>
+            <ul className="tree-list" cds-layout={children.length ? 'p-l:xl m-y:xxs' : 'p-l:xll m-l:xs m-y:xxs'}>
                 <li className="tree-item">
                     <div className="tree-item-label">
                         {children?.length > 0 && (
@@ -118,11 +118,10 @@ function TreeItem({
                                 className="icon drawer-close"
                                 shape="angle"
                                 direction={expanded ? 'down' : 'right'}
-                                size="md"
+                                size="sm"
                                 onClick={() => toggleExpanded(node.id)}
                             ></CdsIcon>
                         )}
-
                         <CdsCheckbox>
                             <label htmlFor="pool"> {node.label} </label>
                             <input

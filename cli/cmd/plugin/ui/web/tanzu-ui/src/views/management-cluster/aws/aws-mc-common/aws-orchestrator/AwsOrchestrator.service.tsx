@@ -1,19 +1,19 @@
 // App imports
-import { AwsDefaults } from '../default-service/AwsDefaults.service';
-import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
-import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { addErrorInfo, removeErrorInfo } from '../../../../../shared/utilities/Error.util';
 import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
-import { FormAction, StoreDispatch } from '../../../../../shared/types/types';
-import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { AwsDefaults } from '../default-service/AwsDefaults.service';
+import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
 import {
     clearPreviousResourceData,
-    saveCurrentResourceData,
-    removeErrorInfo,
-    addErrorInfo,
+    DefaultOrchestrator,
+    saveSingleResourceObject,
 } from '../../../default-orchestrator/DefaultOrchestrator';
+import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
+import { StoreDispatch } from '../../../../../shared/types/types';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+
 interface AwsOrchestratorProps {
     awsState: { [key: string]: any };
     awsDispatch: StoreDispatch;
@@ -44,31 +44,28 @@ export const nodeProfiles: NodeProfileType[] = [
 ];
 
 export class AwsOrchestrator {
-    static async initOsImages(props: AwsOrchestratorProps) {
+    static initOsImages(props: AwsOrchestratorProps) {
         const { awsState, awsDispatch, setErrorObject, errorObject } = props;
-        try {
-            const osImages = await AwsService.getAwsosImages(awsState[STORE_SECTION_FORM].REGION);
-            saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.OS_IMAGE, osImages);
-            setDefaultOsImage(awsDispatch, osImages);
-            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.OS_IMAGE));
-        } catch (e) {
-            clearPreviousResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.OS_IMAGE);
-            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.OS_IMAGE));
-        }
+        DefaultOrchestrator.initResources<AWSVirtualMachine>({
+            resourceName: AWS_FIELDS.OS_IMAGE,
+            dispatch: awsDispatch,
+            errorObject,
+            setErrorObject,
+            fetcher: () => AwsService.getAwsosImages(awsState[STORE_SECTION_FORM].REGION),
+            fxnSelectDefault: AwsDefaults.selectDefaultOsImage,
+        });
     }
 
-    static async initEC2KeyPairs(props: AwsOrchestratorProps, setKeyPairs: (keyPairs: AWSKeyPair[]) => void) {
+    static initEC2KeyPairs(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        try {
-            const keyPairs = await AwsService.getAwsKeyPairs();
-            saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.EC2_KEY_PAIR, keyPairs);
-            setDefaultEC2KeyPair(awsDispatch, keyPairs);
-            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.OS_IMAGE));
-            setKeyPairs(keyPairs);
-        } catch (e) {
-            clearPreviousResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.EC2_KEY_PAIR);
-            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.EC2_KEY_PAIR));
-        }
+        DefaultOrchestrator.initResources<AWSKeyPair>({
+            resourceName: AWS_FIELDS.EC2_KEY_PAIR,
+            dispatch: awsDispatch,
+            errorObject,
+            setErrorObject,
+            fetcher: () => AwsService.getAwsKeyPairs(),
+            fxnSelectDefault: AwsDefaults.selectDefaultEC2KeyPairs,
+        });
     }
 
     static async initNodeProfile(props: AwsOrchestratorProps) {
@@ -83,27 +80,11 @@ export class AwsOrchestrator {
             Object.keys(nodeProfileList).forEach((nodeProfile) => {
                 nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeTypeList, nodeProfile);
             });
-            saveCurrentResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
+            saveSingleResourceObject(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
             setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.NODE_TYPE));
         } catch (e) {
-            clearPreviousResourceData(awsDispatch, RESOURCE.AWS_ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
+            clearPreviousResourceData(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
             setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.NODE_TYPE));
         }
     }
-}
-
-function setDefaultOsImage(awsDispatch: StoreDispatch, osImages: AWSVirtualMachine[]) {
-    awsDispatch({
-        type: INPUT_CHANGE,
-        field: AWS_FIELDS.OS_IMAGE,
-        payload: AwsDefaults.selectDefalutOsImage(osImages),
-    } as FormAction);
-}
-
-function setDefaultEC2KeyPair(awsDispatch: StoreDispatch, keyPairs: AWSKeyPair[]) {
-    awsDispatch({
-        type: INPUT_CHANGE,
-        field: AWS_FIELDS.EC2_KEY_PAIR,
-        payload: AwsDefaults.selectDefalutEC2KeyPairs(keyPairs),
-    } as FormAction);
 }

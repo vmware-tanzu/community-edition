@@ -18,6 +18,11 @@ export interface ResourceAction extends Action {
     resourceName: string;
 }
 
+export interface ResourceWithDefaultAction extends ResourceAction {
+    fieldName?: string; // NOTE: if the fieldName is not supplied, the resourceName is used as the fieldName
+    defaultValue: any;
+}
+
 export interface DynamicFormAction extends FormAction {
     locationData?: any; // data needed for storing the payload, generally only used when store location is dynamic (cf CCVAR_CHANGE)
 }

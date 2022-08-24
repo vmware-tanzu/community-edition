@@ -14,7 +14,7 @@ import { AWSVirtualMachine } from '../../../swagger-api';
 import { AWS_FIELDS } from './aws-mc-basic/AwsManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { FormAction } from '../../../shared/types/types';
-import { getResource } from '../../../views/providers/aws/AwsResources.reducer';
+import { getResource } from '../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import { NodeProfile, nodeProfileValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
@@ -78,28 +78,27 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
         } as FormAction);
     };
 
-    const osImages = (getResource(AWS_FIELDS.OS_IMAGE, awsState) || []) as AWSVirtualMachine[];
-    let initialSelectedNodeProfileId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE];
+    // NOTE: we assume that the osImages were set in the store during the credentials step
+    const osImages = getResource<AWSVirtualMachine[]>(AWS_FIELDS.OS_IMAGE, awsState) || [];
+    const initialSelectedNodeProfileId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE] || nodeProfiles[0].id;
+    const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
 
-    if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
-        setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
-    }
-
-    if (!initialSelectedNodeProfileId) {
-        initialSelectedNodeProfileId = nodeProfiles[0].id;
-        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
-    }
+    const onNodeProfileChange = (profileType: string) => {
+        setSelectedNodeProfileId(profileType);
+        onFieldChange(AWS_FIELDS.NODE_PROFILE, profileType);
+    };
 
     useEffect(() => {
+        setValue(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
         onFieldChange(AWS_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
     }, []);
 
-    const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
-
-    const onInstanceTypeChange = (instanceType: string) => {
-        setSelectedNodeProfileId(instanceType);
-        onFieldChange(AWS_FIELDS.NODE_PROFILE, instanceType);
-    };
+    useEffect(() => {
+        // NOTE: the local value of the form is the OS_IMAGE.name; if the OS_IMAGE changes in the store, update it in the form
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]) {
+            setValue(AWS_FIELDS.OS_IMAGE, awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE].name);
+        }
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]]);
 
     return (
         <FormProvider {...methods}>
@@ -118,12 +117,12 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                             defaultClusterName={awsState[STORE_SECTION_FORM][AWS_FIELDS.CLUSTER_NAME]}
                         />
                     </div>
-                    <div cds-layout="col:8" key="instance-type-section">
+                    <div cds-layout="col:8" key="profile-type-section">
                         <NodeProfile
                             field={AWS_FIELDS.NODE_PROFILE}
-                            nodeInstanceTypes={nodeProfiles}
-                            nodeInstanceTypeChange={onInstanceTypeChange}
-                            selectedInstanceId={selectedNodeProfileId}
+                            nodeProfileTypes={nodeProfiles}
+                            nodeProfileTypeChange={onNodeProfileChange}
+                            selectedProfileId={selectedNodeProfileId}
                         />
                     </div>
                     <div cds-layout="col:12">
@@ -134,6 +133,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                             onOsImageSelected={(value) => {
                                 onFieldChange(AWS_FIELDS.OS_IMAGE, value);
                             }}
+                            selectedImage={awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]}
                         />
                     </div>
 

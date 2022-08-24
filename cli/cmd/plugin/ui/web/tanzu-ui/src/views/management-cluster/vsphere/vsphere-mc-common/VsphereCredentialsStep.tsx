@@ -17,17 +17,18 @@ import '../VsphereManagementCluster.scss';
 import { analyzeOsImages } from './VsphereOsImageUtil';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { createSchema } from './vsphere.credential.form.schema';
+import { DefaultOrchestrator } from '../../default-orchestrator/DefaultOrchestrator';
+import { FormAction } from '../../../../shared/types/types';
+import { initOsImages } from './VsphereOrchestrator.service';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import { IP_FAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
-import { RESOURCE } from '../../../../state-management/actions/Resources.actions';
-import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
-import { FormAction, ResourceAction } from '../../../../shared/types/types';
-import { VsphereStore } from '../Store.vsphere.mc';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
+import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
+import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface VsphereCredentialsStepInputs {
     [VSPHERE_FIELDS.DATACENTER]: string;
@@ -54,9 +55,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [connectionMessage, setConnectionMessage] = useState('');
     const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
     const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
+    const [errorObject, setErrorObject] = useState({});
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
     const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
-    const [osImages, setOsImages] = useState<VSphereVirtualMachine[]>([]);
     const [osImageMessage, setOsImageMessage] = useState<string>('');
     const [serverNameAtBlur, setServerNameAtBlur] = useState<string>('');
     const [thumbprint, setThumbprint] = useState('');
@@ -117,13 +118,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         [ipFamily]
     );
 
-    const handleFieldChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const fieldName = event.target.name as VSPHERE_CREDENTIALS_STEP_FIELDS;
-        const newValue = event.target.value;
+    const handleFieldChange = (fieldName: VSPHERE_FIELDS, value: any) => {
         vsphereDispatch({
             type: INPUT_CHANGE,
             field: fieldName,
-            payload: newValue,
+            payload: value,
         } as FormAction);
 
         if (fieldName === VSPHERE_FIELDS.SERVERNAME) {
@@ -132,22 +131,28 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         }
     };
 
-    const handleDatacenterChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleFieldChangeEvent = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const fieldName = event.target.name as VSPHERE_CREDENTIALS_STEP_FIELDS;
+        const value = event.target.value;
+        handleFieldChange(fieldName, value);
+    };
+
+    const handleDatacenterChange = async (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const newSelectedDatacenter = event.target.value;
-        handleFieldChange(event);
+        handleFieldChangeEvent(event);
         setSelectedDatacenter(newSelectedDatacenter);
-        setOsImages([]);
+        DefaultOrchestrator.clearResourceData(vsphereDispatch, VSPHERE_FIELDS.VMTEMPLATE);
         setOsImageMessage('');
         setSelectedDcHasTemplate(false);
         if (newSelectedDatacenter) {
-            retrieveOsImages(newSelectedDatacenter);
+            await retrieveOsImages(newSelectedDatacenter);
         }
     };
 
     const handleCredentialsFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         setConnectionMessage('');
-        handleFieldChange(event);
+        handleFieldChangeEvent(event);
     };
 
     const handleCredentialsFieldBlur = (event: ChangeEvent<HTMLInputElement>) => {
@@ -185,12 +190,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         if (canContinue() && goToStep && currentStep && submitForm) {
             goToStep(currentStep + 1);
             submitForm(currentStep);
-            vsphereDispatch({
-                type: RESOURCE.VSPHERE_ADD_RESOURCES,
-                datacenter: selectedDatacenter,
-                resourceName: 'osImages',
-                payload: osImages,
-            } as ResourceAction);
         }
     };
 
@@ -240,7 +239,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     useEffect(() => {
         setSelectedDatacenter('');
         setDatacenters([]);
-        setOsImages([]);
+        DefaultOrchestrator.clearResourceData(vsphereDispatch, VSPHERE_FIELDS.VMTEMPLATE);
         setOsImageMessage('');
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             setLoadingDatacenters(true);
@@ -467,19 +466,25 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         );
     }
 
-    function retrieveOsImages(datacenter: string | undefined) {
-        setOsImages([]);
+    async function retrieveOsImages(datacenter: string | undefined) {
+        setOsImageMessage('');
         setSelectedDcHasTemplate(false);
-        if (datacenter) {
-            VsphereService.getVSphereOsImages(datacenter).then((fetchedOsImages) => {
-                setOsImages(fetchedOsImages);
-                // TODO: get good URL for how to convert OSImage to template
-                const { msg, nImages, nTemplates } = analyzeOsImages(datacenter, 'URL', fetchedOsImages);
-                setOsImageMessage(msg);
-                setSelectedDcHasTemplate(nTemplates > 0);
-                console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
-            });
+        if (!datacenter) {
+            DefaultOrchestrator.clearResourceData(vsphereDispatch, VSPHERE_FIELDS.VMTEMPLATE);
+            return;
         }
+        const osImages = await initOsImages(datacenter, {
+            errorObject,
+            setErrorObject,
+            vsphereDispatch,
+            vsphereState,
+        });
+
+        // TODO: get good URL for how to convert OSImage to template
+        const { msg, nImages, nTemplates } = analyzeOsImages(datacenter, '', osImages);
+        setOsImageMessage(msg);
+        setSelectedDcHasTemplate(nTemplates > 0);
+        console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
     }
 
     function handleRecheckOsImages() {

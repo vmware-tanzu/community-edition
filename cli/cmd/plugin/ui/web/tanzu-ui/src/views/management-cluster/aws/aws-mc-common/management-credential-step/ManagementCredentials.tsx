@@ -4,9 +4,9 @@ import React, { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 
 // Library imports
 import { CdsButton } from '@cds/react/button';
 import { CdsIcon } from '@cds/react/icon';
-import { ClarityIcons, refreshIcon, connectIcon, infoCircleIcon } from '@cds/core/icon';
+import { ClarityIcons, connectIcon, infoCircleIcon, refreshIcon } from '@cds/core/icon';
 import { CdsControlMessage, CdsFormGroup } from '@cds/react/forms';
-import { CdsRadioGroup, CdsRadio } from '@cds/react/radio';
+import { CdsRadio, CdsRadioGroup } from '@cds/react/radio';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -19,6 +19,7 @@ import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { AWS_FIELDS, CREDENTIAL_TYPE } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { FormAction } from '../../../../../shared/types/types';
+import { getResource, STORE_SECTION_RESOURCES } from '../../../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
 import ManagementCredentialOneTime from './ManagementCredentialOneTime';
@@ -32,6 +33,7 @@ import './ManagementCredentials.scss';
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
 export interface FormInputs {
+    [AWS_FIELDS.CREDENTIAL_TYPE]: string;
     [AWS_FIELDS.PROFILE]: string;
     [AWS_FIELDS.REGION]: string;
     [AWS_FIELDS.SECRET_ACCESS_KEY]: string;
@@ -45,12 +47,14 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const { awsState, awsDispatch } = useContext(AwsStore);
     const [connectionStatus, setConnectionStatus] = useState<CONNECTION_STATUS>(CONNECTION_STATUS.DISCONNECTED);
     const [message, setMessage] = useState('');
+    const [keypairs, setKeypairs] = useState([] as AWSKeyPair[]);
     const [keyPairLoading, setKeyPairLoading] = useState(false);
 
     const methods = useForm<FormInputs>({
         resolver: yupResolver(managementCredentialFormSchema),
         mode: 'all',
         defaultValues: {
+            [AWS_FIELDS.CREDENTIAL_TYPE]: CREDENTIAL_TYPE.PROFILE,
             [AWS_FIELDS.SECRET_ACCESS_KEY]: '',
             [AWS_FIELDS.ACCESS_KEY_ID]: '',
             [AWS_FIELDS.SESSION_TOKEN]: '',
@@ -62,16 +66,28 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const {
         register,
         setValue,
-        getValues,
         handleSubmit,
         formState: { errors },
     } = methods;
 
-    const [type, setType] = useState<CREDENTIAL_TYPE>(CREDENTIAL_TYPE.PROFILE);
-
-    const [keypairs, setKeyPairs] = useState<AWSKeyPair[]>([]);
-
+    const [credentialsType, setCredentialsType] = useState<CREDENTIAL_TYPE>(CREDENTIAL_TYPE.PROFILE);
     const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
+
+    useEffect(() => {
+        // As we enter the page simulate the user having selected the default credentialsType
+        setValue(AWS_FIELDS.CREDENTIAL_TYPE, credentialsType);
+        awsDispatch({ type: INPUT_CHANGE, field: AWS_FIELDS.CREDENTIAL_TYPE, payload: credentialsType } as FormAction);
+    }, []);
+
+    useEffect(
+        () => setKeypairs(awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.EC2_KEY_PAIR]),
+        [awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.EC2_KEY_PAIR]]
+    );
+
+    useEffect(() => {
+        // if the store is updated with an EC2 key pair, let the validation infrastructure know by setting the field value
+        setValue(AWS_FIELDS.EC2_KEY_PAIR, awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR]?.name || '');
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR]]);
 
     // update tab status bar
     if (updateTabStatus) {
@@ -82,15 +98,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             const initEC2KeyPairs = async () => {
                 setKeyPairLoading(true);
-                await AwsOrchestrator.initEC2KeyPairs(
-                    {
-                        awsState,
-                        awsDispatch,
-                        errorObject,
-                        setErrorObject,
-                    },
-                    setKeyPairs
-                );
+                await AwsOrchestrator.initEC2KeyPairs({
+                    awsState,
+                    awsDispatch,
+                    errorObject,
+                    setErrorObject,
+                });
                 setKeyPairLoading(false);
             };
             initEC2KeyPairs();
@@ -103,7 +116,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        setType(event.target.value as CREDENTIAL_TYPE);
+        setCredentialsType(event.target.value as CREDENTIAL_TYPE);
         // We set the credentials type in the store to use later in the review config step
         awsDispatch({
             type: INPUT_CHANGE,
@@ -113,15 +126,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        const valueList = getValues();
-        for (const i in valueList) {
-            awsDispatch({
-                type: INPUT_CHANGE,
-                field: i,
-                payload: valueList[i],
-            } as FormAction);
-        }
-
         if (connectionStatus === CONNECTION_STATUS.CONNECTED && Object.keys(errors).length === 0) {
             if (goToStep && currentStep && submitForm) {
                 goToStep(currentStep + 1);
@@ -132,7 +136,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const handleConnect = async () => {
         let params: AWSAccountParams = {};
-        if (type === CREDENTIAL_TYPE.PROFILE) {
+        if (credentialsType === CREDENTIAL_TYPE.PROFILE) {
             params = {
                 profileName: awsState[STORE_SECTION_FORM].PROFILE,
                 region: awsState[STORE_SECTION_FORM].REGION,
@@ -159,16 +163,25 @@ function ManagementCredentials(props: Partial<StepProps>) {
     };
 
     const handleSelectKeyPair = (event: ChangeEvent<HTMLSelectElement>) => {
+        const allPairs = getResource<AWSKeyPair[]>(AWS_FIELDS.EC2_KEY_PAIR, awsState);
+        const ec2KeyPair = allPairs?.find((pair) => pair.name === event.target.value);
+        if (event.target.value && !ec2KeyPair) {
+            console.error(
+                `handleSelectKeyPair was given a name of ${
+                    event.target.value
+                }, but was unable to find the ec2KeyPair in the array ${JSON.stringify(allPairs)}`
+            );
+        }
         awsDispatch({
             type: INPUT_CHANGE,
             field: AWS_FIELDS.EC2_KEY_PAIR,
-            payload: event.target.value,
+            payload: ec2KeyPair,
         } as FormAction);
     };
 
     const resetEc2KeyPair = () => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR] !== '') {
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR]) {
             setValue(AWS_FIELDS.EC2_KEY_PAIR, '', { shouldValidate: true });
             awsDispatch({
                 type: INPUT_CHANGE,
@@ -183,15 +196,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             const initEC2KeyPairs = async () => {
                 setKeyPairLoading(true);
-                await AwsOrchestrator.initEC2KeyPairs(
-                    {
-                        awsState,
-                        awsDispatch,
-                        errorObject,
-                        setErrorObject,
-                    },
-                    setKeyPairs
-                );
+                await AwsOrchestrator.initEC2KeyPairs({
+                    awsState,
+                    awsDispatch,
+                    errorObject,
+                    setErrorObject,
+                });
                 setKeyPairLoading(false);
             };
             initEC2KeyPairs();
@@ -221,7 +231,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const canContinue = (): boolean => {
         return (
             connectionStatus === CONNECTION_STATUS.CONNECTED &&
-            getValues(AWS_FIELDS.EC2_KEY_PAIR) !== undefined &&
+            awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR] !== undefined &&
             JSON.stringify(errorObject) === '{}'
         );
     };
@@ -237,16 +247,16 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 </label>
                 <CdsRadio>
                     <label cds-layout="p-r:xxl">AWS credential profile</label>
-                    <input type="radio" value={CREDENTIAL_TYPE.PROFILE} checked={type === CREDENTIAL_TYPE.PROFILE} readOnly />
+                    <input type="radio" value={CREDENTIAL_TYPE.PROFILE} checked={credentialsType === CREDENTIAL_TYPE.PROFILE} readOnly />
                 </CdsRadio>
                 <CdsRadio>
                     <label>One-time credential</label>
-                    <input type="radio" value={CREDENTIAL_TYPE.ONE_TIME} checked={type === CREDENTIAL_TYPE.ONE_TIME} readOnly />
+                    <input type="radio" value={CREDENTIAL_TYPE.ONE_TIME} checked={credentialsType === CREDENTIAL_TYPE.ONE_TIME} readOnly />
                 </CdsRadio>
             </CdsRadioGroup>
             <FormProvider {...methods}>
-                {type === CREDENTIAL_TYPE.PROFILE && <ManagementCredentialProfile selectCallback={resetEc2KeyPair} />}
-                {type === CREDENTIAL_TYPE.ONE_TIME && <ManagementCredentialOneTime selectCallback={resetEc2KeyPair} />}
+                {credentialsType === CREDENTIAL_TYPE.PROFILE && <ManagementCredentialProfile selectCallback={resetEc2KeyPair} />}
+                {credentialsType === CREDENTIAL_TYPE.ONE_TIME && <ManagementCredentialOneTime selectCallback={resetEc2KeyPair} />}
             </FormProvider>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
                 <div cds-layout="p-t:lg" className="aws-button-container">
@@ -270,9 +280,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
                         isLoading={keyPairLoading}
                         register={register}
                         error={errors[AWS_FIELDS.EC2_KEY_PAIR]?.message}
+                        value={awsState[STORE_SECTION_FORM][AWS_FIELDS.EC2_KEY_PAIR]?.name}
                     >
                         <option></option>
-                        {keypairs.map((keypair) => (
+                        {keypairs?.map((keypair) => (
                             <option key={keypair.id} value={keypair.name}>
                                 {keypair.name}
                             </option>

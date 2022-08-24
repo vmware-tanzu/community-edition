@@ -15,16 +15,28 @@ export function analyzeOsImages(
     }
 
     const nImages = osImages?.length || 0;
-    const nTemplates = osImages?.reduce<number>((accum, image) => accum + (image.isTemplate ? 1 : 0), 0) || 0;
+    const nTemplates = filterTemplates(osImages).length;
     let msg = '';
     if (nImages === 0) {
         msg = `No OS images are available! Please select a different data center or add an OS image to ${datacenter}`;
     } else if (nTemplates === 0) {
         const describeNumTemplates = nImages === 1 ? 'There is one OS image' : `There are ${nImages} OS images`;
         const notATemplate = nImages === 1 ? 'it is not a template' : 'none of them are templates';
-        msg =
-            `${describeNumTemplates} on data center ${datacenter}, but ${notATemplate}.` +
-            `For information on how to convert an OS image to a template, see URL ${urlConvertOsImageToTemplate}`;
+        msg = `${describeNumTemplates} on data center ${datacenter}, but ${notATemplate}.`;
+        if (urlConvertOsImageToTemplate) {
+            msg += ` For information on how to convert an OS image to a template, see URL ${urlConvertOsImageToTemplate}`;
+        }
     }
     return { msg, nImages, nTemplates };
+}
+
+export function filterTemplates(osImages: VSphereVirtualMachine[]): VSphereVirtualMachine[] {
+    return (
+        osImages?.reduce<VSphereVirtualMachine[]>((accum, image) => {
+            if (image.isTemplate) {
+                accum.push(image);
+            }
+            return accum;
+        }, []) || []
+    );
 }

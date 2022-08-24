@@ -7,14 +7,14 @@ export enum VSPHERE_FIELDS {
     IPFAMILY = 'ipFamily',
     USETHUMBPRINT = 'useThumbprint',
     CLUSTERNAME = 'CLUSTER_NAME',
-    INSTANCETYPE = 'instanceType',
+    NODE_PROFILE_TYPE = 'profileType',
     VMTEMPLATE = 'vmTemplate',
     SSHKEY = 'sshKey',
     CLUSTER_ENDPOINT = 'clusterEndpoint',
 
     VMFolder = 'vmFolder',
     DataStore = 'datastore',
-    NetworkName = 'vSphereNetworkName',
+    Network = 'vSphereNetworkName',
     Pool = 'pool',
 }
 

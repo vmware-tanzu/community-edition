@@ -36,7 +36,7 @@ const clusterTopologyStepFormSchema = yup
     .required();
 
 // NOTE: icons must be imported
-const workerNodeInstanceTypes: NodeProfileType[] = [
+const workerNodeProfileTypes: NodeProfileType[] = [
     {
         id: 'basic-demo',
         label: 'Basic demo',
@@ -102,9 +102,9 @@ function ClusterTopologyStep(props: Partial<StepProps>) {
                 </div>
                 <div cds-layout="col:6" key="instance-type-section">
                     <NodeProfile
-                        field={VSPHERE_FIELDS.INSTANCETYPE}
-                        nodeInstanceTypes={workerNodeInstanceTypes}
-                        nodeInstanceTypeChange={onFieldChange}
+                        field={VSPHERE_FIELDS.NODE_PROFILE_TYPE}
+                        nodeProfileTypes={workerNodeProfileTypes}
+                        nodeProfileTypeChange={onFieldChange}
                     />
                 </div>
             </div>
