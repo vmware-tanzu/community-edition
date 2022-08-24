@@ -83,9 +83,9 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
     const initialSelectedNodeProfileId = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE] || nodeProfiles[0].id;
     const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
 
-    const onNodeProfileChange = (instanceType: string) => {
-        setSelectedNodeProfileId(instanceType);
-        onFieldChange(AWS_FIELDS.NODE_PROFILE, instanceType);
+    const onNodeProfileChange = (profileType: string) => {
+        setSelectedNodeProfileId(profileType);
+        onFieldChange(AWS_FIELDS.NODE_PROFILE, profileType);
     };
 
     useEffect(() => {
@@ -117,7 +117,7 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                             defaultClusterName={awsState[STORE_SECTION_FORM][AWS_FIELDS.CLUSTER_NAME]}
                         />
                     </div>
-                    <div cds-layout="col:8" key="instance-type-section">
+                    <div cds-layout="col:8" key="profile-type-section">
                         <NodeProfile
                             field={AWS_FIELDS.NODE_PROFILE}
                             nodeProfileTypes={nodeProfiles}
