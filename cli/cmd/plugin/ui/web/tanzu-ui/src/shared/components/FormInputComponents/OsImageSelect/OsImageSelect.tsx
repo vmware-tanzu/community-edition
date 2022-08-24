@@ -26,7 +26,7 @@ export function osImagesValidation() {
 }
 
 function OsImageSelect(props: ImageProps) {
-    const { osImageTitle, field, images, onOsImageSelected, selectedImage } = props;
+    const { field, images, onOsImageSelected, selectedImage } = props;
     const handleOsImageSelect = (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedOsImage = props.images.find((osImage) => osImage.name === event.target.value);
         onOsImageSelected(selectedOsImage, field);

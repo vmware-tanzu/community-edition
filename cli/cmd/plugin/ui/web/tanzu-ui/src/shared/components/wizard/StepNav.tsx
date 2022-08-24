@@ -15,7 +15,15 @@ export interface ChildProps extends StepWizardChildProps {
 
 function StepNav(props: ChildProps | any) {
     const { totalSteps, currentStep, goToStep, tabStatus, tabNames } = props;
-    const hasInvalidStep = tabStatus.indexOf(STATUS.INVALID) !== -1;
+
+    const existsPreviousInvalidStep = (index: number) => {
+        for (let i = 0; i < index; i++) {
+            if (tabStatus[i] === STATUS.INVALID) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     return (
         <div className="wizard-tab-container">
@@ -28,7 +36,7 @@ function StepNav(props: ChildProps | any) {
                         key={index}
                         style={{ width: `${100 / totalSteps}%` }}
                         onClick={() => {
-                            if (!hasInvalidStep) {
+                            if (!existsPreviousInvalidStep(index)) {
                                 goToStep(index + 1);
                             }
                         }}
