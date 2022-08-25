@@ -217,7 +217,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
                     {Object.keys(errorObject).map((errorField) => {
                         return (
                             <CdsControlMessage status="error" key={errorField}>
-                                {errorObject[errorField]}
+                                {errorField}
+                                &nbsp;
+                                {JSON.stringify(errorObject[errorField])}
+                                <br />
                             </CdsControlMessage>
                         );
                     })}

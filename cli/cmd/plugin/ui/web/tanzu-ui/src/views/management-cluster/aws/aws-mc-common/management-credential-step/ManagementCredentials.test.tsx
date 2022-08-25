@@ -55,6 +55,9 @@ describe('ManagementCredential component', () => {
         }),
         rest.get('api/provider/aws/nodetypes', (req, res, ctx) => {
             return res(ctx.status(200));
+        }),
+        rest.get('api/provider/aws/AvailabilityZones', (req, res, ctx) => {
+            return res(ctx.status(200));
         })
     );
 

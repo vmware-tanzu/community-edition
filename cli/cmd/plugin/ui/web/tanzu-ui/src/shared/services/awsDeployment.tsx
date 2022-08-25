@@ -26,7 +26,7 @@ const useAwsDeployment = () => {
     // TODO: more dynamic population of this payload
     const getAwsRequestPayload = () => {
         const awsData = awsState[STORE_SECTION_FORM];
-        const nodeType = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.NODE_TYPE];
+        const nodeType = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.NODE_TYPE][0];
         const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
                 profileName: awsData[AWS_FIELDS.PROFILE],
@@ -41,21 +41,14 @@ const useAwsDeployment = () => {
             createCloudFormationStack: false,
             clusterName: awsData[AWS_FIELDS.CLUSTER_NAME],
             controlPlaneFlavor: awsData[AWS_FIELDS.CLUSTER_PLAN],
-            controlPlaneNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]],
+            controlPlaneNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]]['nodeType'],
             bastionHostEnabled: awsData[AWS_FIELDS.ENABLE_BASTION_HOST],
             machineHealthCheckEnabled: awsData[AWS_FIELDS.ENABLE_MACHINE_HEALTH_CHECK],
             vpc: {
                 cidr: awsData[AWS_FIELDS.VPC_CIDR],
                 vpcID: '',
                 // TODO: single subregion name populated from region selection; but does not support multi-az/HA
-                azs: [
-                    {
-                        name: awsData[AWS_FIELDS.REGION] + 'a',
-                        workerNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]],
-                        publicSubnetID: '',
-                        privateSubnetID: '',
-                    },
-                ],
+                azs: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]]['vpc'],
             },
             enableAuditLogging: awsData[AWS_FIELDS.ENABLE_AUDIT_LOGGING],
             networking: {

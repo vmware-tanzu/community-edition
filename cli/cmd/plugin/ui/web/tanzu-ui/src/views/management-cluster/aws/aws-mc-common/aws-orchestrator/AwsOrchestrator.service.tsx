@@ -1,16 +1,10 @@
 // App imports
-import { addErrorInfo, removeErrorInfo } from '../../../../../shared/utilities/Error.util';
 import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
-import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
-import {
-    clearPreviousResourceData,
-    DefaultOrchestrator,
-    saveSingleResourceObject,
-} from '../../../default-orchestrator/DefaultOrchestrator';
+import { AwsService, AWSVirtualMachine, CancelablePromise } from '../../../../../swagger-api';
+import { DefaultOrchestrator } from '../../../default-orchestrator/DefaultOrchestrator';
 import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
-import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
 import { StoreDispatch } from '../../../../../shared/types/types';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 
@@ -70,21 +64,34 @@ export class AwsOrchestrator {
 
     static async initNodeProfile(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        try {
-            const nodeTypeList = await AwsService.getAwsNodeTypes();
-            const nodeProfileList: { [key: string]: string } = {
-                [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: '',
-                [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: '',
-                [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
-            };
-            Object.keys(nodeProfileList).forEach((nodeProfile) => {
-                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeTypeList, nodeProfile);
-            });
-            saveSingleResourceObject(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
-            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.NODE_TYPE));
-        } catch (e) {
-            clearPreviousResourceData(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
-            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.NODE_TYPE));
-        }
+        DefaultOrchestrator.initResources<{ [key: string]: { [key: string]: any } }>({
+            resourceName: AWS_FIELDS.NODE_TYPE,
+            dispatch: awsDispatch,
+            errorObject,
+            setErrorObject,
+            fetcher: () => {
+                return new CancelablePromise(async (res, rej) => {
+                    const nodeProfileList: { [key: string]: { [key: string]: any } } = {
+                        [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: {},
+                        [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: {},
+                        [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: {},
+                    };
+                    const keyList = Object.keys(nodeProfileList);
+                    for (const nodeProfile of keyList) {
+                        nodeProfileList[nodeProfile] = {
+                            nodeType: await AwsDefaults.setDefaultNodeType(nodeProfile).catch((e) => {
+                                rej(e);
+                                return '';
+                            }),
+                            vpc: await AwsDefaults.setDefaultVpc(nodeProfile).catch((e) => {
+                                rej(e);
+                                return '';
+                            }),
+                        };
+                    }
+                    res([nodeProfileList]);
+                });
+            },
+        });
     }
 }

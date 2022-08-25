@@ -1,8 +1,9 @@
 // App imports
-import { AWSVirtualMachine } from '../../../../../swagger-api';
+import { AwsService, AWSVirtualMachine, AWSAvailabilityZone } from '../../../../../swagger-api';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { first } from '../../../../../shared/utilities/Array.util';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
+import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 
 export class AwsDefaults {
     // The strategy of deciding default os image
@@ -14,7 +15,49 @@ export class AwsDefaults {
         return first<AWSKeyPair>(keyPairs);
     };
 
-    static setDefaultNodeType = (nodeTypeList: string[], nodeProfile: string) => {
+    static setDefaultNodeType = async (nodeProfile: string) => {
+        const nodeTypeList: string[] = await AwsService.getAwsNodeTypes();
+        return AwsDefaults.defaultNodeTypeStategy(nodeTypeList, nodeProfile);
+    };
+
+    static setDefaultVpc = async (nodeProfile: string) => {
+        const result: { [key: string]: string }[] = [];
+        const azList: AWSAvailabilityZone[] = await AwsService.getAwsAvailabilityZones();
+        if (Object.keys(azList).length === 0) {
+            throw { field: 'AZs', info: 'Empty AZs' };
+        }
+        switch (nodeProfile) {
+            case AWS_NODE_PROFILE_NAMES.SINGLE_NODE:
+                {
+                    const defaultAZ: { [key: string]: string } = {};
+                    if (azList[0]['name'] !== undefined) {
+                        defaultAZ['name'] = azList[0]['name'];
+                        const azNodeTypeList = await AwsService.getAwsNodeTypes(azList[0]['name']);
+                        defaultAZ['workerNodeType'] = AwsDefaults.defaultNodeTypeStategy(azNodeTypeList, nodeProfile);
+                        defaultAZ['publicSubnetID'] = '';
+                        defaultAZ['privateSubnetID'] = '';
+                        result.push(defaultAZ);
+                    }
+                }
+                break;
+            default: {
+                [...azList].slice(0, 2).forEach(async (az: AWSAvailabilityZone) => {
+                    const defaultAZ: { [key: string]: string } = {};
+                    if (az['name'] !== undefined) {
+                        defaultAZ['name'] = az['name'];
+                        const azNodeTypeList = await AwsService.getAwsNodeTypes(az['name']);
+                        defaultAZ['workerNodeType'] = AwsDefaults.defaultNodeTypeStategy(azNodeTypeList, nodeProfile);
+                        defaultAZ['publicSubnetID'] = '';
+                        defaultAZ['privateSubnetID'] = '';
+                        result.push(defaultAZ);
+                    }
+                });
+            }
+        }
+        return result;
+    };
+
+    static defaultNodeTypeStategy = (nodeTypeList: string[], nodeProfile: string) => {
         const defaultNodeTypes = getDefaultNodeTypes(nodeProfile);
         const nodeTypeSet = new Set(nodeTypeList);
 
