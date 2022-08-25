@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: contour.community.tanzu.vmware.com.1.21.1
+  name: contour.community.tanzu.vmware.com.1.22.0
 spec:
   refName: contour.community.tanzu.vmware.com
-  version: 1.21.1
-  releaseNotes: contour 1.21.1 https://github.com/projectcontour/contour/releases/tag/v1.21.1
-  releasedAt: "2022-06-14T00:00:00Z"
+  version: 1.22.0
+  releaseNotes: contour 1.22.0 https://github.com/projectcontour/contour/releases/tag/v1.22.0
+  releasedAt: "2022-07-27T00:00:00Z"
   licenses:
   - Apache 2.0
   template:
