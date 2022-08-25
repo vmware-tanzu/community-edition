@@ -23,9 +23,6 @@ export class AwsDefaults {
     static setDefaultVpc = async (nodeProfile: string) => {
         const result: { [key: string]: string }[] = [];
         const azList: AWSAvailabilityZone[] = await AwsService.getAwsAvailabilityZones();
-        if (Object.keys(azList).length === 0) {
-            throw { field: 'AZs', info: 'Empty AZs' };
-        }
         switch (nodeProfile) {
             case AWS_NODE_PROFILE_NAMES.SINGLE_NODE:
                 {
