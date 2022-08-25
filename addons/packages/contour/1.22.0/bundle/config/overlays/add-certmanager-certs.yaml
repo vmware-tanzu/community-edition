@@ -1,0 +1,31 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("/certificates.lib.yaml", "generate_dns_names", "generate_self_signed_issuer", "generate_ca_issuer", "generate_ca_certificate", "generate_server_certificate", "generate_client_certificate")
+
+#@ contour_name = "contour"
+#@ contour_namespace = data.values.namespace
+#@ contour_organization = "Project Contour"
+#@ contour_self_signed_ca_issuer = contour_name + "-selfsigned-ca-issuer"
+#@ contour_ca = contour_name + "-ca"
+#@ contour_ca_common_name = "Contour CA"
+#@ contour_ca_dns_name = contour_name + "ca"
+#@ contour_ca_key_pair = contour_name + "-ca-key-pair"
+#@ contour_ca_issuer = contour_name + "-ca-issuer"
+#@ contour_cert = contour_name + "-cert"
+#@ contour_cert_duration = data.values.certificates.duration
+#@ contour_cert_renew_before = data.values.certificates.renewBefore
+#@ contour_secret = contour_name + "cert"
+#@ contour_cert_common_name = contour_name
+#@ envoy_name = "envoy"
+#@ envoy_cert = envoy_name + "-cert"
+#@ envoy_secret = envoy_name + "cert"
+#@ envoy_cert_common_name = envoy_name
+
+#@ if data.values.certificates.useCertManager:
+--- #@ generate_self_signed_issuer(contour_self_signed_ca_issuer, contour_namespace)
+--- #@ generate_ca_certificate(contour_ca, contour_namespace, contour_cert_duration, contour_cert_renew_before, contour_ca_key_pair, [contour_organization], contour_ca_common_name, [contour_ca_dns_name], contour_self_signed_ca_issuer)
+--- #@ generate_ca_issuer(contour_ca_issuer, contour_namespace, contour_ca_key_pair)
+--- #@ generate_server_certificate(contour_cert, contour_namespace, contour_cert_duration, contour_cert_renew_before, contour_secret, [contour_organization], contour_cert_common_name, generate_dns_names(contour_name, contour_namespace), contour_ca_issuer)
+--- #@ generate_client_certificate(envoy_cert, contour_namespace, contour_cert_duration, contour_cert_renew_before, envoy_secret, [contour_organization], envoy_cert_common_name, generate_dns_names(envoy_name, contour_namespace), contour_ca_issuer)
+#@ end
