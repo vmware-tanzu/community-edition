@@ -1,0 +1,31 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:regexp", "regexp")
+#@ load("@ytt:data", "data")
+
+#@ def regex_match(x, l, r):
+#@ if not ("metadata" in l and "name" in l["metadata"]):
+#@   return False
+#@ end
+#@ return regexp.match("contour-certgen*", l["metadata"]["name"])
+#@ end
+
+#@ if data.values.certificates.useCertManager:
+#@overlay/match by=regex_match,expects="0+"
+#@overlay.remove
+---
+
+#@overlay/match by=overlay.subset({"roleRef": {"name": "contour-certgen"}})
+#@overlay.remove
+---
+
+#@ else:
+
+#@overlay/match by=overlay.subset({"kind":"Job"}),expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: "fallback-on-replace"
+
+#@ end

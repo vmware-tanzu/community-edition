@@ -1,0 +1,38 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "envoy"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name": "envoy"})
+      - args:
+        #@overlay/match by=overlay.subset("--log-level info")
+        - #@ "--log-level " + data.values.envoy.logLevel
+        ports:
+        #@overlay/match by=overlay.subset({"name":"http"})
+        -
+          #@ if data.values.envoy.hostPorts.enable:
+          hostPort: #@ data.values.envoy.hostPorts.http
+          #@ else:
+          #@overlay/remove
+          hostPort: 80
+          #@ end
+        #@overlay/match by=overlay.subset({"name":"https"})
+        -
+          #@ if data.values.envoy.hostPorts.enable:
+          hostPort: #@ data.values.envoy.hostPorts.https
+          #@ else:
+          #@overlay/remove
+          hostPort: 443
+          #@ end
+      #@ if data.values.envoy.hostNetwork:
+      #@overlay/match missing_ok=True
+      hostNetwork: true
+      #@overlay/match missing_ok=True
+      dnsPolicy: ClusterFirstWithHostNet
+      #@ end
+      terminationGracePeriodSeconds: #@ int(data.values.envoy.terminationGracePeriodSeconds)
