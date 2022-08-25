@@ -270,6 +270,7 @@ You can set the following configuration values to customize your ExternalDNS ins
 | `deployment.securityContext` | Optional           | Security context of the ExternalDNS container   |
 | `deployment.volumeMounts`    | Optional           | Volume mounts of the ExternalDNS container      |
 | `deployment.volumes`         | Optional           | Volumes of the ExternalDNS pod                  |
+| `deployment.podLabels`       | Optional           | Lables for the ExternalDNS pod                  |
 | `serviceaccount.annotations` | Optional           | Annotations for the ExternalDNS service account |
 
 Follow [the ExternalDNS docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
@@ -284,6 +285,20 @@ preconfigured with the correct RBAC permissions to watch for HTTPProxies, so you
 ### Multi-cloud configuration steps
 
 For this package there is no unique configuration for different clouds.
+
+## Expose Metrics
+
+ExternalDNS can be configured to expose metrics.  [What metrics can I get from ExternalDNS and what do they mean?](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/faq.md#what-metrics-can-i-get-from-externaldns-and-what-do-they-mean).  To configure with this package, include the following configuration in your data value file.
+
+```yaml
+deployment:
+  args:
+    - --metrics-address=:7979 #! ensures external dns exposes metrics
+  podLabels:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "7979"
+```
 
 ## What this package does
 

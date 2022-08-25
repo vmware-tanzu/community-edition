@@ -1,0 +1,11 @@
+#@data/values
+---
+deployment:
+  args:
+    - --metrics-address=:7979
+    - --provider=rfc2136 #! Imaterial to observability test assertation, but requried to pass through testing other constraints
+    - --source=ingress #! Imaterial to observability test assertation, but requried to pass through testing other constraints
+  podLabels:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "7979"
