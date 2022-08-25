@@ -193,13 +193,26 @@ data:
     #       # example: Envoy flags that provide additional details about the response or connection
     #       X-Envoy-Response-Flags: %RESPONSE_FLAGS%
     #
+    # metrics:
+    #  contour:
+    #    address: 0.0.0.0
+    #    port: 8000
+    #    server-certificate-path: /path/to/server-cert.pem
+    #    server-key-path: /path/to/server-private-key.pem
+    #    ca-certificate-path: /path/to/root-ca-for-client-validation.pem
+    #  envoy:
+    #    address: 0.0.0.0
+    #    port: 8002
+    #    server-certificate-path: /path/to/server-cert.pem
+    #    server-key-path: /path/to/server-private-key.pem
+    #    ca-certificate-path: /path/to/root-ca-for-client-validation.pem
 
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.6.2
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   name: contourconfigurations.projectcontour.io
 spec:
@@ -243,19 +256,6 @@ spec:
                   address:
                     description: "Defines the Contour debug address interface. \n
                       Contour's default is \"127.0.0.1\"."
-                    type: string
-                  kubernetesLogLevel:
-                    description: "KubernetesDebugLogLevel defines the log level which
-                      Contour will use when outputting Kubernetes specific log information.
-                      \n Details: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-instrumentation/logging.md
-                      \n Contour's default is 0."
-                    maximum: 9
-                    minimum: 0
-                    type: integer
-                  logLevel:
-                    description: "DebugLogLevel defines the log level which Contour
-                      will use when outputting log information. \n Values: `info`
-                      (default), `debug`. \n Other values will produce an error."
                     type: string
                   port:
                     description: "Defines the Contour debug address port. \n Contour's
@@ -402,19 +402,19 @@ spec:
                               \n Contour's default list is:   - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"
                               \  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"
                               \  - \"ECDHE-ECDSA-AES256-GCM-SHA384\"   - \"ECDHE-RSA-AES256-GCM-SHA384\"
-                              \n Contour recommends leaving this undefined unless
-                              you are sure you must. \n See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
+                              \n Ciphers provided are validated against the following
+                              list:   - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"
+                              \  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"
+                              \  - \"ECDHE-ECDSA-AES128-GCM-SHA256\"   - \"ECDHE-RSA-AES128-GCM-SHA256\"
+                              \  - \"ECDHE-ECDSA-AES128-SHA\"   - \"ECDHE-RSA-AES128-SHA\"
+                              \  - \"AES128-GCM-SHA256\"   - \"AES128-SHA\"   - \"ECDHE-ECDSA-AES256-GCM-SHA384\"
+                              \  - \"ECDHE-RSA-AES256-GCM-SHA384\"   - \"ECDHE-ECDSA-AES256-SHA\"
+                              \  - \"ECDHE-RSA-AES256-SHA\"   - \"AES256-GCM-SHA384\"
+                              \  - \"AES256-SHA\" \n Contour recommends leaving this
+                              undefined unless you are sure you must. \n See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
                               Note: This list is a superset of what is valid for stock
                               Envoy builds and those using BoringSSL FIPS."
                             items:
-                              description: "TLSCipherType is a string alias for the
-                                TLS ciphers supported by Envoy. \n Values: \n * [ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]
-                                * [ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]
-                                * ECDHE-ECDSA-AES128-GCM-SHA256 * ECDHE-RSA-AES128-GCM-SHA256
-                                * ECDHE-ECDSA-AES128-SHA * ECDHE-RSA-AES128-SHA *
-                                AES128-GCM-SHA256 * AES128-SHA * ECDHE-ECDSA-AES256-GCM-SHA384
-                                * ECDHE-RSA-AES256-GCM-SHA384 * ECDHE-ECDSA-AES256-SHA
-                                * ECDHE-RSA-AES256-SHA * AES256-GCM-SHA384 * AES256-SHA"
                               type: string
                             type: array
                           minimumProtocolVersion:
@@ -441,18 +441,18 @@ spec:
                           when format is set to `envoy`. When empty, Envoy's default
                           format is used.
                         type: string
+                      accessLogJSONFields:
+                        description: AccessLogJSONFields sets the fields that JSON
+                          logging will output when AccessLogFormat is json.
+                        items:
+                          type: string
+                        type: array
                       accessLogLevel:
                         description: "AccessLogLevel sets the verbosity level of the
                           access log. \n Values: `info` (default, meaning all requests
                           are logged), `error` and `disabled`. \n Other values will
                           produce an error."
                         type: string
-                      jsonFields:
-                        description: AccessLogFields sets the fields that JSON logging
-                          will output when AccessLogFormat is json.
-                        items:
-                          type: string
-                        type: array
                     type: object
                   metrics:
                     description: "Metrics defines the endpoint Envoy uses to serve
@@ -1021,7 +1021,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.6.2
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   name: contourdeployments.projectcontour.io
 spec:
@@ -1256,19 +1256,6 @@ spec:
                         description: "Defines the Contour debug address interface.
                           \n Contour's default is \"127.0.0.1\"."
                         type: string
-                      kubernetesLogLevel:
-                        description: "KubernetesDebugLogLevel defines the log level
-                          which Contour will use when outputting Kubernetes specific
-                          log information. \n Details: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-instrumentation/logging.md
-                          \n Contour's default is 0."
-                        maximum: 9
-                        minimum: 0
-                        type: integer
-                      logLevel:
-                        description: "DebugLogLevel defines the log level which Contour
-                          will use when outputting log information. \n Values: `info`
-                          (default), `debug`. \n Other values will produce an error."
-                        type: string
                       port:
                         description: "Defines the Contour debug address port. \n Contour's
                           default is 6060."
@@ -1418,20 +1405,20 @@ spec:
                                   \  - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"
                                   \  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"
                                   \  - \"ECDHE-ECDSA-AES256-GCM-SHA384\"   - \"ECDHE-RSA-AES256-GCM-SHA384\"
-                                  \n Contour recommends leaving this undefined unless
+                                  \n Ciphers provided are validated against the following
+                                  list:   - \"[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]\"
+                                  \  - \"[ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]\"
+                                  \  - \"ECDHE-ECDSA-AES128-GCM-SHA256\"   - \"ECDHE-RSA-AES128-GCM-SHA256\"
+                                  \  - \"ECDHE-ECDSA-AES128-SHA\"   - \"ECDHE-RSA-AES128-SHA\"
+                                  \  - \"AES128-GCM-SHA256\"   - \"AES128-SHA\"   -
+                                  \"ECDHE-ECDSA-AES256-GCM-SHA384\"   - \"ECDHE-RSA-AES256-GCM-SHA384\"
+                                  \  - \"ECDHE-ECDSA-AES256-SHA\"   - \"ECDHE-RSA-AES256-SHA\"
+                                  \  - \"AES256-GCM-SHA384\"   - \"AES256-SHA\" \n
+                                  Contour recommends leaving this undefined unless
                                   you are sure you must. \n See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
                                   Note: This list is a superset of what is valid for
                                   stock Envoy builds and those using BoringSSL FIPS."
                                 items:
-                                  description: "TLSCipherType is a string alias for
-                                    the TLS ciphers supported by Envoy. \n Values:
-                                    \n * [ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]
-                                    * [ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]
-                                    * ECDHE-ECDSA-AES128-GCM-SHA256 * ECDHE-RSA-AES128-GCM-SHA256
-                                    * ECDHE-ECDSA-AES128-SHA * ECDHE-RSA-AES128-SHA
-                                    * AES128-GCM-SHA256 * AES128-SHA * ECDHE-ECDSA-AES256-GCM-SHA384
-                                    * ECDHE-RSA-AES256-GCM-SHA384 * ECDHE-ECDSA-AES256-SHA
-                                    * ECDHE-RSA-AES256-SHA * AES256-GCM-SHA384 * AES256-SHA"
                                   type: string
                                 type: array
                               minimumProtocolVersion:
@@ -1459,18 +1446,18 @@ spec:
                               format when format is set to `envoy`. When empty, Envoy's
                               default format is used.
                             type: string
+                          accessLogJSONFields:
+                            description: AccessLogJSONFields sets the fields that
+                              JSON logging will output when AccessLogFormat is json.
+                            items:
+                              type: string
+                            type: array
                           accessLogLevel:
                             description: "AccessLogLevel sets the verbosity level
                               of the access log. \n Values: `info` (default, meaning
                               all requests are logged), `error` and `disabled`. \n
                               Other values will produce an error."
                             type: string
-                          jsonFields:
-                            description: AccessLogFields sets the fields that JSON
-                              logging will output when AccessLogFormat is json.
-                            items:
-                              type: string
-                            type: array
                         type: object
                       metrics:
                         description: "Metrics defines the endpoint Envoy uses to serve
@@ -1911,7 +1898,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.6.2
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   name: extensionservices.projectcontour.io
 spec:
@@ -2096,11 +2083,12 @@ spec:
                 properties:
                   caSecret:
                     description: Name or namespaced name of the Kubernetes secret
-                      used to validate the certificate presented by the backend
+                      used to validate the certificate presented by the backend. The
+                      secret must contain key named ca.crt.
                     type: string
                   subjectName:
                     description: Key which is expected to be present in the 'subjectAltName'
-                      of the presented certificate
+                      of the presented certificate.
                     type: string
                 required:
                 - caSecret
@@ -2338,7 +2326,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.6.2
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   name: httpproxies.projectcontour.io
 spec:
@@ -2614,6 +2602,26 @@ spec:
                         - name
                         type: object
                       type: array
+                    directResponsePolicy:
+                      description: DirectResponsePolicy returns an arbitrary HTTP
+                        response directly.
+                      properties:
+                        body:
+                          description: "Body is the content of the response body.
+                            If this setting is omitted, no body is included in the
+                            generated response. \n Note: Body is not recommended to
+                            set too long otherwise it can have significant resource
+                            usage impacts."
+                          type: string
+                        statusCode:
+                          description: StatusCode is the HTTP response status to be
+                            returned.
+                          maximum: 599
+                          minimum: 200
+                          type: integer
+                      required:
+                      - statusCode
+                      type: object
                     enableWebsockets:
                       description: Enables websocket support for the route.
                       type: boolean
@@ -3324,11 +3332,12 @@ spec:
                               caSecret:
                                 description: Name or namespaced name of the Kubernetes
                                   secret used to validate the certificate presented
-                                  by the backend
+                                  by the backend. The secret must contain key named
+                                  ca.crt.
                                 type: string
                               subjectName:
                                 description: Key which is expected to be present in
-                                  the 'subjectAltName' of the presented certificate
+                                  the 'subjectAltName' of the presented certificate.
                                 type: string
                             required:
                             - caSecret
@@ -3665,11 +3674,12 @@ spec:
                             caSecret:
                               description: Name or namespaced name of the Kubernetes
                                 secret used to validate the certificate presented
-                                by the backend
+                                by the backend. The secret must contain key named
+                                ca.crt.
                               type: string
                             subjectName:
                               description: Key which is expected to be present in
-                                the 'subjectAltName' of the presented certificate
+                                the 'subjectAltName' of the presented certificate.
                               type: string
                           required:
                           - caSecret
@@ -4073,10 +4083,25 @@ spec:
                         properties:
                           caSecret:
                             description: Name of a Kubernetes secret that contains
-                              a CA certificate bundle. The client certificate must
-                              validate against the certificates in the bundle. If
-                              specified and SkipClientCertValidation is true, client
-                              certificates will be required on requests.
+                              a CA certificate bundle. The secret must contain key
+                              named ca.crt. The client certificate must validate against
+                              the certificates in the bundle. If specified and SkipClientCertValidation
+                              is true, client certificates will be required on requests.
+                            minLength: 1
+                            type: string
+                          crlOnlyVerifyLeafCert:
+                            description: If this option is set to true, only the certificate
+                              at the end of the certificate chain will be subject
+                              to validation by CRL.
+                            type: boolean
+                          crlSecret:
+                            description: Name of a Kubernetes opaque secret that contains
+                              a concatenated list of PEM encoded CRLs. The secret
+                              must contain key named crl.pem. This field will be used
+                              to verify that a client certificate has not been revoked.
+                              CRLs must be available from all CAs, unless crlOnlyVerifyLeafCert
+                              is true. Large CRL lists are not supported since individual
+                              secrets are limited to 1MiB in size.
                             minLength: 1
                             type: string
                           skipClientCertValidation:
@@ -4422,7 +4447,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.6.2
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   name: tlscertificatedelegations.projectcontour.io
 spec:
@@ -4753,7 +4778,7 @@ rules:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: contour-certgen-v1.21.1
+  name: contour-certgen-v1.22.0
   namespace: projectcontour
 spec:
   template:
@@ -4763,7 +4788,7 @@ spec:
     spec:
       containers:
       - name: contour
-        image: ghcr.io/projectcontour/contour:v1.21.1
+        image: ghcr.io/projectcontour/contour:v1.22.0
         imagePullPolicy: IfNotPresent
         command:
         - contour
@@ -4844,6 +4869,7 @@ rules:
   - gatewayclasses
   - gateways
   - httproutes
+  - referencegrants
   - referencepolicies
   - tlsroutes
   verbs:
@@ -5014,7 +5040,7 @@ spec:
         - --contour-key-file=/certs/tls.key
         - --config-path=/config/contour.yaml
         command: ["contour"]
-        image: ghcr.io/projectcontour/contour:v1.21.1
+        image: ghcr.io/projectcontour/contour:v1.22.0
         imagePullPolicy: IfNotPresent
         name: contour
         ports:
@@ -5103,7 +5129,7 @@ spec:
         args:
           - envoy
           - shutdown-manager
-        image: ghcr.io/projectcontour/contour:v1.21.1
+        image: ghcr.io/projectcontour/contour:v1.22.0
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
@@ -5130,7 +5156,7 @@ spec:
         - --log-level info
         command:
         - envoy
-        image: docker.io/envoyproxy/envoy:v1.22.2
+        image: docker.io/envoyproxy/envoy:v1.23.0
         imagePullPolicy: IfNotPresent
         name: envoy
         env:
@@ -5187,7 +5213,7 @@ spec:
         - --envoy-key-file=/certs/tls.key
         command:
         - contour
-        image: ghcr.io/projectcontour/contour:v1.21.1
+        image: ghcr.io/projectcontour/contour:v1.22.0
         imagePullPolicy: IfNotPresent
         name: envoy-initconfig
         volumeMounts:
