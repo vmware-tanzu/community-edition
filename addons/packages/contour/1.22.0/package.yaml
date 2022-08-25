@@ -29,7 +29,7 @@ spec:
     openAPIv3:
       type: object
       additionalProperties: false
-      description: OpenAPIv3 Schema for Contour 1.21.1
+      description: OpenAPIv3 Schema for Contour 1.22.0
       properties:
         infrastructureProvider:
           type: string
@@ -46,7 +46,7 @@ spec:
           properties:
             configFileContents:
               nullable: true
-              description: The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.21.1/configuration/#configuration-file for more information.
+              description: The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.22.0/configuration/#configuration-file for more information.
               default: null
             replicas:
               type: integer
