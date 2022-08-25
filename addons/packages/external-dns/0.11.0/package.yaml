@@ -106,7 +106,7 @@ spec:
                 nullable: true
                 default: null
               default: null
-            podVolumes:
+            podLabels:
               nullable: true
               description: 'Labels to be added to all deployment pods'
               default: null
