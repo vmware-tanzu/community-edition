@@ -23,7 +23,7 @@ Install the Contour package using default configuration options:
 ```shell
 tanzu package install contour \
   --package-name contour.community.tanzu.vmware.com \
-  --version 1.21.1
+  --version 1.22.0
 ```
 
 #### Environments without support for LoadBalancer services (Docker)
@@ -43,7 +43,7 @@ tanzu package install contour \
     ```shell
     tanzu package install contour \
       --package-name contour.community.tanzu.vmware.com \
-      --version 1.21.1 \
+      --version 1.22.0 \
       --values-file contour-values.yaml
     ```
 
@@ -59,7 +59,7 @@ You can configure the following in the data values file:
 |--------|---------|-------------|
 | `infrastructureProvider` | (none) | The underlying infrastructure provider. Optional, used for validating & defaulting other configuration values on specific platforms. Valid values are `aws`, `azure`, `docker` and `vsphere`. |
 | `namespace` | `projectcontour` | The namespace in which to deploy Contour and Envoy. |
-| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.21.1/configuration/#configuration-file) for more information. |
+| `contour.configFileContents` | (none) | The YAML contents of the Contour config file. See [the Contour configuration documentation](https://projectcontour.io/docs/v1.22.0/configuration/#configuration-file) for more information. |
 | `contour.replicas` | `2` | How many Contour pod replicas to have. |
 | `contour.useProxyProtocol` | `false` | Whether to enable PROXY protocol for all Envoy listeners. |
 | `contour.logLevel` | `info` | The Contour log level. Valid values are `info` and `debug`. |
@@ -83,7 +83,7 @@ You can configure the following in the data values file:
 ### Application configuration values
 
 Within the data values file, the `contour.configFileContents` field may optionally contain YAML to put directly in the Contour config file.
-See [the Contour configuration documentation](https://projectcontour.io/docs/v1.21.1/configuration/#configuration-file) for full details on the available options.
+See [the Contour configuration documentation](https://projectcontour.io/docs/v1.22.0/configuration/#configuration-file) for full details on the available options.
 
 An example data values file that specifies this field looks like:
 
@@ -118,7 +118,7 @@ envoy:
 ## What This Package Does
 
 This package installs Contour, an ingress controller, to enable the user to define rules for routing external traffic to services running inside the cluster.
-Contour supports both the [Ingress API](https://kubernetes.io/docs/concepts/services-networking/ingress/) and the Contour-specific [HTTPProxy API](https://projectcontour.io/docs/v1.21.1/config/fundamentals/) for configuring traffic routing rules.
+Contour supports both the [Ingress API](https://kubernetes.io/docs/concepts/services-networking/ingress/) and the Contour-specific [HTTPProxy API](https://projectcontour.io/docs/v1.22.0/config/fundamentals/) for configuring traffic routing rules.
 
 ## Components
 
@@ -230,7 +230,7 @@ The following is a basic guide for getting started with Contour. You must [deplo
 
 ## Troubleshooting
 
-See Contour's [troubleshooting page](https://projectcontour.io/docs/v1.21.1/troubleshooting/) for information on troubleshooting Contour.
+See Contour's [troubleshooting page](https://projectcontour.io/docs/v1.22.0/troubleshooting/) for information on troubleshooting Contour.
 
 ## Additional Documentation
 

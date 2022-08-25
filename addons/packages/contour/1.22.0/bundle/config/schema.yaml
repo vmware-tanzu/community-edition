@@ -1,5 +1,5 @@
 #@data/values-schema
-#@schema/desc "OpenAPIv3 Schema for Contour 1.21.1"
+#@schema/desc "OpenAPIv3 Schema for Contour 1.22.0"
 
 ---
 #@schema/desc "The underlying infrastructure provider. Options are aws, azure, docker and vsphere. This field is not required, but enables better validation and defaulting if provided."
@@ -10,7 +10,7 @@ namespace: projectcontour
 
 #@schema/desc "Settings for the Contour component."
 contour:
-  #@schema/desc "The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.21.1/configuration/#configuration-file for more information."
+  #@schema/desc "The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.22.0/configuration/#configuration-file for more information."
   #@schema/type any=True
   configFileContents: null
 
