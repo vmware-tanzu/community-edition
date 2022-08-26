@@ -23,6 +23,7 @@ export class AwsDefaults {
     static setDefaultAvailabilityZones = async (nodeProfile: string) => {
         const result: { [key: string]: string }[] = [];
         const azList: AWSAvailabilityZone[] = await AwsService.getAwsAvailabilityZones();
+        // TODO: Create an error if the azList is empty
         switch (nodeProfile) {
             case AWS_NODE_PROFILE_NAMES.SINGLE_NODE:
                 {
@@ -34,6 +35,8 @@ export class AwsDefaults {
                         defaultAZ['publicSubnetID'] = '';
                         defaultAZ['privateSubnetID'] = '';
                         result.push(defaultAZ);
+                    } else {
+                        console.error(`This Availability Zone ${azList[0]} does not have name`);
                     }
                 }
                 break;
@@ -47,6 +50,8 @@ export class AwsDefaults {
                         defaultAZ['publicSubnetID'] = '';
                         defaultAZ['privateSubnetID'] = '';
                         result.push(defaultAZ);
+                    } else {
+                        console.error(`This Availability Zone ${az} does not have name`);
                     }
                 });
             }
