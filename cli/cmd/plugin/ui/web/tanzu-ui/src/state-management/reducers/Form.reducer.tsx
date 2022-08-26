@@ -1,6 +1,6 @@
 // App imports
 import { FormAction } from '../../shared/types/types';
-import { INPUT_CHANGE, INPUT_CLEAR } from '../actions/Form.actions';
+import { INPUT_CHANGE, INPUT_CLEAR, SET_DEFAULTS } from '../actions/Form.actions';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
 
 export const STORE_SECTION_FORM = 'dataForm';
@@ -31,6 +31,9 @@ function formReducer(state: FormState, action: FormAction) {
         case INPUT_CLEAR:
             newState = clearInputField(state, action);
             break;
+        case SET_DEFAULTS:
+            newState = { ...state, ...action.payload };
+            break;
         default:
             console.error(`formReducer ignoring unrecognized action: ${JSON.stringify(action)}`);
             newState = { ...state };
@@ -42,6 +45,6 @@ function formReducer(state: FormState, action: FormAction) {
 export const formReducerDescriptor = {
     name: 'form reducer',
     reducer: formReducer,
-    actionTypes: [INPUT_CHANGE],
+    actionTypes: [INPUT_CHANGE, INPUT_CLEAR, SET_DEFAULTS],
     storeSection: STORE_SECTION_FORM,
 } as ReducerDescriptor;

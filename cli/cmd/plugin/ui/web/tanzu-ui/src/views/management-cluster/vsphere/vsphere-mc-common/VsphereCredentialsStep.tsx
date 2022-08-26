@@ -19,8 +19,8 @@ import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/co
 import { createSchema } from './vsphere.credential.form.schema';
 import { DefaultOrchestrator } from '../../default-orchestrator/DefaultOrchestrator';
 import { FormAction } from '../../../../shared/types/types';
-import { initOsImages } from './VsphereOrchestrator.service';
-import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
+import { initDefaults, initOsImages } from './VsphereOrchestrator.service';
+import { INPUT_CHANGE, INPUT_CLEAR } from '../../../../state-management/actions/Form.actions';
 import { IP_FAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
@@ -103,7 +103,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                 VsphereService.getVsphereThumbprint(serverName).then(
                     (response) => {
                         console.log(`thumbprint response: ${JSON.stringify(response)}`);
-                        setThumbprint(response.thumbprint || '');
+                        vsphereDispatch({
+                            type: INPUT_CHANGE,
+                            field: VSPHERE_FIELDS.THUMBPRINT,
+                            payload: response.thumbprint,
+                        } as FormAction);
                     },
                     (reasonRejected) => {
                         setThumbprintErrorMessage(`Unable to obtain thumbprint: ${reasonRejected.message}`);
@@ -126,7 +130,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         } as FormAction);
 
         if (fieldName === VSPHERE_FIELDS.SERVERNAME) {
-            setThumbprint('');
+            vsphereDispatch({ type: INPUT_CLEAR, field: VSPHERE_FIELDS.THUMBPRINT } as FormAction);
             setThumbprintErrorMessage('');
         }
     };
@@ -209,7 +213,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
             host: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
             password: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD],
-            thumbprint: useThumbprint ? thumbprint : '',
+            thumbprint: useThumbprint ? vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.THUMBPRINT] : '',
             insecure: !useThumbprint,
         } as VSphereCredentials;
         // TODO: remove setTimeout(), which is just here to simulate a backend call delay
@@ -258,7 +262,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     // value). So now we want to get the thumbprint of the now-valid server. This is taken care of by having verifyVsphereThumbprint in
     // the dependencies list, because that function is re-assigned whenever ipFamily changes, which will trigger this effect.
     useEffect(() => {
-        setThumbprint('');
+        vsphereDispatch({ type: INPUT_CLEAR, field: VSPHERE_FIELDS.THUMBPRINT } as FormAction);
         setThumbprintErrorMessage('');
         if (serverNameAtBlur) {
             // If the user has already entered a value for the server name, its validity may change when the IP family selection changes.
@@ -268,6 +272,10 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
             verifyVsphereThumbprint(serverNameAtBlur);
         }
     }, [setValue, serverNameAtBlur, verifyVsphereThumbprint]);
+
+    useEffect(() => {
+        initDefaults(vsphereDispatch);
+    }, []);
 
     return (
         <>
@@ -364,7 +372,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </CdsFormGroup>
                 </div>
                 <div>
-                    <ThumbprintDisplay thumbprint={thumbprint} errorMessage={thumbprintErrorMessage} serverName={thumbprintServer} />
+                    <ThumbprintDisplay
+                        thumbprint={vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.THUMBPRINT]}
+                        errorMessage={thumbprintErrorMessage}
+                        serverName={thumbprintServer}
+                    />
                 </div>
             </div>
         );
