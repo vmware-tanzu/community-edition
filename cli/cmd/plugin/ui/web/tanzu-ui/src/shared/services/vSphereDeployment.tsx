@@ -12,6 +12,7 @@ import { VsphereStore } from '../../views/management-cluster/vsphere/Store.vsphe
 // React imports
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { VSPHERE_FIELDS } from '../../views/management-cluster/vsphere/VsphereManagementCluster.constants';
 
 const useVSphereDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -23,34 +24,34 @@ const useVSphereDeployment = () => {
         navigate('/' + NavRoutes.DEPLOY_PROGRESS);
     };
 
-    // TODO: finish wiring up payload and make sure defaults are set in store
     const getVSphereRequestPayload = () => {
         const vSphereClusterParams: VsphereManagementClusterParams = {
             vsphereCredentials: {
-                host: vsphereState[STORE_SECTION_FORM].SERVERNAME,
-                insecure: false,
-                password: vsphereState[STORE_SECTION_FORM].PASSWORD,
-                thumbprint: '',
-                username: vsphereState[STORE_SECTION_FORM].USERNAME,
+                host: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
+                insecure: !vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USETHUMBPRINT],
+                password: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD],
+                thumbprint: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.THUMBPRINT],
+                username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
             },
-            clusterName: vsphereState[STORE_SECTION_FORM].CLUSTER_NAME,
-            datacenter: vsphereState[STORE_SECTION_FORM].DATACENTER,
-            resourcePool: '',
-            datastore: vsphereState[STORE_SECTION_FORM].Datastore,
-            folder: vsphereState[STORE_SECTION_FORM].VMFolder,
-            controlPlaneNodeType: '',
-            controlPlaneFlavor: '',
-            workerNodeType: '',
-            numOfWorkerNode: 0,
+            clusterName: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTERNAME],
+            datacenter: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER],
+            resourcePool: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool].name,
+            datastore: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore].name,
+            folder: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder].name,
+            controlPlaneNodeType: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CONTROL_PLANE_INSTANCE_TYPE],
+            controlPlaneFlavor: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CONTROL_PLANE_FLAVOR],
+            workerNodeType: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.WORKER_INSTANCE_TYPE],
+            numOfWorkerNode: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.NUM_WORKER_NODES] || 0,
             kubernetesVersion: '',
-            ipFamily: vsphereState[STORE_SECTION_FORM].IPFAMILY,
+            ipFamily: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.IPFAMILY],
             networking: {
-                networkName: '',
+                networkName: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Network].name,
                 clusterDNSName: '',
-                clusterNodeCIDR: '',
-                clusterServiceCIDR: '',
-                clusterPodCIDR: '',
-                cniType: '',
+                clusterNodeCIDR: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTER_NODE_CIDR],
+                clusterServiceCIDR: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTER_SERVICE_CIDR],
+                clusterPodCIDR: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTER_POD_CIDR],
+                cniType: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CNI_TYPE],
+                /*
                 httpProxyConfiguration: {
                     enabled: false,
                     HTTPProxyURL: '',
@@ -61,25 +62,18 @@ const useVSphereDeployment = () => {
                     HTTPSProxyPassword: '',
                     noProxy: '',
                 },
+*/
             },
-            os: {
-                name: '',
-                moid: '',
-                k8sVersion: '',
-                isTemplate: false,
-                osInfo: {
-                    name: '',
-                    version: '',
-                    arch: '',
-                },
-            },
-            ssh_key: vsphereState[STORE_SECTION_FORM].SSHKEY,
-            machineHealthCheckEnabled: false,
-            ceipOptIn: false,
-            enableAuditLogging: false,
+            os: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMTEMPLATE],
+            ssh_key: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SSHKEY],
+            machineHealthCheckEnabled: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.MACHINE_HEALTH_CHECK_ACTIVATED] || false,
+            ceipOptIn: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CEIP_OPT_IN] || false,
+            enableAuditLogging: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.ENABLE_AUDIT_LOGGING] || false,
+            /*
             annotations: { a: '' },
             labels: { '': '' },
-            controlPlaneEndpoint: '',
+*/
+            controlPlaneEndpoint: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTER_ENDPOINT],
             identityManagement: undefined,
             aviConfig: undefined,
         };

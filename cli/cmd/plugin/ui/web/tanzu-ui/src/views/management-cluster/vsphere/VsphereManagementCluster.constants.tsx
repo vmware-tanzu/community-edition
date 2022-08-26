@@ -5,6 +5,7 @@ export enum VSPHERE_FIELDS {
     PASSWORD = 'password',
     DATACENTER = 'datacenter',
     IPFAMILY = 'ipFamily',
+    THUMBPRINT = 'thumbprint',
     USETHUMBPRINT = 'useThumbprint',
     CLUSTERNAME = 'CLUSTER_NAME',
     NODE_PROFILE_TYPE = 'profileType',
@@ -16,6 +17,18 @@ export enum VSPHERE_FIELDS {
     DataStore = 'datastore',
     Network = 'vSphereNetworkName',
     Pool = 'pool',
+
+    CONTROL_PLANE_FLAVOR = 'controlPlaneFlavor',
+    CONTROL_PLANE_INSTANCE_TYPE = 'controlPlaneInstanceType',
+    WORKER_INSTANCE_TYPE = 'workerInstanceType',
+    NUM_WORKER_NODES = 'numWorkerNodes',
+    CNI_TYPE = 'cniType',
+    MACHINE_HEALTH_CHECK_ACTIVATED = 'machineHealthCheckActivated',
+    CEIP_OPT_IN = 'ceipOptIn',
+    ENABLE_AUDIT_LOGGING = 'enableAuditLogging',
+    CLUSTER_NODE_CIDR = 'clusterNodeCidr',
+    CLUSTER_SERVICE_CIDR = 'clusterServiceCidr',
+    CLUSTER_POD_CIDR = 'clusterPodCidr',
 }
 
 /* eslint-disable no-unused-vars */
