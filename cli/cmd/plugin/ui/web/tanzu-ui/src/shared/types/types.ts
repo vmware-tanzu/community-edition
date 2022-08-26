@@ -16,6 +16,7 @@ export interface FormAction extends Action {
 
 export interface ResourceAction extends Action {
     resourceName: string;
+    segment?: string; // segment name if the resource is provided in a segmented fashion (like nodeInstanceType PER AZ would use AZ)
 }
 
 export interface ResourceWithDefaultAction extends ResourceAction {
