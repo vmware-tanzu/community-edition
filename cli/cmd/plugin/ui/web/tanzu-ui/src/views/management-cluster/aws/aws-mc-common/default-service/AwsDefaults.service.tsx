@@ -20,7 +20,7 @@ export class AwsDefaults {
         return AwsDefaults.defaultNodeTypeStategy(nodeTypeList, nodeProfile);
     };
 
-    static setDefaultVpc = async (nodeProfile: string) => {
+    static setDefaultAvailabilityZones = async (nodeProfile: string) => {
         const result: { [key: string]: string }[] = [];
         const azList: AWSAvailabilityZone[] = await AwsService.getAwsAvailabilityZones();
         switch (nodeProfile) {
@@ -38,7 +38,7 @@ export class AwsDefaults {
                 }
                 break;
             default: {
-                [...azList].slice(0, 2).forEach(async (az: AWSAvailabilityZone) => {
+                [...azList].slice(0, 3).forEach(async (az: AWSAvailabilityZone) => {
                     const defaultAZ: { [key: string]: string } = {};
                     if (az['name'] !== undefined) {
                         defaultAZ['name'] = az['name'];

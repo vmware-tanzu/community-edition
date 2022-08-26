@@ -71,25 +71,25 @@ export class AwsOrchestrator {
             setErrorObject,
             fetcher: () => {
                 return new CancelablePromise(async (res, rej) => {
-                    const nodeProfileList: { [key: string]: { [key: string]: any } } = {
+                    const defaultNodeProfileValues: { [key: string]: { [key: string]: any } } = {
                         [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: {},
                         [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: {},
                         [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: {},
                     };
-                    const keyList = Object.keys(nodeProfileList);
+                    const keyList = Object.keys(defaultNodeProfileValues);
                     for (const nodeProfile of keyList) {
-                        nodeProfileList[nodeProfile] = {
+                        defaultNodeProfileValues[nodeProfile] = {
                             nodeType: await AwsDefaults.setDefaultNodeType(nodeProfile).catch((e) => {
                                 rej(e);
                                 return '';
                             }),
-                            vpc: await AwsDefaults.setDefaultVpc(nodeProfile).catch((e) => {
+                            azs: await AwsDefaults.setDefaultAvailabilityZones(nodeProfile).catch((e) => {
                                 rej(e);
                                 return '';
                             }),
                         };
                     }
-                    res([nodeProfileList]);
+                    res([defaultNodeProfileValues]);
                 });
             },
         });
