@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/joho/godotenv v1.4.0
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.20.0
+	github.com/onsi/gomega v1.20.1
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.24.4
 	k8s.io/client-go v0.24.4
