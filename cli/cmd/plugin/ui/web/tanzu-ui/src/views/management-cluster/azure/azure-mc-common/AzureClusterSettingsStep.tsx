@@ -1,5 +1,5 @@
 // React imports
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // Library imports
 import { CdsButton } from '@cds/react/button';
@@ -138,30 +138,20 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     return (
         <FormProvider {...methods}>
             <div className="wizard-content-container">
-                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
                     Azure Management Cluster Settings
-                </h2>
-                <div cds-layout="grid gap:m" key="section-holder">
-                    <div cds-layout="col:4" key="cluster-name-section">
+                </h3>
+                <div cds-layout="col:12">
+                    <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
+                </div>
+                <div cds-layout="horizontal gap:md align:fill" key="section-holder">
+                    <div cds-layout="vertical gap:xxl p-b:lg" key="cluster-name-section">
                         <ClusterName
                             field={AZURE_FIELDS.CLUSTER_NAME}
                             clusterNameChange={onClusterNameChange}
                             placeholderClusterName="my-azure-cluster"
                             defaultClusterName={azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLUSTER_NAME]}
                         />
-                    </div>
-                    <div cds-layout="col:8" key="instance-type-section">
-                        <NodeProfile
-                            field={AZURE_FIELDS.NODE_PROFILE}
-                            nodeProfileTypes={nodeInstanceTypes}
-                            nodeProfileTypeChange={onInstanceTypeChange}
-                            selectedProfileId={selectedInstanceTypeId}
-                        />
-                    </div>
-                    <div cds-layout="col:6">
-                        <PageNotification notification={notification} closeCallback={dismissAlert}></PageNotification>
-                    </div>
-                    <div cds-layout="col:12">
                         <OsImageSelect
                             osImageLabel={'OS Image with Kubernetes'}
                             images={osImages}
@@ -170,6 +160,14 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                                 onFieldChange(AZURE_FIELDS.OS_IMAGE, value);
                             }}
                             selectedImage={azureState[STORE_SECTION_FORM][AZURE_FIELDS.OS_IMAGE]}
+                        />
+                    </div>
+                    <div key="instance-type-section">
+                        <NodeProfile
+                            field={AZURE_FIELDS.NODE_PROFILE}
+                            nodeProfileTypes={nodeInstanceTypes}
+                            nodeProfileTypeChange={onInstanceTypeChange}
+                            selectedProfileId={selectedInstanceTypeId}
                         />
                     </div>
                 </div>

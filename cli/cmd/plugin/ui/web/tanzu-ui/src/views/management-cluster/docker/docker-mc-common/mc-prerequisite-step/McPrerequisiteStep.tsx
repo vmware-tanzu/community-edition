@@ -17,14 +17,14 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
     const [message, setMessage] = useState('');
     const connect = useCallback(async () => {
         setConnectionStatus(CONNECTION_STATUS.CONNECTING);
-        setMessage('Connecting to docker deamon');
+        setMessage('Verifying Docker deamon and resource allocations');
         try {
             await CriService.getContainerRuntimeInfo();
             setConnectionStatus(CONNECTION_STATUS.CONNECTED);
-            setMessage('Running Docker daemon');
+            setMessage('Docker daemon is running');
         } catch (err: any) {
             setConnectionStatus(CONNECTION_STATUS.ERROR);
-            setMessage(`Unable to connect to Docker: ${err.body.message}`);
+            setMessage(`Unable to verify Docker daemon: ${err.body.message}`);
         }
     }, []);
 
@@ -42,9 +42,9 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
     };
     return (
         <div className="wizard-content-container">
-            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
-                Docker prerequisite
-            </h2>
+            <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
+                Docker Prerequisites
+            </h3>
             <p cds-layout="m-y:lg" className="description">
                 Management cluster with the Docker daemon requires minimum allocated 4 CPUs and total memory of 6GB.
             </p>
@@ -52,7 +52,7 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
             <div cds-layout="p-t:lg" className={connectionStatus === CONNECTION_STATUS.ERROR ? '' : 'hidden'}>
                 <CdsButton onClick={connect}>
                     <CdsIcon shape="connect" size="md"></CdsIcon>
-                    CONNECT DOCKER DAEMON
+                    VERIFY DOCKER DAEMON
                 </CdsButton>
             </div>
             <div cds-layout="p-y:lg">

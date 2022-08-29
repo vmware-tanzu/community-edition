@@ -38,8 +38,8 @@ function OsImageSelect(props: ImageProps) {
 
     const fieldError = errors[field];
     return (
-        <div cds-layout="m:lg">
-            <CdsSelect layout="compact" controlWidth="shrink">
+        <div>
+            <CdsSelect layout="vertical" controlWidth="shrink">
                 <label>OS Image with Kubernetes </label>
                 <select {...register(field)} onChange={handleOsImageSelect} value={selectedImage?.name}>
                     <option />

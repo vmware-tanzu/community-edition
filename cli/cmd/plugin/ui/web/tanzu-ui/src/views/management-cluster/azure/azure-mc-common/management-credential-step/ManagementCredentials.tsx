@@ -166,9 +166,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     return (
         <div className="wizard-content-container azure-credential">
-            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+            <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
                 Microsoft Azure Credentials
-            </h2>
+            </h3>
             <p cds-layout="m-y:lg" className="description">
                 Provide the Azure user credentials to create the Management Server on Azure. Don&apos;t have Azure credentials? View our
                 guide on&nbsp;
@@ -205,7 +205,11 @@ function ManagementCredentials(props: Partial<StepProps>) {
                                 </option>
                             ))}
                         </SpinnerSelect>
-                        <CdsTextarea status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}>
+                        <CdsTextarea
+                            className="textarea-ssh-key"
+                            controlWidth="stretch"
+                            status={errors[AZURE_FIELDS.SSH_PUBLIC_KEY] ? 'error' : 'neutral'}
+                        >
                             <label>SSH public key</label>
                             <textarea
                                 {...register(AZURE_FIELDS.SSH_PUBLIC_KEY)}

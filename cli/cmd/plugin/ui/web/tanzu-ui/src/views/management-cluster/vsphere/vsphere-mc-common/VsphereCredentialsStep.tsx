@@ -301,9 +301,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function Title() {
         return (
             <div cds-layout="col:12">
-                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
                     vSphere Credentials
-                </h2>
+                </h3>
             </div>
         );
     }
@@ -385,18 +385,15 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     function ConnectionSection(dataEntered: boolean, connectionStatus: CONNECTION_STATUS, connectionMessage: string) {
         return (
             <div cds-layout="col:12">
-                <div cds-layout="grid align:vertical-center gap:md">
-                    <div cds-layout="col:2">
+                <CdsFormGroup layout="vertical-inline" control-width="shrink">
+                    <div cds-layout="horizontal gap:md">
                         <CdsButton onClick={handleConnect} disabled={connectionStatus === CONNECTION_STATUS.CONNECTED || !dataEntered}>
                             <CdsIcon shape="connect" size="md"></CdsIcon>
                             CONNECT
                         </CdsButton>
-                    </div>
-                    <div></div>
-                    <div cds-layout="col:9 p-b:sm">
                         <ConnectionNotification status={connectionStatus} message={connectionMessage}></ConnectionNotification>
                     </div>
-                </div>
+                </CdsFormGroup>
             </div>
         );
     }

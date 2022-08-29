@@ -4,4 +4,8 @@
     overflow: hidden;
     box-shadow: var(--cds-alias-object-shadow-100);
     background-color: var(--cds-alias-object-container-background);
+
+    .textarea-ssh-key {
+        max-width: 550px;
+    }
 }

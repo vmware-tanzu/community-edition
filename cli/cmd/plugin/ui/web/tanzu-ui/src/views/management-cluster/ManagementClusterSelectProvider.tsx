@@ -45,7 +45,7 @@ const ManagementClusterSelectProvider: React.FC = () => {
                     <CdsIconButton action="flat" status="primary" onClick={() => navigate(NavRoutes.MANAGEMENT_CLUSTER_INVENTORY)}>
                         <CdsIcon shape="arrow" direction="left" size="lg"></CdsIcon>
                     </CdsIconButton>
-                    <div cds-text="title">Management Cluster</div>
+                    <div cds-text="title">Create a Management Cluster</div>
                 </div>
                 <div cds-text="body" cds-layout="p-b:md">
                     Managed Clusters is a deployment model that features one management cluster and multiple workload clusters. The

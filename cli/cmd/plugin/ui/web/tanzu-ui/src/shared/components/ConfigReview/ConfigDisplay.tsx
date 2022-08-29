@@ -35,7 +35,9 @@ export function ConfigDisplay(props: ConfigDisplayProps) {
                 <CdsAccordionPanel expanded={open} cds-motion="off" onExpandedChange={toggleOpen}>
                     <CdsAccordionHeader>{header}</CdsAccordionHeader>
                     <CdsAccordionContent>
-                        <div className="config-about">{about}</div>
+                        <div className="config-about" cds-text="body" cds-layout="p-b:sm">
+                            {about}
+                        </div>
                         <ConfigGrid groups={groups} />
                     </CdsAccordionContent>
                 </CdsAccordionPanel>

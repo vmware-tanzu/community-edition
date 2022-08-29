@@ -11,6 +11,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.app-custom {
+    --cds-alias-object-interaction-background-selected: red;
+}
+
 main {
     height: 100vh;
 }
@@ -141,10 +145,6 @@ main {
 }
 
 // workload cluster classes and overrides
-.accordion-normal {
-    --cds-alias-object-interaction-background-selected: var(--cds-global-color-blue-700);
-}
-
 .accordion-error {
     --cds-alias-object-interaction-background-selected: var(--cds-global-color-red-900);
     --border-color: var(--cds-global-color-red-700);

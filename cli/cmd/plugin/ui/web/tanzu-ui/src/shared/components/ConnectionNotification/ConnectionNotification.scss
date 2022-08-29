@@ -1,4 +1,7 @@
 .connection-notification-container {
+    display: inline-block;
+    margin: -2px 0;
+
     cds-alert {
         padding-right: 20px;
     }

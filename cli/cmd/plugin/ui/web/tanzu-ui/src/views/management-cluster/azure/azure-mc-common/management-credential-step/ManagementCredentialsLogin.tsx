@@ -106,7 +106,7 @@ export default function ManagementCredentialsLogin(props: Props) {
                     </CdsSelect>
                 </div>
             </div>
-            <div cds-layout="p-t:lg" className="azure-button-container">
+            <div cds-layout="horizontal gap:md p-t:lg">
                 <CdsButton onClick={handleConnect} disabled={status === CONNECTION_STATUS.CONNECTED || !dataEntered()}>
                     <CdsIcon shape="connect" size="md"></CdsIcon>
                     CONNECT
