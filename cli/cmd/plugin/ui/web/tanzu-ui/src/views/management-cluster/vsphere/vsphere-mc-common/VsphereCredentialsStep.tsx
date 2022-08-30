@@ -165,14 +165,18 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         }
     };
 
-    // toggle the value of ipFamily
-    const handleIpFamilyChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target['checked'] ? IP_FAMILIES.IPv6 : IP_FAMILIES.IPv4;
+    const recordIpFamily = (ipFamily: string) => {
         vsphereDispatch({
             type: INPUT_CHANGE,
             field: VSPHERE_FIELDS.IPFAMILY,
-            payload: newValue,
+            payload: ipFamily,
         } as FormAction);
+    };
+
+    // toggle the value of ipFamily
+    const handleIpFamilyChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target['checked'] ? IP_FAMILIES.IPv6 : IP_FAMILIES.IPv4;
+        recordIpFamily(newValue);
         setIpFamily(newValue);
     };
 
@@ -275,6 +279,9 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     useEffect(() => {
         initDefaults(vsphereDispatch);
+        if (!vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.IPFAMILY]) {
+            recordIpFamily(IP_FAMILIES.IPv4);
+        }
     }, []);
 
     return (

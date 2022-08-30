@@ -13,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
+import { controlPlaneFlavorFromNodeProfile, VSPHERE_NODE_PROFILES, workerNodeTypeFromNodeProfile } from './VsphereNodeProfileUtil';
 import { FormAction } from '../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
 import {
@@ -31,19 +32,19 @@ import SpinnerSelect from '../../../../shared/components/Select/SpinnerSelect';
 // NOTE: icons must be imported
 const nodeProfileTypes: NodeProfileType[] = [
     {
-        id: 'single-node',
+        id: VSPHERE_NODE_PROFILES.SINGLE_NODE,
         label: 'Single node',
         icon: 'block',
         description: 'Create a single control plane node with a medium instance type',
     },
     {
-        id: 'high-availability',
+        id: VSPHERE_NODE_PROFILES.HIGH_AVAILABILITY,
         label: 'High availability',
         icon: 'blocks-group',
         description: 'Create a multi-node control plane with a medium instance type',
     },
     {
-        id: 'compute-optimized',
+        id: VSPHERE_NODE_PROFILES.PRODUCTION_READY,
         label: 'Production-ready (High availability)',
         icon: 'blocks-group',
         isSolidIcon: true,
@@ -101,18 +102,35 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
             vsphereDispatch({
                 type: INPUT_CHANGE,
                 field: VSPHERE_FIELDS.VMTEMPLATE,
-                payload: moid,
+                payload: osTemplates[0],
             } as FormAction);
         }
     }, []);
 
     let initialSelectedNodeProfileId = vsphereState[VSPHERE_FIELDS.NODE_PROFILE_TYPE];
 
+    const recordControlPlaneFlavorFromNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.CONTROL_PLANE_FLAVOR,
+            payload: controlPlaneFlavorFromNodeProfile(profileId),
+        } as FormAction);
+    };
+
+    const recordWorkerNodeTypeFromNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.WORKER_INSTANCE_TYPE,
+            payload: workerNodeTypeFromNodeProfile(profileId),
+        } as FormAction);
+    };
     useEffect(() => {
         if (!initialSelectedNodeProfileId) {
             initialSelectedNodeProfileId = nodeProfileTypes[0].id;
             setValue(VSPHERE_FIELDS.NODE_PROFILE_TYPE, initialSelectedNodeProfileId);
         }
+        recordControlPlaneFlavorFromNodeProfile(initialSelectedNodeProfileId);
+        recordWorkerNodeTypeFromNodeProfile(initialSelectedNodeProfileId);
     }, []);
 
     const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
@@ -143,6 +161,8 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     const onNodeProfileChange = (profileId: string) => {
         onFieldChange(profileId, VSPHERE_FIELDS.NODE_PROFILE_TYPE);
         setSelectedNodeProfileId(profileId);
+        recordControlPlaneFlavorFromNodeProfile(profileId as VSPHERE_NODE_PROFILES);
+        recordWorkerNodeTypeFromNodeProfile(profileId as VSPHERE_NODE_PROFILES);
     };
 
     const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {

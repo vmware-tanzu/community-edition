@@ -35,7 +35,7 @@ const useVSphereDeployment = () => {
             },
             clusterName: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTERNAME],
             datacenter: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER],
-            resourcePool: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool].name,
+            resourcePool: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool],
             datastore: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore].name,
             folder: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder].name,
             controlPlaneNodeType: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CONTROL_PLANE_INSTANCE_TYPE],
