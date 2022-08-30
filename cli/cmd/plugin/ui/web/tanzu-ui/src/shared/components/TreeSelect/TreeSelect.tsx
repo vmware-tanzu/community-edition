@@ -18,14 +18,23 @@ function TreeSelect({
     selectionType,
     data,
     onChange,
+    selectedValue,
 }: {
     control: Control<any, any>;
     name: string;
     selectionType: SelectionType;
     data: TreeSelectItem[];
     onChange: (name: string, value: string) => void;
+    selectedValue?: string;
 }) {
-    const [state, dispatch] = useReducer(treeSelectReducer, { ...initialState, selectionType });
+    const selectedId = data.find((tsi: TreeSelectItem) => {
+        return tsi.value === selectedValue;
+    })?.id;
+    const initState = { ...initialState, selectionType };
+    if (selectedId) {
+        initState.checked = [selectedId];
+    }
+    const [state, dispatch] = useReducer(treeSelectReducer, initState);
 
     const {
         field,
