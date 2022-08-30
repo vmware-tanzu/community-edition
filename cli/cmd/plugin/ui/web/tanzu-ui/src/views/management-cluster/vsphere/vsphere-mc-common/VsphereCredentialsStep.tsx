@@ -27,7 +27,7 @@ import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-import { VSphereCredentials, VSphereDatacenter, VsphereService, VSphereVirtualMachine } from '../../../../swagger-api';
+import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
 import { VsphereStore } from '../Store.vsphere.mc';
 
 export interface VsphereCredentialsStepInputs {
@@ -60,7 +60,6 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
     const [osImageMessage, setOsImageMessage] = useState<string>('');
     const [serverNameAtBlur, setServerNameAtBlur] = useState<string>('');
-    const [thumbprint, setThumbprint] = useState('');
     const [thumbprintServer, setThumbprintServer] = useState('');
     const [thumbprintErrorMessage, setThumbprintErrorMessage] = useState('');
     const [useThumbprint, setUseThumbprint] = useState(true);

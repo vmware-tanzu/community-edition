@@ -105,9 +105,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                 payload: osTemplates[0],
             } as FormAction);
         }
-    }, []);
-
-    let initialSelectedNodeProfileId = vsphereState[VSPHERE_FIELDS.NODE_PROFILE_TYPE];
+    }, [osImages]);
 
     const recordControlPlaneFlavorFromNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
         vsphereDispatch({
@@ -124,16 +122,22 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
             payload: workerNodeTypeFromNodeProfile(profileId),
         } as FormAction);
     };
-    useEffect(() => {
-        if (!initialSelectedNodeProfileId) {
-            initialSelectedNodeProfileId = nodeProfileTypes[0].id;
-            setValue(VSPHERE_FIELDS.NODE_PROFILE_TYPE, initialSelectedNodeProfileId);
-        }
-        recordControlPlaneFlavorFromNodeProfile(initialSelectedNodeProfileId);
-        recordWorkerNodeTypeFromNodeProfile(initialSelectedNodeProfileId);
-    }, []);
 
-    const [selectedNodeProfileId, setSelectedNodeProfileId] = useState(initialSelectedNodeProfileId);
+    const initialSelectedNodeProfileId = vsphereState[VSPHERE_FIELDS.NODE_PROFILE_TYPE];
+    useEffect(() => {
+        let initialProfile = initialSelectedNodeProfileId;
+        if (!initialProfile) {
+            initialProfile = nodeProfileTypes[0].id;
+            vsphereDispatch({
+                type: INPUT_CHANGE,
+                field: VSPHERE_FIELDS.NODE_PROFILE_TYPE,
+                payload: initialProfile,
+            } as FormAction);
+        }
+        setValue(VSPHERE_FIELDS.NODE_PROFILE_TYPE, initialProfile);
+        recordControlPlaneFlavorFromNodeProfile(initialProfile);
+        recordWorkerNodeTypeFromNodeProfile(initialProfile);
+    }, []);
 
     const canContinue = (): boolean => {
         return Object.keys(errors).length === 0;
@@ -160,7 +164,6 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
 
     const onNodeProfileChange = (profileId: string) => {
         onFieldChange(profileId, VSPHERE_FIELDS.NODE_PROFILE_TYPE);
-        setSelectedNodeProfileId(profileId);
         recordControlPlaneFlavorFromNodeProfile(profileId as VSPHERE_NODE_PROFILES);
         recordWorkerNodeTypeFromNodeProfile(profileId as VSPHERE_NODE_PROFILES);
     };
@@ -211,7 +214,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                             field={VSPHERE_FIELDS.NODE_PROFILE_TYPE}
                             nodeProfileTypes={nodeProfileTypes}
                             nodeProfileTypeChange={onNodeProfileChange}
-                            selectedProfileId={selectedNodeProfileId}
+                            selectedProfileId={vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.NODE_PROFILE_TYPE]}
                         />
                     </div>
                 </div>

@@ -7,7 +7,6 @@ import * as yup from 'yup';
 import { isK8sCompliantString } from '../../../validations/Validation.service';
 import './ClusterName.scss';
 import TextInputWithError from '../../Input/TextInputWithError';
-import { AZURE_FIELDS } from '../../../../views/management-cluster/azure/azure-mc-basic/AzureManagementClusterBasic.constants';
 
 interface ClusterNameProps {
     field: string;

@@ -29,7 +29,7 @@ function UnmanagedClusterCard(props: UnmanagedClusterProps) {
 
     return (
         <div
-            className={'section-raised ' + 'status-' + status?.toLowerCase()}
+            className={'section-raised status-' + status?.toLowerCase()}
             cds-layout="grid cols:12 wrap:none"
             data-testid="unmanaged-cluster-card"
         >

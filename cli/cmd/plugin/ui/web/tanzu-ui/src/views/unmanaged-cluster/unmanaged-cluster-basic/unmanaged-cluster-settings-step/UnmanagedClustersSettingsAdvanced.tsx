@@ -1,5 +1,5 @@
 // React imports
-import React, { ChangeEvent, useState, useContext } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 // Library imports
