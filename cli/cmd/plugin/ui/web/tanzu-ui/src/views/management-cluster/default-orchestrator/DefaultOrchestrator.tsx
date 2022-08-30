@@ -12,20 +12,21 @@ export interface InitResourcesProps<RESOURCE_TYPE> {
     fieldName?: string;
     fxnSelectDefault?: (resources: RESOURCE_TYPE[]) => RESOURCE_TYPE | undefined;
     fxnReturnValues?: (resources: RESOURCE_TYPE[], defaultValue?: RESOURCE_TYPE) => void;
+    segment?: string;
 }
 
 export class DefaultOrchestrator {
     static async initResources<RESOURCE_TYPE>(props: InitResourcesProps<RESOURCE_TYPE>): Promise<RESOURCE_TYPE[]> {
-        const { dispatch, errorObject, setErrorObject, resourceName, fxnSelectDefault, fxnReturnValues } = props;
+        const { dispatch, errorObject, setErrorObject, resourceName, fxnSelectDefault, fxnReturnValues, segment } = props;
         const fieldName = props.fieldName ?? props.resourceName;
         try {
             console.log(`initResources() calling fetcher for ${fieldName}`);
             const resources = (await props.fetcher()) || [];
             console.log(`initResources() fetcher received ${resources.length} item(s) for ${fieldName}`);
             if (fxnSelectDefault) {
-                saveResourceDataWithDefault<RESOURCE_TYPE>({ resources, resourceName, fieldName, fxnSelectDefault, dispatch });
+                saveResourceDataWithDefault<RESOURCE_TYPE>({ resources, resourceName, fieldName, fxnSelectDefault, dispatch, segment });
             } else {
-                saveResourceData<RESOURCE_TYPE>(dispatch, RESOURCE.ADD_RESOURCES, resourceName, resources);
+                saveResourceData<RESOURCE_TYPE>(dispatch, RESOURCE.ADD_RESOURCES, resourceName, resources, segment);
             }
             setErrorObject(removeErrorInfo(errorObject, fieldName));
             if (fxnReturnValues) {
@@ -63,12 +64,14 @@ export function saveResourceData<RESOURCE_TYPE>(
     dispatch: StoreDispatch,
     actionType: RESOURCE,
     resourceName: string,
-    currentValues: RESOURCE_TYPE[]
+    currentValues: RESOURCE_TYPE[],
+    segment?: string
 ) {
     dispatch({
         type: actionType,
         resourceName: resourceName,
         payload: currentValues,
+        segment: segment,
     } as ResourceAction);
 }
 
@@ -86,6 +89,7 @@ interface ResourceDataWithDefaultParams<RESOURCE_TYPE> {
     fieldName?: string;
     resources: RESOURCE_TYPE[];
     fxnSelectDefault: (resources: RESOURCE_TYPE[]) => RESOURCE_TYPE | undefined;
+    segment?: string;
 }
 
 function saveResourceDataWithDefault<RESOURCE_TYPE>(params: ResourceDataWithDefaultParams<RESOURCE_TYPE>) {
@@ -96,5 +100,6 @@ function saveResourceDataWithDefault<RESOURCE_TYPE>(params: ResourceDataWithDefa
         payload: params.resources,
         fieldName: params.fieldName,
         defaultValue: params.fxnSelectDefault(params.resources),
+        segment: params.segment,
     } as ResourceWithDefaultAction);
 }

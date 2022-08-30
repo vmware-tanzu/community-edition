@@ -10,6 +10,7 @@ import * as yup from 'yup';
 
 // App imports
 import { AwsStore } from './store/Aws.store.mc';
+import { AwsOrchestrator, nodeProfiles } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 import { AWSVirtualMachine } from '../../../swagger-api';
 import { AWS_FIELDS } from './aws-mc-basic/AwsManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../shared/components/FormInputComponents/ClusterName/ClusterName';
@@ -17,7 +18,6 @@ import { FormAction } from '../../../shared/types/types';
 import { getResource } from '../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../state-management/actions/Form.actions';
 import { NodeProfile, nodeProfileValidation } from '../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
-import { nodeProfiles } from './aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 import OsImageSelect from '../../../shared/components/FormInputComponents/OsImageSelect/OsImageSelect';
 import { StepProps } from '../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../state-management/reducers/Form.reducer';
@@ -47,6 +47,7 @@ function createYupSchemaObject() {
 function AwsClusterSettingsStep(props: Partial<StepProps>) {
     const { updateTabStatus, currentStep, goToStep, submitForm } = props;
     const { awsState, awsDispatch } = useContext(AwsStore);
+    const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
     const awsClusterSettingsFormSchema = yup.object(createYupSchemaObject()).required();
     const methods = useForm<AwsClusterSettingFormInputs>({
         resolver: yupResolver(awsClusterSettingsFormSchema),

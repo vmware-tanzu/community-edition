@@ -114,6 +114,19 @@ function ManagementCredentials(props: Partial<StepProps>) {
         AwsOrchestrator.initNodeProfile({ awsState, awsDispatch, errorObject, setErrorObject });
     }, []);
 
+    useEffect(() => {
+        AwsOrchestrator.initAvailabilityZones({ awsState, awsDispatch, errorObject, setErrorObject });
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]]);
+
+    useEffect(() => {
+        if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES] !== undefined) {
+            AwsOrchestrator.initNodeTypes4AZs(
+                { awsState, awsDispatch, errorObject, setErrorObject },
+                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+            );
+        }
+    }, [awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]]);
+
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
         setCredentialsType(event.target.value as CREDENTIAL_TYPE);

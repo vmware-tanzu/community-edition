@@ -3,7 +3,7 @@ import { addErrorInfo, removeErrorInfo } from '../../../../../shared/utilities/E
 import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
-import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
+import { AwsService, AWSVirtualMachine, CancelablePromise } from '../../../../../swagger-api';
 import {
     clearPreviousResourceData,
     DefaultOrchestrator,
@@ -11,8 +11,10 @@ import {
 } from '../../../default-orchestrator/DefaultOrchestrator';
 import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-import { StoreDispatch } from '../../../../../shared/types/types';
+import { StoreDispatch, FormAction } from '../../../../../shared/types/types';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
+import { STORE_SECTION_RESOURCES } from '../../../../../state-management/reducers/Resources.reducer';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 
 interface AwsOrchestratorProps {
     awsState: { [key: string]: any };
@@ -85,6 +87,52 @@ export class AwsOrchestrator {
         } catch (e) {
             clearPreviousResourceData(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
             setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.NODE_TYPE));
+        }
+    }
+
+    static initAvailabilityZones(props: AwsOrchestratorProps) {
+        const { awsDispatch, setErrorObject, errorObject } = props;
+        DefaultOrchestrator.initResources<AWSKeyPair>({
+            resourceName: AWS_FIELDS.AVAILABILITY_ZONES,
+            dispatch: awsDispatch,
+            errorObject,
+            setErrorObject,
+            fetcher: () => AwsService.getAwsAvailabilityZones(),
+        });
+    }
+
+    static async initNodeTypes4AZs(props: AwsOrchestratorProps, nodeProfile: string) {
+        const { awsState, awsDispatch, setErrorObject, errorObject } = props;
+        const azList = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES];
+        const defaultAZNameList: string[] = AwsDefaults.defaulAvailabilityZoneNameStrategy(azList, nodeProfile);
+        const selectedAzs: { [key: string]: string }[] = [];
+
+        for (const az of defaultAZNameList) {
+            DefaultOrchestrator.initResources<{ [key: string]: string }>({
+                resourceName: AWS_FIELDS.AVAILIABILITY_ZONE_NODE_TYPES,
+                segment: az,
+                dispatch: awsDispatch,
+                errorObject,
+                setErrorObject,
+                //  (a) store all the instance types in a segmented resource under THAT AZ
+                fetcher: () => {
+                    return new CancelablePromise(async (res, rej) => {
+                        const nodeTypesByAZ = await AwsDefaults.createAZNodeType(az);
+                        res(nodeTypesByAZ);
+                    });
+                },
+                // (b) store the "selected" instance type in the form section.
+                fxnSelectDefault: (resources: { [key: string]: string }[]) => {
+                    selectedAzs.push(AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile));
+                    return AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile);
+                },
+            });
+
+            awsDispatch({
+                type: INPUT_CHANGE,
+                field: AWS_FIELDS.SELECTED_AZS,
+                payload: selectedAzs,
+            } as FormAction);
         }
     }
 }

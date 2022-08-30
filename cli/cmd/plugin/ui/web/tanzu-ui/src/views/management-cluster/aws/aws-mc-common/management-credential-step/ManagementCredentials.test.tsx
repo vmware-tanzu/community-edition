@@ -54,6 +54,39 @@ describe('ManagementCredential component', () => {
             return res(ctx.status(200));
         }),
         rest.get('api/provider/aws/nodetypes', (req, res, ctx) => {
+            return res(
+                ctx.status(200),
+                ctx.json([
+                    't3.small',
+                    't3.medium',
+                    't3.large',
+                    't3.xlarge',
+                    'm5.large',
+                    'm5.xlarge',
+                    'm5a.2xlarge',
+                    'm5a.4xlarge',
+                    'c6gn.small',
+                    'c6gn.medium',
+                    'c6gn.large',
+                    'r4.8xlarge',
+                    'i3.xlarge',
+                    't3.small',
+                    't3.medium',
+                    't3.large',
+                    't3.xlarge',
+                    'm5.large',
+                    'm5.xlarge',
+                    'm5a.2xlarge',
+                    'm5a.4xlarge',
+                    'r4.8xlarge',
+                    'i3.xlarge',
+                    't4g.small',
+                    't4g.medium',
+                    't4g.large',
+                ])
+            );
+        }),
+        rest.get('api/provider/aws/AvailabilityZones', (req, res, ctx) => {
             return res(ctx.status(200));
         })
     );

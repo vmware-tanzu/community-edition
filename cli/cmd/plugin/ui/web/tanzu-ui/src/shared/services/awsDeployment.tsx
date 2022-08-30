@@ -47,15 +47,7 @@ const useAwsDeployment = () => {
             vpc: {
                 cidr: awsData[AWS_FIELDS.VPC_CIDR],
                 vpcID: '',
-                // TODO: single subregion name populated from region selection; but does not support multi-az/HA
-                azs: [
-                    {
-                        name: awsData[AWS_FIELDS.REGION] + 'a',
-                        workerNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]],
-                        publicSubnetID: '',
-                        privateSubnetID: '',
-                    },
-                ],
+                azs: awsData[AWS_FIELDS.SELECTED_AZS],
             },
             enableAuditLogging: awsData[AWS_FIELDS.ENABLE_AUDIT_LOGGING],
             networking: {
