@@ -132,7 +132,8 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     const vSphereFolders = getResource<VSphereFolder[]>(VSPHERE_FIELDS.VMFolder, vsphereState) || [];
     const vSphereDatastores = getResource<VSphereDatastore[]>(VSPHERE_FIELDS.DataStore, vsphereState) || [];
     const vSphereNetworks = getResource<VSphereNetwork[]>(VSPHERE_FIELDS.Network, vsphereState) || [];
-    const mappedVSphereComputeResources = treeDataMapper(getResource<VSphereManagementObject[]>(VSPHERE_FIELDS.Pool, vsphereState) || []);
+    const vSphereResourcePools = getResource<VSphereManagementObject[]>(VSPHERE_FIELDS.Pool, vsphereState) || [];
+    const mappedVSphereComputeResources = treeDataMapper(vSphereResourcePools);
 
     const canContinue = () => {
         return Object.keys(errors).length === 0;
@@ -143,13 +144,12 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
         submitForm && submitForm(currentStep);
     };
 
-    const onChange = (field: any, value: string) => {
+    const onSelectPool = (fieldName: string, selectedId: string) =>
         vsphereDispatch({
             type: INPUT_CHANGE,
-            field,
-            payload: value,
+            field: fieldName,
+            payload: selectedId,
         } as FormAction);
-    };
 
     const onSelectVmFolder = fxnOnSelectArrayObject<VSphereFolder>(
         VSPHERE_FIELDS.VMFolder,
@@ -212,7 +212,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
                         control={control}
                         name={VSPHERE_FIELDS.Pool}
                         selectionType={SelectionType.Single}
-                        onChange={onChange}
+                        onChange={onSelectPool}
                     />
                 </div>
             </div>
@@ -319,12 +319,25 @@ function fxnOnSelectArrayObject<OBJ>(
 ) {
     return (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedId = event.target.value;
-        const selectedObjectIndex = source.findIndex((obj) => matcher(obj, selectedId));
-        const selectedObject = selectedObjectIndex >= 0 ? source[selectedObjectIndex] : undefined;
-        dispatch({
-            type: INPUT_CHANGE,
-            field: fieldName,
-            payload: selectedObject,
-        } as FormAction);
+        recordSelectedArrayObject<OBJ>(selectedId, fieldName, dispatch, source, matcher);
     };
+}
+
+function recordSelectedArrayObject<OBJ>(
+    selectedId: string,
+    fieldName: string,
+    dispatch: StoreDispatch,
+    source: OBJ[],
+    matcher: (obj: OBJ, selectedId: string) => boolean
+) {
+    const selectedObjectIndex = source.findIndex((obj) => matcher(obj, selectedId));
+    const selectedObject = selectedObjectIndex >= 0 ? source[selectedObjectIndex] : undefined;
+    if (selectedId && !selectedObject) {
+        console.error(`handleNamedArrayObject is unable to find selected id ${selectedId} in array ${JSON.stringify(source)}`);
+    }
+    dispatch({
+        type: INPUT_CHANGE,
+        field: fieldName,
+        payload: selectedObject,
+    } as FormAction);
 }

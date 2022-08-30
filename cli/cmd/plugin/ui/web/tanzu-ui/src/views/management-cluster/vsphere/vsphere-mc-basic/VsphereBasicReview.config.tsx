@@ -43,7 +43,7 @@ const configGroupsBasic: ConfigGroup[] = [
             { label: 'VM Folder', field: VSPHERE_FIELDS.VMFolder, transform: CommonConfigTransformationFunctions.NAME },
             { label: 'Data Store', field: VSPHERE_FIELDS.DataStore, transform: CommonConfigTransformationFunctions.NAME },
             { label: 'Network', field: VSPHERE_FIELDS.Network, transform: CommonConfigTransformationFunctions.NAME },
-            { label: 'Pool', field: VSPHERE_FIELDS.Pool, transform: CommonConfigTransformationFunctions.NAME },
+            { label: 'Pool', field: VSPHERE_FIELDS.Pool },
         ],
     },
 ];
