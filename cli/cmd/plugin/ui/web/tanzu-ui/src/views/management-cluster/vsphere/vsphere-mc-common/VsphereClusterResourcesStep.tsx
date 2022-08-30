@@ -319,11 +319,11 @@ function fxnOnSelectArrayObject<OBJ>(
 ) {
     return (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedId = event.target.value;
-        handleNamedArrayObject<OBJ>(selectedId, fieldName, dispatch, source, matcher);
+        recordSelectedArrayObject<OBJ>(selectedId, fieldName, dispatch, source, matcher);
     };
 }
 
-function handleNamedArrayObject<OBJ>(
+function recordSelectedArrayObject<OBJ>(
     selectedId: string,
     fieldName: string,
     dispatch: StoreDispatch,
