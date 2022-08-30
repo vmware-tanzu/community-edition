@@ -39,7 +39,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('UnmanagedNetworksettings component', () => {
-    const user = userEvent.setup();
+    userEvent.setup();
     it('should render', async () => {
         const view = render(<UnmanagedClusterNetworkSettings />);
         await waitFor(() => {

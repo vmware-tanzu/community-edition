@@ -66,5 +66,7 @@ const configGroupsDefault: ConfigGroup[] = [
 export const configDisplayDefaults: ConfigDisplayData = {
     label: 'Configuration Defaults',
     groups: configGroupsDefault,
-    about: 'These are default values that are common to most clusters. If you need to change any of them, use an advanced configuration option.',
+    about:
+        'These are default values that are common to most clusters. ' +
+        'If you need to change any of them, use an advanced configuration option.',
 };

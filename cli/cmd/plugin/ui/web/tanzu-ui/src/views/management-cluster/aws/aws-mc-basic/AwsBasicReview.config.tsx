@@ -62,5 +62,7 @@ const configGroupsDefault: ConfigGroup[] = [
 export const AwsConfigDisplayDefaults: ConfigDisplayData = {
     label: 'Configuration Defaults',
     groups: configGroupsDefault,
-    about: 'These are default values that are common to most AWS clusters. If you need to change any of them, use an advanced configuration option.',
+    about:
+        'These are default values that are common to most AWS clusters. ' +
+        'If you need to change any of them, use an advanced configuration option.',
 };
