@@ -116,6 +116,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
         formState: { errors },
         handleSubmit,
         control,
+        setValue,
     } = methods;
 
     if (updateTabStatus) {
@@ -123,10 +124,18 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     }
 
     useEffect(() => {
-        initFolders(errorObject, setErrorObject, vsphereDispatch, datacenter);
-        initDatastores(errorObject, setErrorObject, vsphereDispatch, datacenter);
-        initNetworks(errorObject, setErrorObject, vsphereDispatch, datacenter);
-        initResources(errorObject, setErrorObject, vsphereDispatch, datacenter);
+        initFolders(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
+            setValue(VSPHERE_FIELDS.VMFolder, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder]?.name)
+        );
+        initDatastores(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
+            setValue(VSPHERE_FIELDS.DataStore, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore]?.name)
+        );
+        initNetworks(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
+            setValue(VSPHERE_FIELDS.Network, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Network]?.name)
+        );
+        initResources(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
+            setValue(VSPHERE_FIELDS.Pool, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool])
+        );
     }, [vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]]);
 
     const vSphereFolders = getResource<VSphereFolder[]>(VSPHERE_FIELDS.VMFolder, vsphereState) || [];
@@ -213,6 +222,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
                         name={VSPHERE_FIELDS.Pool}
                         selectionType={SelectionType.Single}
                         onChange={onSelectPool}
+                        selectedValue={vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool]}
                     />
                 </div>
             </div>
@@ -333,7 +343,7 @@ function recordSelectedArrayObject<OBJ>(
     const selectedObjectIndex = source.findIndex((obj) => matcher(obj, selectedId));
     const selectedObject = selectedObjectIndex >= 0 ? source[selectedObjectIndex] : undefined;
     if (selectedId && !selectedObject) {
-        console.error(`handleNamedArrayObject is unable to find selected id ${selectedId} in array ${JSON.stringify(source)}`);
+        console.error(`recordSelectedArrayObject() is unable to find selected id "${selectedId}" in array ${JSON.stringify(source)}`);
     }
     dispatch({
         type: INPUT_CHANGE,
