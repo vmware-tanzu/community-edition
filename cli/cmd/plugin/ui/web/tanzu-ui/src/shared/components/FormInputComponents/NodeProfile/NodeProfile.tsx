@@ -37,8 +37,13 @@ export function nodeProfileValidation() {
 
 function profileTypeInList(field: string, nodeProfile: NodeProfileType, register: any, selectedProfileId?: string) {
     return (
-        <CdsRadio cds-layout="m:lg m-l:xl p-b:sm" key={nodeProfile.id + '-cds-radio'} data-testid="cds-radio">
-            <label>
+        <CdsRadio
+            cds-layout="horizontal align:stretch m-t:sm m-b:xl m-l:sm p-b:sm"
+            className="cds-radio-item"
+            key={nodeProfile.id + '-cds-radio'}
+            data-testid="cds-radio"
+        >
+            <label cds-layout="horizontal align:horizontal-stretch">
                 {nodeProfile.label}
                 <CdsIcon
                     shape={nodeProfile.icon}
@@ -67,10 +72,10 @@ export function NodeProfile(props: NodeProfileProps) {
     const fieldError = errors[field];
     const displayPrompt = prompt ? prompt : DEFAULT_PROMPT;
     return (
-        <div className="cluster-node-profile-container" cds-layout="m:lg">
-            <div cds-layout="col@sm:8 p-l:xl">
+        <div className="cluster-node-profile-container" cds-layout="horizontal align:stretch">
+            <div>
                 <CdsRadioGroup layout="vertical" onChange={onSelectNodeProfileType}>
-                    <label>{displayPrompt}</label>
+                    <label cds-layout="">{displayPrompt}</label>
                     {nodeProfileTypes.map((profileType) => {
                         return profileTypeInList(field, profileType, register, selectedProfileId);
                     })}

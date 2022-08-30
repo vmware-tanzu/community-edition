@@ -179,7 +179,7 @@ function UnmanagedClusterNetworkSettings(props: Partial<StepProps>) {
 
     return (
         <FormProvider {...methods}>
-            <div className="cluster-settings-container" cds-layout="m:lg">
+            <div className="wizard-content-container">
                 <div cds-layout="p-b:lg" cds-text="title">
                     Network settings
                 </div>

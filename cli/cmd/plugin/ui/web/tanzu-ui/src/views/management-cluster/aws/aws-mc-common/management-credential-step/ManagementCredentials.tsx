@@ -238,12 +238,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     return (
         <div className="wizard-content-container">
-            <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+            <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
                 Amazon Web Services Credentials
-            </h2>
+            </h3>
             <CdsRadioGroup layout="vertical-inline" onChange={selectCredentialType}>
                 <label cds-text="section medium" cds-layout="m-b:md">
-                    Credential Type
+                    Credential type
                 </label>
                 <CdsRadio>
                     <label cds-layout="p-r:xxl">AWS credential profile</label>
@@ -259,7 +259,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
                 {credentialsType === CREDENTIAL_TYPE.ONE_TIME && <ManagementCredentialOneTime selectCallback={resetEc2KeyPair} />}
             </FormProvider>
             <CdsFormGroup layout="vertical-inline" control-width="shrink">
-                <div cds-layout="p-t:lg" className="aws-button-container">
+                <div cds-layout="horizontal gap:md p-t:lg">
                     <CdsButton
                         onClick={handleConnect}
                         disabled={connectionStatus === CONNECTION_STATUS.CONNECTED || !awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]}

@@ -173,7 +173,7 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     );
 
     return (
-        <div className="cluster-settings-container" cds-layout="m:lg">
+        <div className="wizard-content-container" cds-layout="m:lg">
             <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
                 vSphere Cluster Resources
             </h3>

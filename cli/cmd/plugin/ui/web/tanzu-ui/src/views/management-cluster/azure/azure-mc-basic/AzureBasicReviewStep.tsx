@@ -27,17 +27,16 @@ export function AzureBasicReviewStep(props: Partial<StepProps>) {
         navigateToDeploymentProgress();
     };
     return (
-        <>
-            <div>Review the cluster configuration</div>
-            <hr />
+        <div cds-layout="p:md">
+            <div cds-text="section" cds-layout="p-y:xs">
+                Review the cluster configuration
+            </div>
             <ConfigDisplay data={AzureConfigDisplayConfig} startsOpen={true} store={azureState[STORE_SECTION_FORM]} />
-            <hr />
             <ConfigDisplay data={AzureConfigDisplayDefaults} store={azureState[STORE_SECTION_FORM]} />
-            <hr />
             <CdsButton cds-layout="col:start-1" status="success" onClick={handleMCCreation}>
                 <CdsIcon shape="cluster" size="sm"></CdsIcon>
                 Create Management cluster
             </CdsButton>
-        </>
+        </div>
     );
 }

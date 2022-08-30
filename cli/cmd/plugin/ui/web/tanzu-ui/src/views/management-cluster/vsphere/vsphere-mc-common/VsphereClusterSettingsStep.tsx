@@ -166,26 +166,16 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     return (
         <FormProvider {...methods}>
             <div className="wizard-content-container">
-                <h2 cds-layout="m-t:md m-b:xl" cds-text="title">
+                <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
                     vSphere Management Cluster Settings
-                </h2>
-                <div cds-layout="grid gap:m" key="section-holder">
-                    <div cds-layout="col:6" key="cluster-name-section">
+                </h3>
+                <div cds-layout="horizontal gap:md align:fill" key="section-holder">
+                    <div cds-layout="vertical gap:xxl p-b:lg" key="cluster-name-section">
                         <ClusterName
                             field={VSPHERE_FIELDS.CLUSTERNAME}
                             clusterNameChange={onClusterNameChange}
                             placeholderClusterName={'my-vsphere-cluster'}
                         />
-                    </div>
-                    <div cds-layout="col:6" key="profile-type-section">
-                        <NodeProfile
-                            field={VSPHERE_FIELDS.NODE_PROFILE_TYPE}
-                            nodeProfileTypes={nodeProfileTypes}
-                            nodeProfileTypeChange={onNodeProfileChange}
-                            selectedProfileId={selectedNodeProfileId}
-                        />
-                    </div>
-                    <div cds-layout="col:12">
                         {VmTemplateSection(
                             VSPHERE_FIELDS.VMTEMPLATE,
                             osTemplates,
@@ -196,8 +186,16 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
                             onFieldChange
                         )}
                     </div>
-                    <div cds-layout="col:12">{SshKeySection(VSPHERE_FIELDS.SSHKEY, errors, register, onFieldChange)}</div>
+                    <div key="profile-type-section">
+                        <NodeProfile
+                            field={VSPHERE_FIELDS.NODE_PROFILE_TYPE}
+                            nodeProfileTypes={nodeProfileTypes}
+                            nodeProfileTypeChange={onNodeProfileChange}
+                            selectedProfileId={selectedNodeProfileId}
+                        />
+                    </div>
                 </div>
+                <div cds-layout="col:12">{SshKeySection(VSPHERE_FIELDS.SSHKEY, errors, register, onFieldChange)}</div>
                 <CdsButton cds-layout="m-t:lg" onClick={handleSubmit(onSubmit)} disabled={!canContinue()}>
                     NEXT
                 </CdsButton>
@@ -283,8 +281,8 @@ function SshKeySection(
     return (
         <div cds-layout="m-t:lg">
             <CdsFormGroup layout="vertical">
-                <CdsTextarea layout="vertical">
-                    <label>SSH key</label>
+                <CdsTextarea layout="vertical" className="textarea-ssh-key">
+                    <label>SSH public key</label>
                     <textarea {...register(field)} onChange={handleSshKeyChange}></textarea>
                     {fieldError && <CdsControlMessage status="error">{fieldError.message}</CdsControlMessage>}
                 </CdsTextarea>

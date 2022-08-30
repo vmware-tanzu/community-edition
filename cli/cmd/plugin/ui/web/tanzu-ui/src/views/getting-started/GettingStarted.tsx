@@ -38,7 +38,7 @@ function GettingStarted() {
                 </div>
 
                 <div cds-layout="grid horizontal col:12 gap:lg h:">
-                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:6 col:6 p:lg" className="section-raised mgmt-cluster-intro-container">
+                    <div cds-layout="vertical gap:lg gap@md:lg col@sm:8 col:8 p:lg" className="section-raised mgmt-cluster-intro-container">
                         <div cds-text="title" className="text-aqua">
                             Management Cluster
                         </div>

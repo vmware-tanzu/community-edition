@@ -7,6 +7,9 @@ $icon-aqua: var(--primary-icon-aqua);
 $text-blue: var(--primary-text-blue);
 $text-aqua: var(--primary-text-aqua);
 
+$table-head-bg: var(--primary-table-head-bg);
+$table-border: var(--primary-table-border);
+
 $timeline-circle: var(--primary-timeline-circle);
 $timeline-text: var(--primary-timeline-text);
 
@@ -19,6 +22,9 @@ body {
     --primary-text-aqua: var(--cds-global-color-aqua-600);
     --primary-text-blue: var(--cds-global-color-blue-700);
 
+    --primary-table-head-bg: var(--cds-global-color-construction-50);
+    --primary-table-border: var(--cds-global-color-construction-300);
+
     --primary-timeline-circle: var(--cds-global-typography-color-200);
 }
 
@@ -30,6 +36,9 @@ body.dark {
 
     --primary-text-aqua: var(--cds-global-color-aqua-400);
     --primary-text-blue: var(--cds-global-color-blue-400);
+
+    --primary-table-head-bg: var(--cds-global-color-construction-700);
+    --primary-table-border: var(--cds-global-color-construction-600);
 
     --primary-timeline-circle: var(--cds-global-color-white);
 }

@@ -1,3 +1,5 @@
+@use 'src/scss/vars';
+
 .config-section {
     font-size: var(--cds-global-typography-font-size-6);
     font-weight: bold;
@@ -5,29 +7,28 @@
 }
 
 .config-about {
-    font-size: var(--cds-global-typography-font-size-4);
-    font-weight: normal;
-    padding-left: 24px;
-    padding-bottom: 8px;
-}
-
-.config-grid {
-    padding-left: 24px;
+    padding-left: 4px;
 }
 
 .config-group {
-    background-color: var(--cds-global-color-black);
+    background-color: vars.$table-head-bg;
     font-size: var(--cds-global-typography-font-size-3);
     font-weight: normal;
-    color: var(--cds-global-color-warm-gray-200);
     padding-left: 12px;
     padding-top: 8px;
     padding-bottom: 8px;
-    border: 1px solid var(--cds-global-color-warm-gray-200);
+    border: 1px solid vars.$table-border;
 }
+
+.config-group:first-child {
+    border-radius: 3px 3px 0px 0px;
+}
+
 .config-pair {
-    border: 1px solid var(--cds-global-color-warm-gray-200);
+    border: 1px solid vars.$table-border;
+    border-top: none;
 }
+
 .config-label {
     font-size: var(--cds-global-typography-font-size-3);
     font-weight: bold;
@@ -41,5 +42,4 @@
     font-weight: normal;
     padding-top: 8px;
     padding-bottom: 8px;
-    color: var(--cds-global-color-gray-200);
 }

@@ -102,12 +102,12 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
 
     return (
         <FormProvider {...methods}>
-            <div className="cluster-settings-container" cds-layout="p:lg">
+            <div className="wizard-content-container">
                 <h3 cds-layout="m-t:md m-b:xl" cds-text="title">
-                    Management Cluster settings
+                    AWS Management Cluster Settings
                 </h3>
-                <div cds-layout="grid gap:m" key="section-holder">
-                    <div cds-layout="col:4" key="cluster-name-section">
+                <div cds-layout="horizontal gap:md align:fill" key="section-holder">
+                    <div cds-layout="vertical gap:xxl p-b:lg" key="cluster-name-section">
                         <ClusterName
                             field={AWS_FIELDS.CLUSTER_NAME}
                             clusterNameChange={(value) => {
@@ -116,16 +116,6 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                             placeholderClusterName={'my-aws-cluster'}
                             defaultClusterName={awsState[STORE_SECTION_FORM][AWS_FIELDS.CLUSTER_NAME]}
                         />
-                    </div>
-                    <div cds-layout="col:8" key="profile-type-section">
-                        <NodeProfile
-                            field={AWS_FIELDS.NODE_PROFILE}
-                            nodeProfileTypes={nodeProfiles}
-                            nodeProfileTypeChange={onNodeProfileChange}
-                            selectedProfileId={selectedNodeProfileId}
-                        />
-                    </div>
-                    <div cds-layout="col:12">
                         <OsImageSelect
                             osImageLabel="OS Image with Kubernetes"
                             images={osImages}
@@ -136,10 +126,17 @@ function AwsClusterSettingsStep(props: Partial<StepProps>) {
                             selectedImage={awsState[STORE_SECTION_FORM][AWS_FIELDS.OS_IMAGE]}
                         />
                     </div>
-
-                    <div cds-layout="grid col:12 p-t:lg">
-                        <CdsButton onClick={handleSubmit(goToNextStep)}>NEXT</CdsButton>
+                    <div key="profile-type-section">
+                        <NodeProfile
+                            field={AWS_FIELDS.NODE_PROFILE}
+                            nodeProfileTypes={nodeProfiles}
+                            nodeProfileTypeChange={onNodeProfileChange}
+                            selectedProfileId={selectedNodeProfileId}
+                        />
                     </div>
+                </div>
+                <div cds-layout="grid col:12 p-t:lg">
+                    <CdsButton onClick={handleSubmit(goToNextStep)}>NEXT</CdsButton>
                 </div>
             </div>
         </FormProvider>

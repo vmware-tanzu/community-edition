@@ -1,17 +1,22 @@
-.cluster-node-instance-container {
+@use 'src/scss/vars';
+
+.cluster-node-profile-container {
     .radio-message {
-        font-size: var(--cds-global-typography-font-size-0);
+        font-size: var(--cds-global-typography-caption-font-size);
         position: absolute;
-        top: 25px;
-        width: 383px;
         white-space: normal;
     }
     .node-icon {
         position: absolute;
-        left: -40px;
+        left: -30px;
         top: -4px;
         &.selected {
-            color: var(--cds-global-color-blue-300);
+            color: vars.$icon-blue;
         }
+    }
+    .cds-radio-item {
+        position: relative;
+        right: -20px;
+        width: 350px;
     }
 }
