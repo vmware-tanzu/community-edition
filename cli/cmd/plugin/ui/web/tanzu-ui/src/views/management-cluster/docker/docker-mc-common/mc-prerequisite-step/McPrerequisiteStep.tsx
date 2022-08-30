@@ -17,7 +17,7 @@ function McPrerequisiteStep(props: Partial<StepProps>) {
     const [message, setMessage] = useState('');
     const connect = useCallback(async () => {
         setConnectionStatus(CONNECTION_STATUS.CONNECTING);
-        setMessage('Verifying Docker deamon and resource allocations');
+        setMessage('Verifying Docker daemon and resource allocations');
         try {
             await CriService.getContainerRuntimeInfo();
             setConnectionStatus(CONNECTION_STATUS.CONNECTED);
