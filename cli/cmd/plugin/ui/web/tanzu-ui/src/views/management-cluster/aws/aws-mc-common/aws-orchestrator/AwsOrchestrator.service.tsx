@@ -121,13 +121,13 @@ export class AwsOrchestrator {
                         res(nodeTypesByAZ);
                     });
                 },
-                // (b) store the "selected" instance type in the form section.
+
                 fxnSelectDefault: (resources: { [key: string]: string }[]) => {
                     selectedAzs.push(AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile));
                     return AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile);
                 },
             });
-
+            // (b) store the "selected" instance type in the form section.
             awsDispatch({
                 type: INPUT_CHANGE,
                 field: AWS_FIELDS.SELECTED_AZS,
