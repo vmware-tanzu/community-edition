@@ -48,7 +48,7 @@ const useAwsDeployment = () => {
             vpc: {
                 cidr: awsData[AWS_FIELDS.VPC_CIDR],
                 vpcID: '',
-                azs: createAZList(awsData[AWS_FIELDS.STORED_AZ_OBJECTS]),
+                azs: createAZList(awsData[AWS_FIELDS.SELECTED_AZ_OBJECTS]),
             },
             enableAuditLogging: awsData[AWS_FIELDS.ENABLE_AUDIT_LOGGING],
             networking: {

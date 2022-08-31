@@ -26,7 +26,7 @@ export const enum AWS_FIELDS {
     NODE_TYPE = 'nodeType',
     AVAILABILITY_ZONES = 'availabilityZones',
     AVAILIABILITY_ZONE_NODE_TYPES = 'availabilityZoneNodeTypes',
-    STORED_AZ_OBJECTS = 'storedAZObjects',
+    SELECTED_AZ_OBJECTS = 'selectedAZObjects',
 }
 
 export const enum AWS_NODE_PROFILE_NAMES {

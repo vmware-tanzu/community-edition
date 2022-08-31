@@ -5,7 +5,7 @@ import { first } from '../../../../../shared/utilities/Array.util';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
 import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 
-export interface AvailabilityZoneInstance {
+export interface SelectedAvailabiltyZoneData {
     id: string;
     name: string;
     workerNodeType: string;
@@ -41,15 +41,19 @@ export class AwsDefaults {
                 return [azList[0]];
             }
             default: {
-                azList.slice(0, 3).forEach((az) => {
-                    defaultAZNameList.push(az);
-                });
+                if (azList.length >= 3) {
+                    azList.slice(0, 3).forEach((az) => {
+                        defaultAZNameList.push(az);
+                    });
+                } else {
+                    console.error('There is not enough Availability Zone');
+                }
                 return defaultAZNameList;
             }
         }
     };
 
-    static defaulAvailabilityZoneNodeTypeStrategy = (azList: AvailabilityZoneInstance[], nodeProfile: string, az: string) => {
+    static defaulAvailabilityZoneNodeTypeStrategy = (azList: SelectedAvailabiltyZoneData[], nodeProfile: string, az: string) => {
         const defaultNodeTypes = getDefaultNodeTypes(nodeProfile);
         for (const az of azList) {
             for (let i = 0; i < defaultNodeTypes.length; i++) {
@@ -61,7 +65,7 @@ export class AwsDefaults {
     };
 
     static async createAZNodeType(defaultAZName: { [key: string]: string }) {
-        const azNodeTypes: AvailabilityZoneInstance[] = [];
+        const azNodeTypes: SelectedAvailabiltyZoneData[] = [];
         const nodeTypes = await AwsService.getAwsNodeTypes(defaultAZName.name);
         nodeTypes.map((nodeType) => {
             azNodeTypes.push({
