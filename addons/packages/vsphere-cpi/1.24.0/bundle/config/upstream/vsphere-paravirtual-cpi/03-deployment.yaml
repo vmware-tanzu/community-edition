@@ -1,0 +1,105 @@
+#@ load("/values.star", "values")
+
+#@ if values.vsphereCPI.mode == "vsphereParavirtualCPI":
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guest-cluster-cloud-provider
+  namespace: vmware-system-cloud-provider
+  annotations:
+    cloud-provider: vsphere-paravirtual
+spec:
+  selector:
+    matchLabels:
+      name: guest-cluster-cloud-provider
+  template:
+    metadata:
+      labels:
+        name: guest-cluster-cloud-provider
+    spec:
+      hostNetwork: true
+      priorityClassName: system-cluster-critical
+      containers:
+        - args:
+            - --controllers=service
+            - --controllers=cloud-node
+            - --cloud-config=/config/cloud-config
+            #@yaml/text-templated-strings
+            - --cluster-name=(@= values.vsphereCPI.clusterName @)
+            - --cloud-provider=vsphere-paravirtual
+          env:
+            - name: SUPERVISOR_APISERVER_ENDPOINT_IP
+              value: #@ values.vsphereCPI.supervisorMasterEndpointIP
+            - name: SUPERVISOR_APISERVER_PORT
+              value: #@ values.vsphereCPI.supervisorMasterPort
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.24.0
+          imagePullPolicy: IfNotPresent
+          name: guest-cluster-cloud-provider
+          volumeMounts:
+            - mountPath: /config
+              name: ccm-config
+              readOnly: true
+            - mountPath: /etc/kubernetes/guestclusters/tanzukubernetescluster
+              name: ccm-owner-reference
+              readOnly: true
+            - mountPath: /etc/cloud/ccm-provider
+              name: ccm-provider
+              readOnly: true
+      serviceAccountName: cloud-provider-svc-account
+      tolerations:
+        - effect: NoSchedule
+          key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+        - effect: NoSchedule
+          key: node.kubernetes.io/not-ready
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        # remove once usage of this tolerations is removed from Kuberenetes
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+      # use affinity instead of node selector since node selector only accepts single value
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+          # remove once usage of node-role.kubernetes.io/master is removed from Kubernetes
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: Exists
+      volumes:
+        - name: ccm-config
+          projected:
+            sources:
+              - configMap:
+                  items:
+                    - key: cloud-config
+                      path: cloud-config
+                  name: ccm-cloud-config
+        - name: ccm-owner-reference
+          projected:
+            sources:
+              - configMap:
+                  items:
+                    - key: owner-reference
+                      path: ownerref.json
+                  name: ccm-owner-reference
+        - name: ccm-provider
+          projected:
+            sources:
+              - secret:
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+                    - key: token
+                      path: token
+                    - key: namespace
+                      path: namespace
+                  name: cloud-provider-creds
+
+#@ end
