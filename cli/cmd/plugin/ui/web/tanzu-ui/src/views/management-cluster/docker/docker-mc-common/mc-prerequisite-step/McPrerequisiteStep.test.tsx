@@ -31,34 +31,34 @@ describe('McPrerequisiteStep', () => {
 
     test('show successful message if docker daemon is connected:', async () => {
         render(<McPrerequisiteStep />);
-        expect(await screen.findByText('Running Docker daemon')).toBeInTheDocument();
+        expect(await screen.findByText('Docker daemon is running')).toBeInTheDocument();
     });
 
     test('show an error message if docker daemon cannot be connected:', async () => {
         server.use(
             rest.get('/api/containerruntime', (req, res, ctx) => {
-                return res(ctx.status(500), ctx.json({ message: 'Can not connect to docker daemon' }));
+                return res(ctx.status(500), ctx.json({ message: 'Unable to verify Docker daemon' }));
             })
         );
         render(<McPrerequisiteStep />);
-        expect(await screen.findByText('Unable to connect to Docker: Can not connect to docker daemon')).toBeInTheDocument();
+        expect(await screen.findByText('Unable to verify Docker daemon: Unable to verify Docker daemon')).toBeInTheDocument();
     });
 
     test('connect button', async () => {
         server.use(
             rest.get('/api/containerruntime', (req, res, ctx) => {
-                return res(ctx.status(500), ctx.json({ message: 'Can not connect to docker daemon' }));
+                return res(ctx.status(500), ctx.json({ message: 'Unable to verify Docker daemon' }));
             })
         );
         render(<McPrerequisiteStep />);
-        const connectBtn = await screen.findByText('CONNECT DOCKER DAEMON');
+        const connectBtn = await screen.findByText('VERIFY DOCKER DAEMON');
         server.use(
             rest.get('/api/containerruntime', (req, res, ctx) => {
                 return res(ctx.status(200));
             })
         );
         fireEvent(connectBtn, new MouseEvent('click'));
-        expect(await screen.findByText('Running Docker daemon')).toBeInTheDocument();
+        expect(await screen.findByText('Docker daemon is running')).toBeInTheDocument();
     });
 
     test('next button', async () => {
@@ -75,9 +75,9 @@ describe('McPrerequisiteStep', () => {
         };
 
         render(<McPrerequisiteStep {...mockProps} />);
-        await screen.findByText('CONNECT DOCKER DAEMON');
+        await screen.findByText('VERIFY DOCKER DAEMON');
         const nextBtn = await screen.findByText('NEXT');
-        await screen.findByText('Running Docker daemon');
+        await screen.findByText('Docker daemon is running');
         fireEvent.click(nextBtn);
         expect(mockProps.submitForm).toHaveBeenCalled();
         expect(mockProps.goToStep).toHaveBeenCalled();
