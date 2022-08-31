@@ -1,21 +1,15 @@
 // App imports
-import { addErrorInfo, removeErrorInfo } from '../../../../../shared/utilities/Error.util';
 import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { AwsService, AWSVirtualMachine } from '../../../../../swagger-api';
 import { AWSAvailabilityZone } from '../../../../../swagger-api/models/AWSAvailabilityZone';
-import {
-    clearPreviousResourceData,
-    DefaultOrchestrator,
-    saveSingleResourceObject,
-} from '../../../default-orchestrator/DefaultOrchestrator';
-import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
-import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-import { StoreDispatch, FormAction, ResourceAction } from '../../../../../shared/types/types';
-import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
-import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { DefaultOrchestrator } from '../../../default-orchestrator/DefaultOrchestrator';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
+import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
+import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
+import { StoreDispatch, FormAction } from '../../../../../shared/types/types';
+import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 
 interface AwsOrchestratorProps {
     awsState: { [key: string]: any };

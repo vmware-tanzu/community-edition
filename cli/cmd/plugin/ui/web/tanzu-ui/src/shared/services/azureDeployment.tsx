@@ -9,7 +9,6 @@ import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.const
 import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
-import { retrieveAzureInstanceType } from '../constants/defaults/azure.defaults';
 import { Store } from '../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
@@ -22,9 +21,9 @@ const useAzureDeployment = () => {
     const navigateToProgress = (): void => {
         navigate('/' + NavRoutes.DEPLOY_PROGRESS);
     };
-
     const getAzureRequestPayload = () => {
         const formInfo = azureState[STORE_SECTION_FORM];
+
         const azureClusterParams: AzureManagementClusterParams = {
             azureAccountParams: {
                 subscriptionId: formInfo[AZURE_FIELDS.SUBSCRIPTION_ID],
@@ -36,7 +35,7 @@ const useAzureDeployment = () => {
             ceipOptIn: formInfo[AZURE_FIELDS.CEIP_OPT_IN],
             clusterName: formInfo[AZURE_FIELDS.CLUSTER_NAME],
             controlPlaneFlavor: formInfo[AZURE_FIELDS.CONTROL_PLANE_FLAVOR],
-            controlPlaneMachineType: retrieveAzureInstanceType(formInfo[AZURE_FIELDS.NODE_PROFILE]),
+            controlPlaneMachineType: formInfo[AZURE_FIELDS.CONTROL_PLANE_MACHINE_TYPE],
             controlPlaneSubnet: formInfo[AZURE_FIELDS.CONTROL_PLANE_SUBNET],
             controlPlaneSubnetCidr: formInfo[AZURE_FIELDS.CONTROL_PLANE_SUBNET_CIDR],
             enableAuditLogging: formInfo[AZURE_FIELDS.ACTIVATE_AUDIT_LOGGING],
@@ -54,7 +53,7 @@ const useAzureDeployment = () => {
             vnetCidr: formInfo[AZURE_FIELDS.VNET_CIDR],
             vnetName: formInfo[AZURE_FIELDS.VNET_NAME],
             vnetResourceGroup: formInfo[AZURE_FIELDS.RESOURCE_GROUP],
-            workerMachineType: retrieveAzureInstanceType(formInfo[AZURE_FIELDS.NODE_PROFILE]),
+            workerMachineType: formInfo[AZURE_FIELDS.WORKER_MACHINE_TYPE],
             workerNodeSubnet: formInfo[AZURE_FIELDS.WORKER_NODE_SUBNET],
             workerNodeSubnetCidr: formInfo[AZURE_FIELDS.WORKER_NODE_SUBNET_CIDR],
         };

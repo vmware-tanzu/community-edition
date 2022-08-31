@@ -28,6 +28,9 @@ export const enum AZURE_FIELDS {
     CLUSTER_POD_CIDR = 'clusterPodCidr',
     CLUSTER_SERVICE_CIDR = 'clusterServiceCidr',
     ACTIVATE_PROXY_SETTINGS = 'activateProxySettings',
+    NODE_TYPE = 'nodeType',
+    CONTROL_PLANE_MACHINE_TYPE = 'controlPlaneMachineType',
+    WORKER_MACHINE_TYPE = 'workerMachineType',
 }
 
 export const enum AZURE_NODE_PROFILE_NAMES {

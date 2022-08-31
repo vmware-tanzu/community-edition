@@ -1,6 +1,10 @@
 // React imports
+import React from 'react';
+
 // Library imports
 // App imports
+import { BATCH_SET } from '../../../../state-management/actions/Form.actions';
+import { DefaultOrchestrator } from '../../default-orchestrator/DefaultOrchestrator';
 import { FormAction, StoreDispatch } from '../../../../shared/types/types';
 import { VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { VsphereDefaultsService } from './VsphereDefaults.service';
@@ -12,10 +16,6 @@ import {
     VsphereService,
     VSphereVirtualMachine,
 } from '../../../../swagger-api';
-import React from 'react';
-import { DefaultOrchestrator } from '../../default-orchestrator/DefaultOrchestrator';
-import { SET_DEFAULTS } from '../../../../state-management/actions/Form.actions';
-
 export interface VsphereOrchestratorProps {
     vsphereState: { [key: string]: any };
     vsphereDispatch: StoreDispatch;
@@ -100,7 +100,7 @@ export async function initOsImages(datacenterMoid: string, props: VsphereOrchest
 }
 
 export function initDefaults(dispatch: StoreDispatch) {
-    dispatch({ type: SET_DEFAULTS, payload: VsphereDefaultsService.getStaticDefaults(), field: '' } as FormAction);
+    dispatch({ type: BATCH_SET, payload: VsphereDefaultsService.getStaticDefaults() } as FormAction);
 }
 
 export class VsphereOrchestrator {}
