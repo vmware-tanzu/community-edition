@@ -1,0 +1,12 @@
+#@data/values
+---
+deployment:
+  args:
+    - --source=ingress
+    - --provider=azure
+azure:
+  resourceGroup: "azure-resource-group"
+  subscriptionId: "azure-subscription-id"
+  tenantId: "azure-tenant-id"
+  aadClientId: "azure-aad-client-id"
+  aadClientSecret: "azure-aad-client-secret"

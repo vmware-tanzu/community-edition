@@ -1,0 +1,26 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+
+#! Search deployment args for provider and source flags
+#@ providerFound = False
+#@ sourceFound = False
+#@ for entry in data.values.deployment.args:
+#@ if entry.startswith("--provider"):
+#@ providerFound = True
+#@ end
+#@ if entry.startswith("--source"):
+#@ sourceFound = True
+#@ end
+#@ end
+
+#! Fail to render if provider or source flag are not present
+#@ failMessage = ""
+#@ if not providerFound:
+#@ failMessage += "\n--provider is required in deployment.args to define a DNS provider where records will be created"
+#@ end
+#@ if not sourceFound:
+#@ failMessage += "\n--source is required in deployment.args to query for endpoints"
+#@ end
+#@ if failMessage != "":
+#@ assert.fail("Missing required values:{}".format(failMessage))
+#@ end

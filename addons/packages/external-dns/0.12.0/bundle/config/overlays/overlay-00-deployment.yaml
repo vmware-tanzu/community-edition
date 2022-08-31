@@ -1,0 +1,59 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#! First remove upstream configuration, then replace.
+#! The initial removal is because the ytt `replace` operator
+#! doesn't add any missing keys (a "replace-insert" feature has been requested).
+#! To avoid the case when upstream changes occur that add or remove keys,
+#! we just remove all of them and then in the next block, add them back in.
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"external-dns"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "external-dns"})
+        -
+          #@overlay/remove
+          args:
+          #@overlay/remove
+          env:
+          #@overlay/remove
+          securityContext:
+          #@overlay/remove
+          volumeMounts:
+      #@overlay/remove
+      volumes:
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"external-dns"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  template:
+    #@overlay/merge missing_ok=True
+    metadata:
+      #@overlay/merge missing_ok=True
+      #@ if/end data.values.deployment.podLabels != None:
+      labels: #@ data.values.deployment.podLabels
+    spec:
+      containers:
+        #@overlay/match by=overlay.subset({"name": "external-dns"})
+        -
+          args: #@ data.values.deployment.args
+          #@ if/end data.values.deployment.env:
+          env: #@ data.values.deployment.env
+          #@ if data.values.deployment.securityContext:
+          securityContext: #@ data.values.deployment.securityContext
+          #@ else:
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          #@ end
+          #@ if/end data.values.deployment.volumeMounts:
+          volumeMounts: #@ data.values.deployment.volumeMounts
+      #@ if/end data.values.deployment.volumes:
+      volumes: #@ data.values.deployment.volumes

@@ -1,0 +1,9 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+
+minimumRequiredVersion: 0.15.0
+
+overrides:
+- image: k8s.gcr.io/external-dns/external-dns
+  newImage: bitnami/external-dns:0.12.2

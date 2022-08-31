@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #2913 from alebedev87/handle-missing-txt-record-fix-batch...'
+      sha: 4046257911958c1716f9a63ccf7846e2ee412ae6
+      tags:
+      - v0.12.2
+    path: .
+  path: config/upstream
+kind: LockConfig
