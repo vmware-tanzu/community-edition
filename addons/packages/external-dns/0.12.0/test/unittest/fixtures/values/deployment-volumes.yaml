@@ -1,0 +1,13 @@
+#@data/values
+---
+deployment:
+  args:
+    - --source=ingress
+    - --source=contour-httpproxy
+    - --provider=rfc2136
+  volumeMounts:
+    - name: additional-volume
+      mountPath: /path/in/container
+  volumes:
+    - name: additional-volume
+      emptyDir: {}

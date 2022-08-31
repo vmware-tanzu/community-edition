@@ -1,0 +1,17 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: external-dns
+authors:
+- name: Edwin Xie
+  email: exie@vmware.com
+- name: Christian Ang
+  email: angc@vmware.com
+- name: Tyler Schultz
+  email: tschultz@vmware.com
+- name: David McClure
+  email: dmcclure@vmware.com
+- name: Aidan Obley
+  email: aobley@vmware.com
+websites:
+- url: https://github.com/kubernetes-sigs/external-dns
