@@ -1,7 +1,7 @@
 // App imports
 import { addErrorInfo, removeErrorInfo } from '../../../../../shared/utilities/Error.util';
 import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
-import { AwsDefaults } from '../default-service/AwsDefaults.service';
+import { AwsDefaults, AvailabilityZoneInstance } from '../default-service/AwsDefaults.service';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { AwsService, AWSVirtualMachine, CancelablePromise } from '../../../../../swagger-api';
 import {
@@ -101,38 +101,52 @@ export class AwsOrchestrator {
         });
     }
 
-    static async initNodeTypes4AZs(props: AwsOrchestratorProps, nodeProfile: string) {
+    static initNodeTypesForAz(props: AwsOrchestratorProps, nodeProfile: string) {
         const { awsState, awsDispatch, setErrorObject, errorObject } = props;
         const azList = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES];
         const defaultAZNameList: string[] = AwsDefaults.defaulAvailabilityZoneNameStrategy(azList, nodeProfile);
-        const selectedAzs: { [key: string]: string }[] = [];
+        const selectedAzs: AvailabilityZoneInstance[] = [];
 
         for (const az of defaultAZNameList) {
-            DefaultOrchestrator.initResources<{ [key: string]: string }>({
-                resourceName: AWS_FIELDS.AVAILIABILITY_ZONE_NODE_TYPES,
-                segment: az,
-                dispatch: awsDispatch,
-                errorObject,
-                setErrorObject,
-                //  (a) store all the instance types in a segmented resource under THAT AZ
-                fetcher: () => {
-                    return new CancelablePromise(async (res, rej) => {
-                        const nodeTypesByAZ = await AwsDefaults.createAZNodeType(az);
-                        res(nodeTypesByAZ);
-                    });
-                },
-
-                fxnSelectDefault: (resources: { [key: string]: string }[]) => {
-                    selectedAzs.push(AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile));
-                    return AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile);
-                },
-            });
-            // (b) store the "selected" instance type in the form section.
-            awsDispatch({
-                type: INPUT_CHANGE,
-                field: AWS_FIELDS.SELECTED_AZS,
-                payload: selectedAzs,
-            } as FormAction);
+            //  (a) store all the instance types in a segmented resource under THAT AZ
+            AwsOrchestrator.initNodeTypeForAZ(az, awsDispatch, errorObject, setErrorObject, selectedAzs, nodeProfile);
         }
+        // (b) store the "selected" instance type in the form section.
+        awsDispatch({
+            type: INPUT_CHANGE,
+            field: AWS_FIELDS.SELECTED_AZS,
+            payload: selectedAzs,
+        } as FormAction);
+    }
+
+    static initNodeTypeForAZ(
+        az: string,
+        awsDispatch: StoreDispatch,
+        errorObject: { [fieldName: string]: any },
+        setErrorObject: (errorObject: { [fieldName: string]: any }) => void,
+        selectedAzs: AvailabilityZoneInstance[],
+        nodeProfile: string
+    ) {
+        DefaultOrchestrator.initResources<AvailabilityZoneInstance>({
+            resourceName: AWS_FIELDS.AVAILIABILITY_ZONE_NODE_TYPES,
+            segment: az,
+            dispatch: awsDispatch,
+            errorObject,
+            setErrorObject,
+            fetcher: () => {
+                return new CancelablePromise(async (res, rej) => {
+                    const nodeTypesByAZ = await AwsDefaults.createAZNodeType(az);
+                    res(nodeTypesByAZ);
+                });
+            },
+
+            fxnSelectDefault: (resources: AvailabilityZoneInstance[]) => {
+                const defaultAZ = AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile, az);
+                if (defaultAZ !== undefined) {
+                    selectedAzs.push(defaultAZ);
+                }
+                return defaultAZ;
+            },
+        });
     }
 }

@@ -4,6 +4,13 @@ import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { first } from '../../../../../shared/utilities/Array.util';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
 import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
+
+export interface AvailabilityZoneInstance {
+    name: string;
+    workerNodeType: string;
+    publicSubnetID: string;
+    privateSubnetID: string;
+}
 export class AwsDefaults {
     // The strategy of deciding default os image
     static selectDefaultOsImage = (osImages: AWSVirtualMachine[]) => {
@@ -41,7 +48,7 @@ export class AwsDefaults {
         }
     };
 
-    static defaulAvailabilityZoneNodeTypeStrategy = (azList: { [key: string]: string }[], nodeProfile: string) => {
+    static defaulAvailabilityZoneNodeTypeStrategy = (azList: AvailabilityZoneInstance[], nodeProfile: string, az: string) => {
         const defaultNodeTypes = getDefaultNodeTypes(nodeProfile);
         for (const az of azList) {
             for (let i = 0; i < defaultNodeTypes.length; i++) {
@@ -50,20 +57,12 @@ export class AwsDefaults {
                 }
             }
         }
-
-        const defaultNodeTypeByAZ: { [key: string]: any } = {
-            workerNodeType: defaultNodeTypes[Math.round(defaultNodeTypes.length / 2)],
-            publicSubnetID: '',
-            privateSubnetID: '',
-        };
-
-        return defaultNodeTypeByAZ;
     };
 
     static async createAZNodeType(defaultAZName: string) {
-        const azNodeTypes: { [key: string]: string }[] = [];
+        const azNodeTypes: AvailabilityZoneInstance[] = [];
         const nodeTypes = await AwsService.getAwsNodeTypes(defaultAZName);
-        nodeTypes.forEach((nodeType) => {
+        nodeTypes.map((nodeType) => {
             azNodeTypes.push({ name: defaultAZName, workerNodeType: nodeType, publicSubnetID: '', privateSubnetID: '' });
         });
         return azNodeTypes;

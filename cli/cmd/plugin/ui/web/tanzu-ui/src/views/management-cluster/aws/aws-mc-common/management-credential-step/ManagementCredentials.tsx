@@ -120,7 +120,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     useEffect(() => {
         if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES] !== undefined) {
-            AwsOrchestrator.initNodeTypes4AZs(
+            AwsOrchestrator.initNodeTypesForAz(
                 { awsState, awsDispatch, errorObject, setErrorObject },
                 awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
             );
