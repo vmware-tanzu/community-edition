@@ -6,6 +6,7 @@ import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aw
 import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 
 export interface AvailabilityZoneInstance {
+    id: string;
     name: string;
     workerNodeType: string;
     publicSubnetID: string;
@@ -34,14 +35,14 @@ export class AwsDefaults {
     };
 
     static defaulAvailabilityZoneNameStrategy = (azList: { [key: string]: string }[], nodeProfile: string) => {
-        const defaultAZNameList: string[] = [];
+        const defaultAZNameList: { [key: string]: string }[] = [];
         switch (nodeProfile) {
             case AWS_NODE_PROFILE_NAMES.SINGLE_NODE: {
-                return [azList[0].id];
+                return [azList[0]];
             }
             default: {
                 azList.slice(0, 3).forEach((az) => {
-                    defaultAZNameList.push(az.id);
+                    defaultAZNameList.push(az);
                 });
                 return defaultAZNameList;
             }
@@ -59,11 +60,17 @@ export class AwsDefaults {
         }
     };
 
-    static async createAZNodeType(defaultAZName: string) {
+    static async createAZNodeType(defaultAZName: { [key: string]: string }) {
         const azNodeTypes: AvailabilityZoneInstance[] = [];
-        const nodeTypes = await AwsService.getAwsNodeTypes(defaultAZName);
+        const nodeTypes = await AwsService.getAwsNodeTypes(defaultAZName.name);
         nodeTypes.map((nodeType) => {
-            azNodeTypes.push({ name: defaultAZName, workerNodeType: nodeType, publicSubnetID: '', privateSubnetID: '' });
+            azNodeTypes.push({
+                id: defaultAZName.id,
+                name: defaultAZName.name,
+                workerNodeType: nodeType,
+                publicSubnetID: '',
+                privateSubnetID: '',
+            });
         });
         return azNodeTypes;
     }

@@ -14,6 +14,7 @@ import { Store } from '../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { STORE_SECTION_RESOURCES } from '../../state-management/reducers/Resources.reducer';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
+import { createAZList } from '../../shared/constants/defaults/aws.defaults';
 
 const useAwsDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -47,7 +48,7 @@ const useAwsDeployment = () => {
             vpc: {
                 cidr: awsData[AWS_FIELDS.VPC_CIDR],
                 vpcID: '',
-                azs: awsData[AWS_FIELDS.SELECTED_AZS],
+                azs: createAZList(awsData[AWS_FIELDS.STORED_AZ_OBJECTS]),
             },
             enableAuditLogging: awsData[AWS_FIELDS.ENABLE_AUDIT_LOGGING],
             networking: {

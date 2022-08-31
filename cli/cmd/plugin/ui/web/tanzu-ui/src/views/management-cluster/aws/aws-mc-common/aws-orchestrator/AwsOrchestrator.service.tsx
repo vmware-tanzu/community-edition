@@ -104,32 +104,40 @@ export class AwsOrchestrator {
     static initNodeTypesForAz(props: AwsOrchestratorProps, nodeProfile: string) {
         const { awsState, awsDispatch, setErrorObject, errorObject } = props;
         const azList = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES];
-        const defaultAZNameList: string[] = AwsDefaults.defaulAvailabilityZoneNameStrategy(azList, nodeProfile);
-        const selectedAzs: AvailabilityZoneInstance[] = [];
-
-        for (const az of defaultAZNameList) {
+        const defaultAZList: { [key: string]: string }[] = AwsDefaults.defaulAvailabilityZoneNameStrategy(azList, nodeProfile);
+        const storedAZObjects: { [key: string]: any } = {};
+        for (let i = 0; i < defaultAZList.length; i++) {
             //  (a) store all the instance types in a segmented resource under THAT AZ
-            AwsOrchestrator.initNodeTypeForAZ(az, awsDispatch, errorObject, setErrorObject, selectedAzs, nodeProfile);
+            AwsOrchestrator.initNodeTypeForAZ(
+                defaultAZList[i],
+                awsDispatch,
+                errorObject,
+                setErrorObject,
+                storedAZObjects,
+                nodeProfile,
+                i + 1
+            );
         }
         // (b) store the "selected" instance type in the form section.
         awsDispatch({
             type: INPUT_CHANGE,
-            field: AWS_FIELDS.SELECTED_AZS,
-            payload: selectedAzs,
+            field: AWS_FIELDS.STORED_AZ_OBJECTS,
+            payload: storedAZObjects,
         } as FormAction);
     }
 
     static initNodeTypeForAZ(
-        az: string,
+        az: { [key: string]: string },
         awsDispatch: StoreDispatch,
         errorObject: { [fieldName: string]: any },
         setErrorObject: (errorObject: { [fieldName: string]: any }) => void,
-        selectedAzs: AvailabilityZoneInstance[],
-        nodeProfile: string
+        storedAZObjects: { [key: string]: any },
+        nodeProfile: string,
+        index: number
     ) {
         DefaultOrchestrator.initResources<AvailabilityZoneInstance>({
             resourceName: AWS_FIELDS.AVAILIABILITY_ZONE_NODE_TYPES,
-            segment: az,
+            segment: az.name,
             dispatch: awsDispatch,
             errorObject,
             setErrorObject,
@@ -141,12 +149,19 @@ export class AwsOrchestrator {
             },
 
             fxnSelectDefault: (resources: AvailabilityZoneInstance[]) => {
-                const defaultAZ = AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile, az);
+                const defaultAZ = AwsDefaults.defaulAvailabilityZoneNodeTypeStrategy(resources, nodeProfile, az.name);
                 if (defaultAZ !== undefined) {
-                    selectedAzs.push(defaultAZ);
+                    AwsOrchestrator.createStoredAZObjects(defaultAZ, storedAZObjects, index);
                 }
                 return defaultAZ;
             },
         });
+    }
+
+    static createStoredAZObjects(defaultAZ: AvailabilityZoneInstance, storedAZObjects: { [key: string]: any }, index: number) {
+        storedAZObjects['availability-zone-' + index] = { id: defaultAZ.id, name: defaultAZ.name };
+        storedAZObjects['availability-zone-' + index + '-work-node-type'] = defaultAZ.workerNodeType;
+        storedAZObjects['availability-zone-' + index + '-public-subnet-id'] = defaultAZ.publicSubnetID;
+        storedAZObjects['availability-zone-' + index + '-private-subnet-id'] = defaultAZ.privateSubnetID;
     }
 }
