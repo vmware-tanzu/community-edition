@@ -66,7 +66,7 @@ spec:
               matchExpressions:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
-          # remove once usage of node-role.kubernetes.io/master is removed from Kubernetes
+          #! remove once usage of node-role.kubernetes.io/master is removed from Kubernetes
           - weight: 10
             preference:
               matchExpressions:
