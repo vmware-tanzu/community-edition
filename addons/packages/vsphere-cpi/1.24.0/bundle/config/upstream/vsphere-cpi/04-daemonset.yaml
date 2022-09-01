@@ -43,14 +43,14 @@ spec:
           key: node.kubernetes.io/not-ready
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
-        # remove once usage of this tolerations is removed from Kuberenetes
+        #! remove once usage of this tolerations is removed from Kuberenetes
         - effect: NoSchedule
           key: node-role.kubernetes.io/master
       volumes:
         - configMap:
             name: vsphere-cloud-config
           name: vsphere-config-volume
-      # use affinity instead of node selector since node selector only accepts single value
+      #! use affinity instead of node selector since node selector only accepts single value
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
