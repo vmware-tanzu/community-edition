@@ -45,17 +45,33 @@ spec:
             - mountPath: /etc/cloud/ccm-provider
               name: ccm-provider
               readOnly: true
-      nodeSelector:
-        node-role.kubernetes.io/master: ""
       serviceAccountName: cloud-provider-svc-account
       tolerations:
         - effect: NoSchedule
           key: node.cloudprovider.kubernetes.io/uninitialized
           value: "true"
         - effect: NoSchedule
-          key: node-role.kubernetes.io/master
-        - effect: NoSchedule
           key: node.kubernetes.io/not-ready
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        #! remove once usage of this tolerations is removed from Kuberenetes
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+      #! use affinity instead of node selector since node selector only accepts single value
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+          #! remove once usage of node-role.kubernetes.io/master is removed from Kubernetes
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: Exists
       volumes:
         - name: ccm-config
           projected:
