@@ -29,6 +29,7 @@ import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import './ManagementCredentials.scss';
+import { AwsDefaults } from '../default-service/AwsDefaults.service';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 
@@ -120,8 +121,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     useEffect(() => {
         if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES] !== undefined) {
+            const azs = AwsDefaults.getDefaulAvailabilityZones(
+                awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES],
+                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+            );
             AwsOrchestrator.initNodeTypesForAz(
                 { awsState, awsDispatch, errorObject, setErrorObject },
+                azs,
                 awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
             );
         }

@@ -34,8 +34,8 @@ export class AwsDefaults {
         return nodeTypeList[Math.round(nodeTypeList.length / 2)];
     };
 
-    static defaulAvailabilityZoneNameStrategy = (azList: { [key: string]: string }[], nodeProfile: string) => {
-        const defaultAZNameList: { [key: string]: string }[] = [];
+    static getDefaulAvailabilityZones = (azList: AWSAvailabilityZone[], nodeProfile: string) => {
+        const defaultAZNameList: AWSAvailabilityZone[] = [];
         switch (nodeProfile) {
             case AWS_NODE_PROFILE_NAMES.SINGLE_NODE: {
                 return [azList[0]];
@@ -63,6 +63,17 @@ export class AwsDefaults {
             }
         }
     };
+
+    static selectDefaultNodeType(availableNodeTypes: string[], desiredNodeTypes: string[]): string {
+        // TODO: implement correct strategy
+        const set = new Set(availableNodeTypes);
+        for (let i = 0; i < desiredNodeTypes.length; i++) {
+            if (set.has(desiredNodeTypes[i])) {
+                return desiredNodeTypes[i];
+            }
+        }
+        return '';
+    }
 
     static async createAZNodeType(defaultAZName: { [key: string]: string }) {
         const azNodeTypes: SelectedAvailabiltyZoneData[] = [];
