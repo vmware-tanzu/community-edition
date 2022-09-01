@@ -34,7 +34,7 @@ const useVSphereDeployment = () => {
                 username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
             },
             clusterName: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTERNAME],
-            datacenter: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER],
+            datacenter: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER].moid,
             resourcePool: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool],
             datastore: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore].name,
             folder: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder].name,

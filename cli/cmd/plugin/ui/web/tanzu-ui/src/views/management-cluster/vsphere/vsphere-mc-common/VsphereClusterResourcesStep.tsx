@@ -124,18 +124,21 @@ export function VsphereClusterResourcesStep(props: Partial<StepProps>) {
     }
 
     useEffect(() => {
-        initFolders(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
-            setValue(VSPHERE_FIELDS.VMFolder, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder]?.name)
-        );
-        initDatastores(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
-            setValue(VSPHERE_FIELDS.DataStore, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore]?.name)
-        );
-        initNetworks(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
-            setValue(VSPHERE_FIELDS.Network, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Network]?.name)
-        );
-        initResources(errorObject, setErrorObject, vsphereDispatch, datacenter).then(() =>
-            setValue(VSPHERE_FIELDS.Pool, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool])
-        );
+        const datacenterMoid = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]?.moid;
+        if (datacenterMoid) {
+            initFolders(errorObject, setErrorObject, vsphereDispatch, datacenterMoid).then(() =>
+                setValue(VSPHERE_FIELDS.VMFolder, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.VMFolder]?.name)
+            );
+            initDatastores(errorObject, setErrorObject, vsphereDispatch, datacenterMoid).then(() =>
+                setValue(VSPHERE_FIELDS.DataStore, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DataStore]?.name)
+            );
+            initNetworks(errorObject, setErrorObject, vsphereDispatch, datacenterMoid).then(() =>
+                setValue(VSPHERE_FIELDS.Network, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Network]?.name)
+            );
+            initResources(errorObject, setErrorObject, vsphereDispatch, datacenterMoid).then(() =>
+                setValue(VSPHERE_FIELDS.Pool, vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.Pool])
+            );
+        }
     }, [vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]]);
 
     const vSphereFolders = getResource<VSphereFolder[]>(VSPHERE_FIELDS.VMFolder, vsphereState) || [];

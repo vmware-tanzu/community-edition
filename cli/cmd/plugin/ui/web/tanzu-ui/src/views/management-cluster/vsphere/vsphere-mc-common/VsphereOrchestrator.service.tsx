@@ -87,14 +87,14 @@ export async function initResources(
     });
 }
 
-export async function initOsImages(datacenter: string, props: VsphereOrchestratorProps) {
+export async function initOsImages(datacenterMoid: string, props: VsphereOrchestratorProps) {
     const { errorObject, setErrorObject, vsphereDispatch } = props;
     return await DefaultOrchestrator.initResources<VSphereVirtualMachine>({
         errorObject,
         setErrorObject,
         dispatch: vsphereDispatch,
         resourceName: VSPHERE_FIELDS.VMTEMPLATE,
-        fetcher: () => VsphereService.getVSphereOsImages(datacenter),
+        fetcher: () => VsphereService.getVSphereOsImages(datacenterMoid),
         fxnSelectDefault: VsphereDefaultsService.selectDefaultOsImage,
     });
 }

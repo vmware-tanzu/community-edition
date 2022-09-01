@@ -17,14 +17,16 @@ import '../VsphereManagementCluster.scss';
 import { analyzeOsImages } from './VsphereOsImageUtil';
 import ConnectionNotification, { CONNECTION_STATUS } from '../../../../shared/components/ConnectionNotification/ConnectionNotification';
 import { createSchema } from './vsphere.credential.form.schema';
-import { DefaultOrchestrator } from '../../default-orchestrator/DefaultOrchestrator';
-import { FormAction } from '../../../../shared/types/types';
+import { clearPreviousResourceData, DefaultOrchestrator, saveResourceData } from '../../default-orchestrator/DefaultOrchestrator';
+import { FormAction, ResourceAction } from '../../../../shared/types/types';
 import { initDefaults, initOsImages } from './VsphereOrchestrator.service';
 import { INPUT_CHANGE, INPUT_CLEAR } from '../../../../state-management/actions/Form.actions';
 import { IP_FAMILIES, VSPHERE_FIELDS } from '../VsphereManagementCluster.constants';
 import { isValidFqdn, isValidIp4, isValidIp6 } from '../../../../shared/validations/Validation.service';
+import { RESOURCE } from '../../../../state-management/actions/Resources.actions';
 import { StepProps } from '../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../state-management/reducers/Form.reducer';
+import { getResource } from '../../../../state-management/reducers/Resources.reducer';
 import { ThumbprintDisplay } from './ThumbprintDisplay';
 import UseUpdateTabStatus from '../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import { VSphereCredentials, VSphereDatacenter, VsphereService } from '../../../../swagger-api';
@@ -54,10 +56,8 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     const [connectionMessage, setConnectionMessage] = useState('');
     const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
-    const [datacenters, setDatacenters] = useState<VSphereDatacenter[]>([]);
     const [errorObject, setErrorObject] = useState({});
     const [loadingDatacenters, setLoadingDatacenters] = useState(false);
-    const [selectedDatacenter, setSelectedDatacenter] = useState<string>();
     const [osImageMessage, setOsImageMessage] = useState<string>('');
     const [serverNameAtBlur, setServerNameAtBlur] = useState<string>('');
     const [thumbprintServer, setThumbprintServer] = useState('');
@@ -83,7 +83,11 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
 
     const errDataCenter = () => connectionStatus === CONNECTION_STATUS.CONNECTED && errors[VSPHERE_FIELDS.DATACENTER];
     const errNoDataCentersFound = () => {
-        return connectionStatus === CONNECTION_STATUS.CONNECTED && !loadingDatacenters && !datacenters?.length;
+        return (
+            connectionStatus === CONNECTION_STATUS.CONNECTED &&
+            !loadingDatacenters &&
+            !getResource<VSphereDatacenter[]>(VSPHERE_FIELDS.DATACENTER, vsphereState)?.length
+        );
     };
     const errDataCenterMsg = () => errors[VSPHERE_FIELDS.DATACENTER]?.message || '';
 
@@ -141,14 +145,18 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     const handleDatacenterChange = async (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const newSelectedDatacenter = event.target.value;
-        handleFieldChangeEvent(event);
-        setSelectedDatacenter(newSelectedDatacenter);
+        const datacenters = getResource<VSphereDatacenter[]>(VSPHERE_FIELDS.DATACENTER, vsphereState) || [];
+        const selDatacenter = datacenters.find((dc) => dc.moid === event.target.value);
+        vsphereDispatch({
+            type: INPUT_CHANGE,
+            field: VSPHERE_FIELDS.DATACENTER,
+            payload: selDatacenter,
+        } as FormAction);
         DefaultOrchestrator.clearResourceData(vsphereDispatch, VSPHERE_FIELDS.VMTEMPLATE);
         setOsImageMessage('');
         setSelectedDcHasTemplate(false);
-        if (newSelectedDatacenter) {
-            await retrieveOsImages(newSelectedDatacenter);
+        if (selDatacenter) {
+            await retrieveOsImages(selDatacenter);
         }
     };
 
@@ -244,15 +252,15 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     };
 
     useEffect(() => {
-        setSelectedDatacenter('');
-        setDatacenters([]);
+        vsphereDispatch({ type: INPUT_CLEAR, field: VSPHERE_FIELDS.DATACENTER } as FormAction);
+        clearPreviousResourceData(vsphereDispatch, RESOURCE.DELETE_RESOURCES, VSPHERE_FIELDS.DATACENTER);
         DefaultOrchestrator.clearResourceData(vsphereDispatch, VSPHERE_FIELDS.VMTEMPLATE);
         setOsImageMessage('');
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             setLoadingDatacenters(true);
             VsphereService.getVSphereDatacenters().then((datacenters) => {
-                setDatacenters(datacenters);
                 setLoadingDatacenters(false);
+                saveResourceData<VSphereDatacenter>(vsphereDispatch, RESOURCE.ADD_RESOURCES, VSPHERE_FIELDS.DATACENTER, datacenters);
             });
         } else {
             setLoadingDatacenters(false);
@@ -427,13 +435,16 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     // NOTE: because of the way the "disabled" attribute works, we have two functions to render the Datacenter CdsSelect control.
     // Other more elegant solutions do not appear to work correctly.
     function DatacenterSelectWithDatacenters() {
+        const datacenters = getResource<VSphereDatacenter[]>(VSPHERE_FIELDS.DATACENTER, vsphereState) || [];
         return (
             <CdsSelect layout="vertical" controlWidth="shrink">
                 <label cds-layout="p-b:xs">Datacenter</label>
                 <select {...register(VSPHERE_FIELDS.DATACENTER, { onChange: handleDatacenterChange })}>
                     <option />
                     {datacenters.map((dc) => (
-                        <option key={dc.moid}>{dc.name}</option>
+                        <option value={dc.moid} key={dc.moid}>
+                            {dc.name}
+                        </option>
                     ))}
                 </select>
             </CdsSelect>
@@ -452,6 +463,7 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     }
 
     function DatacenterSection() {
+        const datacenters = getResource<VSphereDatacenter[]>(VSPHERE_FIELDS.DATACENTER, vsphereState) || [];
         const hasDatacenters = datacenters && datacenters.length > 0;
         return (
             <div cds-layout="grid horizontal gap:md">
@@ -465,30 +477,33 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
                     </div>
                 </div>
                 <div cds-layout="col:6">
-                    {connectionStatus === CONNECTION_STATUS.CONNECTED && selectedDatacenter && osImageMessage && (
-                        <div>
-                            <div className="error-text">Unable to use this Datacenter unless changes are made</div>
-                            <br />
-                            <CdsControlMessage status="error">{osImageMessage}</CdsControlMessage>
-                            <br />
-                            <CdsButton action="outline" onClick={handleRecheckOsImages}>
-                                Refresh the OS image check
-                            </CdsButton>
-                        </div>
-                    )}
+                    {connectionStatus === CONNECTION_STATUS.CONNECTED &&
+                        vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER] &&
+                        osImageMessage && (
+                            <div>
+                                <div className="error-text">Unable to use this Datacenter unless changes are made</div>
+                                <br />
+                                <CdsControlMessage status="error">{osImageMessage}</CdsControlMessage>
+                                <br />
+                                <CdsButton action="outline" onClick={handleRecheckOsImages}>
+                                    Refresh the OS image check
+                                </CdsButton>
+                            </div>
+                        )}
                 </div>
             </div>
         );
     }
 
-    async function retrieveOsImages(datacenter: string | undefined) {
+    async function retrieveOsImages(datacenter: VSphereDatacenter | undefined) {
         setOsImageMessage('');
         setSelectedDcHasTemplate(false);
-        if (!datacenter) {
+        // NOTE: the check on datacenter.moid and datacenter.name is there to satisfy the IDE; those fields should always have data
+        if (!datacenter || !datacenter.moid || !datacenter.name) {
             DefaultOrchestrator.clearResourceData(vsphereDispatch, VSPHERE_FIELDS.VMTEMPLATE);
             return;
         }
-        const osImages = await initOsImages(datacenter, {
+        const osImages = await initOsImages(datacenter.moid, {
             errorObject,
             setErrorObject,
             vsphereDispatch,
@@ -496,13 +511,13 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         });
 
         // TODO: get good URL for how to convert OSImage to template
-        const { msg, nImages, nTemplates } = analyzeOsImages(datacenter, '', osImages);
+        const { msg, nImages, nTemplates } = analyzeOsImages(datacenter.name, '', osImages);
         setOsImageMessage(msg);
         setSelectedDcHasTemplate(nTemplates > 0);
         console.log(`After retrieving os images, nImages=${nImages} and nTemplates=${nTemplates}`);
     }
 
     function handleRecheckOsImages() {
-        retrieveOsImages(selectedDatacenter);
+        retrieveOsImages(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]);
     }
 }

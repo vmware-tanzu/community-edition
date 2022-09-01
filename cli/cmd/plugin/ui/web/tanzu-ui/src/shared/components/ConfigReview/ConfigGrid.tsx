@@ -82,7 +82,7 @@ function ConfigLinesDisplay(pairs: ConfigPair[]) {
             const nextPair = pairs[xPair + 1];
             // if this pair has a long value, it should be on its own line;
             // if the NEXT pair has a long value, this pair should also be on its own line (to allow next pair its own line)
-            if (thisPair.longValue || nextPair.longValue) {
+            if (thisPair?.longValue || nextPair?.longValue) {
                 result.push(...ConfigSingleLineDisplay([thisPair]));
             } else {
                 result.push(...ConfigSingleLineDisplay([thisPair, nextPair]));
@@ -100,7 +100,7 @@ function ConfigSingleLineDisplay(pairs: ConfigPair[]): JSX.Element[] {
         result.push(ConfigPairDisplay(pairs[1]));
     } else if (pairs.length === 1) {
         result.push(ConfigPairDisplay(pairs[0]));
-        if (!pairs[0].longValue) {
+        if (!pairs[0]?.longValue) {
             result.push(ConfigPairDisplay(undefined));
         }
     }
