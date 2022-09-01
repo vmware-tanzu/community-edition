@@ -9,7 +9,7 @@ const configGroupsBasic: ConfigGroup[] = [
         pairs: [
             { label: 'Server', field: VSPHERE_FIELDS.SERVERNAME },
             { label: 'Username', field: VSPHERE_FIELDS.USERNAME },
-            { label: 'Datacenter', field: VSPHERE_FIELDS.DATACENTER },
+            { label: 'Datacenter', field: VSPHERE_FIELDS.DATACENTER, transform: CommonConfigTransformationFunctions.NAME },
             {
                 label: 'Password',
                 field: VSPHERE_FIELDS.PASSWORD,
@@ -58,7 +58,7 @@ const configGroupsDefault: ConfigGroup[] = [
         pairs: [
             { label: 'Server', field: VSPHERE_FIELDS.SERVERNAME },
             { label: 'Username', field: VSPHERE_FIELDS.USERNAME },
-            { label: 'Datacenter', field: VSPHERE_FIELDS.DATACENTER },
+            { label: 'Datacenter', field: VSPHERE_FIELDS.DATACENTER, transform: CommonConfigTransformationFunctions.NAME },
         ],
     },
 ];

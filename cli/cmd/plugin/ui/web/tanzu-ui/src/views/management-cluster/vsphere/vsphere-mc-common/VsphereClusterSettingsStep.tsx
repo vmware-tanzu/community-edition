@@ -176,9 +176,12 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
     const fetchOsImages = async () => {
         try {
             setOsImagesLoading(true);
-            await VsphereService.getVSphereOsImages(vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]).then((fetchedOsImages) => {
-                setOsImages(fetchedOsImages);
-            });
+            const datacenterMoid = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.DATACENTER]?.moid;
+            if (datacenterMoid) {
+                await VsphereService.getVSphereOsImages(datacenterMoid).then((fetchedOsImages) => {
+                    setOsImages(fetchedOsImages);
+                });
+            }
         } catch (e: any) {
             console.log(`Unable to retrieve OS Images: ${JSON.stringify(e)}`);
         } finally {

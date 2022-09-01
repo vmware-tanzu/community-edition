@@ -13,7 +13,7 @@ const initialState = {
         [VSPHERE_FIELDS.SERVERNAME]: '',
         [VSPHERE_FIELDS.USERNAME]: '',
         [VSPHERE_FIELDS.PASSWORD]: '',
-        [VSPHERE_FIELDS.DATACENTER]: '',
+        [VSPHERE_FIELDS.DATACENTER]: undefined,
     },
     [STORE_SECTION_RESOURCES]: {},
 };
