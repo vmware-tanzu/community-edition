@@ -13,9 +13,9 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
 // App imports
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
-import { controlPlaneFlavorFromNodeProfile, VSPHERE_NODE_PROFILES, workerNodeTypeFromNodeProfile } from './VsphereNodeProfileUtil';
+import { createNodeProfileFieldUpdateObject, VSPHERE_NODE_PROFILES } from './VsphereNodeProfileUtil';
 import { FormAction } from '../../../../shared/types/types';
-import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
+import { INPUT_CHANGE, SET_DEFAULTS } from '../../../../state-management/actions/Form.actions';
 import {
     NodeProfileType,
     NodeProfile,
@@ -107,20 +107,9 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
         }
     }, [osImages]);
 
-    const recordControlPlaneFlavorFromNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
-        vsphereDispatch({
-            type: INPUT_CHANGE,
-            field: VSPHERE_FIELDS.CONTROL_PLANE_FLAVOR,
-            payload: controlPlaneFlavorFromNodeProfile(profileId),
-        } as FormAction);
-    };
-
-    const recordWorkerNodeTypeFromNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
-        vsphereDispatch({
-            type: INPUT_CHANGE,
-            field: VSPHERE_FIELDS.WORKER_INSTANCE_TYPE,
-            payload: workerNodeTypeFromNodeProfile(profileId),
-        } as FormAction);
+    const recordFieldsRelatedToNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
+        const fieldValues = createNodeProfileFieldUpdateObject(profileId);
+        vsphereDispatch({ type: SET_DEFAULTS, payload: fieldValues, field: '' } as FormAction);
     };
 
     const initialSelectedNodeProfileId = vsphereState[VSPHERE_FIELDS.NODE_PROFILE_TYPE];
@@ -135,8 +124,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
             } as FormAction);
         }
         setValue(VSPHERE_FIELDS.NODE_PROFILE_TYPE, initialProfile);
-        recordControlPlaneFlavorFromNodeProfile(initialProfile);
-        recordWorkerNodeTypeFromNodeProfile(initialProfile);
+        recordFieldsRelatedToNodeProfile(initialProfile);
     }, []);
 
     const canContinue = (): boolean => {
@@ -164,8 +152,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
 
     const onNodeProfileChange = (profileId: string) => {
         onFieldChange(profileId, VSPHERE_FIELDS.NODE_PROFILE_TYPE);
-        recordControlPlaneFlavorFromNodeProfile(profileId as VSPHERE_NODE_PROFILES);
-        recordWorkerNodeTypeFromNodeProfile(profileId as VSPHERE_NODE_PROFILES);
+        recordFieldsRelatedToNodeProfile(profileId as VSPHERE_NODE_PROFILES);
     };
 
     const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
