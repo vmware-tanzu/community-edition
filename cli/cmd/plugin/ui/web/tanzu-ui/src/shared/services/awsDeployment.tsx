@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AwsStore } from '../../views/management-cluster/aws/store/Aws.store.mc';
 import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagementConfig, AWSNodeAz } from '../../swagger-api';
+import { AwsOrchestrator } from '../../views/management-cluster/aws/aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';
@@ -13,7 +14,6 @@ import { Providers } from '../constants/Providers.constants';
 import { Store } from '../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
-import { AwsOrchestrator } from '../../views/management-cluster/aws/aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
 const useAwsDeployment = () => {
     const { dispatch } = useContext(Store);
