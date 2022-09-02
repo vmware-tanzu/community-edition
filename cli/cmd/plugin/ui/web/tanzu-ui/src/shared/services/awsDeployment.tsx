@@ -15,6 +15,7 @@ import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer
 import { STORE_SECTION_RESOURCES } from '../../state-management/reducers/Resources.reducer';
 import { SelectedAvailabiltyZoneData } from '../../views/management-cluster/aws/aws-mc-common/default-service/AwsDefaults.service';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
+import { AwsOrchestrator } from '../../views/management-cluster/aws/aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
 const useAwsDeployment = () => {
     const { dispatch } = useContext(Store);
@@ -101,7 +102,9 @@ const useAwsDeployment = () => {
 
     const createAZPayLoadObject = () => {
         const azs: SelectedAvailabiltyZoneData[] = [];
-        const defaultAZ: { [key: string]: string }[] = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.DEFAULT_AZ];
+        const defaultAZ: { [key: string]: string }[] = AwsOrchestrator.getAZFieldsForNodeProfile(
+            awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+        );
         defaultAZ.forEach((az) => {
             const azObject: SelectedAvailabiltyZoneData = {
                 name: awsState[STORE_SECTION_FORM][az.name],

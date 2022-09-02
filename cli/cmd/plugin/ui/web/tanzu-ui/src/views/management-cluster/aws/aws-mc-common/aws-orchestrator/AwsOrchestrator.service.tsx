@@ -131,11 +131,6 @@ export class AwsOrchestrator {
                 payload: azs[i].name,
             } as FormAction);
         }
-        awsDispatch({
-            type: RESOURCE.ADD_RESOURCES,
-            resourceName: AWS_FIELDS.DEFAULT_AZ,
-            payload: azFields,
-        } as ResourceAction);
     }
 
     static initNodeTypeForAZ(
