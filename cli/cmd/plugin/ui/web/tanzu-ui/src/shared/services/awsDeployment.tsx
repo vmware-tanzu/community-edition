@@ -102,7 +102,7 @@ const useAwsDeployment = () => {
 
     const createAZPayLoadObject = () => {
         const azs: SelectedAvailabiltyZoneData[] = [];
-        const defaultAZ: { [key: string]: string }[] = AwsOrchestrator.getAZFieldsForNodeProfile(
+        const defaultAZ: { [key: string]: AWS_FIELDS }[] = AwsOrchestrator.getAZFieldsForNodeProfile(
             awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
         );
         defaultAZ.forEach((az) => {
