@@ -5,12 +5,6 @@ import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterB
 import { first } from '../../../../../shared/utilities/Array.util';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
 
-export interface SelectedAvailabiltyZoneData {
-    name: string;
-    workNodeType: string;
-    publicSubnetID: string;
-    privateSubnetID: string;
-}
 export class AwsDefaults {
     // The strategy of deciding default os image
     static selectDefaultOsImage = (osImages: AWSVirtualMachine[]) => {
@@ -19,18 +13,6 @@ export class AwsDefaults {
 
     static selectDefaultEC2KeyPairs = (keyPairs: AWSKeyPair[]) => {
         return first<AWSKeyPair>(keyPairs);
-    };
-
-    static setDefaultNodeType = (nodeTypeList: string[], nodeProfile: string) => {
-        const defaultNodeTypes = getDefaultNodeTypes(nodeProfile);
-        const nodeTypeSet = new Set(nodeTypeList);
-
-        for (let i = 0; i < defaultNodeTypes.length; i++) {
-            if (nodeTypeSet.has(defaultNodeTypes[i])) {
-                return defaultNodeTypes[i];
-            }
-        }
-        return nodeTypeList[Math.round(nodeTypeList.length / 2)];
     };
 
     static getDefaulAvailabilityZones = (azList: AWSAvailabilityZone[], nodeProfile: string) => {

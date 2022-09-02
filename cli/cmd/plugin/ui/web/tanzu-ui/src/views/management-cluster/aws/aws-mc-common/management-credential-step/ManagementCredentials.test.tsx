@@ -87,7 +87,23 @@ describe('ManagementCredential component', () => {
             );
         }),
         rest.get('api/provider/aws/AvailabilityZones', (req, res, ctx) => {
-            return res(ctx.status(200));
+            return res(
+                ctx.status(200),
+                ctx.json([
+                    {
+                        id: 'us-west-a',
+                        name: 'us-west-a',
+                    },
+                    {
+                        id: 'us-west-b',
+                        name: 'us-west-b',
+                    },
+                    {
+                        id: 'us-west-c',
+                        name: 'us-west-c',
+                    },
+                ])
+            );
         })
     );
 

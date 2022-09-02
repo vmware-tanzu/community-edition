@@ -112,8 +112,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
     }, [connectionStatus]);
 
     useEffect(() => {
-        AwsOrchestrator.initNodeProfile({ awsState, awsDispatch, errorObject, setErrorObject });
-    }, []);
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]) {
+            AwsOrchestrator.initControlPlaneNodeType(
+                { awsState, awsDispatch, errorObject, setErrorObject },
+                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+            );
+        }
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]]);
 
     useEffect(() => {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {

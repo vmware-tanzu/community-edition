@@ -3,17 +3,15 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // App imports
-import { AWS_FIELDS, AWS_NODE_PROFILE_NAMES } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
+import { AWS_FIELDS } from '../../views/management-cluster/aws/aws-mc-basic/AwsManagementClusterBasic.constants';
 import { AwsStore } from '../../views/management-cluster/aws/store/Aws.store.mc';
-import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagementConfig } from '../../swagger-api';
+import { AWSManagementClusterParams, AwsService, ConfigFileInfo, IdentityManagementConfig, AWSNodeAz } from '../../swagger-api';
 import { DEPLOYMENT_STATUS_CHANGED } from '../../state-management/actions/Deployment.actions';
 import { DeploymentStates, DeploymentTypes } from '../constants/Deployment.constants';
 import { NavRoutes } from '../constants/NavRoutes.constants';
 import { Providers } from '../constants/Providers.constants';
 import { Store } from '../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
-import { STORE_SECTION_RESOURCES } from '../../state-management/reducers/Resources.reducer';
-import { SelectedAvailabiltyZoneData } from '../../views/management-cluster/aws/aws-mc-common/default-service/AwsDefaults.service';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
 import { AwsOrchestrator } from '../../views/management-cluster/aws/aws-mc-common/aws-orchestrator/AwsOrchestrator.service';
 
@@ -28,7 +26,6 @@ const useAwsDeployment = () => {
     // TODO: more dynamic population of this payload
     const getAwsRequestPayload = () => {
         const awsData = awsState[STORE_SECTION_FORM];
-        const nodeType = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.NODE_TYPE];
         const awsClusterParams: AWSManagementClusterParams = {
             awsAccountParams: {
                 profileName: awsData[AWS_FIELDS.PROFILE],
@@ -43,7 +40,7 @@ const useAwsDeployment = () => {
             createCloudFormationStack: false,
             clusterName: awsData[AWS_FIELDS.CLUSTER_NAME],
             controlPlaneFlavor: awsData[AWS_FIELDS.CLUSTER_PLAN],
-            controlPlaneNodeType: nodeType[awsData[AWS_FIELDS.NODE_PROFILE]],
+            controlPlaneNodeType: awsData[AWS_FIELDS.NODE_TYPE],
             bastionHostEnabled: awsData[AWS_FIELDS.ENABLE_BASTION_HOST],
             machineHealthCheckEnabled: awsData[AWS_FIELDS.ENABLE_MACHINE_HEALTH_CHECK],
             vpc: {
@@ -101,14 +98,14 @@ const useAwsDeployment = () => {
     };
 
     const createAZPayLoadObject = () => {
-        const azs: SelectedAvailabiltyZoneData[] = [];
+        const azs: AWSNodeAz[] = [];
         const defaultAZ: { [key: string]: AWS_FIELDS }[] = AwsOrchestrator.getAZFieldsForNodeProfile(
             awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
         );
         defaultAZ.forEach((az) => {
-            const azObject: SelectedAvailabiltyZoneData = {
+            const azObject: AWSNodeAz = {
                 name: awsState[STORE_SECTION_FORM][az.name],
-                workNodeType: awsState[STORE_SECTION_FORM][az.workNodeType],
+                workerNodeType: awsState[STORE_SECTION_FORM][az.workerNodeType],
                 publicSubnetID: '',
                 privateSubnetID: '',
             };

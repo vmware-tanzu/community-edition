@@ -71,24 +71,16 @@ export class AwsOrchestrator {
         });
     }
 
-    static async initNodeProfile(props: AwsOrchestratorProps) {
+    static initControlPlaneNodeType(props: AwsOrchestratorProps, nodeProfile: string) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        try {
-            const nodeTypeList = await AwsService.getAwsNodeTypes();
-            const nodeProfileList: { [key: string]: string } = {
-                [AWS_NODE_PROFILE_NAMES.SINGLE_NODE]: '',
-                [AWS_NODE_PROFILE_NAMES.HIGH_AVAILABILITY]: '',
-                [AWS_NODE_PROFILE_NAMES.PRODUCTION_READY]: '',
-            };
-            Object.keys(nodeProfileList).forEach((nodeProfile) => {
-                nodeProfileList[nodeProfile] = AwsDefaults.setDefaultNodeType(nodeTypeList, nodeProfile);
-            });
-            saveSingleResourceObject(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE, nodeProfileList);
-            setErrorObject(removeErrorInfo(errorObject, AWS_FIELDS.NODE_TYPE));
-        } catch (e) {
-            clearPreviousResourceData(awsDispatch, RESOURCE.ADD_RESOURCES, AWS_FIELDS.NODE_TYPE);
-            setErrorObject(addErrorInfo(errorObject, e, AWS_FIELDS.NODE_TYPE));
-        }
+        DefaultOrchestrator.initResources<string>({
+            resourceName: AWS_FIELDS.NODE_TYPE,
+            dispatch: awsDispatch,
+            errorObject,
+            setErrorObject,
+            fetcher: () => AwsService.getAwsNodeTypes(),
+            fxnSelectDefault: (nodeTypes: string[]) => AwsDefaults.selectDefaultNodeType(nodeTypes, getDefaultNodeTypes(nodeProfile)),
+        });
     }
 
     static initAvailabilityZones(props: AwsOrchestratorProps) {
@@ -104,12 +96,12 @@ export class AwsOrchestrator {
 
     static getAZFieldsForNodeProfile(nodeProfile: string): { [key: string]: AWS_FIELDS }[] {
         if (nodeProfile === AWS_NODE_PROFILE_NAMES.SINGLE_NODE) {
-            return [{ name: AWS_FIELDS.AVAILABILITY_ZONE_1, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE }];
+            return [{ name: AWS_FIELDS.AVAILABILITY_ZONE_1, workerNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE }];
         }
         return [
-            { name: AWS_FIELDS.AVAILABILITY_ZONE_1, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE },
-            { name: AWS_FIELDS.AVAILABILITY_ZONE_2, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_2_NODE_TYPE },
-            { name: AWS_FIELDS.AVAILABILITY_ZONE_3, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_3_NODE_TYPE },
+            { name: AWS_FIELDS.AVAILABILITY_ZONE_1, workerNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE },
+            { name: AWS_FIELDS.AVAILABILITY_ZONE_2, workerNodeType: AWS_FIELDS.AVAILABILITY_ZONE_2_NODE_TYPE },
+            { name: AWS_FIELDS.AVAILABILITY_ZONE_3, workerNodeType: AWS_FIELDS.AVAILABILITY_ZONE_3_NODE_TYPE },
         ];
     }
 
@@ -123,7 +115,7 @@ export class AwsOrchestrator {
                 errorObject,
                 setErrorObject,
                 nodeProfile,
-                azFields[i].workNodeType
+                azFields[i].workerNodeType
             );
             awsDispatch({
                 type: INPUT_CHANGE,
