@@ -13,6 +13,7 @@ import { Providers } from '../constants/Providers.constants';
 import { Store } from '../../state-management/stores/Store';
 import { STORE_SECTION_FORM } from '../../state-management/reducers/Form.reducer';
 import { STORE_SECTION_RESOURCES } from '../../state-management/reducers/Resources.reducer';
+import { SelectedAvailabiltyZoneData } from '../../views/management-cluster/aws/aws-mc-common/default-service/AwsDefaults.service';
 import { TOGGLE_APP_STATUS } from '../../state-management/actions/Ui.actions';
 
 const useAwsDeployment = () => {
@@ -47,7 +48,6 @@ const useAwsDeployment = () => {
             vpc: {
                 cidr: awsData[AWS_FIELDS.VPC_CIDR],
                 vpcID: '',
-                // azs: createAZList(awsData[AWS_FIELDS.SELECTED_AZ_OBJECTS]),
                 azs: createAZPayLoadObject(),
             },
             enableAuditLogging: awsData[AWS_FIELDS.ENABLE_AUDIT_LOGGING],
@@ -100,10 +100,10 @@ const useAwsDeployment = () => {
     };
 
     const createAZPayLoadObject = () => {
-        const azs: { [key: string]: string }[] = [];
+        const azs: SelectedAvailabiltyZoneData[] = [];
         const defaultAZ: { [key: string]: string }[] = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.DEFAULT_AZ];
         defaultAZ.forEach((az) => {
-            const azObject: { [key: string]: string } = {
+            const azObject: SelectedAvailabiltyZoneData = {
                 name: awsState[STORE_SECTION_FORM][az.name],
                 workNodeType: awsState[STORE_SECTION_FORM][az.workNodeType],
                 publicSubnetID: '',

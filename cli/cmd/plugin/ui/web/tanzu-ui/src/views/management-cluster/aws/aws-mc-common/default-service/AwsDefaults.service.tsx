@@ -1,14 +1,13 @@
 // App imports
-import { AwsService, AWSVirtualMachine, AWSAvailabilityZone } from '../../../../../swagger-api';
+import { AWSVirtualMachine, AWSAvailabilityZone } from '../../../../../swagger-api';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { first } from '../../../../../shared/utilities/Array.util';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
 import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 
 export interface SelectedAvailabiltyZoneData {
-    id: string;
     name: string;
-    workerNodeType: string;
+    workNodeType: string;
     publicSubnetID: string;
     privateSubnetID: string;
 }
@@ -46,7 +45,9 @@ export class AwsDefaults {
                         defaultAZNameList.push(az);
                     });
                 } else {
-                    console.error('There is not enough Availability Zone');
+                    console.error(
+                        `For profile ${nodeProfile}, we expect to use 3 node profiles, but azList has a length of ${azList.length}`
+                    );
                 }
                 return defaultAZNameList;
             }
