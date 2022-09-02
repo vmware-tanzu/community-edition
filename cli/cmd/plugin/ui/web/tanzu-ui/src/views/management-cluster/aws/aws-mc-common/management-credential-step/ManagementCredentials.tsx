@@ -116,19 +116,13 @@ function ManagementCredentials(props: Partial<StepProps>) {
     }, []);
 
     useEffect(() => {
-        // console.log(';;;;;;;;;;;;;;;;');
-        // console.log(awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]);
-        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]) {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             AwsOrchestrator.initAvailabilityZones({ awsState, awsDispatch, errorObject, setErrorObject });
         }
-    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.REGION]]);
+    }, [connectionStatus]);
 
     useEffect(() => {
-        console.log('>>>>>>>>>');
-        console.log(awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]);
-        console.log(awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]);
         if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES] !== undefined) {
-            console.log('???????????');
             const azs = AwsDefaults.getDefaulAvailabilityZones(
                 awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES],
                 awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]

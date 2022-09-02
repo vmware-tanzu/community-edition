@@ -53,17 +53,6 @@ export class AwsDefaults {
         }
     };
 
-    static defaulAvailabilityZoneNodeTypeStrategy = (azList: SelectedAvailabiltyZoneData[], nodeProfile: string, az: string) => {
-        const defaultNodeTypes = getDefaultNodeTypes(nodeProfile);
-        for (const az of azList) {
-            for (let i = 0; i < defaultNodeTypes.length; i++) {
-                if (az.workerNodeType === defaultNodeTypes[i]) {
-                    return az;
-                }
-            }
-        }
-    };
-
     static selectDefaultNodeType(availableNodeTypes: string[], desiredNodeTypes: string[]): string {
         // TODO: implement correct strategy
         const set = new Set(availableNodeTypes);
@@ -73,20 +62,5 @@ export class AwsDefaults {
             }
         }
         return '';
-    }
-
-    static async createAZNodeType(defaultAZName: { [key: string]: string }) {
-        const azNodeTypes: SelectedAvailabiltyZoneData[] = [];
-        const nodeTypes = await AwsService.getAwsNodeTypes(defaultAZName.name);
-        nodeTypes.map((nodeType) => {
-            azNodeTypes.push({
-                id: defaultAZName.id,
-                name: defaultAZName.name,
-                workerNodeType: nodeType,
-                publicSubnetID: '',
-                privateSubnetID: '',
-            });
-        });
-        return azNodeTypes;
     }
 }

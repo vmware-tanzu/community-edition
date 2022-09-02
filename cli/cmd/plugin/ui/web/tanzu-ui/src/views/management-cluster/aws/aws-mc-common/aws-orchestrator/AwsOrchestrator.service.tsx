@@ -94,7 +94,6 @@ export class AwsOrchestrator {
 
     static initAvailabilityZones(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        console.log('<<<<<<<<<<<<<');
         DefaultOrchestrator.initResources<AWSKeyPair>({
             resourceName: AWS_FIELDS.AVAILABILITY_ZONES,
             dispatch: awsDispatch,
@@ -104,7 +103,7 @@ export class AwsOrchestrator {
         });
     }
 
-    static getNodeTypeFieldsForNodeProfile(nodeProfile: string): { [key: string]: AWS_FIELDS }[] {
+    static getAZFieldsForNodeProfile(nodeProfile: string): { [key: string]: AWS_FIELDS }[] {
         if (nodeProfile === AWS_NODE_PROFILE_NAMES.SINGLE_NODE) {
             return [{ name: AWS_FIELDS.AVAILABILITY_ZONE_1, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE }];
         }
@@ -115,17 +114,9 @@ export class AwsOrchestrator {
         ];
     }
 
-    static getAZNameForNodeProfile(nodeProfile: string): AWS_FIELDS[] {
-        if (nodeProfile === AWS_NODE_PROFILE_NAMES.SINGLE_NODE) {
-            return [AWS_FIELDS.AVAILABILITY_ZONE_1];
-        }
-        return [AWS_FIELDS.AVAILABILITY_ZONE_1, AWS_FIELDS.AVAILABILITY_ZONE_2, AWS_FIELDS.AVAILABILITY_ZONE_3];
-    }
-
     static initNodeTypesForAz(props: AwsOrchestratorProps, azs: AWSAvailabilityZone[], nodeProfile: string) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        const nodeTypeFields = AwsOrchestrator.getNodeTypeFieldsForNodeProfile(nodeProfile);
-        // const azNames = AwsOrchestrator.getAZNameForNodeProfile(nodeProfile);
+        const azFields = AwsOrchestrator.getAZFieldsForNodeProfile(nodeProfile);
         for (let i = 0; i < azs.length; i++) {
             AwsOrchestrator.initNodeTypeForAZ(
                 azs[i].name ?? '',
@@ -133,18 +124,18 @@ export class AwsOrchestrator {
                 errorObject,
                 setErrorObject,
                 nodeProfile,
-                nodeTypeFields[i].workNodeType
+                azFields[i].workNodeType
             );
             awsDispatch({
                 type: INPUT_CHANGE,
-                field: nodeTypeFields[i].name,
+                field: azFields[i].name,
                 payload: azs[i].name,
             } as FormAction);
         }
         awsDispatch({
             type: RESOURCE.ADD_RESOURCES,
             resourceName: AWS_FIELDS.DEFAULT_AZ,
-            payload: nodeTypeFields,
+            payload: azFields,
         } as ResourceAction);
     }
 
