@@ -127,7 +127,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
     }, [connectionStatus]);
 
     useEffect(() => {
-        if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES] !== undefined) {
+        if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]) {
             const azs = AwsDefaults.getDefaulAvailabilityZones(
                 awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES],
                 awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
