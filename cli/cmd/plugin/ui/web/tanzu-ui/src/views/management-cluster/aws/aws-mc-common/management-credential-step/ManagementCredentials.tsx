@@ -11,6 +11,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // App import
+import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsService } from '../../../../../swagger-api';
 import { AwsStore } from '../../store/Aws.store.mc';
@@ -29,7 +30,6 @@ import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
 import './ManagementCredentials.scss';
-import { AwsDefaults } from '../default-service/AwsDefaults.service';
 
 ClarityIcons.addIcons(refreshIcon, connectIcon, infoCircleIcon);
 

@@ -61,7 +61,7 @@ export class AwsOrchestrator {
 
     static initEC2KeyPairs(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        DefaultOrchestrator.initResources<AWSAvailabilityZone>({
+        DefaultOrchestrator.initResources<AWSKeyPair>({
             resourceName: AWS_FIELDS.EC2_KEY_PAIR,
             dispatch: awsDispatch,
             errorObject,
@@ -93,7 +93,7 @@ export class AwsOrchestrator {
 
     static initAvailabilityZones(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
-        DefaultOrchestrator.initResources<AWSKeyPair>({
+        DefaultOrchestrator.initResources<AWSAvailabilityZone>({
             resourceName: AWS_FIELDS.AVAILABILITY_ZONES,
             dispatch: awsDispatch,
             errorObject,

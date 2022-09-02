@@ -1,9 +1,9 @@
 // App imports
 import { AWSVirtualMachine, AWSAvailabilityZone } from '../../../../../swagger-api';
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
+import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { first } from '../../../../../shared/utilities/Array.util';
 import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
-import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 
 export interface SelectedAvailabiltyZoneData {
     name: string;
