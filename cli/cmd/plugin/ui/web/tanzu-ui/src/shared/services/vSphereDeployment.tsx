@@ -25,12 +25,13 @@ const useVSphereDeployment = () => {
     };
 
     const getVSphereRequestPayload = () => {
+        const secureLogin = vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USETHUMBPRINT] || false;
         const vSphereClusterParams: VsphereManagementClusterParams = {
             vsphereCredentials: {
                 host: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.SERVERNAME],
-                insecure: !vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USETHUMBPRINT],
+                insecure: !secureLogin,
                 password: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.PASSWORD],
-                thumbprint: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.THUMBPRINT],
+                thumbprint: secureLogin ? vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.THUMBPRINT] : undefined,
                 username: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USERNAME],
             },
             clusterName: vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.CLUSTERNAME],
