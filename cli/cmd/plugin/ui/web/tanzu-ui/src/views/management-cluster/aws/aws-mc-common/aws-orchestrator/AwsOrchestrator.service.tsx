@@ -12,7 +12,7 @@ import {
 } from '../../../default-orchestrator/DefaultOrchestrator';
 import { NodeProfileType } from '../../../../../shared/components/FormInputComponents/NodeProfile/NodeProfile';
 import { RESOURCE } from '../../../../../state-management/actions/Resources.actions';
-import { StoreDispatch, FormAction } from '../../../../../shared/types/types';
+import { StoreDispatch, FormAction, ResourceAction } from '../../../../../shared/types/types';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import { STORE_SECTION_RESOURCES } from '../../../../../state-management/reducers/Resources.reducer';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
@@ -94,6 +94,7 @@ export class AwsOrchestrator {
 
     static initAvailabilityZones(props: AwsOrchestratorProps) {
         const { awsDispatch, setErrorObject, errorObject } = props;
+        console.log('<<<<<<<<<<<<<');
         DefaultOrchestrator.initResources<AWSKeyPair>({
             resourceName: AWS_FIELDS.AVAILABILITY_ZONES,
             dispatch: awsDispatch,
@@ -103,25 +104,48 @@ export class AwsOrchestrator {
         });
     }
 
-    static getNodeTypeFieldsForNodeProfile(nodeProfile: string): AWS_FIELDS[] {
+    static getNodeTypeFieldsForNodeProfile(nodeProfile: string): { [key: string]: AWS_FIELDS }[] {
         if (nodeProfile === AWS_NODE_PROFILE_NAMES.SINGLE_NODE) {
-            return [AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE];
+            return [{ name: AWS_FIELDS.AVAILABILITY_ZONE_1, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE }];
         }
         return [
-            AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE,
-            AWS_FIELDS.AVAILABILITY_ZONE_2_NODE_TYPE,
-            AWS_FIELDS.AVAILABILITY_ZONE_3_NODE_TYPE,
+            { name: AWS_FIELDS.AVAILABILITY_ZONE_1, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_1_NODE_TYPE },
+            { name: AWS_FIELDS.AVAILABILITY_ZONE_2, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_2_NODE_TYPE },
+            { name: AWS_FIELDS.AVAILABILITY_ZONE_3, workNodeType: AWS_FIELDS.AVAILABILITY_ZONE_3_NODE_TYPE },
         ];
+    }
+
+    static getAZNameForNodeProfile(nodeProfile: string): AWS_FIELDS[] {
+        if (nodeProfile === AWS_NODE_PROFILE_NAMES.SINGLE_NODE) {
+            return [AWS_FIELDS.AVAILABILITY_ZONE_1];
+        }
+        return [AWS_FIELDS.AVAILABILITY_ZONE_1, AWS_FIELDS.AVAILABILITY_ZONE_2, AWS_FIELDS.AVAILABILITY_ZONE_3];
     }
 
     static initNodeTypesForAz(props: AwsOrchestratorProps, azs: AWSAvailabilityZone[], nodeProfile: string) {
         const { awsDispatch, setErrorObject, errorObject } = props;
         const nodeTypeFields = AwsOrchestrator.getNodeTypeFieldsForNodeProfile(nodeProfile);
-
+        // const azNames = AwsOrchestrator.getAZNameForNodeProfile(nodeProfile);
         for (let i = 0; i < azs.length; i++) {
-            console.log('??????');
-            AwsOrchestrator.initNodeTypeForAZ(azs[i].name || '', awsDispatch, errorObject, setErrorObject, nodeProfile, nodeTypeFields[i]);
+            AwsOrchestrator.initNodeTypeForAZ(
+                azs[i].name ?? '',
+                awsDispatch,
+                errorObject,
+                setErrorObject,
+                nodeProfile,
+                nodeTypeFields[i].workNodeType
+            );
+            awsDispatch({
+                type: INPUT_CHANGE,
+                field: nodeTypeFields[i].name,
+                payload: azs[i].name,
+            } as FormAction);
         }
+        awsDispatch({
+            type: RESOURCE.ADD_RESOURCES,
+            resourceName: AWS_FIELDS.DEFAULT_AZ,
+            payload: nodeTypeFields,
+        } as ResourceAction);
     }
 
     static initNodeTypeForAZ(

@@ -116,36 +116,36 @@ export function getDefaultNodeTypes(nodeProfile: string): Array<string> {
     return AWS_DEFAULT_INSTANCE_TYPES[nodeProfile];
 }
 
-export function createAZList(storedAZObjects: { [key: string]: any }) {
-    const azList: { [key: string]: string }[] = [];
-    const workNodeType = /work-node-type/;
-    const publicSubnetID = /public-subnet-id/;
-    const privateSubnetID = /private-subnet-id/;
-    const keyMap: { [key: string]: string[] } = {};
+// export function createAZList(storedAZObjects: { [key: string]: any }) {
+//     const azList: { [key: string]: string }[] = [];
+//     const workNodeType = /work-node-type/;
+//     const publicSubnetID = /public-subnet-id/;
+//     const privateSubnetID = /private-subnet-id/;
+//     const keyMap: { [key: string]: string[] } = {};
 
-    Object.keys(storedAZObjects).map((key: string) => {
-        const nameSplit = key.split('-');
-        if (keyMap[nameSplit[2]] !== undefined) {
-            keyMap[nameSplit[2]].push(key);
-        } else {
-            keyMap[nameSplit[2]] = [key];
-        }
-    });
+//     Object.keys(storedAZObjects).map((key: string) => {
+//         const nameSplit = key.split('-');
+//         if (keyMap[nameSplit[2]] !== undefined) {
+//             keyMap[nameSplit[2]].push(key);
+//         } else {
+//             keyMap[nameSplit[2]] = [key];
+//         }
+//     });
 
-    Object.keys(keyMap).map((key) => {
-        const az: { [key: string]: string } = {};
-        keyMap[key].map((key) => {
-            if (typeof storedAZObjects[key] === 'object') {
-                az['name'] = storedAZObjects[key]['name'];
-            } else if (workNodeType.test(key)) {
-                az['workNodeType'] = storedAZObjects[key];
-            } else if (publicSubnetID.test(key)) {
-                az['publicSubnetID'] = storedAZObjects[key];
-            } else if (privateSubnetID.test(key)) {
-                az['privateSubnetID'] = storedAZObjects[key];
-            }
-        });
-        azList.push(az);
-    });
-    return azList;
-}
+//     Object.keys(keyMap).map((key) => {
+//         const az: { [key: string]: string } = {};
+//         keyMap[key].map((key) => {
+//             if (typeof storedAZObjects[key] === 'object') {
+//                 az['name'] = storedAZObjects[key]['name'];
+//             } else if (workNodeType.test(key)) {
+//                 az['workNodeType'] = storedAZObjects[key];
+//             } else if (publicSubnetID.test(key)) {
+//                 az['publicSubnetID'] = storedAZObjects[key];
+//             } else if (privateSubnetID.test(key)) {
+//                 az['privateSubnetID'] = storedAZObjects[key];
+//             }
+//         });
+//         azList.push(az);
+//     });
+//     return azList;
+// }
