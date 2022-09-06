@@ -24,6 +24,14 @@ export const enum AWS_FIELDS {
     HTTP_PROXY_ENABLED = 'httpProxyEnabled',
     LOAD_BALANCER_SCHEME_INTERNAL = 'loadBalancerSchemeInternal',
     NODE_TYPE = 'nodeType',
+    AVAILABILITY_ZONES = 'availabilityZones',
+    NODE_TYPES_BY_AZ = 'nodeTypesByAZ',
+    AVAILABILITY_ZONE_1 = 'availabilityZone1',
+    AVAILABILITY_ZONE_2 = 'availabilityZone2',
+    AVAILABILITY_ZONE_3 = 'availabilityZone3',
+    AVAILABILITY_ZONE_1_NODE_TYPE = 'availabilityZone1NodeType',
+    AVAILABILITY_ZONE_2_NODE_TYPE = 'availabilityZone2NodeType',
+    AVAILABILITY_ZONE_3_NODE_TYPE = 'availabilityZone3NodeType',
 }
 
 export const enum AWS_NODE_PROFILE_NAMES {

@@ -11,6 +11,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // App import
+import { AwsDefaults } from '../default-service/AwsDefaults.service';
 import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsService } from '../../../../../swagger-api';
 import { AwsStore } from '../../store/Aws.store.mc';
@@ -111,8 +112,33 @@ function ManagementCredentials(props: Partial<StepProps>) {
     }, [connectionStatus]);
 
     useEffect(() => {
-        AwsOrchestrator.initNodeProfile({ awsState, awsDispatch, errorObject, setErrorObject });
-    }, []);
+        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]) {
+            AwsOrchestrator.initControlPlaneNodeType(
+                { awsState, awsDispatch, errorObject, setErrorObject },
+                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+            );
+        }
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]]);
+
+    useEffect(() => {
+        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
+            AwsOrchestrator.initAvailabilityZones({ awsState, awsDispatch, errorObject, setErrorObject });
+        }
+    }, [connectionStatus]);
+
+    useEffect(() => {
+        if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]) {
+            const azs = AwsDefaults.getDefaulAvailabilityZones(
+                awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES],
+                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+            );
+            AwsOrchestrator.initNodeTypesForAz(
+                { awsState, awsDispatch, errorObject, setErrorObject },
+                azs,
+                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
+            );
+        }
+    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE], awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]]);
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
