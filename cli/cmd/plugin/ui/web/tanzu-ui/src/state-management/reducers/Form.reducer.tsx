@@ -1,6 +1,6 @@
 // App imports
 import { FormAction } from '../../shared/types/types';
-import { INPUT_CHANGE, INPUT_CLEAR, SET_DEFAULTS } from '../actions/Form.actions';
+import { INPUT_CHANGE, INPUT_CLEAR, BATCH_SET } from '../actions/Form.actions';
 import { ReducerDescriptor } from '../../shared/utilities/Reducer.utils';
 
 export const STORE_SECTION_FORM = 'dataForm';
@@ -31,7 +31,7 @@ function formReducer(state: FormState, action: FormAction) {
         case INPUT_CLEAR:
             newState = clearInputField(state, action);
             break;
-        case SET_DEFAULTS:
+        case BATCH_SET:
             newState = { ...state, ...action.payload };
             break;
         default:
@@ -45,6 +45,6 @@ function formReducer(state: FormState, action: FormAction) {
 export const formReducerDescriptor = {
     name: 'form reducer',
     reducer: formReducer,
-    actionTypes: [INPUT_CHANGE, INPUT_CLEAR, SET_DEFAULTS],
+    actionTypes: [INPUT_CHANGE, INPUT_CLEAR, BATCH_SET],
     storeSection: STORE_SECTION_FORM,
 } as ReducerDescriptor;

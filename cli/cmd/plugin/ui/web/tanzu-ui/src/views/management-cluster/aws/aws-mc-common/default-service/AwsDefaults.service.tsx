@@ -3,8 +3,6 @@ import { AWSVirtualMachine, AWSAvailabilityZone } from '../../../../../swagger-a
 import { AWSKeyPair } from '../../../../../swagger-api/models/AWSKeyPair';
 import { AWS_NODE_PROFILE_NAMES } from '../../aws-mc-basic/AwsManagementClusterBasic.constants';
 import { first } from '../../../../../shared/utilities/Array.util';
-import { getDefaultNodeTypes } from '../../../../../shared/constants/defaults/aws.defaults';
-
 export class AwsDefaults {
     // The strategy of deciding default os image
     static selectDefaultOsImage = (osImages: AWSVirtualMachine[]) => {

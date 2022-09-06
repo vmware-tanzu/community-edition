@@ -92,7 +92,7 @@ interface ResourceDataWithDefaultParams<RESOURCE_TYPE> {
     segment?: string;
 }
 
-function saveResourceDataWithDefault<RESOURCE_TYPE>(params: ResourceDataWithDefaultParams<RESOURCE_TYPE>) {
+export function saveResourceDataWithDefault<RESOURCE_TYPE>(params: ResourceDataWithDefaultParams<RESOURCE_TYPE>) {
     console.log(`saveResourceDataWithDefault() dispatching event for ${params.resourceName}`);
     params.dispatch({
         type: RESOURCE.ADD_RESOURCES_WITH_DEFAULT,

@@ -15,7 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
 import { createNodeProfileFieldUpdateObject, VSPHERE_NODE_PROFILES } from './VsphereNodeProfileUtil';
 import { FormAction } from '../../../../shared/types/types';
-import { INPUT_CHANGE, SET_DEFAULTS } from '../../../../state-management/actions/Form.actions';
+import { INPUT_CHANGE, BATCH_SET } from '../../../../state-management/actions/Form.actions';
 import {
     NodeProfileType,
     NodeProfile,
@@ -109,7 +109,7 @@ export function VsphereClusterSettingsStep(props: Partial<StepProps>) {
 
     const recordFieldsRelatedToNodeProfile = (profileId: VSPHERE_NODE_PROFILES) => {
         const fieldValues = createNodeProfileFieldUpdateObject(profileId);
-        vsphereDispatch({ type: SET_DEFAULTS, payload: fieldValues, field: '' } as FormAction);
+        vsphereDispatch({ type: BATCH_SET, payload: fieldValues } as FormAction);
     };
 
     const initialSelectedNodeProfileId = vsphereState[VSPHERE_FIELDS.NODE_PROFILE_TYPE];

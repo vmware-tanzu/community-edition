@@ -8,13 +8,13 @@ import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import * as yup from 'yup';
 
 // App imports
+import { AzureDefaults } from './default-service/AzureDefaults.service';
 import { AzureVirtualMachine } from '../../../../swagger-api';
 import { AzureStore } from '../store/Azure.store.mc';
 import { AZURE_FIELDS, AZURE_NODE_PROFILE_NAMES } from '../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { ClusterName, clusterNameValidation } from '../../../../shared/components/FormInputComponents/ClusterName/ClusterName';
-import { FormAction } from '../../../../shared/types/types';
-import { getResource } from '../../../../state-management/reducers/Resources.reducer';
-import { INPUT_CHANGE } from '../../../../state-management/actions/Form.actions';
+import { getResource, STORE_SECTION_RESOURCES } from '../../../../state-management/reducers/Resources.reducer';
+import { BATCH_SET } from '../../../../state-management/actions/Form.actions';
 import {
     NodeProfileType,
     nodeProfileValidation,
@@ -86,13 +86,6 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     // NOTE: we assume that the osImages were set in the store during the credentials step
     const osImages = getResource<AzureVirtualMachine[]>(AZURE_FIELDS.OS_IMAGE, azureState) || [];
 
-    let initialSelectedNodeProfileId = azureState[AZURE_FIELDS.NODE_PROFILE];
-    if (!initialSelectedNodeProfileId) {
-        initialSelectedNodeProfileId = nodeInstanceTypes[0].id;
-        setValue(AZURE_FIELDS.NODE_PROFILE, initialSelectedNodeProfileId);
-    }
-    const [selectedInstanceTypeId, setSelectedInstanceTypeId] = useState(initialSelectedNodeProfileId);
-
     function dismissAlert() {
         setNotification(null);
     }
@@ -104,12 +97,20 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
             azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE]
         );
     };
+    const selectedimage = azureState[STORE_SECTION_FORM][AZURE_FIELDS.OS_IMAGE];
+    useEffect(() => {
+        if (selectedimage) {
+            setValue(AZURE_FIELDS.OS_IMAGE, selectedimage.name);
+        }
+    }, [selectedimage, setValue]);
+
+    const selectedNodeProfile = azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE];
 
     useEffect(() => {
-        if (azureState[STORE_SECTION_FORM][AZURE_FIELDS.OS_IMAGE]) {
-            setValue(AZURE_FIELDS.OS_IMAGE, azureState[STORE_SECTION_FORM][AZURE_FIELDS.OS_IMAGE].name);
+        if (selectedNodeProfile) {
+            setValue(AZURE_FIELDS.NODE_PROFILE, selectedNodeProfile);
         }
-    }, [azureState[STORE_SECTION_FORM][AZURE_FIELDS.OS_IMAGE]]);
+    }, [selectedNodeProfile, setValue]);
 
     const onSubmit: SubmitHandler<AzureClusterSettingFormInputs> = (data) => {
         if (canContinue() && goToStep && currentStep && submitForm) {
@@ -119,11 +120,18 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: any) => {
+        const nodeType = AzureDefaults.getDefaultNodeType(
+            azureState[STORE_SECTION_RESOURCES][AZURE_FIELDS.NODE_TYPE],
+            azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE]
+        );
         azureDispatch({
-            type: INPUT_CHANGE,
-            field,
-            payload: data,
-        } as FormAction);
+            type: BATCH_SET,
+            payload: {
+                [field]: data,
+                [AZURE_FIELDS.CONTROL_PLANE_MACHINE_TYPE]: nodeType,
+                [AZURE_FIELDS.WORKER_MACHINE_TYPE]: nodeType,
+            },
+        });
     };
 
     const onClusterNameChange = (clusterName: string) => {
@@ -132,7 +140,6 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
 
     const onInstanceTypeChange = (instanceType: string) => {
         onFieldChange(AZURE_FIELDS.NODE_PROFILE, instanceType);
-        setSelectedInstanceTypeId(instanceType);
     };
 
     return (
@@ -159,7 +166,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                             onOsImageSelected={(value) => {
                                 onFieldChange(AZURE_FIELDS.OS_IMAGE, value);
                             }}
-                            selectedImage={azureState[STORE_SECTION_FORM][AZURE_FIELDS.OS_IMAGE]}
+                            selectedImage={azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE]}
                         />
                     </div>
                     <div key="instance-type-section">
@@ -167,7 +174,7 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
                             field={AZURE_FIELDS.NODE_PROFILE}
                             nodeProfileTypes={nodeInstanceTypes}
                             nodeProfileTypeChange={onInstanceTypeChange}
-                            selectedProfileId={selectedInstanceTypeId}
+                            selectedProfileId={azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE]}
                         />
                     </div>
                 </div>

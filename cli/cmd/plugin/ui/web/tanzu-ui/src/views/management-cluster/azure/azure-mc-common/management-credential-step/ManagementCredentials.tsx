@@ -10,11 +10,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // App import
 import { AzureAccountParams, AzureLocation, AzureService, ApiError } from '../../../../../swagger-api';
-import { AzureOrchestrator } from '../azure-orchestrator/AzureOrchestrator.service';
+import AzureOrchestrator from '../azure-orchestrator/AzureOrchestrator.service';
 import { AzureStore } from '../../store/Azure.store.mc';
 import { AZURE_FIELDS } from '../../azure-mc-basic/AzureManagementClusterBasic.constants';
 import { CONNECTION_STATUS } from '../../../../../shared/components/ConnectionNotification/ConnectionNotification';
-import { DefaultOrchestrator } from '../../../default-orchestrator/DefaultOrchestrator';
 import { FormAction } from '../../../../../shared/types/types';
 import { INPUT_CHANGE } from '../../../../../state-management/actions/Form.actions';
 import { managementCredentialFormSchema } from './management.credential.form.schema';
@@ -23,7 +22,6 @@ import SpinnerSelect from '../../../../../shared/components/Select/SpinnerSelect
 import { StepProps } from '../../../../../shared/components/wizard/Wizard';
 import { STORE_SECTION_FORM } from '../../../../../state-management/reducers/Form.reducer';
 import UseUpdateTabStatus from '../../../../../shared/components/wizard/UseUpdateTabStatus.hooks';
-
 export interface FormInputs {
     [AZURE_FIELDS.TENANT_ID]: string;
     [AZURE_FIELDS.CLIENT_ID]: string;
@@ -43,6 +41,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
         resolver: yupResolver(managementCredentialFormSchema),
         mode: 'all',
     });
+
+    const [nodeProfileErr] = AzureOrchestrator.useInitNodeProfile();
+    const [osImageErr] = AzureOrchestrator.useInitOsImages();
     const {
         register,
         handleSubmit,
@@ -54,6 +55,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const [message, setMessage] = useState('');
     const [regionLoading, setRegionLoading] = useState(false);
     const [errorObject, setErrorObject] = useState<{ [fieldName: string]: ApiError }>({});
+
+    useEffect(() => {
+        setErrorObject({ ...nodeProfileErr, ...osImageErr });
+    }, [nodeProfileErr, osImageErr]);
 
     // update tab status bar
     if (updateTabStatus) {
@@ -97,10 +102,10 @@ function ManagementCredentials(props: Partial<StepProps>) {
     const handleConnect = async () => {
         const params: AzureAccountParams = {
             subscriptionId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
-            tenantId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
-            clientId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
-            clientSecret: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
-            azureCloud: azureState[STORE_SECTION_FORM][AZURE_FIELDS.SUBSCRIPTION_ID],
+            tenantId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.TENANT_ID],
+            clientId: azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLIENT_ID],
+            clientSecret: azureState[STORE_SECTION_FORM][AZURE_FIELDS.CLIENT_SECRET],
+            azureCloud: azureState[STORE_SECTION_FORM][AZURE_FIELDS.AZURE_ENVIRONMENT],
         };
         try {
             setConnectionStatus(CONNECTION_STATUS.CONNECTING);
@@ -155,14 +160,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
         return;
     }
-
-    useEffect(() => {
-        if (azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]) {
-            AzureOrchestrator.initOsImages({ azureState, azureDispatch, errorObject, setErrorObject });
-        } else {
-            DefaultOrchestrator.clearResourceData(azureDispatch, AZURE_FIELDS.OS_IMAGE);
-        }
-    }, [azureState[STORE_SECTION_FORM][AZURE_FIELDS.REGION]]);
 
     return (
         <div className="wizard-content-container azure-credential">

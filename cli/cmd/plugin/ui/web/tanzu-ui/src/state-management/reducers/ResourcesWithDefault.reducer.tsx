@@ -15,7 +15,6 @@ function updateResourcesSection(state: any, action: ResourceWithDefaultAction) {
     const resourcesActionType = action.type === RESOURCE.DELETE_RESOURCES_WITH_DEFAULT ? RESOURCE.DELETE_RESOURCES : RESOURCE.ADD_RESOURCES;
     const resourcesAction = { ...action, type: resourcesActionType } as ResourceAction;
     newState[STORE_SECTION_RESOURCES] = resourceReducerDescriptor.reducer(state[STORE_SECTION_RESOURCES], resourcesAction);
-
     return newState;
 }
 
