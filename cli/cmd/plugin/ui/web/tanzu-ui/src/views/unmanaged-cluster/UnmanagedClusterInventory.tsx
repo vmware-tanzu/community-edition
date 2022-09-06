@@ -33,7 +33,7 @@ function UnmanagedClusterInventory() {
         setShowPageLoading(true);
         try {
             const data = await UnmanagedService.getUnmanagedClusters();
-            data.filter((cluster) => {
+            data.forEach((cluster) => {
                 if (cluster.status === 'Unknown') {
                     setNotification({
                         status: NotificationStatus.DANGER,
