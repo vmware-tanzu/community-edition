@@ -14,9 +14,10 @@ ClarityIcons.addIcons(moonIcon, sunIcon);
 function ThemeToggle() {
     const themeService = useThemeService();
 
+    // TODO: refactor custom hook so useEffect not needed
     useEffect(() => {
         themeService.initializeTheme();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function displayAlternatingThemeSwitch() {
         const theme = themeService.getTheme();
