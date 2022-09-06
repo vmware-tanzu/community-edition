@@ -187,13 +187,17 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
         setIpFamily(newValue);
     };
 
-    const handleUseThumbprintChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target['checked'];
+    const recordUseThumbprint = (useThumbprint: boolean) => {
         vsphereDispatch({
             type: INPUT_CHANGE,
             field: VSPHERE_FIELDS.USETHUMBPRINT,
-            payload: newValue,
+            payload: useThumbprint,
         } as FormAction);
+    };
+
+    const handleUseThumbprintChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target['checked'];
+        recordUseThumbprint(newValue);
         setUseThumbprint(newValue);
     };
 
@@ -273,6 +277,10 @@ export function VsphereCredentialsStep(props: Partial<StepProps>) {
     // value). So now we want to get the thumbprint of the now-valid server. This is taken care of by having verifyVsphereThumbprint in
     // the dependencies list, because that function is re-assigned whenever ipFamily changes, which will trigger this effect.
     useEffect(() => {
+        if (vsphereState[STORE_SECTION_FORM][VSPHERE_FIELDS.USETHUMBPRINT] === undefined) {
+            recordUseThumbprint(true);
+        }
+        vsphereDispatch({ type: INPUT_CHANGE, field: VSPHERE_FIELDS.USETHUMBPRINT } as FormAction);
         vsphereDispatch({ type: INPUT_CLEAR, field: VSPHERE_FIELDS.THUMBPRINT } as FormAction);
         setThumbprintErrorMessage('');
         if (serverNameAtBlur) {
