@@ -200,9 +200,9 @@ function initNodeTypeForAZ(
 const AwsOrchestrator = {
     useInitOsImages,
     useInitControlPlaneNodeType,
-    getAZFieldsForNodeProfile,
     useInitEC2KeyPairs,
     useInitAvailabilityZones,
     useInitNodeTypesForAz,
+    getAZFieldsForNodeProfile,
 };
 export default AwsOrchestrator;
