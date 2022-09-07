@@ -31,6 +31,14 @@ export const enum AZURE_FIELDS {
     NODE_TYPE = 'nodeType',
     CONTROL_PLANE_MACHINE_TYPE = 'controlPlaneMachineType',
     WORKER_MACHINE_TYPE = 'workerMachineType',
+    NETWORK_NAME = 'networkName',
+    CLUSTER_DNS_NAME = 'clusterDnsName',
+    CLUSTER_NODE_CIDR = 'clusterNodeCidr',
+    LABELS = 'labels',
+    CLUSTER_LOCATION = 'clusterLocation',
+    CLUSTER_DESCRIPTION = 'clusterDescription',
+    IDM_TYPE = 'idmType',
+    PRIVATE_IP = 'privateIp',
 }
 
 export const enum AZURE_NODE_PROFILE_NAMES {

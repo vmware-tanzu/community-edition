@@ -12,6 +12,7 @@ export const AZURE_DEFAULT_VALUES = {
     [AZURE_FIELDS.ACTIVATE_AUDIT_LOGGING]: false,
     [AZURE_FIELDS.MACHINE_HEALTH_CHECK_ENABLED]: true,
     [AZURE_FIELDS.RESOURCE_GROUP]: 'tanzu-resource-group-default',
+    [AZURE_FIELDS.PRIVATE_IP]: '',
     // VNET
     [AZURE_FIELDS.VNET_NAME]: 'tanzu-vnet-name-default',
     [AZURE_FIELDS.VNET_CIDR]: '10.0.0.0/16',
@@ -20,10 +21,18 @@ export const AZURE_DEFAULT_VALUES = {
     [AZURE_FIELDS.WORKER_NODE_SUBNET]: 'tanzu-worker-node-subnet-default',
     [AZURE_FIELDS.WORKER_NODE_SUBNET_CIDR]: '10.0.1.0/24',
     // Network
+    [AZURE_FIELDS.NETWORK_NAME]: '',
+    [AZURE_FIELDS.CLUSTER_DNS_NAME]: '',
+    [AZURE_FIELDS.CLUSTER_NODE_CIDR]: '',
     [AZURE_FIELDS.CNI_TYPE]: 'antrea', // TODO: refactor to use CniProviders Const
     [AZURE_FIELDS.CLUSTER_POD_CIDR]: '100.96.0.0/11',
     [AZURE_FIELDS.CLUSTER_SERVICE_CIDR]: '100.64.0.0/13',
     [AZURE_FIELDS.ACTIVATE_PROXY_SETTINGS]: false,
+    [AZURE_FIELDS.LABELS]: {},
+    // metadata
+    [AZURE_FIELDS.CLUSTER_DESCRIPTION]: '',
+    [AZURE_FIELDS.CLUSTER_LOCATION]: '',
+    [AZURE_FIELDS.IDM_TYPE]: 'none',
 };
 const PREFERRED_SINGLE_NODE_INSTANCE_TYPES_ORDERED: Array<string> = [
     'Standard_D2s_v3',

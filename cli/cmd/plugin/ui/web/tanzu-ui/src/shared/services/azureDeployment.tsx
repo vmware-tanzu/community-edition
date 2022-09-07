@@ -43,10 +43,14 @@ const useAzureDeployment = () => {
             location: formInfo[AZURE_FIELDS.REGION],
             machineHealthCheckEnabled: formInfo[AZURE_FIELDS.MACHINE_HEALTH_CHECK_ENABLED],
             networking: {
+                networkName: formInfo[AZURE_FIELDS.NETWORK_NAME],
+                clusterDNSName: formInfo[AZURE_FIELDS.CLUSTER_DNS_NAME],
+                clusterNodeCIDR: formInfo[AZURE_FIELDS.CLUSTER_NODE_CIDR],
                 clusterPodCIDR: formInfo[AZURE_FIELDS.CLUSTER_POD_CIDR],
                 clusterServiceCIDR: formInfo[AZURE_FIELDS.CLUSTER_SERVICE_CIDR],
                 cniType: formInfo[AZURE_FIELDS.CNI_TYPE],
             },
+            labels: formInfo[AZURE_FIELDS.LABELS],
             os: formInfo[AZURE_FIELDS.OS_IMAGE],
             resourceGroup: formInfo[AZURE_FIELDS.RESOURCE_GROUP],
             sshPublicKey: formInfo[AZURE_FIELDS.SSH_PUBLIC_KEY],
@@ -56,6 +60,14 @@ const useAzureDeployment = () => {
             workerMachineType: formInfo[AZURE_FIELDS.WORKER_MACHINE_TYPE],
             workerNodeSubnet: formInfo[AZURE_FIELDS.WORKER_NODE_SUBNET],
             workerNodeSubnetCidr: formInfo[AZURE_FIELDS.WORKER_NODE_SUBNET_CIDR],
+            annotations: {
+                description: formInfo[AZURE_FIELDS.CLUSTER_DESCRIPTION],
+                location: formInfo[AZURE_FIELDS.CLUSTER_LOCATION],
+            },
+            identityManagement: {
+                idm_type: formInfo[AZURE_FIELDS.IDM_TYPE],
+            },
+            frontendPrivateIp: formInfo[AZURE_FIELDS.PRIVATE_IP],
         };
         return azureClusterParams;
     };
