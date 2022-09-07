@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/addons/packages/external-dns/0.12.0/test
+module github.com/vmware-tanzu/community-edition/addons/packages/external-dns/0.12.2/test
 
 go 1.17
 
