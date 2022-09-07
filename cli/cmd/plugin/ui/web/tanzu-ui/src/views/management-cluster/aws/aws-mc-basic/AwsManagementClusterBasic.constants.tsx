@@ -32,6 +32,7 @@ export const enum AWS_FIELDS {
     AVAILABILITY_ZONE_1_NODE_TYPE = 'availabilityZone1NodeType',
     AVAILABILITY_ZONE_2_NODE_TYPE = 'availabilityZone2NodeType',
     AVAILABILITY_ZONE_3_NODE_TYPE = 'availabilityZone3NodeType',
+    // CONNECTSTATUS = 'connectStatus',
 }
 
 export const enum AWS_NODE_PROFILE_NAMES {
