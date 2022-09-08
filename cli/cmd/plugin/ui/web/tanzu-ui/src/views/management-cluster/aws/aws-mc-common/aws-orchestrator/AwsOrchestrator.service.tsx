@@ -63,12 +63,16 @@ function useInitOsImages(connectionStatus: CONNECTION_STATUS) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchOsImages();
         }
-    }, [connectionStatus]);
+    }, [awsDispatch, awsState, errorObject, setErrorObject, connectionStatus]);
 
     return [errorObject, setErrorObject];
 }
 
-function useInitEC2KeyPairs(connectionStatus: CONNECTION_STATUS, setKeyPairLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+function useInitEC2KeyPairs(
+    connectionStatus: CONNECTION_STATUS,
+    refresh: boolean,
+    setKeyPairLoading: React.Dispatch<React.SetStateAction<boolean>>
+) {
     const [{ awsDispatch, errorObject, setErrorObject }] = usePrerequisite();
 
     useEffect(() => {
@@ -87,7 +91,7 @@ function useInitEC2KeyPairs(connectionStatus: CONNECTION_STATUS, setKeyPairLoadi
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchEC2KeyPairs();
         }
-    }, [connectionStatus]);
+    }, [awsDispatch, errorObject, setErrorObject, setKeyPairLoading, connectionStatus, refresh]);
 
     return [errorObject, setErrorObject];
 }
@@ -112,7 +116,7 @@ function useInitControlPlaneNodeType(connectionStatus: CONNECTION_STATUS) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchControlPlaneNodeType();
         }
-    }, [selectedNodeProfile, connectionStatus]);
+    }, [awsDispatch, errorObject, setErrorObject, selectedNodeProfile, connectionStatus]);
     return [errorObject, setErrorObject];
 }
 
@@ -132,7 +136,7 @@ function useInitAvailabilityZones(connectionStatus: CONNECTION_STATUS) {
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchAvailabilityZones();
         }
-    }, [connectionStatus]);
+    }, [awsDispatch, errorObject, setErrorObject, connectionStatus]);
 
     return [errorObject, setErrorObject];
 }
@@ -152,6 +156,7 @@ function useInitNodeTypesForAz() {
     const [{ awsState, awsDispatch, errorObject, setErrorObject }] = usePrerequisite();
 
     const nodeProfile = awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE];
+    const availabilityZones = awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES];
 
     useEffect(() => {
         if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]) {
@@ -172,7 +177,7 @@ function useInitNodeTypesForAz() {
             };
             fetchOsImages();
         }
-    }, [nodeProfile, awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]]);
+    }, [nodeProfile, availabilityZones]);
 
     return [errorObject, setErrorObject];
 }
