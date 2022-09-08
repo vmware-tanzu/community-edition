@@ -68,7 +68,11 @@ function useInitOsImages(connectionStatus: CONNECTION_STATUS) {
     return [errorObject, setErrorObject];
 }
 
-function useInitEC2KeyPairs(connectionStatus: CONNECTION_STATUS, setKeyPairLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+function useInitEC2KeyPairs(
+    connectionStatus: CONNECTION_STATUS,
+    refresh: boolean,
+    setKeyPairLoading: React.Dispatch<React.SetStateAction<boolean>>
+) {
     const [{ awsDispatch, errorObject, setErrorObject }] = usePrerequisite();
 
     useEffect(() => {
@@ -87,7 +91,7 @@ function useInitEC2KeyPairs(connectionStatus: CONNECTION_STATUS, setKeyPairLoadi
         if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
             fetchEC2KeyPairs();
         }
-    }, [connectionStatus]);
+    }, [connectionStatus, refresh]);
 
     return [errorObject, setErrorObject];
 }

@@ -72,8 +72,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [credentialsType, setCredentialsType] = useState<CREDENTIAL_TYPE>(CREDENTIAL_TYPE.PROFILE);
     const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
+    const [refresh, setRefresh] = useState<boolean>(false);
     const [osImageErr] = AwsOrchestrator.useInitOsImages(connectionStatus);
-    const [ec2KeyPairErr] = AwsOrchestrator.useInitEC2KeyPairs(connectionStatus, setKeyPairLoading);
+    const [ec2KeyPairErr] = AwsOrchestrator.useInitEC2KeyPairs(connectionStatus, refresh, setKeyPairLoading);
     const [availabilityZonesErr] = AwsOrchestrator.useInitAvailabilityZones(connectionStatus);
     const [nodeProfileErr] = AwsOrchestrator.useInitControlPlaneNodeType(connectionStatus);
     const [azNodeTypesErr] = AwsOrchestrator.useInitNodeTypesForAz();
@@ -180,10 +181,7 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const handleRefresh = (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
-        setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-        setTimeout(() => {
-            setConnectionStatus(CONNECTION_STATUS.CONNECTED);
-        });
+        setRefresh(!refresh);
     };
 
     function showErrorInfo() {
