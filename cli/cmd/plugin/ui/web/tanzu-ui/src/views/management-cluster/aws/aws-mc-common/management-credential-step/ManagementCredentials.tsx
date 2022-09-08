@@ -11,8 +11,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // App import
-import { AwsDefaults } from '../default-service/AwsDefaults.service';
-import { AwsOrchestrator } from '../aws-orchestrator/AwsOrchestrator.service';
+import AwsOrchestrator from '../aws-orchestrator/AwsOrchestrator.service';
 import { AwsService } from '../../../../../swagger-api';
 import { AwsStore } from '../../store/Aws.store.mc';
 import { AWSAccountParams } from '../../../../../swagger-api/models/AWSAccountParams';
@@ -73,6 +72,12 @@ function ManagementCredentials(props: Partial<StepProps>) {
 
     const [credentialsType, setCredentialsType] = useState<CREDENTIAL_TYPE>(CREDENTIAL_TYPE.PROFILE);
     const [errorObject, setErrorObject] = useState<{ [key: string]: any }>({});
+    const [refresh, setRefresh] = useState<boolean>(false);
+    const [osImageErr] = AwsOrchestrator.useInitOsImages(connectionStatus);
+    const [ec2KeyPairErr] = AwsOrchestrator.useInitEC2KeyPairs(connectionStatus, refresh, setKeyPairLoading);
+    const [availabilityZonesErr] = AwsOrchestrator.useInitAvailabilityZones(connectionStatus);
+    const [nodeProfileErr] = AwsOrchestrator.useInitControlPlaneNodeType(connectionStatus);
+    const [azNodeTypesErr] = AwsOrchestrator.useInitNodeTypesForAz();
 
     useEffect(() => {
         // As we enter the page simulate the user having selected the default credentialsType
@@ -94,51 +99,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
     if (updateTabStatus) {
         UseUpdateTabStatus(errors, currentStep, updateTabStatus);
     }
-
     useEffect(() => {
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            const initEC2KeyPairs = async () => {
-                setKeyPairLoading(true);
-                await AwsOrchestrator.initEC2KeyPairs({
-                    awsState,
-                    awsDispatch,
-                    errorObject,
-                    setErrorObject,
-                });
-                setKeyPairLoading(false);
-            };
-            initEC2KeyPairs();
-        }
-    }, [connectionStatus]);
-
-    useEffect(() => {
-        if (awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]) {
-            AwsOrchestrator.initControlPlaneNodeType(
-                { awsState, awsDispatch, errorObject, setErrorObject },
-                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
-            );
-        }
-    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]]);
-
-    useEffect(() => {
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            AwsOrchestrator.initAvailabilityZones({ awsState, awsDispatch, errorObject, setErrorObject });
-        }
-    }, [connectionStatus]);
-
-    useEffect(() => {
-        if (awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]) {
-            const azs = AwsDefaults.getDefaulAvailabilityZones(
-                awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES],
-                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
-            );
-            AwsOrchestrator.initNodeTypesForAz(
-                { awsState, awsDispatch, errorObject, setErrorObject },
-                azs,
-                awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE]
-            );
-        }
-    }, [awsState[STORE_SECTION_FORM][AWS_FIELDS.NODE_PROFILE], awsState[STORE_SECTION_RESOURCES][AWS_FIELDS.AVAILABILITY_ZONES]]);
+        setErrorObject({ ...nodeProfileErr, ...osImageErr, ...ec2KeyPairErr, ...availabilityZonesErr, ...azNodeTypesErr });
+    }, [nodeProfileErr, osImageErr, ec2KeyPairErr, availabilityZonesErr, azNodeTypesErr]);
 
     const selectCredentialType = (event: ChangeEvent<HTMLSelectElement>) => {
         setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
@@ -181,7 +144,6 @@ function ManagementCredentials(props: Partial<StepProps>) {
             await AwsService.setAwsEndpoint(params);
             setConnectionStatus(CONNECTION_STATUS.CONNECTED);
             setMessage('Connected to AWS');
-            AwsOrchestrator.initOsImages({ awsState, awsDispatch, errorObject, setErrorObject });
         } catch (err: any) {
             setConnectionStatus(CONNECTION_STATUS.ERROR);
             setMessage(`Unable to connect to AWS: ${err.body.message}`);
@@ -217,21 +179,9 @@ function ManagementCredentials(props: Partial<StepProps>) {
         }
     };
 
-    const handleRefresh = async (event: MouseEvent<HTMLAnchorElement>) => {
+    const handleRefresh = (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
-        if (connectionStatus === CONNECTION_STATUS.CONNECTED) {
-            const initEC2KeyPairs = async () => {
-                setKeyPairLoading(true);
-                await AwsOrchestrator.initEC2KeyPairs({
-                    awsState,
-                    awsDispatch,
-                    errorObject,
-                    setErrorObject,
-                });
-                setKeyPairLoading(false);
-            };
-            initEC2KeyPairs();
-        }
+        setRefresh(!refresh);
     };
 
     function showErrorInfo() {
