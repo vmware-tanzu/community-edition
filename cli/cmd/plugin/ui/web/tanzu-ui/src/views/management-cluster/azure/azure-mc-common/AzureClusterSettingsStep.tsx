@@ -120,16 +120,17 @@ export function AzureClusterSettingsStep(props: Partial<StepProps>) {
     };
 
     const onFieldChange = (field: AZURE_CLUSTER_SETTING_STEP_FIELDS, data: any) => {
-        const nodeType = AzureDefaults.getDefaultNodeType(
-            azureState[STORE_SECTION_RESOURCES][AZURE_FIELDS.NODE_TYPE],
-            azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE]
-        );
+        const nodeTypes = azureState[STORE_SECTION_RESOURCES][AZURE_FIELDS.NODE_TYPE];
+        const nodeProfile = azureState[STORE_SECTION_FORM][AZURE_FIELDS.NODE_PROFILE];
+        const nodeType = AzureDefaults.getDefaultNodeType(nodeTypes, nodeProfile);
+
         azureDispatch({
             type: BATCH_SET,
             payload: {
                 [field]: data,
                 [AZURE_FIELDS.CONTROL_PLANE_MACHINE_TYPE]: nodeType,
                 [AZURE_FIELDS.WORKER_MACHINE_TYPE]: nodeType,
+                [AZURE_FIELDS.CONTROL_PLANE_FLAVOR]: nodeProfile !== AZURE_NODE_PROFILE_NAMES.SINGLE_NODE.valueOf() ? 'prod' : 'dev',
             },
         });
     };
