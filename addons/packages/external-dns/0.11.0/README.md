@@ -141,35 +141,6 @@ into the Value field.
 Once you've created the NS record on the hosted zone for your new subdomain, you're
 done with the prerequisites on AWS for this example.
 
-##### 4. Create a Kubernetes Secret
-
-In [the AWS Permissions section](#1-aws-permissions) you obtained AWS credentials. Use them to
-create a secret in Kubernetes that ExternalDNS can reference.
-
-Start by creating a manifest for an opaque secret in the same namespace where the ExternalDNS package
-will run that secret. If the namespace does not exist, create it now and use it in the
-manifest below.
-
-```shell
-kubectl create namespace external-dns
-```
-
-You will need the secret name to reference it by, the namespace, and
-the AWS access key ID and Secret access key. Create this manifest and
-apply it to your cluster with `kubectl apply -f secret.yaml`.
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: << SECRET CREDENTIAL NAME >>
-  namespace: << NAMESPACE >>
-type: Opaque
-stringData:
-  access-key-id: << ACCESS KEY ID >>
-  secret-access-key: << SECRET ACCESS KEY >>
-```
-
 ### Installation of package
 
 Configure the ExternalDNS package to use your new AWS hosted zone. Start by
@@ -180,7 +151,6 @@ In this example, provide the values for:
 
 * DOMAIN, e.g. `example.com`
 * HOSTED ZONE ID, e.g. `Z09346372A26K4C7GYTEI`
-* SECRET CREDENTIAL NAME, e.g. whatever name was used in step 4 above.
 
 ```yaml
 ---
@@ -199,20 +169,14 @@ deployment:
     - --aws-zone-type=public # only look at public hosted zones (valid values are public, private or no value for both)
     - --registry=txt
     - --txt-owner-id=<< HOSTED ZONE ID >>
-  env:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: << SECRET CREDENTIAL NAME >>
-          key: access-key-id
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: << SECRET CREDENTIAL NAME >>
-          key: secret-access-key
   securityContext: []
   volumeMounts: []
   volumes: []
+
+aws:
+  credentials:
+    accessKey: << ACCESS KEY ID >> # The AWS credentials you obtained in Step 2.
+    secretKey: << SECRET ACCESS KEY >> # The AWS credentials you obtained in Step 2.
 ```
 
 Once the configuration file is updated with your information, deploy the
@@ -259,19 +223,29 @@ You can set the following configuration values to customize your ExternalDNS ins
 
 | Value       | Required/Optional | Description                                    |
 |-------------|-------------------|------------------------------------------------|
-| `namespace` | Optional          | The namespace in which to deploy ExternalDNS. |
+| `namespace` | Optional          | The namespace in which to deploy ExternalDNS.  |
 
 ### ExternalDNS configuration
 
-| Value                        | Required/Optional  | Description                                      |
-|------------------------------|--------------------|--------------------------------------------------|
-| `deployment.args`            | Required           | Args passed via command-line to ExternalDNS     |
-| `deployment.env`             | Optional           | Environment variables to pass to ExternalDNS    |
-| `deployment.securityContext` | Optional           | Security context of the ExternalDNS container   |
-| `deployment.volumeMounts`    | Optional           | Volume mounts of the ExternalDNS container      |
-| `deployment.volumes`         | Optional           | Volumes of the ExternalDNS pod                  |
-| `deployment.podLabels`       | Optional           | Lables for the ExternalDNS pod                  |
-| `serviceaccount.annotations` | Optional           | Annotations for the ExternalDNS service account |
+| Value                                | Required/Optional  | Description                                      |
+|--------------------------------------|--------------------|--------------------------------------------------|
+| `deployment.args`                    | Required           | Args passed via command-line to ExternalDNS      |
+| `deployment.env`                     | Optional           | Environment variables to pass to ExternalDNS     |
+| `deployment.securityContext`         | Optional           | Security context of the ExternalDNS container    |
+| `deployment.volumeMounts`            | Optional           | Volume mounts of the ExternalDNS container       |
+| `deployment.volumes`                 | Optional           | Volumes of the ExternalDNS pod                   |
+| `deployment.podLabels`               | Optional           | Labels for the ExternalDNS pod                   |
+| `serviceaccount.annotations`         | Optional           | Annotations for the ExternalDNS service account  |
+| `aws.credentials.accessKey`          | Optional           | AWS Access Key                                   |
+| `aws.credentials.secretKey`          | Optional           | AWS Secret Key                                   |
+| `azure.aadClientId`                  | Optional           | Azure AAD Client ID                              |
+| `azure.aadClientSecret`              | Optional           | Azure AAD Client Secret                          |
+| `azure.cloud`                        | Optional           | Azure Cloud                                      |
+| `azure.resourceGroup`                | Optional           | Azure Resource Group                             |
+| `azure.subscriptionId`               | Optional           | Azure Subscription ID                            |
+| `azure.tenantId`                     | Optional           | Azure Tenant ID                                  |
+| `azure.useManagedIdentityExtension`  | Optional           | Azure Use managed identity extension             |
+| `azure.userAssignedIdentityID`       | Optional           | Azure User Assigned Identity ID                  |
 
 Follow [the ExternalDNS docs](https://github.com/kubernetes-sigs/external-dns#running-externaldns)
 for guidance on how to configure ExternalDNS for your DNS provider.
