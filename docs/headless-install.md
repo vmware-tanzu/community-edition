@@ -135,7 +135,7 @@ tanzu management-cluster create --file ~/mycluster.yaml -v 6
 
 The settings needed in the YAML file vary depending on the infrastructure being
 deployed to. Refer to the [Tanzu CLI Configuration File Variable
-Reference](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html)
+Reference](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.6/vmware-tanzu-kubernetes-grid-16/GUID-tanzu-config-reference.html)
 for a complete list of options.
 
 Here are some minimal templates to help get started.

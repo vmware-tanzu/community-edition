@@ -27,6 +27,10 @@ spec:
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       containers:
         - name: csi-snapshot-controller
           image: mcr.microsoft.com/oss/kubernetes-csi/snapshot-controller:v5.0.1

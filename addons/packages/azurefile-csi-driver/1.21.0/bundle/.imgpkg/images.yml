@@ -1,0 +1,46 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi:v1.21.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.21.0
+          url: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi:v1.21.0
+  image: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi@sha256:b21ba2841a705f0f9fef5afa9f3f50c5cb11ddb504028626cc507966c52edf30
+- annotations:
+    kbld.carvel.dev/id: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher:v3.5.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.5.0
+          url: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher:v3.5.0
+  image: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher@sha256:7e5af2ed16e053822e58f6576423c0bb77e59050c3698986f319d257b4551023
+- annotations:
+    kbld.carvel.dev/id: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.5.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.5.1
+          url: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.5.1
+  image: mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar@sha256:2fbd1e1a0538a06f2061afd45975df70c942654aa7f86e920720169ee439c2d6
+- annotations:
+    kbld.carvel.dev/id: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v3.2.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.2.0
+          url: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v3.2.0
+  image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner@sha256:2f9a214fe823b4b5099e7cff4f4d16e7e4298cd086478880845de8858d49a3b3
+- annotations:
+    kbld.carvel.dev/id: mcr.microsoft.com/oss/kubernetes-csi/csi-resizer:v1.5.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.5.0
+          url: mcr.microsoft.com/oss/kubernetes-csi/csi-resizer:v1.5.0
+  image: mcr.microsoft.com/oss/kubernetes-csi/csi-resizer@sha256:544e74bd67c649fd49500e195ff4a4ee675cfd26768574262dc6fa0250373d59
+- annotations:
+    kbld.carvel.dev/id: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.7.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v2.7.0
+          url: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.7.0
+  image: mcr.microsoft.com/oss/kubernetes-csi/livenessprobe@sha256:31547791294872570393470991481c2477a311031d3a03e0ae54eb164347dc34
+kind: ImagesLock
