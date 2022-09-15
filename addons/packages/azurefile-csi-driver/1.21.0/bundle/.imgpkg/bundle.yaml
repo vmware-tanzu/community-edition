@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: azurefile-csi-driver
+authors:
+  - name: Ping Xiao
+    email: pxiao@vmware.com
+websites:
+  - url: https://github.com/kubernetes-sigs/azurefile-csi-driver

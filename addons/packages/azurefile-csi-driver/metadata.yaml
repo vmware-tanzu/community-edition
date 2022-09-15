@@ -1,0 +1,14 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: azurefile-csi-driver.community.tanzu.vmware.com
+spec:
+  displayName: "azurefile-csi-driver"
+  longDescription: "Azure File CSI Driver provider"
+  shortDescription: "Azure File CSI Driver provider"
+  providerName: VMware
+  maintainers:
+    - name: "Ping Xiao"
+    - name: "Jeff Wu"
+  categories:
+    - "container storage interface"
