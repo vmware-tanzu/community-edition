@@ -26,6 +26,9 @@ addons/packages/aws-ebs-csi-driver @vmware-tanzu/pkg-aws-ebs-csi-driver-owners
 ## Ownership of the azuredisk-csi-driver package
 addons/packages/azuredisk-csi-driver @vmware-tanzu/pkg-azuredisk-csi-driver-owners
 
+## Ownership of the azurefile-csi-driver package
+addons/packages/azurefile-csi-driver @vmware-tanzu/pkg-azurefile-csi-driver-owners
+
 ## Ownership of the calico package
 addons/packages/calico @vmware-tanzu/pkg-calico-owners
 
