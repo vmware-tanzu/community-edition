@@ -33,7 +33,7 @@ jobs:
           split --verbose -d -l12 images.txt images.
           echo "All images identified"
       - name: Upload Images list
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: images-list
           path: images-list/
