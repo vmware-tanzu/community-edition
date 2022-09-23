@@ -17,6 +17,8 @@ spec:
       - args:
         #@overlay/match by=overlay.subset("-packaging-global-namespace=kapp-controller-packaging-global")
         - #@ "-packaging-global-namespace={}".format(values.kappController.globalNamespace)
+        #@overlay/match by=overlay.subset("-tls-cipher-suites=")
+        - #@ "-tls-cipher-suites={}".format(values.kappController.deployment.tlsCipherSuites)
         #@overlay/append
         - #@ "-concurrency={}".format(values.kappController.deployment.concurrency)
         #@overlay/append
