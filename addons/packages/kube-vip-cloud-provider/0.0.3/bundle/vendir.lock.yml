@@ -1,0 +1,7 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - manual: {}
+    path: kubevipcloudprovider
+  path: config/upstream
+kind: LockConfig
