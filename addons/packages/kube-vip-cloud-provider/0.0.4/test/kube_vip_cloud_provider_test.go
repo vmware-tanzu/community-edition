@@ -24,7 +24,7 @@ var _ = Describe("kube-vip CloudProvider Ytt Templates", func() {
 		output       string
 		yttRenderErr error
 
-		configDir = filepath.Join(repo.RootDir(), "addons/packages/kube-vip-cloud-provider/0.0.3/bundle/config")
+		configDir = filepath.Join(repo.RootDir(), "addons/packages/kube-vip-cloud-provider/0.0.4/bundle/config")
 
 		file01rbac                  = filepath.Join(configDir, "upstream/kube-vip-cloud-provider/rbac.yaml")
 		file02config                = filepath.Join(configDir, "upstream/kube-vip-cloud-provider/configmap.yaml")

@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/addons/packages/kube-vip-cloud-provider/0.0.3/test
+module github.com/vmware-tanzu/community-edition/addons/packages/kube-vip-cloud-provider/0.0.4/test
 
 go 1.17
 

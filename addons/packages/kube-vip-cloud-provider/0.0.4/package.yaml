@@ -1,11 +1,11 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: kube-vip-cloud-provider.community.vmware.com.0.0.3
+  name: kube-vip-cloud-provider.community.vmware.com.0.0.4
 spec:
   refName: kube-vip-cloud-provider.community.vmware.com
-  version: 0.0.3
-  releaseNotes: kube-vip-cloud-provider 0.0.3 https://github.com/kube-vip/kube-vip-cloud-provider/releases/tag/v0.0.3
+  version: 0.0.4
+  releaseNotes: kube-vip-cloud-provider 0.0.4 https://github.com/kube-vip/kube-vip-cloud-provider/releases/tag/v0.0.4
   licenses:
   - Apache 2.0
   template:
