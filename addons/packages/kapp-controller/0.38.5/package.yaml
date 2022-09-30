@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/kapp-controller@sha256:1d9a4e4900b554a413ca283aef37cf523722685168448ae71b78aef9ae0b1d1e
+            image: projects.registry.vmware.com/tce/kapp-controller@sha256:4f5537a7191f4618efebca48d8f5745b9aa7a6c6c9d0a3169c2c1d6d183acff6
       template:
         - ytt:
             paths:
