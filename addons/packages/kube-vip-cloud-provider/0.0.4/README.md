@@ -12,7 +12,7 @@ This package provides NSX Advanced Load Balancer.
 kube-vip-cloud-provider(KVCP) supports different cloud infrastructure and we use vsphere as example in the following setup.
 Please refer to the following documents if you are using a different cloud infrastructure.
 
-* https://github.com/kube-vip/kube-vip-cloud-provider#installing-the-kube-vip-cloud-provider
+[Upstream reference page](https://github.com/kube-vip/kube-vip-cloud-provider#installing-the-kube-vip-cloud-provider)
 
 ### kube-vip-cloud-provider Configuration
 
