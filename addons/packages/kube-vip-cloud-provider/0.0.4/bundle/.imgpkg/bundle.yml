@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: kube-vip-cloud-provider
+authors:
+- name: Lubron Zhan
+  email: lzhan@vmware.com
+websites:
+- url: https://github.com/vmware/kube-vip-cloud-providers-for-kubernetes/

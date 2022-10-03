@@ -1,0 +1,20 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata": {"name": "kubevip"}})
+---
+#@overlay/replace
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubevip
+  namespace: kube-system
+data:
+#@ if values.kubevipCloudProvider.loadbalancerCIDRs:
+  #@overlay/match missing_ok=True
+  cidr-global: #@ "{}".format(values.kubevipCloudProvider.loadbalancerCIDRs)
+#@ end
+#@ if values.kubevipCloudProvider.loadbalancerIPRanges:
+  #@overlay/match missing_ok=True
+  range-global: #@ "{}".format(values.kubevipCloudProvider.loadbalancerIPRanges)
+#@ end

@@ -1,0 +1,13 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: kube-vip-cloud-provider.community.tanzu.vmware.com
+spec:
+  displayName: "kube-vip-cloud-provider"
+  longDescription: "(vSphere only) Provides L4 load balancing for applications running in clusters created by Tanzu Kubernetes Grid; used for north-south traffic. This package is installed in every cluster if Kube-vip Load Balancer is enabled."
+  shortDescription: "Provides L4 load balancing for TKG clusters running on vSphere using kube-vip"
+  providerName: VMware
+  maintainers:
+    - name: Lubron Zhan
+  categories:
+    - "networking"

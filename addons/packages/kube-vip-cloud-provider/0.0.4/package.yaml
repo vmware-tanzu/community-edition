@@ -1,0 +1,73 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kube-vip-cloud-provider.community.vmware.com.0.0.4
+spec:
+  refName: kube-vip-cloud-provider.community.vmware.com
+  version: 0.0.4
+  releaseNotes: kube-vip-cloud-provider 0.0.4 https://github.com/kube-vip/kube-vip-cloud-provider/releases/tag/v0.0.4
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/kube-vip-cloud-provider@sha256:2d0c7fa64b6846606be66ba614e731265c84e6daaaf553f2b569c2e888dfbcb2
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for kube-vip-cloud-provider
+      properties:
+        nodeSelector:
+          nullable: true
+          default: null
+          description: NodeSelector configuration applied to all the deployments
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              default: null
+              nullable: true
+              description: Update strategy of deployments
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  default: null
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                maxSurge:
+                  type: integer
+                  default: null
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+        kubevipCloudProvider:
+          type: object
+          additionalProperties: false
+          description: Configurations for kube-vip-cloud-provider
+          properties:
+            loadbalancerCIDRs:
+              type: string
+              default: null
+              nullable: true
+              description: A list of comma separated cidrs will be used to allocate IP for external load balancer.
+            loadbalancerIPRanges:
+              type: string
+              default: null
+              nullable: true
+              description: A list of comma separated IP ranges will be used to allocate IP for external load balancer.
