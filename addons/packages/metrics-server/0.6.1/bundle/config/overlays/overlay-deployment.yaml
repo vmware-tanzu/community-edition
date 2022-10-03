@@ -1,6 +1,18 @@
 #@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
+
+#@ def is_toleration_specified(toleration):
+#@   return toleration in yaml.decode(yaml.encode(data.values.metricsServer.config.tolerations))
+#@ end
+
+#@ default_tolerations = []
+#@ is_master_specified = is_toleration_specified({"effect":"NoSchedule", "key":"node-role.kubernetes.io/master"})
+#@ is_control_specified = is_toleration_specified({"effect":"NoSchedule", "key":"node-role.kubernetes.io/control-plane"})
+#@ if is_master_specified and not is_control_specified:
+#@   default_tolerations += [{"effect":"NoSchedule", "key":"node-role.kubernetes.io/control-plane"}]
+#@ end
 
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "metrics-server"}})
 ---
@@ -36,5 +48,5 @@ spec:
           periodSeconds: #@ data.values.metricsServer.config.probe.periodSeconds
       #@ if hasattr(data.values.metricsServer.config, 'tolerations') and data.values.metricsServer.config.tolerations:
       #@overlay/match missing_ok=True
-      tolerations: #@ data.values.metricsServer.config.tolerations
+      tolerations: #@ default_tolerations + data.values.metricsServer.config.tolerations
       #@ end
