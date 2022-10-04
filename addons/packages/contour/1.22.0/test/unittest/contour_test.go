@@ -209,6 +209,9 @@ var _ = Describe("Contour Ytt Templates", func() {
 
 			service := unmarshalService(docs[0])
 			Expect(service.Spec.Type).To(Equal(corev1.ServiceTypeLoadBalancer))
+			// NodePorts are unset.
+			Expect(service.Spec.Ports[0].NodePort).To(Equal(int32(0)))
+			Expect(service.Spec.Ports[1].NodePort).To(Equal(int32(0)))
 		})
 
 		It("defaults the Envoy service external traffic policy to Local", func() {
@@ -606,6 +609,25 @@ var _ = Describe("Contour Ytt Templates", func() {
 			Expect(docs).To(HaveLen(1), "Envoy service not found")
 
 			service := unmarshalService(docs[0])
+			Expect(service.Spec.Type).To(Equal(corev1.ServiceTypeNodePort))
+			Expect(service.Spec.Ports[0].NodePort).To(Equal(int32(30080)))
+			Expect(service.Spec.Ports[1].NodePort).To(Equal(int32(30443)))
+		})
+	})
+
+	Context("Envoy service type LoadBalancer with node ports set", func() {
+		BeforeEach(func() {
+			values = envoyServiceNodePortsWithLoadBalancerService
+		})
+
+		It("sets the Envoy service node ports", func() {
+			Expect(err).NotTo(HaveOccurred())
+
+			docs := findDocsContainingLines(output, "kind: Service", "name: envoy")
+			Expect(docs).To(HaveLen(1), "Envoy service not found")
+
+			service := unmarshalService(docs[0])
+			Expect(service.Spec.Type).To(Equal(corev1.ServiceTypeLoadBalancer))
 			Expect(service.Spec.Ports[0].NodePort).To(Equal(int32(30080)))
 			Expect(service.Spec.Ports[1].NodePort).To(Equal(int32(30443)))
 		})

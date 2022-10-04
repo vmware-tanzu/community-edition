@@ -10,7 +10,7 @@ metadata:
 spec:
   type: #@ get_envoy_service_type()
 
-  #@ if get_envoy_service_type() == "NodePort":
+  #@ if get_envoy_service_type() == "NodePort" or get_envoy_service_type() == "LoadBalancer":
   ports:
   #@overlay/match by=overlay.subset({"name":"http"})
   -
