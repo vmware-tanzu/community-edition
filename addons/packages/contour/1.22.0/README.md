@@ -67,8 +67,8 @@ You can configure the following in the data values file:
 | `envoy.service.externalTrafficPolicy` | `Cluster` for vsphere; `Local` for others | The external traffic policy for the Envoy service. Valid values are `Local` and `Cluster`.  If `envoy.service.type` is `ClusterIP`, this field is ignored. |
 | `envoy.service.loadBalancerIP` | (none) | The desired load balancer IP for the Envoy service. If `envoy.service.type` is not `LoadBalancer`, this field is ignored. |
 | `envoy.service.annotations` | (none) | Annotations to set on the Envoy service. |
-| `envoy.service.nodePorts.http` | (none) | If `envoy.service.type` == `NodePort`, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes. |
-| `envoy.service.nodePorts.https` | (none) | If `envoy.service.type` == `NodePort`, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes. |
+| `envoy.service.nodePorts.http` | (none) | If `envoy.service.type` == `NodePort` or `LoadBalancer`, the node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes. |
+| `envoy.service.nodePorts.https` | (none) | If `envoy.service.type` == `NodePort` or `LoadBalancer`, the node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes. |
 | `envoy.service.aws.loadBalancerType` | (none) | If `infrastructureProvider` == `aws`, the type of AWS load balancer to provision. Valid values are `classic` and `nlb`. If `infrastructureProvider` is not `aws`, this field is ignored. |
 | `envoy.hostPorts.enable` | `false` | Whether to enable host ports for the Envoy pods. If false, `envoy.hostPorts.http` and `envoy.hostPorts.https` are ignored. |
 | `envoy.hostPorts.http` | `80` | If `envoy.hostPorts.enable` == true, the host port number to expose Envoy's HTTP listener on. |
