@@ -304,6 +304,18 @@ envoy:
       https: 30443
 `
 
+// envoyServiceNodePorts has envoy.service.type set to LoadBalancer and envoy.service.nodePorts set.
+const envoyServiceNodePortsWithLoadBalancerService = `
+#@data/values
+---
+envoy:
+  service:
+    type: LoadBalancer
+    nodePorts:
+      http: 30080
+      https: 30443
+`
+
 // envoyHostPorts has envoy.hostPorts set.
 const envoyHostPorts = `
 #@data/values
