@@ -2,6 +2,13 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+auth:
+  region: ""
+  tenancy: ""
+  user: ""
+  key: ""
+  fingerprint: ""
+  passphrase: ""
 compartment: ocid1.compartment.oc1..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 vcn: ocid1.vcn.oc1..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 loadBalancer:

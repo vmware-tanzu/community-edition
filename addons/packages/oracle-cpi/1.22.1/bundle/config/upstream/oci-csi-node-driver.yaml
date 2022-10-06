@@ -187,6 +187,17 @@ spec:
       terminationGracePeriodSeconds: 30
       tolerations:
         - operator: Exists
+        - key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+          effect: NoSchedule
+        - key: node.kubernetes.io/not-ready
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       volumes:
         - hostPath:
             path: /var/lib/kubelet/plugins_registry/

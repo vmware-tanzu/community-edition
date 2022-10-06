@@ -2,6 +2,16 @@
 #@overlay/match-child-defaults missing_ok=True
 
 ---
+auth:
+  region: us-sanjose-1
+  tenancy: ocid1.tenancy.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  user: ocid1.user.oc1..aaaaaaaaveptnubesjspvkqzohqkjsdblv5dmnkyvbolbna6rf76io3uox2a
+  key: |
+      -----BEGIN PRIVATE KEY-----
+
+      -----END PRIVATE KEY-----
+  fingerprint: eb:02:ee:4b:4c:xx:xx:xx:xx:55:df:54:00:db:be:0f
+  passphrase: ""
 compartment: sample-compartment
 vcn: sample-vcn
 loadBalancer:
