@@ -2,6 +2,18 @@
 #@ load("/values.star", "values", "generateBashCmdForDNS")
 #@ load("@ytt:yaml", "yaml")
 
+#@ def is_toleration_specified(toleration):
+#@   return toleration in yaml.decode(yaml.encode(values.kappController.deployment.tolerations))
+#@ end
+
+#@ default_tolerations = []
+#@ is_master_specified = is_toleration_specified({"effect":"NoSchedule", "key":"node-role.kubernetes.io/master"})
+#@ is_control_specified = is_toleration_specified({"effect":"NoSchedule", "key":"node-role.kubernetes.io/control-plane"})
+
+#@ if is_master_specified and not is_control_specified:
+#@   default_tolerations += [{"effect":"NoSchedule", "key":"node-role.kubernetes.io/control-plane"}]
+#@ end
+
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "kapp-controller"}})
 ---
 metadata:
@@ -64,7 +76,7 @@ spec:
       #@ if/end values.kappController.deployment.priorityClassName:
       priorityClassName: #@ values.kappController.deployment.priorityClassName
       #@ if hasattr(values.kappController.deployment, 'tolerations') and values.kappController.deployment.tolerations:
-      tolerations: #@ values.kappController.deployment.tolerations
+      tolerations: #@ default_tolerations + values.kappController.deployment.tolerations
       #@ end
       #@ if values.kappController.deployment.coreDNSIP:
       volumes:

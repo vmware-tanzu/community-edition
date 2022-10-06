@@ -1,6 +1,17 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
+#@ def matcher():
+kind: Deployment
+metadata:
+  name: kapp-controller
+spec:
+  template:
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+#@ end
+
 #! We are adding this overlay in the package to accomandate the need from vSphere supervisor cluster:
 #! `deployment.spec.strategy.type` is configured to `RollingUpdate`
 #! `deployment.spec.strategy.rollingUpdate.maxUnavailable` is set to `0`.
@@ -48,3 +59,15 @@ spec:
   updateStrategy:
     type: #@ data.values.daemonset.updateStrategy
   #@ end
+
+
+#@overlay/match by=overlay.subset(matcher()) , when=1
+---
+spec:
+  template:
+    spec:
+      nodeSelector:
+        #@overlay/remove
+        node-role.kubernetes.io/master:
+        #@overlay/match missing_ok=True
+        node-role.kubernetes.io/control-plane: ""
