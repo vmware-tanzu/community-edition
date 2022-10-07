@@ -2,10 +2,40 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:base64", "base64")
+#@ load("@ytt:template", "template")
 
-#@ load("/provider-config.lib.txt", "get_provider_config")
+#@ def add_auth_private_key(values):
+auth:
+  #@overlay/match missing_ok=True
+  key: #@ values.auth.key
+#@ end
+
+#@ def provider_config_without_key(values):
+auth:
+  region: #@ values.auth.region
+  tenancy: #@ values.auth.tenancy
+  user: #@ values.auth.user
+  fingerprint: #@ values.auth.fingerprint
+  passphrase: #@ values.auth.passphrase
+  useInstancePrincipals: false
+compartment: #@ values.compartment
+vcn: #@ values.vcn
+loadBalancer:
+  subnet1: #@ values.loadBalancer.subnet1
+  subnet2: #@ values.loadBalancer.subnet2
+  securityListManagementMode: All
+rateLimiter:
+  rateLimitQPSRead: 20.0
+  rateLimitBucketRead: 5
+  rateLimitQPSWrite: 20.0
+  rateLimitBucketWrite: 5
+#@ end
+
+#@ def provider_config(values):
+#@  return overlay.apply(provider_config_without_key(values), add_auth_private_key(values))
+#@ end
 
 #@overlay/match by=overlay.subset({"kind":"Secret", "metadata": {"name": "oci-cloud-controller-manager"}}),expects="1+"
 ---
 data:
-  cloud-provider.yaml: #@ base64.encode(get_provider_config(data.values))
+  cloud-provider.yaml: #@ base64.encode(yaml.encode(provider_config(data.values)))

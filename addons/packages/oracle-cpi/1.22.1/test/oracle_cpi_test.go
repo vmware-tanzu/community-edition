@@ -4,6 +4,7 @@
 package oraclecpi_test
 
 import (
+	"encoding/base64"
 	"path/filepath"
 	"strings"
 
@@ -49,9 +50,6 @@ var _ = Describe("vSphere CPI Ytt Templates", func() {
 			// default values
 			filepath.Join(configDir, "values.star"),
 			filepath.Join(configDir, "values.yaml"),
-
-			// data lib
-			filepath.Join(configDir, "provider-config.lib.txt"),
 		}
 	})
 
@@ -79,6 +77,38 @@ loadBalancer:
 		It("can render cloud config secret successfully", func() {
 			Expect(yttRenderErr).ToNot(HaveOccurred())
 			Expect(output).ToNot(BeEmpty())
+		})
+	})
+
+	When("static authentication creds are provided", func() {
+		BeforeEach(func() {
+			values = `
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+auth:
+  region: us-sanjose-1
+  tenancy: ocid1.tenancy.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  user: ocid1.user.oc1..aaaaaaaaveptnubesjspvkqzohqkjsdblv5dmnkyvbolbna6rf76io3uox2a
+  key: |
+      -----BEGIN PRIVATE KEY-----
+
+      -----END PRIVATE KEY-----
+  fingerprint: eb:02:ee:4b:4c:xx:xx:xx:xx:55:df:54:00:db:be:0f
+  passphrase: ""
+` //#nosec
+		})
+
+		It("can render credentials successfully", func() {
+			Expect(yttRenderErr).ToNot(HaveOccurred())
+			Expect(output).ToNot(BeEmpty())
+			Expect(output).To(ContainSubstring("cloud-provider.yaml:"))
+
+			/* #nosec */
+			cred := "auth:\n  region: us-sanjose-1\n  tenancy: ocid1.tenancy.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n  user: ocid1.user.oc1..aaaaaaaaveptnubesjspvkqzohqkjsdblv5dmnkyvbolbna6rf76io3uox2a\n  fingerprint: eb:02:ee:4b:4c:xx:xx:xx:xx:55:df:54:00:db:be:0f\n  passphrase: \"\"\n  useInstancePrincipals: false\n  key: |\n    -----BEGIN PRIVATE KEY-----\n\n    -----END PRIVATE KEY-----\n"
+			encodedCred := base64.StdEncoding.EncodeToString([]byte(cred))
+			Expect(output).To(ContainSubstring(encodedCred))
 		})
 	})
 
