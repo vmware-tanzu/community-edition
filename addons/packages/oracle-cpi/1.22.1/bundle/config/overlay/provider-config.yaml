@@ -39,3 +39,9 @@ rateLimiter:
 ---
 data:
   cloud-provider.yaml: #@ base64.encode(yaml.encode(provider_config(data.values)))
+
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata": {"name": "oci-volume-provisioner"}}),expects="1+"
+---
+data:
+  config.yaml: #@ base64.encode(yaml.encode(provider_config(data.values)))
+
