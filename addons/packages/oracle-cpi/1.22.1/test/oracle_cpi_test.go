@@ -78,6 +78,13 @@ loadBalancer:
 			Expect(yttRenderErr).ToNot(HaveOccurred())
 			Expect(output).ToNot(BeEmpty())
 		})
+
+		It("can render the oci-volume-provisioner secret successfully", func() {
+			Expect(yttRenderErr).ToNot(HaveOccurred())
+			Expect(output).ToNot(BeEmpty())
+			Expect(output).To(ContainSubstring("name: oci-volume-provisioner"))
+		})
+
 	})
 
 	When("static authentication creds are provided", func() {

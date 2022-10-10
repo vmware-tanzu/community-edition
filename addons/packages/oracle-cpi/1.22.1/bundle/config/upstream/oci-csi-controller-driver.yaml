@@ -21,16 +21,13 @@ spec:
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - weight: 10
-            preference:
-              matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-          - weight: 10
-            preference:
-              matchExpressions:
-              - key: node-role.kubernetes.io/master
-                operator: Exists
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+              - matchExpressions:
+                - key: node-role.kubernetes.io/master
+                  operator: Exists
       containers:
         - name: csi-volume-provisioner
           image: k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2
