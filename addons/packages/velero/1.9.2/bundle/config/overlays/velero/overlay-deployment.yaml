@@ -1,0 +1,54 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+
+#@ def startswith(index, left, right):
+#@  return left.startswith(right)
+#@ end
+
+
+#@overlay/match by=overlay.subset(resource("Deployment", "velero"))
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: velero
+        env:
+        #@overlay/match by="name", missing_ok=True
+        #@ if values.environmentVariables:
+        #@ for variable in values.environmentVariables:
+        - name: #@ variable.name
+          value: #@ variable.value
+        #@ end
+        #@ end
+
+        args:
+          #@ if values.restic.create and values.restic.defaultVolumesToRestic:
+          #@overlay/append
+          - --default-volumes-to-restic=true
+          #@ end
+
+          #@ if values.restic.create and values.restic.defaultResticPruneFrequency != 0:
+          #@overlay/append
+          - #@ "--default-restic-prune-frequency={}".format(values.restic.defaultResticPruneFrequency)
+          #@ end
+
+          #@ if values.features != None:
+          #@overlay/match by=overlay.subset("--features=")
+          - #@ "--features=" + values.features
+          #@ end
+
+      initContainers:
+      #@ if values.plugins:
+      #@ for plugin in values.plugins:
+      - image: #@ plugin.image
+        imagePullPolicy: IfNotPresent
+        name: #@ plugin.name
+        resources: {}
+        volumeMounts:
+        - mountPath: /target
+          name: plugins
+      #@ end
+      #@ end

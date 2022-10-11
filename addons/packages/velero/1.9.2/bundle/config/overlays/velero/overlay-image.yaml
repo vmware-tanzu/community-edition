@@ -1,0 +1,58 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/helpers.lib.yaml", "non_empty")
+
+#@ if values.images.update:
+#@overlay/match by=overlay.subset(resource("Deployment", "velero"))
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      #@ if/end values.images.velero:
+      - name: velero
+        image: #@ values.images.velero
+
+#@ if values.images.velero and values.restic.create:
+#@overlay/match by=overlay.subset(resource("DaemonSet", "restic"))
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: restic
+        image: #@ values.images.velero
+#@ end
+
+#@ if values.minio.deployDefaultMinio and values.credential.useDefaultSecret:
+#@overlay/match by=overlay.subset(resource("Deployment", "minio"))
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      #@ if/end values.images.minio:
+      - name: minio
+        image: #@ values.images.minio
+
+#@overlay/match by=overlay.subset(resource("Job", "minio-setup"))
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      #@ if/end values.images.minioClient:
+      - name: mc
+        image: #@ values.images.minioClient
+#@ end
+
+#@ end

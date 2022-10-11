@@ -1,0 +1,53 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: minio/mc:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: latest
+          url: minio/mc:latest
+  image: index.docker.io/minio/mc@sha256:a5595387fabec86c5b0bb54180d4bf6d49ac2a031dc9f71cf117754dc47b78b6
+- annotations:
+    kbld.carvel.dev/id: minio/minio:latest
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: latest
+          url: minio/minio:latest
+  image: index.docker.io/minio/minio@sha256:67372776c114dec0ad0f2b6b4dc1ad538be659cecb227b1ba719e81e823c06d5
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-aws:v1.5.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.5.1
+          url: velero/velero-plugin-for-aws:v1.5.1
+  image: index.docker.io/velero/velero-plugin-for-aws@sha256:6e1817b6ad95c41182b24f2b373b1d9e6625c5e861b4d395e2dcde4bb9e2d547
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-csi:v0.3.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v0.3.1
+          url: velero/velero-plugin-for-csi:v0.3.1
+  image: index.docker.io/velero/velero-plugin-for-csi@sha256:47407fa64881f484e5a3bdea551dd5cfe3b6b747731d537246559233a2f57dbd
+- annotations:
+    kbld.carvel.dev/id: velero/velero-plugin-for-microsoft-azure:v1.5.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.5.1
+          url: velero/velero-plugin-for-microsoft-azure:v1.5.1
+  image: index.docker.io/velero/velero-plugin-for-microsoft-azure@sha256:8271c2aa9863dec8f9b31a3b4d6cc7795c66431a80ce5ecb49b7509406f75f1c
+- annotations:
+    kbld.carvel.dev/id: velero/velero:v1.9.2
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.9.2
+          url: velero/velero:v1.9.2
+  image: index.docker.io/velero/velero@sha256:c2973ca929cb6d22a513dee48a25479c6d4ddd5ad5aa0aea2fd485b7a0b22ca8
+- annotations:
+    kbld.carvel.dev/id: vsphereveleroplugin/velero-plugin-for-vsphere:v1.4.0
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.4.0
+          url: vsphereveleroplugin/velero-plugin-for-vsphere:v1.4.0
+  image: index.docker.io/vsphereveleroplugin/velero-plugin-for-vsphere@sha256:63ad2f2c70caa6f90798b06616f03883ea79414b4a3522089dde13f7b647b493
+kind: ImagesLock

@@ -7,7 +7,7 @@ namespace: velero
 #! restic related configuration
 restic:
   #! Whether to deploy the Restic DaemonSet.
-  create: False
+  create: false
   #! Bool flag to configure Velero server to use restic by default to backup all pod volumes on all backups. Optional.
   defaultVolumesToRestic: false
   #! How often 'restic prune' is run for restic repositories by default. Optional.
@@ -20,6 +20,10 @@ restic:
   memoryLimit: 1Gi
   #! Memory request for restic pod. A value of "0" is treated as unbounded. Optional. (default "512Mi")
   memoryRequest: 512Mi
+  #! The path on host, where Restic DaemonSet reads pod volumes from. Optional. (default "/var/lib/kubelet/pods")
+  hostPath: /var/lib/kubelet/pods
+  #! value to replace velero Restic restore helper image. Optional. (default "velero/velero-restic-restore-helper:v1.9.2")
+  restoreHelperImage: velero/velero-restic-restore-helper:v1.9.2
 
 #! credential contains configuration for the secret to be used by the Velero deployment and the restic Daemonset, which
 #! should contain credentials for the cloud provider IAM account set up for Velero.
@@ -50,6 +54,8 @@ credential:
 #! BackupStorageLocation CRD. Backups can be stored in a number of locations, and Velero must have at least one BackupStorageLocation.
 #! For documentation, see https://velero.io/docs/v1.6/api-types/backupstoragelocation/.
 backupStorageLocation:
+  #! create indicate whether to create BackupStorageLocation. Required. Default to true.
+  create: true
   #! name is the name of the backup storage location where backups should be stored. If a name is not provided,
   #! a backup storage location will be created with the name "default". Required.
   name: default
@@ -230,13 +236,7 @@ images:
   #! whether to update image
   update: false
   #! value to replace velero image
-  velero: velero/velero:main
-  #! value to replace velero aws plugin
-  veleroPluginAws: velero/velero-plugin-for-aws:main
-  #! value to replace velero azure plugin
-  veleroPluginAzure: velero/velero-plugin-for-microsoft-azure:main
-  #! value to replace velero vsphere plugin
-  veleroPluginvSphere: vsphereveleroplugin/velero-plugin-for-vsphere:v1.3.1
+  velero: velero/velero:v1.9.2
   #! value to replace minio image
   minio: minio/minio:latest
   #! value to replace minio client image
@@ -248,3 +248,18 @@ images:
 #! 2. EnableAPIGroupVersions: defines whether or not to handle multiple API Group Versions.
 #! 3. EnableUploadProgress: defines whether or not upload progress monitoring is enabled.
 features: ""
+
+#! Environment variables for Velero Deployment and Restic Daemonset.
+environmentVariables:
+
+#! plugins list to included in Velero deployment InitContainers.
+#! User can add customized plugins too.
+plugins:
+- name: velero-plugin-for-aws
+  image: velero/velero-plugin-for-aws:v1.5.1
+- name: velero-plugin-for-microsoft-azure
+  image: velero/velero-plugin-for-microsoft-azure:v1.5.1
+- name: velero-plugin-for-vsphere
+  image: vsphereveleroplugin/velero-plugin-for-vsphere:v1.4.0
+- name: velero-plugin-for-csi
+  image: velero/velero-plugin-for-csi:v0.3.1
