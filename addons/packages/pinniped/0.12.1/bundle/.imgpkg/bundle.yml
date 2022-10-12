@@ -3,11 +3,7 @@ kind: Bundle
 metadata:
   name: pinniped
 authors:
-- name: Andrew Keesler
-  email: akeesler@vmware.com
 - name: Ben Petersen
   email: petersenbe@vmware.com
-- name: Sarah Abbey
-  email: sabbey@vmware.com
 websites:
 - url: https://github.com/vmware-tanzu/pinniped
