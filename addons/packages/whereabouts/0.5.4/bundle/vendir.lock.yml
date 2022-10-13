@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #253 from maiqueb/release-v0.5...'
+      sha: d979fa57d1e06d09b50b91d755ee828c96587cd4
+      tags:
+      - v0.5.4
+    path: .
+  path: config/upstream
+kind: LockConfig
