@@ -1,0 +1,60 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_vct_annotations")
+#@ load("/helpers.star", "get_storage_class", "use_existing_claim")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+
+
+#@ kind = kind_overlays
+#@ redis_metadata = overlay.subset({"metadata": {"name": "harbor-redis"}})
+
+#@ redis = values.persistence.persistentVolumeClaim.redis
+
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.stateful_set, redis_metadata), overlay.not_op(use_existing_claim(redis))),expects="0+"
+---
+spec:
+  volumeClaimTemplates:
+    #@overlay/match by=overlay.index(0)
+    - spec:
+        accessModes:
+          #@overlay/match by=overlay.all,expects="0+"
+          - #@ redis.accessMode
+        resources:
+          requests:
+            storage: #@ redis.size
+        #@ if/end redis.storageClass:
+        #@overlay/match missing_ok=True
+        storageClassName: #@ get_storage_class(redis.storageClass)
+      metadata:
+        #@overlay/match missing_ok=True
+        annotations: #@ get_kapp_vct_annotations()
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.stateful_set, redis_metadata), use_existing_claim(redis)),expects="0+"
+---
+spec:
+  #@overlay/remove
+  volumeClaimTemplates:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      volumes:
+        #@overlay/append
+        - name: data
+          persistentVolumeClaim:
+            claimName: #@ redis.existingClaim
+
+#@overlay/match by=overlay.and_op(kind.stateful_set, redis_metadata)
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: redis
+          volumeMounts:
+            #@overlay/match by="name"
+            - name: data
+              #@ if/end redis.subPath:
+              subPath: #@ redis.subPath
