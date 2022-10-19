@@ -1,0 +1,36 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+#@ load("/values.star", "values")
+#@ load("/globals.star", "getClusterRoleName")
+#@ load("/globals.star", "getClusterRoleBindingName")
+#@ load("/globals.star", "get_resource_names_for_role")
+
+#@ if/end values.pspNames:
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: #@ getClusterRoleName()
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames: #@ get_resource_names_for_role(values.pspNames)
+
+#@ if/end values.pspNames:
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: #@ getClusterRoleBindingName()
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: #@ getClusterRoleName()
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: #@ values.namespace
