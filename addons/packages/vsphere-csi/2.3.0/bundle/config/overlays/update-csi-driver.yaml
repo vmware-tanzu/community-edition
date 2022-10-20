@@ -54,7 +54,7 @@ spec:
             #@overlay/match by=overlay.index(-1), missing_ok=True
             - "--strict-topology"
           #@ end
-        #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and not values.vsphereCSI.vSphereVersion.startswith('7'):
+        #@ if hasattr(values.vsphereCSI, 'vSphereVersion') and values.vsphereCSI.vSphereVersion.startswith('6'):
         #@overlay/remove
         #@overlay/match by="name"
         - name: csi-resizer
