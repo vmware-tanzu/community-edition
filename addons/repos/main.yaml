@@ -1,3 +1,6 @@
+#
+# Since TCE is no longer under active development, it is not necessary to update this file as no new package repositories will be published.
+#
 ---
 packages:
   - name: app-toolkit
