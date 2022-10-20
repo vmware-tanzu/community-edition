@@ -191,6 +191,7 @@ toc:
                 - 2.3.3
                 - 2.4.2
                 - 2.5.3
+                - 2.6.1
         - package:
             displayName: Knative Serving
             name: knative-serving
@@ -245,6 +246,7 @@ toc:
             versions:
                 - 0.5.0
                 - 0.5.1
+                - 0.5.4
     - title: Administration
       subfolderitems:
         - page: Register a Cluster in Tanzu Mission Control
