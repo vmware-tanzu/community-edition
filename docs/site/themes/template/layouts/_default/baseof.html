@@ -28,7 +28,7 @@
 	{{ $style := resources.Get "scss/site.scss" | resources.ToCSS $options }}
 	<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" media="screen">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@alpha" />
-	<link rel="icon" type="image/png" href="/img/favicon.png">
+	<link rel="icon" href="/img/favicon.ico">
 	{{ $js := resources.Get "js/main.js" | js.Build ( dict "minify" true ) }}
 	<script src="{{ $js.Permalink }}" type="text/javascript"></script>
 	{{ with .OutputFormats.Get "RSS" -}}

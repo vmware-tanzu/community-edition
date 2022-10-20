@@ -15,7 +15,8 @@ footer {
     .copyright {
         p {
             font-size: 12px;
-            padding-right: 10px;
+            display: flex;
+            align-items: center;
         }
         a {
             font-size: 12px;
