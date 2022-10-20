@@ -1,0 +1,19 @@
+#@data/values
+---
+
+infraProvider: vsphere
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+ipFamily: null
+calico:
+  config:
+    clusterCIDR: null
+    #! "0" as default means MTU will be auto detected
+    vethMTU: "0"
+    skipCNIBinaries: false

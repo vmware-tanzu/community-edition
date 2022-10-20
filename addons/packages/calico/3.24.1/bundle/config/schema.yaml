@@ -1,0 +1,83 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for calico"
+---
+#@schema/deprecated "Kept for backward compatibility"
+#@schema/desc "The namespace in which calico is deployed"
+#@schema/nullable
+namespace: kube-system
+#@schema/desc "Infrastructure provider in use"
+infraProvider: vsphere
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
+deployment:
+  #@schema/desc "Update strategy of deployments"
+  #@schema/nullable
+  updateStrategy: ""
+  rollingUpdate:
+    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxUnavailable: 1
+    #@schema/desc "The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxSurge: 0
+daemonset:
+  #@schema/desc "Update strategy of daemonsets"
+  #@schema/nullable
+  updateStrategy: ""
+#@schema/desc "The IP family calico should be configured with"
+#@schema/nullable
+ipFamily: "ipv4,ipv6"
+#@schema/desc "The calico specific configurations"
+calico:
+  #@schema/desc "Configuration for calico"
+  config:
+    #@schema/desc "The CIDR pool used to assign IP addresses to the pods in the cluster"
+    #@schema/nullable
+    clusterCIDR: "192.168.0.0/16,fd00:100:96::/48"
+    #@schema/desc "Maximum transmission unit setting"
+    vethMTU: "0"
+    #@schema/desc "Skip the cni plugin binaries installation"
+    skipCNIBinaries: false
+  #@schema/deprecated "Kept for backward compatibility"
+  #@schema/desc "The image repo and its pull policy"
+  #@schema/nullable
+  image:
+    #@schema/nullable
+    repository: ""
+    #@schema/nullable
+    pullPolicy: IfNotPresent
+  #@schema/deprecated "Kept for backward compatibility"
+  #@schema/desc "The calico cni image path and tag"
+  #@schema/nullable
+  cniImage:
+    #@schema/nullable
+    path: ""
+    #@schema/nullable
+    tag: ""
+  #@schema/deprecated "Kept for backward compatibility"
+  #@schema/desc "The calico node image path and tag"
+  #@schema/nullable
+  nodeImage:
+    #@schema/nullable
+    path: ""
+    #@schema/nullable
+    tag: ""
+  #@schema/deprecated "Kept for backward compatibility"
+  #@schema/desc "The calico pod2daemon image path and tag"
+  #@schema/nullable
+  podDaemonImage:
+    #@schema/nullable
+    path: ""
+    #@schema/nullable
+    tag: ""
+  #@schema/deprecated "Kept for backward compatibility"
+  #@schema/desc "The calico kube controllers image path and tag"
+  #@schema/nullable
+  kubeControllerImage:
+    #@schema/nullable
+    path: ""
+    #@schema/nullable
+    tag: ""

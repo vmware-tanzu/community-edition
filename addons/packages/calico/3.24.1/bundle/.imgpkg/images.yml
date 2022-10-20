@@ -1,0 +1,25 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/cni:v3.24.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.24.1
+          url: docker.io/calico/cni:v3.24.1
+  image: index.docker.io/calico/cni@sha256:e60b90d7861e872efa720ead575008bc6eca7bee41656735dcaa8210b688fcd9
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/kube-controllers:v3.24.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.24.1
+          url: docker.io/calico/kube-controllers:v3.24.1
+  image: index.docker.io/calico/kube-controllers@sha256:4010b2739792ae5e77a750be909939c0a0a372e378f3c81020754efcf4a91efa
+- annotations:
+    kbld.carvel.dev/id: docker.io/calico/node:v3.24.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v3.24.1
+          url: docker.io/calico/node:v3.24.1
+  image: index.docker.io/calico/node@sha256:43f6cee5ca002505ea142b3821a76d585aa0c8d22bc58b7e48589ca7deb48c13
+kind: ImagesLock
