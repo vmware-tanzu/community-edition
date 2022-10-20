@@ -33,3 +33,82 @@ HUGO_ENABLEGITINFO = "true"
   from = "/plugins"
   to = "/"
   status = 301
+
+[[redirects]]
+  from = "/community"
+  to = "https://github.com/vmware/"
+  status = 301
+
+[[redirects]]
+  from = "/blog"
+  to = "https://blogs.vmware.com/opensource/"
+  status = 301
+
+[[redirects]]
+  from = "/posts"
+  to = "https://blogs.vmware.com/opensource/"
+  status = 301
+
+[[redirects]]
+  from = "/posts/*"
+  to = "https://blogs.vmware.com/opensource/"
+  status = 301
+
+[[redirects]]
+  from = "/resources"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/packages"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/docs"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/docs/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/docs/*/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/download"
+  to = "/"
+  status = 301
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
