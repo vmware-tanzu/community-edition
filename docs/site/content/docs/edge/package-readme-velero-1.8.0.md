@@ -8,7 +8,7 @@ The following table shows the providers this package can work with.
 
 | AWS  |  Azure  | vSphere  | Docker |
 |:---:|:---:|:---:|:---:|
-| ✅  |  ✅  | 🚫  | ✅  |
+| ✅  |  ✅  | ✅  | ✅  |
 
 ## Components
 
@@ -43,7 +43,7 @@ The Tanzu Community Edition Velero package provides support for these providers 
 |-----------------------------------|---------------------|------------------------------|-----------------------------------------|-------------------------------|
 | [Amazon Web Services (AWS)](https://aws.amazon.com)    | AWS S3              | AWS EBS                      | [Velero plugin for AWS](https://github.com/vmware-tanzu/velero-plugin-for-aws)              | [AWS Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-aws#setup)        |
 | [Microsoft Azure](https://azure.com)                                       | Azure Blob Storage  | Azure Managed Disks          | [Velero plugin for Microsoft Azure](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure) | [Azure Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure#setup)      |
-| [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere) | N/A                | 🚫 vSphere Volumes  (on the roadmap)            | [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere)                    | [vSphere Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-vsphere#velero-plugin-for-vsphere-installation-and-configuration-details)
+| [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere) | On-premise               |  vSphere Volumes            | [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere)                    | [vSphere Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-vsphere#velero-plugin-for-vsphere-installation-and-configuration-details)
 
 Some other third-party storage providers, like MinIO, DigitalOcean, and others, support the same S3 API that the **AWS Velero plugin** uses.  For more information please see: [S3-Compatible object store providers for Velero](https://velero.io/docs/v1.6/supported-providers/#s3-compatible-object-store-providers).
 

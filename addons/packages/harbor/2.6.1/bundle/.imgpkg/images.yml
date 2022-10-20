@@ -1,0 +1,37 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/harbor-core:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/harbor-core@sha256:74ff18776e28875adfb6846d5575da41c1ce236c7512c48a29f24961d09138e7
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/harbor-db:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/harbor-db@sha256:e1b5746cf77cdd3f92d9b6d10264ad96eab5eee24de57faa464947c339aff281
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/harbor-exporter:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/harbor-exporter@sha256:8ed13989ddda87a3cebd063e540c3c9cd1ff1f450e384cbcdb28eea5eb6f123d
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/harbor-jobservice:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/harbor-jobservice@sha256:f54f8091eae342847a31b66e22bdac9314f8bd31a480df48e5ba8d2606d1d660
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/harbor-portal:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/harbor-portal@sha256:7625f938c81a18f77d0d9d63dc80094797f0f4bb2f5f819bc0c2181afeafb0c5
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/harbor-registryctl@sha256:51aff5822ffcaec2b51390fcd85177b4e94f683f7297a18f868c3753f5087930
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/notary-server-photon:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/notary-server-photon@sha256:ffcd2862f8d450e3f2773cba3c1066f16b22254e1d86f7248c48989e0b9db2ad
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/notary-signer-photon:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/notary-signer-photon@sha256:edde8a576999c21a15becf40c958dbc23c6beb6237c0f7c3a149d8359aa10873
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/redis-photon:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/redis-photon@sha256:7052a96db217ca1be26f928fc78b4ca9c9c7ca6bd9f16f85c7b1406f4bbf3c55
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/registry-photon:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/registry-photon@sha256:4d8f1a6908f16c2ead1ac0388ef5edf8690760081cf32361e024dedf44ec7613
+- annotations:
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/harbor/trivy-adapter-photon:v2.6.1
+  image: projects.registry.vmware.com/tce/harbor/trivy-adapter-photon@sha256:4691574e36afdc7946ec1303cdd97d5f7f0f1d6019bf62db97b8aa96a1379c55
+kind: ImagesLock

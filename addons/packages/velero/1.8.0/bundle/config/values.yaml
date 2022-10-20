@@ -236,7 +236,7 @@ images:
   #! value to replace velero azure plugin
   veleroPluginAzure: velero/velero-plugin-for-microsoft-azure:main
   #! value to replace velero vsphere plugin
-  veleroPluginvSphere: velero/velero-plugin-for-vsphere:v1.3.1
+  veleroPluginvSphere: vsphereveleroplugin/velero-plugin-for-vsphere:v1.3.1
   #! value to replace minio image
   minio: minio/minio:latest
   #! value to replace minio client image

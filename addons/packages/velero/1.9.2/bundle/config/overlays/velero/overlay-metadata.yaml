@@ -1,0 +1,57 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/values.star", "velero_app")
+#@ load("/values.star", "labels")
+
+#! Note: use this file to set Velero specific metadata for all resources created
+#! by Velero.
+
+#@overlay/match by=overlay.subset({"kind": "Namespace", "metadata": {"name": "velero"}}),expects=[1]
+---
+metadata:
+  name: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "velero"}}),expects=[1]
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet"}),expects="0+"
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "Secret"}),expects="1+"
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "BackupStorageLocation"}),expects="0+"
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+
+#@overlay/match by=overlay.subset({"kind": "VolumeSnapshotLocation"}),expects="0+"
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+
+#@ if values.rbac.create and values.rbac.clusterAdministrator:
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}),expects=[1]
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  labels: #@ labels()
+  namespace: #@ values.namespace
+#@ end

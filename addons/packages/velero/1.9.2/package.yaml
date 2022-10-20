@@ -1,0 +1,548 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: velero.community.tanzu.vmware.com.1.9.2
+spec:
+  refName: velero.community.tanzu.vmware.com
+  version: 1.9.2
+  releaseNotes: "velero 1.9.2 https://github.com/vmware-tanzu/velero/releases/tag/v1.9.2"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/velero@sha256:a3256437d91b3fa63177832d346753c1876cc40c30c7ea4ff0ac876aed4839fb
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      title: velero.community.tanzu.vmware.com.1.9.2 values schema
+      properties:
+        namespace:
+          type: string
+          description: The namespace in which to deploy Velero.
+          default: velero
+        restic:
+          type: object
+          description: restic related configuration
+          properties:
+            create:
+              type: boolean
+              description: Whether to deploy the restic daemonset.
+              default: false
+            defaultVolumesToRestic:
+              description: >
+                Bool flag to configure Velero server to use restic by default to backup
+                all pod volumes on all backups. Optional.
+              type: boolean
+              default: false
+            defaultResticPruneFrequency:
+              description: >
+                How often 'restic prune' is run for restic repositories by default.
+                Optional.
+              type: integer
+              default: 0
+            cpuLimit:
+              description: >
+                CPU limit for restic pod. A value of "0" is treated as unbounded.
+                Optional. (default "1000m")
+              type: string
+              default: 1000m
+            cpuRequest:
+              description: >
+                CPU request for restic pod. A value of "0" is treated as unbounded.
+                Optional. (default "500m")
+              type: string
+              default: 500m
+            memoryLimit:
+              description: >
+                Memory limit for restic pod. A value of "0" is treated as unbounded.
+                Optional. (default "1Gi")
+              type: string
+              default: 1Gi
+            memoryRequest:
+              description: >
+                Memory request for restic pod. A value of "0" is treated as unbounded.
+                Optional. (default "512Mi")
+              type: string
+              default: 500Mi
+            hostPath:
+              description: >
+                The path on host, where Restic DaemonSet reads pod volumes from.
+                Optional. (default "/var/lib/kubelet/pods")
+              type: string
+              default: /var/lib/kubelet/pods
+            restoreHelperImage:
+              description: >
+                value to replace velero Restic restore helper image.
+                Optional. (default "velero/velero-restic-restore-helper:v1.9.2")
+              type: string
+              default: velero/velero-restic-restore-helper:v1.9.2
+        credential:
+          type: object
+          description: >
+            Configuration for the secret to be used by the Velero deployment and the restic Daemonset,
+            which should contain credentials for the cloud provider IAM account set up for Velero.
+            For full documentation, see: https://velero.io/docs/v1.6/locations/#create-a-storage-location-that-uses-unique-credentials.
+          properties:
+            useDefaultSecret:
+              type: boolean
+              description: >
+                Whether the secret created by default should be used as the source of IAM account credentials.
+                If not set to `true`, the secret to be used must be indicated in the
+                `backupStorageLocation.spec.existingSecret`. If set to `true`, the raw content must be specified below
+                in the `credential.secretContents.cloud`.
+              default: true
+            name:
+              type: string
+              description: >
+                The name of the secret to configure if `credential.useDefaultSecret` is true.
+                Required if `useDefaultSecret` is true.
+              default: cloud-credentials
+            secretContents:
+              type: object
+              description: |
+                secretContents is the data to be stored in the default Velero secret. For the default secret, the key
+                must be named `cloud`, and the value corresponds to the entire content of your IAM credentials file.
+                Note that the format will be different for different providers, please check their documentation.
+                Required if `useDefaultSecret` is true.
+              properties:
+                cloud:
+                  description: |
+                    Example:
+                    cloud: |
+                      aws_access_key_id=<redacted>
+                      aws_secret_access_key=<redacted>
+                  type: string
+                  default: ""
+            extraEnvVars:
+              type: string
+              description: >
+                additional key/value pairs to be used as environment variables such as "DIGITALOCEAN_TOKEN: <your-key>".
+                Values will be stored in the secret.
+              default: ""
+            extraSecretRef:
+              type: string
+              description: >
+                extraSecretRef is the name of any pre-existing secret (if any) in the namespace where Velero is installed
+                and that will be used to load environment variables into velero and restic. Secret should be in format -
+                https://kubernetes.io/docs/concepts/configuration/secret/#use-case-as-container-environment-variables
+              default: ""
+        backupStorageLocation:
+          type: object
+          description: >
+            Configuration for locations where Velero can store backups represented in the cluster via the
+            BackupStorageLocation CRD. Backups can be stored in a number of locations, and Velero must have at least one
+            BackupStorageLocation. For documentation, see https://velero.io/docs/v1.6/api-types/backupstoragelocation/.
+          properties:
+            create:
+              type: boolean
+              description: >
+                create indicate whether to create BackupStorageLocation. Required. Default to true.
+              default: true
+            name:
+              type: string
+              description: >
+                The name of the backup storage location where backups should be stored. If a name is not provided,
+                a backup storage location will be created with the name "default". Required.
+              default: default
+            spec:
+              type: object
+              description: >
+                Configurations for a backup storage location.
+              properties:
+                provider:
+                  type: string
+                  description: |
+                    The name of the object store plugin used to connect to this location. Required.
+                    Valid values: `aws`, `azure`
+                default:
+                  type: boolean
+                  description:  Indicates if this location is the default backup storage location. Optional.
+                  default: true
+                backupSyncPeriod:
+                  type: string
+                  description: |
+                    Indicates how frequently Velero should synchronize backups in object storage.
+                    Set this to 0s to disable sync.
+                  default: 1m
+                validationFrequency:
+                  type: string
+                  description: |
+                    Indicates how frequently Velero should validate the object storage (if it is still connected, for example).
+                    Set this to 0s to disable validation.
+                  default: 1m
+                accessMode:
+                  type: string
+                  description: |
+                    How Velero can access the backup storage location.
+                    Valid values are `ReadWrite` and `ReadOnly`
+                    Set this to 0s to disable sync.
+                  default: ReadWrite
+                existingSecret:
+                  type: object
+                  description: |
+                    existingSecret should be a secret separately created in the namespace where Velero is installed.
+                    Applies only if `credential.useDefaultSecret` is set to `false`. Optional.
+                    For documentation on how to use: https://velero.io/docs/v1.6/locations/#create-a-storage-location-that-uses-unique-credentials.
+                  properties:
+                    name:
+                      type: string
+                      description: The name of the secret
+                      default: ""
+                    key:
+                      type: string
+                      description: Key used within the secret
+                      default: ""
+                objectStorage:
+                  type: object
+                  description: |
+                    A set of configurations specific to the object store
+                  properties:
+                    bucket:
+                      type: string
+                      description: The name of the bucket to store backups in. Required.
+                      default: ""
+                    caCert:
+                      type: string
+                      description: defines a base64 encoded CA bundle to use when verifying TLS connections to the provider. Optional.
+                      default: ""
+                    prefix:
+                      type: string
+                      description: The directory under which all Velero data should be stored within the bucket. Optional.
+                      default: ""
+                configAWS:
+                  type: object
+                  description: Configuration specific to the AWS plugin.
+                  properties:
+                    region:
+                      type: string
+                      description: |
+                        Region is the AWS region where the bucket is located. Queried from the AWS S3 API if not provided.
+                        Set to  "minio" if using a local storage service like MinIO.
+                        Note: when used, MinIO must be run as a standalone. See the documentation:
+                        https://docs.min.io/minio/baremetal/installation/deploy-minio-standalone.html
+                        Required.
+                      default: ""
+                    s3ForcePathStyle:
+                      type: boolean
+                      description: >
+                        Indicates whether to use path-style addressing instead of virtual hosted bucket addressing. Set to "true"
+                        if using a local storage service like MinIO.
+                      default: false
+                    s3Url:
+                      type: string
+                      description: >
+                        You can specify the AWS S3 URL here for explicitness, but Velero can already generate it from
+                        "region" and "bucket". This field is primarily for local storage services like MinIO. Optional.
+                      default: ""
+                    publicUrl:
+                      type: string
+                      description: >
+                        If specified, use this instead of "s3Url" when generating download URLs (e.g., for logs). This
+                        field is primarily for local storage services like MinIO. Optional.
+                      default: ""
+                    serverSideEncryption:
+                      type: string
+                      description: >
+                        The name of the server-side encryption algorithm to use for uploading objects, e.g. "AES256".
+                        If using SSE-KMS and "kmsKeyId" is specified, this field will automatically be set to "aws:kms"
+                        so does not need to be specified by the user. Optional.
+                      default: "aws:kms"
+                    kmsKeyId:
+                      type: string
+                      description: >
+                        Specifies an AWS KMS key ID (formatted per the example) or alias (formatted as "alias/<KMS-key-alias-name>")
+                        to enable encryption of the backups stored in S3. Only works with AWS S3 and may require explicitly
+                        granting key usage rights. Optional.
+                      default: ""
+                    signatureVersion:
+                      type: string
+                      description: >
+                        The version of the signature algorithm used to create signed URLs that are used by Velero CLI to
+                        download backups or fetch logs. Possible versions are "1" and "4". Usually the default version
+                        4 is correct, but some S3-compatible providers like Quobyte only support version 1.
+                      default: "4"
+                    profile:
+                      type: string
+                      description: The AWS profile within the credentials file to use for the backup storage location.
+                      default: "default"
+                    insecureSkipTLSVerify:
+                      type: boolean
+                      description: >
+                        Set to "true" if you do not want to verify the TLS certificate when connecting to the
+                        object store -- like for self-signed certs with MinIO. This is susceptible to man-in-the-middle
+                        attacks and is not recommended for production.
+                      default: false
+                configAzure:
+                  type: object
+                  description: >
+                    Configuration specific to the Azure plugin. For the original documentation: https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/v1.2.1/backupstoragelocation.md.
+                  properties:
+                    resourceGroup:
+                      type: string
+                      description: >
+                        The name of the resource group containing the storage account for this backup storage location. Required.
+                      default: ""
+                    storageAccount:
+                      type: string
+                      description: >
+                        The name of the storage account for this backup storage location. Required.
+                      default: ""
+                    storageAccountKeyEnvVar:
+                      type: string
+                      description: |
+                        The environment variable in $AZURE_CREDENTIALS_FILE that contains storage account key for this backup storage location.
+                        Required if using a storage account access key to authenticate rather than a service principal.
+                      default: ""
+                    subscriptionId:
+                      type: string
+                      description: >
+                        The ID of the subscription for this backup storage location. Optional.
+                      default: ""
+                    blockSizeInBytes:
+                      type: integer
+                      description: |
+                        The block size, in bytes, to use when uploading objects to Azure blob storage.
+                        See https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs#about-block-blobs
+                        for more information on block blobs.
+                      default: 104857600
+        volumeSnapshotLocation:
+          type: object
+          description: >
+            Configuration for volume snapshot location in which to store the volume snapshots created for a backup in
+            the cluster via the VolumeSnapshotLocation CRD. For documentation, see
+            https://velero.io/docs/v1.6/api-types/volumesnapshotlocation/.
+          properties:
+            snapshotEnabled:
+              type: boolean
+              description: >
+                Indicates whether to create a volumesnapshotlocation CR. If false => disable the snapshot feature.
+              default: true
+            name:
+              type: string
+              description: >
+                The name of the volume snapshot location where snapshots are taken. Required.
+              default: "default"
+            provider:
+              type: string
+              description: |
+                The name for the volume snapshot provider.
+                Valid values: `aws`, `azure`
+            configAWS:
+              type: object
+              description: >
+                configAWS contains configuration specific to the AWS plugin. For the original documentation:
+                https://github.com/vmware-tanzu/velero-plugin-for-aws/blob/v1.2.1/backupstoragelocation.md.
+              properties:
+                region:
+                  type: string
+                  description: >
+                    The AWS region where the volumes/snapshots are located. Required.
+                  default: ""
+                profile:
+                  type: string
+                  description: >
+                    The AWS profile within the credentials file to use for the volume snapshot location.
+                  default: "default"
+            configAzure:
+              type: object
+              description: >
+                Configuration specific to the Azure plugin
+              properties:
+                apiTimeout:
+                  type: string
+                  description: >
+                    Indicates how long to wait for an Azure API request to complete before timeout. Defaults to 2m0s.
+                  default: "2m0s"
+                resourceGroup:
+                  type: string
+                  description: >
+                    The name of the resource group where volume snapshots should be stored, if different from the
+                    cluster's resource group. Optional.
+                  default: ""
+                subscriptionId:
+                  type: string
+                  description: >
+                    The ID of the subscription where volume snapshots should be stored, if different from the cluster's
+                    subscription. Requires "resourceGroup" to also be set. Optional.
+                  default: ""
+                incremental:
+                  type: boolean
+                  description: |
+                    Azure offers the option to take full or incremental snapshots of managed disks.
+                    - Set this parameter to true, to take incremental snapshots.
+                    - If the parameter is omitted or set to false, full snapshots are taken (default).
+                    Optional.
+                  default: false
+            configvSphere:
+              type: object
+              description: >
+                Configuration specific to the vSphere plugin
+              properties:
+                region:
+                  type: string
+                  description: >
+                    Region is the S3 region where the volumes/snapshots are located. Defaults to minio.
+                  default: "minio"
+                bucket:
+                  type: string
+                  description: >
+                    Bucket is the name of the bucket to store volumes/snapshots in. Defaults to velero.
+                  default: "velero"
+        rbac:
+          type: object
+          description: Role based access controls for Velero.
+          properties:
+            create:
+              type: boolean
+              description:
+              default: false
+            clusterAdministrator:
+              type: boolean
+              description:
+              default: false
+            name:
+              type: string
+              description: The name of the cluster role binding.
+              default: velero
+            roleRefName:
+              type: string
+              description: The name of the role.
+              default: velero
+            clusterRoleAPIGroups:
+              type: array
+              description: Array of the cluster role API groups.
+              items:
+                type: string
+            clusterRoleVerbs:
+              type: array
+              description: Array of the cluster role verbs.
+              default: ["get", "watch", "list"]
+              items:
+                type: string
+        serviceAccount:
+          type: object
+          description: Information about the Kubernetes service account Velero uses.
+          properties:
+            name:
+              type: string
+              description: The name for the service account
+              default: velero
+            annotations:
+              type: object
+              additionalProperties:
+                type: string
+              description: Annotations to set on the Velero service account.
+              default: {}
+            labels:
+              type: object
+              additionalProperties:
+                type: string
+              description: Labels to set on the Velero service account.
+        vsphere:
+          type: object
+          description: Setting for vSphere plugin
+          properties:
+            create:
+              type: bool
+              description: Whether to configure vSphere
+              default: false
+            namespace:
+              type: string
+              description: namespace value used in cluster-id in [Global] section, e.g. kube-system
+            clusterName:
+              type: string
+              description: cluster name value used in cluster-id in [Global] section, e.g. tkg-mgmt-vc
+            server:
+              type: string
+              description: vSphere VC server IP address in [VirtualCenter x.x.x.x] section tag, e.g. "10.92.217.20"
+            username:
+              type: string
+              description: user name value in [VirtualCenter x.x.x.x] section, e.g. "administrator@vsphere.local"
+            password:
+              type: string
+              description: password value in [VirtualCenter x.x.x.x] section, e.g. "Admin!23"
+            datacenter:
+              type: string
+              description: datacenters value in [VirtualCenter x.x.x.x] section, e.g. "dc0"
+            publicNetwork:
+              type: string
+              description: public-network value in [Network] section, e.g. "VM Network"
+        minio:
+          type: object
+          description: MinIO setting
+          properties:
+            deployDefaultMinio:
+              type: bool
+              description: whehter to deploy default MinIO to provide OSS for velero
+              default: false
+            namespace:
+              type: string
+              description: the namespace to delploy default MinIO
+              default: velero
+            accessKey:
+              type: string
+              description: Access key for the default secret
+              default: "minio"
+            secretAccessKey:
+              type: string
+              description: secret access key for the default secret
+              default: "minio123"
+        images:
+          type: object
+          description: Image setting
+          properties:
+            update:
+              type: bool
+              description: whether to update image
+              default: false
+            velero:
+              type: string
+              description: value to replace velero image
+            minio:
+              type: string
+              description: value to replace minio image
+            minioClient:
+              type: string
+              description: value to replace minio client image
+        features:
+          type: string
+          description: |
+            A comma separated string to set some Velero function enable.
+            Current supported features included:
+            1. EnableCSI: defines whether or not CSI features are being used.
+            2. EnableAPIGroupVersions: defines whether or not to handle multiple API Group Versions.
+            3. EnableUploadProgress: defines whether or not upload progress monitoring is enabled.
+          default: ""
+        environmentVariables:
+          type: object
+          additionalProperties:
+            type: string
+          description: |
+            Environment variables for Velero Deployment and Restic Daemonset.
+            Default to empty array.
+        plugins:
+          type: array
+          description: |
+            Plugins list to included in Velero deployment InitContainers. User can add customized plugins too.
+            Allow to be an empty array.
+          items:
+            type: object
+            description: plugin setting
+            properties:
+              name:
+                type: string
+                description: plugin name
+              image:
+                type: string
+                description: plugin image

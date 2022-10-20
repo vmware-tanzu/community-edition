@@ -1,0 +1,59 @@
+#@ load("/values.star", "values")
+#@ load("/values.star", "resource")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if values.restic.create:
+#@overlay/match by=overlay.subset(resource("DaemonSet", "restic"))
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"restic"})
+      - name: restic
+        env:
+        #@overlay/match by="name", missing_ok=True
+        #@ if values.environmentVariables:
+        #@ for variable in values.environmentVariables:
+        - name: #@ variable.name
+          value: #@ variable.value
+        #@ end
+        #@ end
+
+        resources:
+          limits:
+            #@ if/end values.restic.cpuLimit != "1000m":
+            #@overlay/replace
+            cpu: #@ values.restic.cpuLimit
+            #@ if/end values.restic.memoryLimit != "1Gi":
+            #@overlay/replace
+            memory: #@ values.restic.memoryLimit
+          requests:
+            #@ if/end values.restic.cpuRequest != "500m":
+            #@overlay/replace
+            cpu: #@ values.restic.cpuRequest
+            #@ if/end values.restic.memoryRequest != "512Mi":
+            #@overlay/replace
+            memory: #@ values.restic.memoryRequest
+      volumes:
+      #@overlay/match by=overlay.subset({"name":"host-pods"})
+      - name: host-pods
+        hostPath:
+          path: #@ values.restic.hostPath
+#@ else:
+#@overlay/match by=overlay.subset(resource("DaemonSet", "restic"))
+---
+#@overlay/remove
+#@ end
+
+#@ if values.restic.create and values.restic.restoreHelperImage != None:
+#@overlay/append
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: restic-restore-action-config
+  namespace: velero
+data:
+  image: #@ values.restic.restoreHelperImage
+#@ end

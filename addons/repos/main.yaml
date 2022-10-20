@@ -1,3 +1,6 @@
+#
+# Since TCE is no longer under active development, it is not necessary to update this file as no new package repositories will be published.
+#
 ---
 packages:
   - name: app-toolkit
@@ -64,6 +67,7 @@ packages:
       - 2.3.3
       - 2.4.2
       - 2.5.3
+      - 2.6.1
   - name: knative-serving
     versions:
       - 0.22.0
@@ -98,7 +102,9 @@ packages:
       - 1.6.3
       - 1.7.1
       - 1.8.0
+      - 1.9.2
   - name: whereabouts
     versions:
       - 0.5.0
       - 0.5.1
+      - 0.5.4

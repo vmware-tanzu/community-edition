@@ -1,0 +1,34 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+vsphereCSI:
+  tlsThumbprint: ""
+  namespace: kube-system
+  clusterName: null
+  server: null
+  datacenter: null
+  publicNetwork: null
+  username: null
+  password: null
+  region: null
+  zone: null
+  insecureFlag: True
+  useTopologyCategories: false
+  provisionTimeout: 300s
+  attachTimeout: 300s
+  resizerTimeout: 300s
+  vSphereVersion: 6.7.0
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+  deployment_replicas: 3
+  windows_support: false

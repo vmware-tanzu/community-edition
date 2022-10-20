@@ -1,0 +1,1784 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: harbor
+  labels:
+    app: harbor
+  annotations:
+    kapp.k14s.io/delete-strategy: orphan
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-core
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  app.conf: |
+    appname = Harbor
+    runmode = prod
+    enablegzip = true
+
+    [prod]
+    httpport = 8443
+  PORT: "8443"
+  DATABASE_TYPE: postgresql
+  POSTGRESQL_HOST: harbor-database
+  POSTGRESQL_PORT: "5432"
+  POSTGRESQL_USERNAME: postgres
+  POSTGRESQL_DATABASE: registry
+  POSTGRESQL_SSLMODE: disable
+  POSTGRESQL_MAX_IDLE_CONNS: "100"
+  POSTGRESQL_MAX_OPEN_CONNS: "900"
+  EXT_ENDPOINT: https://harbor.yourdomain.com
+  CORE_URL: https://harbor-core:443
+  JOBSERVICE_URL: https://harbor-jobservice
+  REGISTRY_URL: https://harbor-registry:5443
+  TOKEN_SERVICE_URL: https://harbor-core:443/service/token
+  WITH_NOTARY: "True"
+  NOTARY_URL: http://harbor-notary-server:4443
+  CORE_LOCAL_URL: https://127.0.0.1:8443
+  WITH_TRIVY: "True"
+  TRIVY_ADAPTER_URL: https://harbor-trivy:8443
+  REGISTRY_STORAGE_PROVIDER_NAME: filesystem
+  WITH_CHARTMUSEUM: "false"
+  CHART_REPOSITORY_URL: https://harbor-chartmuseum
+  LOG_LEVEL: info
+  CONFIG_PATH: /etc/core/app.conf
+  CHART_CACHE_DRIVER: redis
+  _REDIS_URL_CORE: redis://harbor-redis:6379/0?idle_timeout_seconds=30
+  _REDIS_URL_REG: redis://harbor-redis:6379/2?idle_timeout_seconds=30
+  PORTAL_URL: https://harbor-portal
+  REGISTRY_CONTROLLER_URL: https://harbor-registry:8443
+  REGISTRY_CREDENTIAL_USERNAME: harbor_registry_user
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
+  PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: docker-hub,harbor,azure-acr,aws-ecr,google-gcr,quay,docker-registry
+  METRIC_ENABLE: "False"
+  METRIC_PATH: /metrics
+  METRIC_PORT: "8001"
+  METRIC_NAMESPACE: harbor
+  METRIC_SUBSYSTEM: core
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-core
+  labels:
+    app: harbor
+    component: core
+  namespace: harbor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: harbor
+      component: core
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: core
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: core
+        image: projects.registry.vmware.com/tce/harbor/harbor-core:v2.6.1
+        imagePullPolicy: IfNotPresent
+        startupProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: HTTPS
+            port: 8443
+          failureThreshold: 360
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: HTTPS
+            port: 8443
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: HTTPS
+            port: 8443
+          failureThreshold: 2
+          periodSeconds: 10
+        envFrom:
+        - configMapRef:
+            name: harbor-core
+        - secretRef:
+            name: harbor-core
+        env:
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-core
+              key: secret
+        - name: JOBSERVICE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-jobservice
+              key: JOBSERVICE_SECRET
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: INTERNAL_TLS_KEY_PATH
+          value: /etc/harbor/ssl/core/tls.key
+        - name: INTERNAL_TLS_CERT_PATH
+          value: /etc/harbor/ssl/core/tls.crt
+        - name: INTERNAL_TLS_TRUST_CA_PATH
+          value: /etc/harbor/ssl/core/ca.crt
+        - name: TOKEN_PRIVATE_KEY_PATH
+          value: /etc/core/private-key/tls.key
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: config
+          mountPath: /etc/core/app.conf
+          subPath: app.conf
+        - name: secret-key
+          mountPath: /etc/core/key
+          subPath: key
+        - name: token-service-private-key
+          mountPath: /etc/core/private-key/
+        - name: ca-download
+          mountPath: /etc/core/ca
+        - name: core-internal-certs
+          mountPath: /etc/harbor/ssl/core
+        - name: psc
+          mountPath: /etc/core/token
+      volumes:
+      - name: config
+        configMap:
+          name: harbor-core
+          items:
+          - key: app.conf
+            path: app.conf
+      - name: secret-key
+        secret:
+          secretName: harbor-core
+          items:
+          - key: secretKey
+            path: key
+      - name: token-service-private-key
+        secret:
+          secretName: harbor-token-service
+      - name: ca-download
+        secret:
+          secretName: harbor-tls
+      - name: core-internal-certs
+        secret:
+          secretName: harbor-core-internal-tls
+      - name: psc
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-core
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+data:
+  secretKey: LXRoZS1zZWNyZXQta2V5LQ==
+  secret: dGhlLXNlY3JldC1vZi10aGUtY29yZQ==
+  HARBOR_ADMIN_PASSWORD: SGFyYm9yMTIzNDU=
+  POSTGRESQL_PASSWORD: cGFzc3dvcmQ=
+  REGISTRY_CREDENTIAL_PASSWORD: aGFyYm9yX3JlZ2lzdHJ5X3Bhc3N3b3Jk
+  CSRF_KEY: LXhzcmYta2V5LW11c3QtYmUtMzItY2hhcmFjdGVycy0=
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-core
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    projectcontour.io/upstream-protocol.tls: "443"
+spec:
+  ports:
+  - name: https-web
+    port: 443
+    targetPort: 8443
+  selector:
+    app: harbor
+    component: core
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-database
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+data:
+  POSTGRES_PASSWORD: cGFzc3dvcmQ=
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: harbor-database
+  labels:
+    app: harbor
+    component: database
+  namespace: harbor
+spec:
+  replicas: 1
+  serviceName: harbor-database
+  selector:
+    matchLabels:
+      app: harbor
+      component: database
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: database
+    spec:
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      initContainers:
+      - name: data-migrator
+        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.6.1
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        args:
+        - -c
+        - '[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true'
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/postgresql/data
+          subPath: null
+      - name: data-permissions-ensurer
+        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.6.1
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        args:
+        - -c
+        - chmod -R 700 /var/lib/postgresql/data/pgdata || true
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/postgresql/data
+          subPath: null
+      containers:
+      - name: database
+        image: projects.registry.vmware.com/tce/harbor/harbor-db:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /docker-healthcheck.sh
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /docker-healthcheck.sh
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        envFrom:
+        - secretRef:
+            name: harbor-database
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/postgresql/data
+          subPath: null
+        - name: shm-volume
+          mountPath: /dev/shm
+      volumes:
+      - name: shm-volume
+        emptyDir:
+          medium: Memory
+          sizeLimit: 512Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: database-data
+      labels:
+        app: harbor
+      annotations:
+        kapp.k14s.io/owned-for-deletion: ""
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-database
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: harbor
+    component: database
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-exporter-env
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
+  LOG_LEVEL: info
+  HARBOR_EXPORTER_PORT: "8001"
+  HARBOR_EXPORTER_METRICS_PATH: /metrics
+  HARBOR_EXPORTER_METRICS_ENABLED: "true"
+  HARBOR_EXPORTER_CACHE_TIME: "23"
+  HARBOR_EXPORTER_CACHE_CLEAN_INTERVAL: "14400"
+  HARBOR_METRIC_NAMESPACE: harbor
+  HARBOR_METRIC_SUBSYSTEM: exporter
+  HARBOR_REDIS_URL: redis://harbor-redis:6379/1
+  HARBOR_REDIS_NAMESPACE: harbor_job_service_namespace
+  HARBOR_REDIS_TIMEOUT: "3600"
+  HARBOR_SERVICE_SCHEME: https
+  HARBOR_SERVICE_HOST: harbor-core
+  HARBOR_SERVICE_PORT: "443"
+  HARBOR_DATABASE_HOST: harbor-database
+  HARBOR_DATABASE_PORT: "5432"
+  HARBOR_DATABASE_USERNAME: postgres
+  HARBOR_DATABASE_DBNAME: registry
+  HARBOR_DATABASE_SSLMODE: disable
+  HARBOR_DATABASE_MAX_IDLE_CONNS: "100"
+  HARBOR_DATABASE_MAX_OPEN_CONNS: "900"
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: harbor-httpproxy
+  namespace: harbor
+  labels:
+    app: harbor
+spec:
+  virtualhost:
+    fqdn: harbor.yourdomain.com
+    tls:
+      secretName: harbor-tls
+  routes:
+  - conditions:
+    - prefix: /
+    services:
+    - name: harbor-portal
+      port: 443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+  - conditions:
+    - prefix: /api/
+    services:
+    - name: harbor-core
+      port: 443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+  - conditions:
+    - prefix: /service/
+    services:
+    - name: harbor-core
+      port: 443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+  - conditions:
+    - prefix: /v2/
+    services:
+    - name: harbor-core
+      port: 443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+  - conditions:
+    - prefix: /chartrepo/
+    services:
+    - name: harbor-core
+      port: 443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+  - conditions:
+    - prefix: /c/
+    services:
+    - name: harbor-core
+      port: 443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: harbor-httpproxy-notary
+  namespace: harbor
+  labels:
+    app: harbor
+spec:
+  virtualhost:
+    fqdn: notary.harbor.yourdomain.com
+    tls:
+      secretName: harbor-tls
+  routes:
+  - conditions:
+    - prefix: /
+    services:
+    - name: harbor-notary-server
+      port: 4443
+    timeoutPolicy:
+      response: 0s
+      idle: 5m
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-jobservice-env
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  CORE_URL: https://harbor-core:443
+  TOKEN_SERVICE_URL: https://harbor-core:443/service/token
+  REGISTRY_URL: https://harbor-registry:5443
+  REGISTRY_CONTROLLER_URL: https://harbor-registry:8443
+  REGISTRY_CREDENTIAL_USERNAME: harbor_registry_user
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
+  METRIC_NAMESPACE: harbor
+  METRIC_SUBSYSTEM: jobservice
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-jobservice
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  config.yml: |
+    protocol: https
+    port: 8443
+    https_config:
+      cert: /etc/harbor/ssl/jobservice/tls.crt
+      key: /etc/harbor/ssl/jobservice/tls.key
+    worker_pool:
+      workers: 10
+      backend: redis
+      redis_pool:
+        redis_url: redis://harbor-redis:6379/1
+        namespace: harbor_job_service_namespace
+        idle_timeout_second: 3600
+    job_loggers:
+    - name: FILE
+      level: INFO
+      settings:
+        base_dir: /var/log/jobs
+      sweeper:
+        duration: 14
+        settings:
+          work_dir: /var/log/jobs
+    metric:
+      enabled: false
+      path: 8001
+      port: 8001
+    loggers:
+    - name: STD_OUTPUT
+      level: INFO
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-jobservice
+  labels:
+    app: harbor
+    component: jobservice
+  namespace: harbor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: harbor
+      component: jobservice
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: jobservice
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: jobservice
+        image: projects.registry.vmware.com/tce/harbor/harbor-jobservice:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /api/v1/stats
+            scheme: HTTPS
+            port: 8443
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/v1/stats
+            scheme: HTTPS
+            port: 8443
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        env:
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-core
+              key: secret
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: INTERNAL_TLS_KEY_PATH
+          value: /etc/harbor/ssl/jobservice/tls.key
+        - name: INTERNAL_TLS_CERT_PATH
+          value: /etc/harbor/ssl/jobservice/tls.crt
+        - name: INTERNAL_TLS_TRUST_CA_PATH
+          value: /etc/harbor/ssl/jobservice/ca.crt
+        envFrom:
+        - configMapRef:
+            name: harbor-jobservice-env
+        - secretRef:
+            name: harbor-jobservice
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: jobservice-config
+          mountPath: /etc/jobservice/config.yml
+          subPath: config.yml
+        - name: job-logs
+          mountPath: /var/log/jobs
+          subPath: null
+        - name: job-scandata-exports
+          mountPath: /var/scandata_exports
+          subPath: null
+        - name: jobservice-internal-certs
+          mountPath: /etc/harbor/ssl/jobservice
+      volumes:
+      - name: jobservice-config
+        configMap:
+          name: harbor-jobservice
+      - name: job-logs
+        persistentVolumeClaim:
+          claimName: harbor-jobservice
+      - name: job-scandata-exports
+        persistentVolumeClaim:
+          claimName: harbor-jobservice-scandata
+      - name: jobservice-internal-certs
+        secret:
+          secretName: harbor-jobservice-internal-tls
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: harbor-jobservice-scandata
+  labels:
+    app: harbor
+    component: jobservice
+  namespace: harbor
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: harbor-jobservice
+  labels:
+    app: harbor
+    component: jobservice
+  namespace: harbor
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-jobservice
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+data:
+  JOBSERVICE_SECRET: dGhlLXNlY3JldC1vZi10aGUtam9ic2VydmljZQ==
+  REGISTRY_CREDENTIAL_PASSWORD: aGFyYm9yX3JlZ2lzdHJ5X3Bhc3N3b3Jk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-jobservice
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - name: https-jobservice
+    port: 443
+    targetPort: 8443
+  selector:
+    app: harbor
+    component: jobservice
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-notary-server
+  labels:
+    app: harbor
+    component: notary
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+data:
+  server.json: eyJhdXRoIjp7Im9wdGlvbnMiOnsiaXNzdWVyIjoiaGFyYm9yLXRva2VuLWlzc3VlciIsInJlYWxtIjoiaHR0cHM6Ly9oYXJib3IueW91cmRvbWFpbi5jb20vc2VydmljZS90b2tlbiIsInJvb3RjZXJ0YnVuZGxlIjoiL2V0Yy9zc2wvdG9rZW4tc2VydmljZS90bHMuY3J0Iiwic2VydmljZSI6ImhhcmJvci1ub3RhcnkifSwidHlwZSI6InRva2VuIn0sImxvZ2dpbmciOnsibGV2ZWwiOiJpbmZvIn0sInNlcnZlciI6eyJodHRwX2FkZHIiOiI6NDQ0MyJ9LCJzdG9yYWdlIjp7ImJhY2tlbmQiOiJwb3N0Z3JlcyIsImRiX3VybCI6InBvc3RncmVzOi8vcG9zdGdyZXM6cGFzc3dvcmRAaGFyYm9yLWRhdGFiYXNlOjU0MzIvbm90YXJ5c2VydmVyP3NzbG1vZGU9ZGlzYWJsZSJ9LCJ0cnVzdF9zZXJ2aWNlIjp7Imhvc3RuYW1lIjoiaGFyYm9yLW5vdGFyeS1zaWduZXIiLCJrZXlfYWxnb3JpdGhtIjoiZWNkc2EiLCJwb3J0IjoiNzg5OSIsInRsc19jYV9maWxlIjoiL2V0Yy9zc2wvbm90YXJ5L2NhLmNydCIsInR5cGUiOiJyZW1vdGUifX0=
+  signer.json: eyJsb2dnaW5nIjp7ImxldmVsIjoiaW5mbyJ9LCJzZXJ2ZXIiOnsiZ3JwY19hZGRyIjoiOjc4OTkiLCJ0bHNfY2VydF9maWxlIjoiL2V0Yy9zc2wvbm90YXJ5L3Rscy5jcnQiLCJ0bHNfa2V5X2ZpbGUiOiIvZXRjL3NzbC9ub3RhcnkvdGxzLmtleSJ9LCJzdG9yYWdlIjp7ImJhY2tlbmQiOiJwb3N0Z3JlcyIsImRiX3VybCI6InBvc3RncmVzOi8vcG9zdGdyZXM6cGFzc3dvcmRAaGFyYm9yLWRhdGFiYXNlOjU0MzIvbm90YXJ5c2lnbmVyP3NzbG1vZGU9ZGlzYWJsZSIsImRlZmF1bHRfYWxpYXMiOiJkZWZhdWx0YWxpYXMifX0=
+  NOTARY_SERVER_DB_URL: cG9zdGdyZXM6Ly9wb3N0Z3JlczpwYXNzd29yZEBoYXJib3ItZGF0YWJhc2U6NTQzMi9ub3RhcnlzZXJ2ZXI/c3NsbW9kZT1kaXNhYmxl
+  NOTARY_SIGNER_DB_URL: cG9zdGdyZXM6Ly9wb3N0Z3JlczpwYXNzd29yZEBoYXJib3ItZGF0YWJhc2U6NTQzMi9ub3RhcnlzaWduZXI/c3NsbW9kZT1kaXNhYmxl
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-notary-server
+  labels:
+    app: harbor
+    component: notary-server
+  namespace: harbor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: harbor
+      component: notary-server
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: notary-server
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+      - name: notary-server
+        image: projects.registry.vmware.com/tce/harbor/notary-server-photon:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /_notary_server/health
+            scheme: HTTP
+            port: 4443
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_notary_server/health
+            scheme: HTTP
+            port: 4443
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        env:
+        - name: MIGRATIONS_PATH
+          value: migrations/server/postgresql
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: harbor-notary-server
+              key: NOTARY_SERVER_DB_URL
+        volumeMounts:
+        - name: config
+          mountPath: /etc/notary/server-config.postgres.json
+          subPath: server.json
+        - name: token-service-certificate
+          mountPath: /etc/ssl/token-service/
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/
+      volumes:
+      - name: config
+        secret:
+          secretName: harbor-notary-server
+      - name: token-service-certificate
+        secret:
+          secretName: harbor-token-service
+      - name: signer-certificate
+        secret:
+          secretName: harbor-notary-signer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-notary-signer
+  labels:
+    app: harbor
+    component: notary-signer
+  namespace: harbor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: harbor
+      component: notary-signer
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: notary-signer
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+      - name: notary-signer
+        image: projects.registry.vmware.com/tce/harbor/notary-signer-photon:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /
+            scheme: HTTPS
+            port: 7899
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            scheme: HTTPS
+            port: 7899
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        env:
+        - name: MIGRATIONS_PATH
+          value: migrations/signer/postgresql
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: harbor-notary-server
+              key: NOTARY_SIGNER_DB_URL
+        - name: NOTARY_SIGNER_DEFAULTALIAS
+          value: defaultalias
+        volumeMounts:
+        - name: config
+          mountPath: /etc/notary/signer-config.postgres.json
+          subPath: signer.json
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/
+      volumes:
+      - name: config
+        secret:
+          secretName: harbor-notary-server
+      - name: signer-certificate
+        secret:
+          secretName: harbor-notary-signer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-notary-server
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - port: 4443
+  selector:
+    app: harbor
+    component: notary-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-notary-signer
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - port: 7899
+  selector:
+    app: harbor
+    component: notary-signer
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-portal
+  labels:
+    app: harbor
+  namespace: harbor
+data:
+  nginx.conf: |
+    worker_processes auto;
+    pid /tmp/nginx.pid;
+    events {
+        worker_connections  1024;
+    }
+    http {
+        client_body_temp_path /tmp/client_body_temp;
+        proxy_temp_path /tmp/proxy_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+        server {
+            listen 8443 ssl;
+            listen [::]:8443 ssl;
+            #! SSL
+            ssl_certificate /etc/harbor/ssl/portal/tls.crt;
+            ssl_certificate_key /etc/harbor/ssl/portal/tls.key;
+
+            #! Recommendations from https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+            ssl_protocols TLSv1.2;
+            ssl_ciphers '!aNULL:kECDH+AESGCM:ECDH+AESGCM:RSA+AESGCM:kECDH+AES:ECDH+AES:RSA+AES:';
+            ssl_prefer_server_ciphers on;
+            ssl_session_cache shared:SSL:10m;
+            server_name  localhost;
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+            include /etc/nginx/mime.types;
+            gzip on;
+            gzip_min_length 1000;
+            gzip_proxied expired no-cache no-store private auth;
+            gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+            location / {
+                try_files $uri $uri/ /index.html;
+            }
+            location = /index.html {
+                add_header Cache-Control "no-store, no-cache, must-revalidate";
+            }
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-portal
+  labels:
+    app: harbor
+    component: portal
+  namespace: harbor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: harbor
+      component: portal
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: portal
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+      - name: portal
+        image: projects.registry.vmware.com/tce/harbor/harbor-portal:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /
+            scheme: HTTPS
+            port: 8443
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            scheme: HTTPS
+            port: 8443
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: portal-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: portal-internal-certs
+          mountPath: /etc/harbor/ssl/portal
+      volumes:
+      - name: portal-config
+        configMap:
+          name: harbor-portal
+      - name: portal-internal-certs
+        secret:
+          secretName: harbor-portal-internal-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-portal
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    projectcontour.io/upstream-protocol.tls: "443"
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: harbor
+    component: portal
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-redis
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: harbor
+    component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: harbor-redis
+  labels:
+    app: harbor
+    component: redis
+  namespace: harbor
+spec:
+  replicas: 1
+  serviceName: harbor-redis
+  selector:
+    matchLabels:
+      app: harbor
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: redis
+    spec:
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: redis
+        image: projects.registry.vmware.com/tce/harbor/redis-photon:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/redis
+          subPath: null
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: harbor
+      annotations:
+        kapp.k14s.io/owned-for-deletion: ""
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-registry
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      level: info
+      fields:
+        service: registry
+    storage:
+      cache:
+        layerinfo: redis
+      maintenance:
+        uploadpurging:
+          enabled: true
+          age: 168h
+          interval: 24h
+          dryrun: false
+      delete:
+        enabled: true
+      redirect:
+        disable: false
+      azure:
+        accountname: azure-accountname
+        container: azure-containername
+        realm: azure.core.windows.net
+    redis:
+      addr: harbor-redis:6379
+      db: 2
+      readtimeout: 10s
+      writetimeout: 10s
+      dialtimeout: 10s
+      pool:
+        maxidle: 100
+        maxactive: 500
+        idletimeout: 60s
+    http:
+      addr: :5443
+      relativeurls: false
+      tls:
+        certificate: /etc/harbor/ssl/registry/tls.crt
+        key: /etc/harbor/ssl/registry/tls.key
+        minimumtls: tls1.2
+      debug:
+        addr: localhost:5001
+    auth:
+      htpasswd:
+        realm: harbor-registry-basic-realm
+        path: /etc/registry/passwd
+    validation:
+      disabled: true
+    compatibility:
+      schema1:
+        enabled: true
+  ctl-config.yml: |
+    ---
+    protocol: "https"
+    port: 8443
+    https_config:
+      cert: "/etc/harbor/ssl/registry/tls.crt"
+      key: "/etc/harbor/ssl/registry/tls.key"
+    log_level: info
+    registry_config: "/etc/registry/config.yml"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-registry
+  labels:
+    app: harbor
+    component: registry
+  namespace: harbor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: harbor
+      component: registry
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: registry
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+        fsGroupChangePolicy: OnRootMismatch
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: registry
+        image: projects.registry.vmware.com/tce/harbor/registry-photon:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /
+            scheme: HTTPS
+            port: 5443
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            scheme: HTTPS
+            port: 5443
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        args:
+        - serve
+        - /etc/registry/config.yml
+        envFrom:
+        - secretRef:
+            name: harbor-registry
+        env:
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: INTERNAL_TLS_KEY_PATH
+          value: /etc/harbor/ssl/registry/tls.key
+        - name: INTERNAL_TLS_CERT_PATH
+          value: /etc/harbor/ssl/registry/tls.crt
+        - name: INTERNAL_TLS_TRUST_CA_PATH
+          value: /etc/harbor/ssl/registry/ca.crt
+        ports:
+        - containerPort: 5443
+        volumeMounts:
+        - name: registry-htpasswd
+          mountPath: /etc/registry/passwd
+          subPath: passwd
+        - name: registry-config
+          mountPath: /etc/registry/config.yml
+          subPath: config.yml
+        - name: registry-internal-certs
+          mountPath: /etc/harbor/ssl/registry
+      - name: registryctl
+        image: projects.registry.vmware.com/tce/harbor/harbor-registryctl:v2.6.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            scheme: HTTPS
+            port: 8443
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            scheme: HTTPS
+            port: 8443
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        envFrom:
+        - configMapRef:
+            name: harbor-registryctl
+        - secretRef:
+            name: harbor-registry
+        - secretRef:
+            name: harbor-registryctl
+        env:
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-core
+              key: secret
+        - name: JOBSERVICE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-jobservice
+              key: JOBSERVICE_SECRET
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: INTERNAL_TLS_KEY_PATH
+          value: /etc/harbor/ssl/registry/tls.key
+        - name: INTERNAL_TLS_CERT_PATH
+          value: /etc/harbor/ssl/registry/tls.crt
+        - name: INTERNAL_TLS_TRUST_CA_PATH
+          value: /etc/harbor/ssl/registry/ca.crt
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: registry-config
+          mountPath: /etc/registry/config.yml
+          subPath: config.yml
+        - name: registry-config
+          mountPath: /etc/registryctl/config.yml
+          subPath: ctl-config.yml
+        - name: registry-internal-certs
+          mountPath: /etc/harbor/ssl/registry
+      volumes:
+      - name: registry-htpasswd
+        secret:
+          secretName: harbor-registry-htpasswd
+          items:
+          - key: REGISTRY_HTPASSWD
+            path: passwd
+      - name: registry-config
+        configMap:
+          name: harbor-registry
+      - name: registry-internal-certs
+        secret:
+          secretName: harbor-registry-internal-tls
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-registry
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+data:
+  REGISTRY_HTTP_SECRET: dGhlLXNlY3JldC1vZi10aGUtcmVnaXN0cnk=
+  REGISTRY_REDIS_PASSWORD: ""
+  REGISTRY_STORAGE_AZURE_ACCOUNTKEY: WVhwMWNtVXRZV05qYjNWdWRHdGxlUW89
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-registry-htpasswd
+  labels:
+    app: harbor
+  namespace: harbor
+type: Opaque
+data:
+  REGISTRY_HTPASSWD: aGFyYm9yX3JlZ2lzdHJ5X3VzZXI6JDJhJDEwJHAxTTNmNXRKRFhlVHNXTEF1Zllab09WeFg4SThyNUwxc3lYMUQxZlo5TlQ1WGYyaUdCYTlH
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-registry
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - name: https-registry
+    port: 5443
+  - name: https-controller
+    port: 8443
+  selector:
+    app: harbor
+    component: registry
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-registryctl
+  labels:
+    app: harbor
+  namespace: harbor
+data: {}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-registryctl
+  labels:
+    app: harbor
+  namespace: harbor
+type: Opaque
+data: {}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-trivy
+  labels:
+    app: harbor
+  namespace: harbor
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+data:
+  redisURL: cmVkaXM6Ly9oYXJib3ItcmVkaXM6NjM3OS81P2lkbGVfdGltZW91dF9zZWNvbmRzPTMw
+  gitHubToken: ""
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: harbor-trivy
+  labels:
+    app: harbor
+    component: trivy
+  namespace: harbor
+spec:
+  replicas: 1
+  serviceName: harbor-trivy
+  selector:
+    matchLabels:
+      app: harbor
+      component: trivy
+  template:
+    metadata:
+      labels:
+        app: harbor
+        component: trivy
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+      - name: trivy
+        image: projects.registry.vmware.com/tce/harbor/trivy-adapter-photon:v2.6.1
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+        env:
+        - name: HTTP_PROXY
+          value: ""
+        - name: HTTPS_PROXY
+          value: ""
+        - name: NO_PROXY
+          value: harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-exporter,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,127.0.0.1,localhost,.local,.internal
+        - name: SCANNER_LOG_LEVEL
+          value: info
+        - name: SCANNER_TRIVY_CACHE_DIR
+          value: /home/scanner/.cache/trivy
+        - name: SCANNER_TRIVY_REPORTS_DIR
+          value: /home/scanner/.cache/reports
+        - name: SCANNER_TRIVY_DEBUG_MODE
+          value: "false"
+        - name: SCANNER_TRIVY_VULN_TYPE
+          value: os,library
+        - name: SCANNER_TRIVY_TIMEOUT
+          value: 5m0s
+        - name: SCANNER_TRIVY_GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: harbor-trivy
+              key: gitHubToken
+        - name: SCANNER_TRIVY_SEVERITY
+          value: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+        - name: SCANNER_TRIVY_IGNORE_UNFIXED
+          value: "false"
+        - name: SCANNER_TRIVY_SKIP_UPDATE
+          value: "false"
+        - name: SCANNER_TRIVY_OFFLINE_SCAN
+          value: "false"
+        - name: SCANNER_TRIVY_INSECURE
+          value: "false"
+        - name: SCANNER_API_SERVER_ADDR
+          value: :8443
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: SCANNER_API_SERVER_TLS_KEY
+          value: /etc/harbor/ssl/trivy/tls.key
+        - name: SCANNER_API_SERVER_TLS_CERTIFICATE
+          value: /etc/harbor/ssl/trivy/tls.crt
+        - name: SCANNER_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: harbor-trivy
+              key: redisURL
+        - name: SCANNER_STORE_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: harbor-trivy
+              key: redisURL
+        - name: SCANNER_JOB_QUEUE_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: harbor-trivy
+              key: redisURL
+        ports:
+        - name: https-trivy
+          containerPort: 8443
+        volumeMounts:
+        - name: data
+          mountPath: /home/scanner/.cache
+          subPath: null
+          readOnly: false
+        - name: trivy-internal-certs
+          mountPath: /etc/harbor/ssl/trivy
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /probe/healthy
+            port: https-trivy
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /probe/ready
+            port: https-trivy
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+      volumes:
+      - name: trivy-internal-certs
+        secret:
+          secretName: harbor-trivy-internal-tls
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: harbor
+      annotations:
+        kapp.k14s.io/owned-for-deletion: ""
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-trivy
+  labels:
+    app: harbor
+  namespace: harbor
+spec:
+  ports:
+  - name: https-trivy
+    protocol: TCP
+    port: 8443
+  selector:
+    app: harbor
+    component: trivy
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: harbor-self-signed-ca-issuer
+  namespace: harbor
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-ca
+  namespace: harbor
+spec:
+  secretName: harbor-ca-key-pair
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: Harbor CA
+  isCA: true
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harborca
+  ipAddresses: []
+  issuerRef:
+    name: harbor-self-signed-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: harbor-ca-issuer
+  namespace: harbor
+spec:
+  ca:
+    secretName: harbor-ca-key-pair
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-core-internal-cert
+  namespace: harbor
+spec:
+  secretName: harbor-core-internal-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-core
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-core
+  - harbor-core.harbor
+  - harbor-core.harbor.svc
+  - harbor-core.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-jobservice-internal-cert
+  namespace: harbor
+spec:
+  secretName: harbor-jobservice-internal-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-jobservice
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-jobservice
+  - harbor-jobservice.harbor
+  - harbor-jobservice.harbor.svc
+  - harbor-jobservice.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-portal-internal-cert
+  namespace: harbor
+spec:
+  secretName: harbor-portal-internal-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-portal
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-portal
+  - harbor-portal.harbor
+  - harbor-portal.harbor.svc
+  - harbor-portal.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-registry-internal-cert
+  namespace: harbor
+spec:
+  secretName: harbor-registry-internal-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-registry
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-registry
+  - harbor-registry.harbor
+  - harbor-registry.harbor.svc
+  - harbor-registry.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-trivy-internal-cert
+  namespace: harbor
+spec:
+  secretName: harbor-trivy-internal-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-trivy
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-trivy
+  - harbor-trivy.harbor
+  - harbor-trivy.harbor.svc
+  - harbor-trivy.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-token-service-cert
+  namespace: harbor
+spec:
+  secretName: harbor-token-service
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-token-service
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-token-service
+  - harbor-token-service.harbor
+  - harbor-token-service.harbor.svc
+  - harbor-token-service.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-notary-signer-cert
+  namespace: harbor
+spec:
+  secretName: harbor-notary-signer
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor-notary-signer
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor-notary-signer
+  - harbor-notary-signer.harbor
+  - harbor-notary-signer.harbor.svc
+  - harbor-notary-signer.harbor.svc.cluster.local
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-tls-cert
+  namespace: harbor
+spec:
+  secretName: harbor-tls
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - Project Harbor
+  commonName: harbor
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - harbor.yourdomain.com
+  - notary.harbor.yourdomain.com
+  ipAddresses: []
+  issuerRef:
+    name: harbor-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
