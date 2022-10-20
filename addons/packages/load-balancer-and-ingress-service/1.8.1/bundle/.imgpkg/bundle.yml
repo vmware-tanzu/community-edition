@@ -1,0 +1,11 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: load-balancer-and-ingress-service
+authors:
+- name: Xudong Liu
+  email: xudongl@vmware.com
+- name: Fang Han
+  email: fhan@vmware.com
+websites:
+- url: https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes/
