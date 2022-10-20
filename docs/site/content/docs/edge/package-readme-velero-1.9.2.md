@@ -6,9 +6,9 @@ This package provides safe operations to backup, restore, perform disaster recov
 
 The following table shows the providers this package can work with.
 
-| AWS  |  Azure  | vSphere  | Docker |
-|:---:|:---:|:---:|:---:|
-| ✅  |  ✅  | ✅  | ✅  |
+| AWS | Azure | vSphere | Docker | CSI |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Components
 
@@ -43,7 +43,7 @@ The Tanzu Community Edition Velero package provides support for these providers 
 |-----------------------------------|---------------------|------------------------------|-----------------------------------------|-------------------------------|
 | [Amazon Web Services (AWS)](https://aws.amazon.com)    | AWS S3              | AWS EBS                      | [Velero plugin for AWS](https://github.com/vmware-tanzu/velero-plugin-for-aws)              | [AWS Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-aws#setup)        |
 | [Microsoft Azure](https://azure.com)                                       | Azure Blob Storage  | Azure Managed Disks          | [Velero plugin for Microsoft Azure](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure) | [Azure Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure#setup)      |
-| [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere) | On-premise               |  vSphere Volumes            | [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere)                    | [vSphere Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-vsphere#velero-plugin-for-vsphere-installation-and-configuration-details)
+| [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere) | On-premise                |  vSphere Volumes            | [VMware vSphere](https://github.com/vmware-tanzu/velero-plugin-for-vsphere)                    | [vSphere Plugin Setup](https://github.com/vmware-tanzu/velero-plugin-for-vsphere#velero-plugin-for-vsphere-installation-and-configuration-details)
 
 Some other third-party storage providers, like MinIO, DigitalOcean, and others, support the same S3 API that the **AWS Velero plugin** uses.  For more information please see: [S3-Compatible object store providers for Velero](https://velero.io/docs/v1.6/supported-providers/#s3-compatible-object-store-providers).
 
@@ -55,8 +55,8 @@ The following configuration values can be set to customize the Velero installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `namespace` | Optional | The namespace in which to deploy Velero. |
-| `features` | Optional | A comma separated string to set some Velero function enable. Current supported features included: EnableCSI, EnableAPIGroupVersions, EnableUploadProgress.|
+| `namespace` | Required | The namespace in which to deploy Velero. |
+| `features` | Required | A comma separated string to set some Velero function enable. Current supported features included: EnableCSI, EnableAPIGroupVersions, EnableUploadProgress. Default to "". |
 
 ### Storage settings
 
@@ -64,25 +64,26 @@ The following configuration values can be set to customize the Velero installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `backupStorageLocation.name` | Required | The name of the Backup Storage Location. |
-| `backupStorageLocation.provider` | Required | The cloud provider to use. One of: `aws`, `azure`. |
+| `backupStorageLocation.create` | Required | create indicate whether to create BackupStorageLocation. Required. Default to true. |
+| `backupStorageLocation.name` | Optional | The name of the Backup Storage Location. |
+| `backupStorageLocation.provider` | Optional | The cloud provider to use. One of: `aws`, `azure` and `vsphere`. |
 | `backupStorageLocation.default` | Optional | Indicates if this location is the default backup storage location. |
-| `backupStorageLocation.objectStorage.bucket` | Required | The storage bucket where backups are to be uploaded. |
+| `backupStorageLocation.objectStorage.bucket` | Optional | The storage bucket where backups are to be uploaded. |
 | `backupStorageLocation.objectStorage.prefix` | Optional | The directory inside a storage bucket where backups are to be uploaded. |
 
 #### AWS storage
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `backupStorageLocation.configAWS.region` | Required | The AWS region where the S3 bucket is located. |
+| `backupStorageLocation.configAWS.region` | Optional | The AWS region where the S3 bucket is located. |
 
 #### Azure storage
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `backupStorageLocation.configAzure.resourceGroup` | Required | The name of the resource group containing the storage account for this backup storage location. |
-| `backupStorageLocation.configAzure.storageAccount` | Required | The name of the storage account for this backup storage location. |
-| `backupStorageLocation.configAzure.storageAccountKeyEnvVar` | Required | Required if using a storage account access key to authenticate rather than a service principal. |
+| `backupStorageLocation.configAzure.resourceGroup` | Optional | The name of the resource group containing the storage account for this backup storage location. |
+| `backupStorageLocation.configAzure.storageAccount` | Optional | The name of the storage account for this backup storage location. |
+| `backupStorageLocation.configAzure.storageAccountKeyEnvVar` | Optional | Required if using a storage account access key to authenticate rather than a service principal. |
 | `backupStorageLocation.configAzure.subscriptionId` | Optional | The the ID of the subscription for this backup storage location. |
 
 ### Volume snapshot settings
@@ -92,14 +93,14 @@ The following configuration values can be set to customize the Velero installati
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
 | `volumeSnapshotLocation.snapshotsEnabled` | Required | Indicates whether to create a volumesnapshotlocation CR. If false => disable the snapshot feature. |
-| `volumeSnapshotLocation.name` | Required | The name of the volume snapshot location where snapshots are being taken. |
-| `volumeSnapshotLocation.spec.provider` | Required | The name for the volume snapshot provider. Required if snapshots are enabled. Valid values are `aws` and `azure` |
+| `volumeSnapshotLocation.name` | Optional | The name of the volume snapshot location where snapshots are being taken. |
+| `volumeSnapshotLocation.spec.provider` | Optional | The name for the volume snapshot provider. Required if snapshots are enabled. Valid values are `aws` and `azure` |
 
 #### AWS volumes
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `volumeSnapshotLocation.spec.configAWS.region` | Required | The AWS region where the volumes/snapshots are located |
+| `volumeSnapshotLocation.spec.configAWS.region` | Optional | The AWS region where the volumes/snapshots are located |
 | `volumeSnapshotLocation.spec.configAWS.profile` | Optional | The AWS profile within the credentials file to use for the volume snapshot location. Default is "default". |
 
 #### Azure volumes
@@ -115,14 +116,14 @@ The following configuration values can be set to customize the Velero installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `volumeSnapshotLocation.spec.configvSphere.region` | Required | Region is the S3 region where the volumes/snapshots are located. Defaults to minio. |
+| `volumeSnapshotLocation.spec.configvSphere.region` | Optional | Region is the S3 region where the volumes/snapshots are located. Defaults to minio. |
 | `volumeSnapshotLocation.spec.configvSphere.bucket` | Optional | Bucket is the name of the bucket to store volumes/snapshots in. Defaults to velero. |
 
 ### vSphere specific
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vsphere.create` | Optional | Whether to deploy vSphere plugin. |
+| `vsphere.create` | Required | Whether to deploy vSphere plugin. |
 | `vsphere.namespace` | Optional | The namespace where vSphere secret is located. Defaults to "kube-system". |
 | `vsphere.clusterName` | Optional | The name found in k8s current-context. Defaults to "tkg-mgmt-vc" |
 | `vsphere.server` | Optional | vSphere VC server IP address in CSI vSphere configuration file's [VirtualCenter x.x.x.x] section tag. |
@@ -135,7 +136,7 @@ The following configuration values can be set to customize the Velero installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `vsphere.deployDefaultMinio` | Optional | Whehter to deploy default MinIO to provide OSS for velero. Defaults to false. |
+| `vsphere.deployDefaultMinio` | Required | Whehter to deploy default MinIO to provide OSS for velero. Defaults to false. |
 | `vsphere.namespace` | Optional | The namespace to delploy default MinIO. |
 | `vsphere.accessKey` | Optional | MinIO's access key. |
 | `vsphere.secretAccessKey` | Optional | MinIO's secret access key. |
@@ -144,11 +145,8 @@ The following configuration values can be set to customize the Velero installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `images.update` | Optional | Whether to update images. Defaults to false. |
+| `images.update` | Required | Whether to update images. Defaults to false. |
 | `images.velero` | Optional | Value to replace velero image. |
-| `images.veleroPluginAws` | Optional | Value to replace aws plugin image. |
-| `images.veleroPluginAzure` | Optional | Value to replace azure plugin image. |
-| `images.veleroPluginvSphere` | Optional | Value to replace vSphere plugin image. |
 | `images.minio` | Optional | Value to replace minio image. |
 | `images.minioClient` | Optional | Value to replace minio client image. |
 
@@ -156,7 +154,7 @@ The following configuration values can be set to customize the Velero installati
 
 | Value | Required/Optional | Description |
 |-------|-------------------|-------------|
-| `rbac.create` | Optional | Whether to create the Velero Role and RoleBinding to give all permissions to the namespace to Velero.|
+| `rbac.create` | Required | Whether to create the Velero Role and RoleBinding to give all permissions to the namespace to Velero.|
 | `rbac.name` | Optional |  A new name for the cluster RolBinding. Default is `velero`. |
 | `rbac.clusterAdministrator` | Optional | Whether to create the ClusterRoleBinding to give administrator permissions to Velero. `rbac.create` must also be set to `true`.|
 | `rbac.roleRefName` | Optional | Name of the cluster role to reference. Default is `cluster-admin`.|
@@ -165,13 +163,17 @@ The following configuration values can be set to customize the Velero installati
 | `serviceAccount.name` | Optional |  The name of the ServiceAccount the RoleBinding should reference. |
 | `serviceAccount.annotations` | Optional |  Annotations for the ServiceAccount the RoleBinding should reference. |
 | `serviceAccount.labels` | Optional |  Labels for the ServiceAccount the RoleBinding should reference. |
-| `restic.create` | Optional | Whether to deploy the restic daemonset. |
+| `restic.create` | Required | Whether to deploy the restic daemonset. |
 | `restic.defaultVolumesToRestic` | Optional | Bool flag to configure Velero server to use restic by default to backup all pod volumes on all backups. |
 | `restic.defaultResticPruneFrequency` | Optional | How often 'restic prune' is run for restic repositories by default. |
 | `restic.cpuLimit` | Optional | CPU limit for restic pod. A value of "0" is treated as unbounded. (default "1000m"). |
 | `restic.cpuRequest` | Optional | CPU request for restic pod. A value of "0" is treated as unbounded. (default "500m"). |
 | `restic.memoryLimit` | Optional | Memory limit for restic pod. A value of "0" is treated as unbounded. (default "1Gi"). |
 | `restic.memoryRequest` | Optional | Memory request for restic pod. A value of "0" is treated as unbounded. (default "512Mi"). |
+| `restic.hostPath` | Optional | The path on host, where Restic DaemonSet reads pod volumes from. Optional. (default "/var/lib/kubelet/pods") |
+| `restic.restoreHelperImage` | Optional | value to replace velero Restic restore helper image. Optional. (default "velero/velero-restic-restore-helper:v1.9.2") |
+| `plugins` | Required | plugins list to included in Velero deployment InitContainers. User can add customized plugins too. Allow to be an empty array. |
+| `environmentVariables` | Required | Environment variables for Velero Deployment and Restic Daemonset. Default to empty array. |
 
 ## Installation
 
@@ -309,6 +311,7 @@ the first option in those instructions.
           aws_access_key_id=${AWS_ACCESS_KEY}
           aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
     backupStorageLocation:
+      create: true
       name: backup
       spec:
         provider: aws
@@ -325,13 +328,24 @@ the first option in those instructions.
         provider: aws
         configAWS:
           region: ${REGION}
+    vsphere:
+      create: false
+    minio:
+      deployDefaultMinio: false
+    images:
+      update: false
+    features: ""
+    environmentVariables:
+    plugins:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.5.1
     EOF
     ```
 
 1. Install the Velero package.
 
     ```sh
-    tanzu package install velero --package-name velero.community.tanzu.vmware.com --version 1.8.0 --values-file values.yaml
+    tanzu package install velero --package-name velero.community.tanzu.vmware.com --version 1.9.2 --values-file values.yaml
     ```
 
 1. Verify that the Velero package was properly installed.
@@ -340,7 +354,7 @@ the first option in those instructions.
     tanzu package installed list
     | Retrieving installed packages...
       NAME    PACKAGE-NAME                       PACKAGE-VERSION  STATUS
-      velero  velero.community.tanzu.vmware.com  1.8.0            Reconcile succeeded
+      velero  velero.community.tanzu.vmware.com  1.9.2            Reconcile succeeded
     ```
 
 ### vSphere configuration
@@ -398,6 +412,7 @@ For vSphere and vCenter guidance, please reference to: [VMware vSphere Document]
           aws_access_key_id=${AWS_ACCESS_KEY}
           aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
     backupStorageLocation:
+      create: true
       name: backup
       spec:
         provider: aws
@@ -430,13 +445,22 @@ For vSphere and vCenter guidance, please reference to: [VMware vSphere Document]
       namespace: ${AWS_ACCESS_KEY}
       accessKey: ${AWS_ACCESS_KEY}
       secretAccessKey: minio123
+    images:
+      update: false
+    features: ""
+    environmentVariables:
+    plugins:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.5.1
+      - name: velero-plugin-for-vsphere
+        image: vsphereveleroplugin/velero-plugin-for-vsphere:v1.4.0
     EOF
     ```
 
 1. Install the Velero package.
 
     ```sh
-    tanzu package install velero --package-name velero.community.tanzu.vmware.com --version 1.8.0 --values-file values.yaml
+    tanzu package install velero --package-name velero.community.tanzu.vmware.com --version 1.9.2 --values-file values.yaml
     ```
 
 1. Verify that the Velero package was properly installed.
@@ -445,7 +469,7 @@ For vSphere and vCenter guidance, please reference to: [VMware vSphere Document]
     tanzu package installed list
     | Retrieving installed packages...
       NAME    PACKAGE-NAME                       PACKAGE-VERSION  STATUS
-      velero  velero.community.tanzu.vmware.com  1.8.0            Reconcile succeeded
+      velero  velero.community.tanzu.vmware.com  1.9.2            Reconcile succeeded
     ```
 
 ## Usage Example
@@ -532,4 +556,3 @@ In the following steps, you will simulate a disaster scenario. Specifically, you
 Velero Carvel package is still not full fledged yet. The followings are features not included but supported by velero client:
 
 * Multiple BackupStorageLocation provision.
-* Specify adding which plugins to Velero.
