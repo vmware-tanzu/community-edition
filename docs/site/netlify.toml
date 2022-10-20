@@ -75,11 +75,6 @@ HUGO_ENABLEGITINFO = "true"
   status = 301
 
 [[redirects]]
-  from = "/docs/*/*"
-  to = "/"
-  status = 301
-
-[[redirects]]
   from = "/download"
   to = "/"
   status = 301
