@@ -1,0 +1,173 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: hostrules.ako.vmware.com
+spec:
+  conversion:
+    strategy: None
+  group: ako.vmware.com
+  names:
+    kind: HostRule
+    listKind: HostRuleList
+    plural: hostrules
+    shortNames:
+    - hostrule
+    - hr
+    singular: hostrule
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              virtualhost:
+                properties:
+                  analyticsProfile:
+                    type: string
+                  applicationProfile:
+                    type: string
+                  enableVirtualHost:
+                    type: boolean
+                  errorPageProfile:
+                    type: string
+                  fqdn:
+                    type: string
+                  fqdnType:
+                    type: string
+                    enum:
+                    - Exact
+                    - Wildcard
+                    - Contains
+                    default: Exact
+                  datascripts:
+                    items:
+                      type: string
+                    type: array
+                  httpPolicy:
+                    properties:
+                      overwrite:
+                        type: boolean
+                      policySets:
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  gslb:
+                    properties:
+                      fqdn:
+                        type: string
+                      includeAliases:
+                        type: boolean
+                        default: false
+                    type: object
+                  tls:
+                    properties:
+                      sslProfile:
+                        type: string
+                      sslKeyCertificate:
+                        properties:
+                          name:
+                            type: string
+                          type:
+                            enum:
+                            - ref
+                            - secret
+                            type: string
+                          alternateCertificate:
+                            properties:
+                              name:
+                                type: string
+                              type:
+                                enum:
+                                - ref
+                                - secret
+                                type: string
+                            required:
+                            - name
+                            - type
+                            type: object
+                        required:
+                        - name
+                        - type
+                        type: object
+                      termination:
+                        enum:
+                        - edge
+                        type: string
+                    required:
+                    - sslKeyCertificate
+                    type: object
+                  wafPolicy:
+                    type: string
+                  analyticsPolicy:
+                    properties:
+                      fullClientLogs:
+                        properties:
+                          enabled:
+                            type: boolean
+                            default: false
+                          throttle:
+                            enum:
+                            - LOW
+                            - MEDIUM
+                            - HIGH
+                            - DISABLED
+                            default: HIGH
+                            type: string
+                        type: object
+                      logAllHeaders:
+                        type: boolean
+                        default: false
+                    type: object
+                  tcpSettings:
+                    properties:
+                      listeners:
+                        items:
+                          properties:
+                            port:
+                              type: integer
+                              minimum: 1
+                              maximum: 65535
+                            enableSSL:
+                              type: boolean
+                          type: object
+                        type: array
+                      loadBalancerIP:
+                        type: string
+                    type: object
+                  aliases:
+                    items:
+                      type: string
+                    type: array
+                required:
+                - fqdn
+                type: object
+            required:
+            - virtualhost
+            type: object
+          status:
+            properties:
+              error:
+                type: string
+              status:
+                type: string
+            type: object
+        type: object
+    additionalPrinterColumns:
+    - description: virtualhost for which the hostrule is valid
+      jsonPath: .spec.virtualhost.fqdn
+      name: Host
+      type: string
+    - description: status of the hostrule object
+      jsonPath: .status.status
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    served: true
+    storage: true
+    subresources:
+      status: {}

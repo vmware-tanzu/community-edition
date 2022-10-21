@@ -1,0 +1,103 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: multiclusteringresses.ako.vmware.com
+spec:
+  conversion:
+    strategy: None
+  group: ako.vmware.com
+  names:
+    kind: MultiClusterIngress
+    listKind: MultiClusterIngressList
+    plural: multiclusteringresses
+    shortNames:
+    - mci
+    singular: multiclusteringress
+  scope: Namespaced
+
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              hostName:
+                description: "FQDN of the ingresses of tenant clusters, from which MCI is built"
+                type: "string"
+              secretName:
+                description: "Name of the secret object associated with the hostName in the MCI object"
+                type: string
+              config:
+                description: "Configuration of the tenant target services"
+                type: array
+                items:
+                  type: object
+                  properties:
+                    path:
+                      description: "path specified in the tenant cluster's ingress object"
+                      type: "string"
+                    cluster:
+                      description: "cluster context name of the tenant cluster"
+                      type: "string"
+                    service:
+                      description: "kubernetes backend service and port configuration in the tenant cluster"
+                      type: object
+                      properties:
+                        namespace:
+                          description: "namespace of the target service in the kubernetes cluster"
+                          type: "string"
+                        name:
+                          description:  "target service name in the tenant cluster"
+                          type: "string"
+                        port:
+                          description: "port number of the target service in the tenant cluster"
+                          type: "integer"
+                          minimum: 1
+                          maximum: 65535
+                    weight:
+                      description: "weight of this member in the resultant virtual service"
+                      type: "integer"
+                      minimum: 1
+                      maximum: 100
+            required:
+              - hostName
+              - config
+          status:
+            type: object
+            properties:
+              status:
+                description: "represents whether the MCI object is accepted/rejected and the reason for rejection"
+                type: object
+                properties:
+                  accepted:
+                    description: "represents whether the MCI object is accepted/rejected"
+                    type: boolean
+                  reason:
+                    description: "describes the reason, if the MCI object is rejected"
+                    type: string
+              loadBalancer:
+                description: "represents the load balancing properties of this object"
+                type: object
+                properties:
+                  ingress:
+                    description: "represents the ingress details like vip assigned to this object"
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        hostname:
+                          description:  "host fqdn handled by this multi cluster ingress resource"
+                          type: string
+                        ip:
+                          description: "virtual IP address assigned to this object by the load balancer"
+                          type: string
+
+        required:
+        - spec
+    served: true
+    storage: true
+    subresources:
+      status: {}

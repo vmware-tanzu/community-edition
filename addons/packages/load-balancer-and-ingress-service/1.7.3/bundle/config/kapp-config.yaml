@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ako-kapp-config
+  labels:
+    kapp.k14s.io/config: ""
+data:
+  config.yml: |
+    apiVersion: kapp.k14s.io/v1alpha1
+    kind: Config
+    rebaseRules:
+    - paths:
+      - [metadata, annotations, AviObjectDeletionStatus]
+      type: copy
+      sources: [existing]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: StatefulSet, namespace: avi-system, name: ako}

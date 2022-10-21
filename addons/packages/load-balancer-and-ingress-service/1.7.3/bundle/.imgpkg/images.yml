@@ -1,0 +1,11 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: projects-stg.registry.vmware.com/tkg/ako:v1.7.3_vmware.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.7.3_vmware.1
+          url: projects-stg.registry.vmware.com/tkg/ako:v1.7.3_vmware.1
+  image: projects-stg.registry.vmware.com/tkg/ako@sha256:7e1dbff1a971800d31fd6da9377f677988c8a729b44fc55b31ea6418b08ea85d
+kind: ImagesLock
