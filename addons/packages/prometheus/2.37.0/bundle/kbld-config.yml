@@ -1,0 +1,9 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+
+minimumRequiredVersion: 0.15.0
+
+overrides:
+- image: gcr.io/cadvisor/cadvisor:v0.39.1
+  newImage: projects.registry.vmware.com/tkg/prometheus/cadvisor:v0.39.1_vmware.1

@@ -97,6 +97,7 @@ packages:
     versions:
       - 2.27.0
       - 2.36.2
+      - 2.37.0
   - name: velero
     versions:
       - 1.6.3
