@@ -32,6 +32,8 @@ spec:
                           type: string
                         cidr:
                           type: string
+                        v6cidr:
+                          type: string
                       required:
                       - networkName
                       type: object
