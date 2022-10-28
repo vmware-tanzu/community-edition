@@ -38,7 +38,7 @@ spec:
     spec:
       hostNetwork: true
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
         key: value1
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -129,7 +129,7 @@ spec:
     spec:
       hostNetwork: true
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
         key: value2
       tolerations:
       - key: node-role.kubernetes.io/master
