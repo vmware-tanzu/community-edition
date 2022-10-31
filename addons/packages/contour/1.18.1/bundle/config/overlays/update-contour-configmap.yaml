@@ -1,9 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
-#@ load("@ytt:yaml", "yaml")
-
-
-#@overlay/match by=overlay.subset({"kind": "ConfigMap"})
----
-data:
-  contour.yaml: #@ yaml.encode(data.values.contour.configFileContents)
