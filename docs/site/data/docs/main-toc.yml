@@ -7,6 +7,8 @@ toc:
           url: /architecture
         - page: Support Matrix
           url: /support-matrix
+        - page: Components
+          url: /components
     - title: Getting Started
       subfolderitems:
         - page: Plan your Deployment
