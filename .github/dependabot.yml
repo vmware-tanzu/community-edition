@@ -8,6 +8,7 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/builder"
     schedule:
       interval: "daily"
@@ -15,6 +16,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "test/"
     schedule:
       interval: "daily"
@@ -22,6 +24,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/asset"
     schedule:
       interval: "daily"
@@ -29,6 +32,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/tools"
     schedule:
       interval: "daily"
@@ -36,6 +40,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/tagger"
     schedule:
       interval: "daily"
@@ -43,6 +48,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/packages"
     schedule:
       interval: "daily"
@@ -50,6 +56,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/dailybuild"
     schedule:
       interval: "daily"
@@ -57,6 +64,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/imagelinter"
     schedule:
       interval: "daily"
@@ -64,6 +72,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/runner/webhook"
     schedule:
       interval: "daily"
@@ -71,6 +80,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/release/release"
     schedule:
       interval: "daily"
@@ -78,6 +88,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "hack/workflows/packages"
     schedule:
       interval: "daily"
@@ -85,6 +96,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "addons/packages/test/pkg"
     schedule:
       interval: "daily"
@@ -92,6 +104,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "cli/cmd/plugin/conformance"
     schedule:
       interval: "daily"
@@ -99,6 +112,7 @@ updates:
       - dependency-name: "github.com/vmware-tanzu/tanzu-framework"
 
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 0
     directory: "cli/cmd/plugin/diagnostics"
     schedule:
       interval: "daily"
