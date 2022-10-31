@@ -44,6 +44,7 @@ type packageDependency struct {
 const (
 	packagePollInterval = "10s"
 	packagePollTimeout  = "20m"
+	provisionerjsonpath = `jsonpath='{.items[0].provisioner}'`
 )
 
 var (
@@ -98,7 +99,8 @@ var _ = BeforeSuite(func() {
 	if isDefault {
 		storageclass = ""
 	}
-	fmt.Println("storageclass", storageclass)
+	//update storageclass if provisioner is ebs
+	updateStorageClass()
 
 	packageDependencies = []*packageDependency{
 		{"cert-manager", "cert-manager", ""},
@@ -237,7 +239,6 @@ func getDefaultStorageClass() (string, string) {
 	jsonPath := `jsonpath={.items}`
 	jsonStr, err := utils.Kubectl(nil, "get", "storageclasses", "-o", jsonPath)
 	Expect(err).NotTo(HaveOccurred())
-	fmt.Println("jsonstr:", jsonStr)
 	storageclasses := []v1.StorageClass{}
 	err = json.Unmarshal([]byte(jsonStr), &storageclasses)
 	Expect(err).NotTo(HaveOccurred())
@@ -408,8 +409,8 @@ func isPrivate(ip net.IP) bool {
 }
 
 func configContourYamlFile() string {
-	jsonPath := `jsonpath='{.items[0].provisioner}'`
-	output, _ := utils.Kubectl(nil, "get", "storageclasses", "-o", jsonPath)
+	// jsonPath := `jsonpath='{.items[0].provisioner}'` // nolint:goconst
+	output, _ := utils.Kubectl(nil, "get", "storageclasses", "-o", provisionerjsonpath)
 	//if provider is vc change contour service type to NodePort
 	//otherwise use LoadBalancer
 	if strings.Contains(output, "csi.vsphere.vmware.com") {
@@ -422,4 +423,39 @@ func configContourYamlFile() string {
 		return valuesFilename
 	}
 	return filepath.Join("fixtures", "contour.yaml")
+}
+
+func updateStorageClass() {
+	// jsonPath := `jsonpath='{.items[0].provisioner}'`
+	output, _ := utils.Kubectl(nil, "get", "storageclasses", "-o", provisionerjsonpath)
+	if strings.Contains(output, "ebs.csi.aws.com") {
+		jsonpath := `jsonpath='{.items[*].metadata.labels.topology\.ebs\.csi\.aws\.com/zone}'`
+		zones, _ := utils.Kubectl(nil, "get", "node", "-o", jsonpath)
+		zone := strings.Split(strings.Trim(zones, "'"), " ")[0]
+		// combine and update storageclass file
+		origin, _ := utils.Kubectl(nil, "get", "storageclasses", "-o", "yaml")
+		lines := strings.Split(origin, "\n")
+		var newlines []string
+		added := false
+		for _, line := range lines {
+			newlines = append(newlines, line)
+			if strings.Contains(line, "allowVolumeExpansion") && !added {
+				s := "  allowedTopologies:\n  - matchLabelExpressions:\n    - key: failure-domain.beta.kubernetes.io/zone\n      values:\n      - " + zone
+				newlines = append(newlines, s)
+				added = true
+			}
+		}
+		//write file
+		filename := "ebs-storageclass.yaml"
+		file, err := os.CreateTemp("", fmt.Sprintf("%s-*%s", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), filepath.Ext(filename)))
+		Expect(err).NotTo(HaveOccurred())
+		defer file.Close()
+		_, err = file.WriteString(strings.Join(newlines, "\n"))
+		Expect(err).NotTo(HaveOccurred())
+		// apply storage class with new file
+		_, err = utils.Kubectl(nil, "delete", "storageclasses", "default")
+		Expect(err).NotTo(HaveOccurred())
+		_, err = utils.Kubectl(nil, "apply", "-f", file.Name())
+		Expect(err).NotTo(HaveOccurred())
+	}
 }
