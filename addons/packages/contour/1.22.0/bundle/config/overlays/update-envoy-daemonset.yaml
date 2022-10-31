@@ -19,6 +19,19 @@ spec:
   #@ end
   template:
     spec:
+      #@ if data.values.envoy.workload.type == "Deployment":
+      #@overlay/match missing_ok=True
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - envoy
+              topologyKey: "kubernetes.io/hostname"
+      #@ end
       containers:
       #@overlay/match by=overlay.subset({"name": "envoy"})
       - args:

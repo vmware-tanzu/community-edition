@@ -9,6 +9,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/yaml"
 
@@ -618,6 +619,19 @@ var _ = Describe("Contour Ytt Templates", func() {
 			}
 			Expect(deployment.Spec.Strategy.RollingUpdate.MaxUnavailable).To(Equal(percentage))
 			Expect(*deployment.Spec.Replicas).To(Equal(int32(2)))
+			affinity := corev1.PodAffinityTerm{
+				LabelSelector: &metav1.LabelSelector{
+					MatchExpressions: []metav1.LabelSelectorRequirement{
+						{
+							Key:      "app",
+							Operator: metav1.LabelSelectorOpIn,
+							Values:   []string{"envoy"},
+						},
+					},
+				},
+				TopologyKey: "kubernetes.io/hostname",
+			}
+			Expect(deployment.Spec.Template.Spec.Affinity.PodAntiAffinity.RequiredDuringSchedulingIgnoredDuringExecution).To(ContainElement(affinity))
 
 		})
 
