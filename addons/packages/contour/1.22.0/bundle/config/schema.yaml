@@ -25,6 +25,13 @@ contour:
 
 #@schema/desc "Settings for the Envoy component."
 envoy:
+  #@schema/desc "Envoy workload settings."
+  workload:
+    #@schema/desc "The type of Kubernetes workload Envoy is deployed as. Options are 'Deployment' or 'DaemonSet'. If not specified, will default to 'DaemonSet'."
+    type: DaemonSet
+    #@schema/desc "The number of Envoy replicas to deploy when 'type' is set to 'Deployment'. If not specified, it will default to '2'."
+    replicas: 2
+
   #@schema/desc "Envoy service settings."
   service:
     #@schema/desc "The type of Kubernetes service to provision for Envoy. If not specified, will default to 'NodePort' for docker and vsphere and 'LoadBalancer' for others."
