@@ -5,9 +5,6 @@ images:
     kbld.carvel.dev/id: ghcr.io/oracle/cloud-provider-oci:v1.22.1
   image: ghcr.io/oracle/cloud-provider-oci@sha256:ed7dfbb03ac859787f390cada1d619ba81ed5053eac2b0e0ce79c24ff102baea
 - annotations:
-    kbld.carvel.dev/id: ghcr.io/oracle/cloud-provider-oci:v1.23.0
-  image: ghcr.io/oracle/cloud-provider-oci@sha256:3ddaf954aa3f01de2a7911ceee1b5408b395f159802f64968821ee647da06711
-- annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
   image: k8s.gcr.io/sig-storage/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
 - annotations:
