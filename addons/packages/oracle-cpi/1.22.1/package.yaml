@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/oracle-cpi@sha256:c701059fbb41c7021fed8c131b809c668b0d12e140734c3ea06fdb1b53690716
+          image: projects.registry.vmware.com/tce/oracle-cpi@sha256:bcb564f23298b8583afa48e2cbcbc344d40e84531ce7b3f121b63dced25d79c8
       template:
       - ytt:
           paths:
