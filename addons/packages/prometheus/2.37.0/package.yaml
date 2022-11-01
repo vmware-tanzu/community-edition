@@ -1,16 +1,16 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: prometheus.community.tanzu.vmware.com.2.36.2-3
+  name: prometheus.community.tanzu.vmware.com.2.37.0-1
 spec:
   refName: prometheus.community.tanzu.vmware.com
-  version: 2.36.2
-  releasedAt: 2022-06-23T18:00:00Z
-  releaseNotes: "prometheus 2.36.2 https://github.com/prometheus/prometheus/releases/tag/v2.36.2"
+  version: 2.37.0
+  releasedAt: 2022-10-25T18:00:00Z
+  releaseNotes: "prometheus 2.37.0 https://github.com/prometheus/prometheus/releases/tag/v2.37.0"
   capacityRequirementsDescription: "Varies significantly based on cluster size. A starting point is 16GB RAM and 4 CPU, but this should be tuned based on observed usage."
   valuesSchema:
     openAPIv3:
-      title: prometheus.community.tanzu.vmware.com.2.36.2 values schema
+      title: prometheus.community.tanzu.vmware.com.2.37.0 values schema
       properties:
         namespace:
           type: string
@@ -1184,7 +1184,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/prometheus@sha256:ca01e4cf092a776a7818d62f17c56fdabdaf6ddf1cea03d86bf6b9610f40fecd
+            image: projects-stg.registry.vmware.com/tce/prometheus@sha256:49bbc07070696729ae3d75705e4432539f5a6517c52c3f7194f505e91325994f
       template:
         - ytt:
             paths:

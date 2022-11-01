@@ -9,13 +9,6 @@ images:
             url: bitnami/kube-state-metrics:2.6.0
     image: index.docker.io/bitnami/kube-state-metrics@sha256:8d5e0197a99ac85184ee37acfe8c85f705b1f4d619f5889b1bf489314499ad7a
   - annotations:
-      kbld.carvel.dev/id: gcr.io/cadvisor/cadvisor:v0.44.0
-      kbld.carvel.dev/origins: |
-        - resolved:
-            tag: v0.44.0
-            url: gcr.io/cadvisor/cadvisor:v0.44.0
-    image: gcr.io/cadvisor/cadvisor@sha256:ef1e224267584fc9cb8d189867f178598443c122d9068686f9c3898c735b711f
-  - annotations:
       kbld.carvel.dev/id: jimmidyson/configmap-reload:v0.7.1
       kbld.carvel.dev/origins: |
         - resolved:
