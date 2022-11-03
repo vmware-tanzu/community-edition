@@ -15,7 +15,9 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 10%
+      #! This value of maxSurge means that during a rolling update
+      #! the new ReplicaSet will be created first.
+      maxSurge: 10%
   #@ end
   template:
     spec:
