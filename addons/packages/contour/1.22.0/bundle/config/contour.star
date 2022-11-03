@@ -87,6 +87,7 @@ def validate_contour():
                     validate_contour_deployment,
                     validate_contour_certificate,
                     validate_envoy_deployment,
+                    validate_envoy_workload,
                     validate_envoy_service]
    for validate_func in validate_funcs:
      validate_func()
@@ -123,6 +124,14 @@ def validate_envoy_deployment():
   data.values.envoy.logLevel in ("trace", "debug", "info", "warning", "warn", "error", "critical", "off") or assert.fail("envoy.logLevel must be one of trace|debug|info|warning/warn|error|critical|off")
 
   data.values.envoy.terminationGracePeriodSeconds or assert.fail("envoy.terminationGracePeriodSeconds must be provided")
+end
+
+def validate_envoy_workload():
+  data.values.envoy.workload.type in ("Deployment", "DaemonSet") or assert.fail("envoy.workload.type must be one of Deployment|DaemonSet")
+  if data.values.envoy.workload.type == "Deployment":
+    data.values.envoy.workload.replicas > 0 or assert.fail("envoy.workload.replicas must be greater than 0 when envoy.workload.type is Deployment")
+  end
+
 end
 
 def validate_envoy_service():
