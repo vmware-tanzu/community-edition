@@ -637,7 +637,6 @@ var _ = Describe("Contour Ytt Templates", func() {
 
 		Context("Envoy replicas specified", func() {
 			BeforeEach(func() {
-				values = envoyServiceAnnotationsAWSNLB
 				values = envoyDeploymentWithReplicas
 			})
 
