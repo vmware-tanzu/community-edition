@@ -617,7 +617,7 @@ var _ = Describe("Contour Ytt Templates", func() {
 				IntVal: 0,
 				StrVal: "10%",
 			}
-			Expect(deployment.Spec.Strategy.RollingUpdate.MaxUnavailable).To(Equal(percentage))
+			Expect(deployment.Spec.Strategy.RollingUpdate.MaxSurge).To(Equal(percentage))
 			Expect(*deployment.Spec.Replicas).To(Equal(int32(2)))
 			affinity := corev1.PodAffinityTerm{
 				LabelSelector: &metav1.LabelSelector{
