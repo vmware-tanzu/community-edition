@@ -50,6 +50,18 @@ data:
   #@overlay/match missing_ok=True
   vipPerNamespace: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.vip_per_namespace).lower()
 #@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.istio_enabled:
+  #@overlay/match missing_ok=True
+  istioEnabled: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.istio_enabled).lower()
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.blocked_namespace_list:
+  #@overlay/match missing_ok=True
+  blockedNamespaceList: #@ values.loadBalancerAndIngressService.config.ako_settings.blocked_namespace_list
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.ip_family:
+  #@overlay/match missing_ok=True
+  ipFamily: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.ip_family).lower()
+#@ end
 #@ if values.loadBalancerAndIngressService.config.controller_settings.tenant_name:
   #@overlay/match missing_ok=True
   tenantName: #@ "{}".format(values.loadBalancerAndIngressService.config.controller_settings.tenant_name)
