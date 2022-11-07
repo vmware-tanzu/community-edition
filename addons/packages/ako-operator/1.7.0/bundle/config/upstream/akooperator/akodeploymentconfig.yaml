@@ -1,0 +1,56 @@
+---
+apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
+kind: AKODeploymentConfig
+metadata:
+    name: install-ako-for-all
+spec:
+    cloudName: ""
+    serviceEngineGroup: ""
+    controller: ""
+    adminCredentialRef:
+        name: controller-credentials
+        namespace: default
+    certificateAuthorityRef:
+        name: controller-ca
+        namespace: default
+    dataNetwork:
+        name: ""
+        cidr: ""
+    controlPlaneNetwork:
+        name: ""
+        cidr: ""
+    extraConfigs:
+        disableStaticRouteSync: false
+        ingress:
+            disableIngressClass: true
+            defaultIngressController: false
+
+---
+apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
+kind: AKODeploymentConfig
+metadata:
+    name: install-ako-for-management-cluster
+spec:
+    clusterSelector:
+        matchLabels:
+            cluster-role.tkg.tanzu.vmware.com/management: ""
+    cloudName: ""
+    serviceEngineGroup: ""
+    controller: ""
+    adminCredentialRef:
+        name: controller-credentials
+        namespace: default
+    certificateAuthorityRef:
+        name: controller-ca
+        namespace: default
+    dataNetwork:
+        name: ""
+        cidr: ""
+    controlPlaneNetwork:
+        name: ""
+        cidr: ""
+    extraConfigs:
+        disableStaticRouteSync: false
+        ingress:
+            disableIngressClass: true
+            defaultIngressController: false

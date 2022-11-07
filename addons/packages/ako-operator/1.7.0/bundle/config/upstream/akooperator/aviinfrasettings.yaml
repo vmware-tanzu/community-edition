@@ -1,0 +1,99 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: aviinfrasettings.ako.vmware.com
+spec:
+  conversion:
+    strategy: None
+  group: ako.vmware.com
+  names:
+    kind: AviInfraSetting
+    listKind: AviInfraSettingList
+    plural: aviinfrasettings
+    singular: aviinfrasetting
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: AviInfraSetting is used to select specific Avi controller infra attributes.
+        properties:
+          spec:
+            properties:
+              network:
+                properties:
+                  vipNetworks:
+                    items:
+                      properties:
+                        networkName:
+                          type: string
+                        cidr:
+                          type: string
+                        v6cidr:
+                          type: string
+                      required:
+                      - networkName
+                      type: object
+                    type: array
+                  nodeNetworks:
+                    items:
+                      properties:
+                        networkName:
+                          type: string
+                        cidrs:
+                          type: array
+                          items:
+                            type: string
+                      required:
+                      - networkName
+                      type: object
+                    type: array
+                  enableRhi:
+                    type: boolean
+                  enablePublicIP:
+                    type: boolean
+                  bgpPeerLabels:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              seGroup:
+                properties:
+                  name:
+                    type: string
+                type: object
+                required:
+                - name
+              l7Settings:
+                properties:
+                  shardSize:
+                    enum:
+                    - SMALL
+                    - MEDIUM
+                    - LARGE
+                    - DEDICATED
+                    type: string
+                type: object
+                required:
+                - shardSize
+            type: object
+          status:
+            properties:
+              error:
+                type: string
+              status:
+                type: string
+            type: object
+        type: object
+    additionalPrinterColumns:
+    - description: status of the nas object
+      jsonPath: .status.status
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    served: true
+    storage: true
+    subresources:
+      status: {}

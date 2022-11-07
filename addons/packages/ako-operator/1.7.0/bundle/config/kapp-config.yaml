@@ -1,0 +1,41 @@
+#@ load("/values.star", "values")
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ako-operator-kapp-config
+  labels:
+    kapp.k14s.io/config: ""
+data:
+  #@yaml/text-templated-strings
+  config.yml: |
+    apiVersion: kapp.k14s.io/v1alpha1
+    kind: Config
+    rebaseRules:
+    - paths:
+      - [spec, cloudName]
+      - [spec, controller]
+      - [spec, adminCredentialRef]
+      - [spec, certificateAuthorityRef]
+      - [spec, dataNetwork]
+      - [spec, controllerVersion]
+      - [spec, extraConfigs]
+      - [spec, controlPlaneNetwork]
+      - [spec, serviceEngineGroup]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1, kind: AKODeploymentConfig}
+    - paths:
+      - [data, username]
+      - [data, password]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Secret, namespace: (@= values.akoOperator.namespace@), name: (@= values.akoOperator.config.avi_admin_credential_name@)}
+    - path: [data, certificateAuthorityData]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Secret, namespace: (@= values.akoOperator.namespace@), name: (@= values.akoOperator.config.avi_ca_name@)}
