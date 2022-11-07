@@ -4,9 +4,36 @@
 
 #@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "envoy"}})
 ---
+kind: #@ data.values.envoy.workload.type
 spec:
+  #@ if data.values.envoy.workload.type == "Deployment":
+  #@overlay/match missing_ok=True
+  replicas: #@ data.values.envoy.workload.replicas
+  #@overlay/remove
+  updateStrategy:
+  #@overlay/match missing_ok=True
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      #! This value of maxSurge means that during a rolling update
+      #! the new ReplicaSet will be created first.
+      maxSurge: 10%
+  #@ end
   template:
     spec:
+      #@ if data.values.envoy.workload.type == "Deployment":
+      #@overlay/match missing_ok=True
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - envoy
+              topologyKey: "kubernetes.io/hostname"
+      #@ end
       containers:
       #@overlay/match by=overlay.subset({"name": "envoy"})
       - args:

@@ -13,7 +13,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/contour@sha256:4b01d102e78cdd7c99d2dae3a4e8108e09b87bbbef75cef9265394d75972fc1e
+          image: projects.registry.vmware.com/tce/contour@sha256:b68ad8ec3012db7d2a2e84f8544685012e2dca09d28d54dce8735fb60f0d05bf1
       template:
       - ytt:
           paths:
@@ -65,6 +65,19 @@ spec:
           additionalProperties: false
           description: Settings for the Envoy component.
           properties:
+            workload:
+              type: object
+              additionalProperties: false
+              description: Envoy workload settings.
+              properties:
+                type:
+                  type: string
+                  description: The type of Kubernetes workload Envoy is deployed as. Options are 'Deployment' or 'DaemonSet'. If not specified, will default to 'DaemonSet'.
+                  default: DaemonSet
+                replicas:
+                  type: integer
+                  description: The number of Envoy replicas to deploy when 'type' is set to 'Deployment'. If not specified, it will default to '2'.
+                  default: 2
             service:
               type: object
               additionalProperties: false

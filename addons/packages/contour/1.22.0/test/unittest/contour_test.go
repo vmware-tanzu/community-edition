@@ -9,6 +9,8 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/yaml"
 
 	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/repo"
@@ -592,6 +594,60 @@ var _ = Describe("Contour Ytt Templates", func() {
 				Expect(service.Annotations).To(HaveKeyWithValue("service.beta.kubernetes.io/aws-load-balancer-type", "nlb"))
 				Expect(service.Annotations).To(HaveKeyWithValue("foo", "bar"))
 				Expect(service.Annotations).To(HaveKeyWithValue("boo", "baz"))
+
+			})
+		})
+	})
+
+	Context("Envoy workload settings specified", func() {
+		BeforeEach(func() {
+			values = envoyDeploymentDefaultReplicas
+		})
+
+		It("sets the Envoy workload type as Deployment", func() {
+			Expect(err).NotTo(HaveOccurred())
+
+			docs := findDocsContainingLines(output, "kind: Deployment", "name: envoy")
+			Expect(docs).To(HaveLen(1), "Envoy Deployment not found")
+
+			deployment := unmarshalDeployment(docs[0])
+			Expect(deployment.Spec.Strategy.Type).To(Equal(appsv1.RollingUpdateDeploymentStrategyType))
+			percentage := &intstr.IntOrString{
+				Type:   1,
+				IntVal: 0,
+				StrVal: "10%",
+			}
+			Expect(deployment.Spec.Strategy.RollingUpdate.MaxSurge).To(Equal(percentage))
+			Expect(*deployment.Spec.Replicas).To(Equal(int32(2)))
+			affinity := corev1.PodAffinityTerm{
+				LabelSelector: &metav1.LabelSelector{
+					MatchExpressions: []metav1.LabelSelectorRequirement{
+						{
+							Key:      "app",
+							Operator: metav1.LabelSelectorOpIn,
+							Values:   []string{"envoy"},
+						},
+					},
+				},
+				TopologyKey: "kubernetes.io/hostname",
+			}
+			Expect(deployment.Spec.Template.Spec.Affinity.PodAntiAffinity.RequiredDuringSchedulingIgnoredDuringExecution).To(ContainElement(affinity))
+
+		})
+
+		Context("Envoy replicas specified", func() {
+			BeforeEach(func() {
+				values = envoyDeploymentWithReplicas
+			})
+
+			It("sets the Envoy Deployment replicas", func() {
+				Expect(err).NotTo(HaveOccurred())
+
+				docs := findDocsContainingLines(output, "kind: Deployment", "name: envoy")
+				Expect(docs).To(HaveLen(1), "Envoy Deployment not found")
+
+				deployment := unmarshalDeployment(docs[0])
+				Expect(*deployment.Spec.Replicas).To(Equal(int32(5)))
 
 			})
 		})

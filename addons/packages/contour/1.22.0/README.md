@@ -76,6 +76,8 @@ You can configure the following in the data values file:
 | `envoy.hostNetwork` | `false` | Whether to enable host networking for the Envoy pods. |
 | `envoy.terminationGracePeriodSeconds` | `300` | The termination grace period, in seconds, for the Envoy pods. |
 | `envoy.logLevel` | `info` | The Envoy log level. Valid values are `trace`, `debug`, `info`, `warn`, `error`, `critical`, and `off`. |
+| `envoy.workload.type` | The type of Kubernetes workload Envoy is deployed as. Options are 'Deployment' or 'DaemonSet'. If not specified, will default to 'DaemonSet'. |
+| `envoy.workload.replicas` | The number of Envoy replicas to deploy when 'type' is set to 'Deployment'. If not specified, it will default to '2'. |
 | `certificates.useCertManager` | `false` | Whether to use cert-manager to provision TLS certificates for securing communication between Contour and Envoy. If false, the upstream Contour certgen job will be used to provision certificates. If true, the `cert-manager` addon must be installed in the cluster. |
 | `certificates.duration` | `8760h` |  If using cert-manager, how long the certificates should be valid for. If useCertManager is false, this field is ignored. |
 | `certificates.renewBefore` | `360h` |  If using cert-manager, how long before expiration the certificates should be renewed. If useCertManager is false, this field is ignored. |

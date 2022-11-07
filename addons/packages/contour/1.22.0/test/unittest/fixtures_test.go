@@ -83,6 +83,27 @@ envoy:
   terminationGracePeriodSeconds: 0
 `
 
+// envoyDeploymentDefaultReplicas has envoy.workload_options.type set to Deployment and
+// an empty envoy.workload_options.replicas value.
+const envoyDeploymentDefaultReplicas string = `
+#@data/values
+---
+envoy:
+  workload:
+    type: Deployment
+`
+
+// envoyDeploymentWithReplicas has envoy.workload_options.type set to Deployment and
+// a number for envoy.workload_options.replicas value.
+const envoyDeploymentWithReplicas string = `
+#@data/values
+---
+envoy:
+  workload:
+    type: Deployment
+    replicas: 5
+`
+
 // invalidEnvoyServiceType has an invalid envoy.service.type value.
 const invalidEnvoyServiceType string = `
 #@data/values
