@@ -23,6 +23,8 @@ loadBalancerAndIngressService:
       services_api: ""
       istio_enabled: ""
       vip_per_namespace: ""
+      blocked_namespace_list: ""
+      ip_family: ""
       enable_events:
       namespace_selector:
           label_key: ""
