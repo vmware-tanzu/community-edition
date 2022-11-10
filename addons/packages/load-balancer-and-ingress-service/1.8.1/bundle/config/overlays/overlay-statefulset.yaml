@@ -100,6 +100,30 @@ spec:
                   name: avi-k8s-config
                   key: passthroughShardSize
 #@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.istio_enabled:
+#@overlay/append
+            - name: ISTIO_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: istioEnabled
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.blocked_namespace_list:
+#@overlay/append
+            - name: BLOCKED_NAMESPACE_LIST
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: blockedNamespaceList
+#@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.ip_family:
+#@overlay/append
+            - name: IP_FAMILY
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: ipFamily
+#@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.primary_instance:
 #@overlay/append
             - name: PRIMARY_AKO_FLAG
