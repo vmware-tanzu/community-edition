@@ -5,5 +5,3 @@ metadata:
   name: kubevip
   namespace: kube-system
 data:
-  cidr-global: ""
-  range-global: ""
