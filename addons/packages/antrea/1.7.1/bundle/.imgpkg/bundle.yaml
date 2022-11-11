@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: antrea
+authors:
+- name: Hang Yan
+  email: yhang@vmware.com
+websites:
+- url: antrea.io
