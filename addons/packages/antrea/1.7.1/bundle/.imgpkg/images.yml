@@ -1,0 +1,11 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: antrea/antrea-ubuntu:v1.7.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v1.7.1
+          url: antrea/antrea-ubuntu:v1.7.1
+  image: index.docker.io/antrea/antrea-ubuntu@sha256:90deeed74e5631ce3c514c4bf12e284bd5040dac5480f0eec0436fdbcaabe85d
+kind: ImagesLock
