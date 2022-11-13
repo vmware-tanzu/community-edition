@@ -1,0 +1,231 @@
+#@ load("/values.star", "values")
+#@ load("/globals.star", "get_kapp_annotations")
+#@ load("/helpers.star", "get_storage_class", "use_existing_claim", "get_no_proxy")
+#@ load("/kinds.lib.yaml", "kind_overlays")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:json", "json")
+
+#@ kind = kind_overlays
+#@ jobservice_metadata = overlay.subset({"metadata": {"name": "harbor-jobservice"}})
+#@ jobservice_scandata_metadata = overlay.subset({"metadata": {"name": "harbor-jobservice-scandata"}})
+
+#@ jobservice = values.persistence.persistentVolumeClaim.jobservice
+#@ jobLog = jobservice.jobLog
+#@ scanDataExports = jobservice.scanDataExports
+
+#@ def getStrategyType():
+#@   if jobLog.accessMode == "ReadWriteOnce":
+#@     return "Recreate"
+#@   else:
+#@     return "RollingUpdate"
+#@   end
+#@ end
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_metadata), overlay.not_op(use_existing_claim(jobLog))),expects="0+"
+---
+spec:
+  accessModes:
+    #@overlay/match by=overlay.all,expects="0+"
+    -  #@ jobLog.accessMode
+  resources:
+    #@overlay/match-child-defaults missing_ok=True
+    requests:
+      storage: #@ jobLog.size
+  #@ if/end jobLog.storageClass:
+  #@overlay/match missing_ok=True
+  storageClassName: #@ get_storage_class(jobLog.storageClass)
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_metadata), use_existing_claim(jobLog)),expects="0+"
+---
+#@overlay.remove
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_scandata_metadata), overlay.not_op(use_existing_claim(scanDataExports))),expects="0+"
+---
+spec:
+  accessModes:
+    #@overlay/match by=overlay.all,expects="0+"
+    -  #@ scanDataExports.accessMode
+  resources:
+    #@overlay/match-child-defaults missing_ok=True
+    requests:
+      storage: #@ scanDataExports.size
+  #@ if/end scanDataExports.storageClass:
+  #@overlay/match missing_ok=True
+  storageClassName: #@ get_storage_class(scanDataExports.storageClass)
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.persistent_volume_claim, jobservice_scandata_metadata), use_existing_claim(scanDataExports)),expects="0+"
+---
+#@overlay.remove
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, jobservice_metadata), use_existing_claim(jobLog)),expects="0+"
+---
+spec:
+  template:
+    spec:
+      volumes:
+        #@overlay/match by="name"
+        - name: job-logs
+          persistentVolumeClaim:
+            claimName: #@ jobLog.existingClaim
+
+#@overlay/match by=overlay.and_op(overlay.and_op(kind.deployment, jobservice_metadata), use_existing_claim(scanDataExports)),expects="0+"
+---
+spec:
+  template:
+    spec:
+      volumes:
+        #@overlay/match by="name"
+        - name: job-scandata-exports
+          persistentVolumeClaim:
+            claimName: #@ scanDataExports.existingClaim
+
+#@overlay/match by=overlay.and_op(kind.deployment, jobservice_metadata)
+---
+spec:
+  replicas: #@ values.jobservice.replicas
+  strategy:
+    type: #@ getStrategyType()
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: jobservice
+          volumeMounts:
+            #@overlay/match by="name"
+            - name:  job-logs
+              #@ if/end jobLog.subPath:
+              subPath: #@ jobLog.subPath
+            #@overlay/match by="name"
+            - name:  job-scandata-exports
+              #@ if/end scanDataExports.subPath:
+              subPath: #@ scanDataExports.subPath
+            #@ if values.caBundleSecretName:
+            #@overlay/append
+            - name: ca-bundle-certs
+              mountPath: /harbor_cust_cert/custom-ca.crt
+              subPath: ca.crt
+            #@ end
+      volumes:
+        #@ if values.caBundleSecretName:
+        #@overlay/append
+        - name: ca-bundle-certs
+          secret:
+            secretName: #@ values.caBundleSecretName
+        #@ end
+
+
+#@ def jobservice_config():
+#@overlay/match-child-defaults missing_ok=True
+job_loggers:
+  #@overlay/match by="name"
+  - name: "FILE"
+    level: #@ values.logLevel.upper()
+metric:
+  #@overlay/match missing_ok=True
+  enabled: #@ values.metrics.enabled
+  path: #@ values.metrics.jobservice.port
+  port: #@ values.metrics.jobservice.port
+loggers:
+  #@overlay/match by="name"
+  - name: "STD_OUTPUT"
+    level: #@ values.logLevel.upper()
+#@ end
+
+#@ def update_jobservice_config(old, _):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), jobservice_config()))
+#@ end
+
+#@overlay/match by=overlay.and_op(kind.configmap, jobservice_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  #@overlay/replace via=update_jobservice_config
+  config.yml:
+
+#@overlay/match by=overlay.and_op(kind.configmap, overlay.subset({"metadata": {"name": "harbor-jobservice-env"}}))
+---
+metadata:
+  #@ annotations = get_kapp_annotations("ConfigMap")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+#@overlay/match-child-defaults missing_ok=True
+data:
+  #@ if/end values.proxy.httpProxy:
+  HTTP_PROXY: #@ values.proxy.httpProxy
+  #@ if/end values.proxy.httpsProxy:
+  HTTPS_PROXY: #@ values.proxy.httpsProxy
+  NO_PROXY: #@ get_no_proxy()
+  #@ if values.trace.enabled:
+  TRACE_SERVICE_NAME: "harbor-jobservice"
+  TRACE_ENABLED: #@ "{}".format(values.trace.enabled)
+  TRACE_SAMPLE_RATE: #@ "{}".format(values.trace.sample_rate)
+  #@ if/end values.trace.namespace:
+  TRACE_NAMESPACE: #@ values.trace.namespace
+  #@ if/end values.trace.attributes:
+  TRACE_ATTRIBUTES: #@ json.encode(values.trace.attributes)
+  #@ if values.trace.provider == "jaeger":
+  #@ if/end values.trace.jaeger.endpoint:
+  TRACE_JAEGER_ENDPOINT: #@ values.trace.jaeger.endpoint
+  #@ if/end values.trace.jaeger.username:
+  TRACE_JAEGER_USERNAME: #@ values.trace.jaeger.username
+  #@ if/end values.trace.jaeger.agent_host:
+  TRACE_JAEGER_AGENT_HOSTNAME: #@ values.trace.jaeger.agent_host
+  #@ if/end values.trace.jaeger.agent_port:
+  TRACE_JAEGER_AGENT_PORT: #@ "{}".format(values.trace.jaeger.agent_port)
+  #@ else:
+  TRACE_OTEL_ENDPOINT: #@ values.trace.otel.endpoint
+  TRACE_OTEL_URL_PATH: #@ values.trace.otel.url_path
+  TRACE_OTEL_COMPRESSION: #@ "{}".format(values.trace.otel.compression)
+  TRACE_OTEL_INSECURE: #@ "{}".format(values.trace.otel.insecure)
+  TRACE_OTEL_TIMEOUT: #@ "{}".format(values.trace.otel.timeout)
+  #@ end
+  #@ end
+  #@ if values.cache.enabled:
+  _REDIS_URL_CORE: "redis://harbor-redis:6379/0?idle_timeout_seconds=30"
+  CACHE_ENABLED: #@ "{}".format(values.cache.enabled)
+  CACHE_EXPIRE_HOURS: #@ "{}".format(values.cache.expireHours)
+  #@ end
+
+#@overlay/match by=overlay.and_op(kind.secret, jobservice_metadata)
+---
+metadata:
+  #@ annotations = get_kapp_annotations("Secret")
+  #@ if annotations:
+  #@overlay/match missing_ok=True
+  annotations: #@ annotations
+  #@ end
+data:
+  JOBSERVICE_SECRET: #@ base64.encode(values.jobservice.secret)
+  #@ if values.trace.enabled and values.trace.provider == "jaeger" and values.trace.jaeger.password:
+  #@overlay/match missing_ok=True
+  TRACE_JAEGER_PASSWORD: #@ base64.encode(values.trace.jaeger.password)
+  #@ end
+
+#@ if values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, jobservice_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by="name"
+    - name: https-metrics
+      port: #@ values.metrics.jobservice.port
+#@ end
+
+#@ if not values.metrics.enabled:
+#@overlay/match by=overlay.and_op(kind.service, jobservice_metadata)
+---
+spec:
+  ports:
+    #@overlay/match by=overlay.subset({"name": "https-metrics"})
+    #@overlay/remove
+    - (this value is ignored)
+#@ end
