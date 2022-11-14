@@ -1,0 +1,189 @@
+namespace: PACKAGE_COMPONENTS_NAMESPACE
+hostname: harbor.yourdomain.com
+port:
+  https: 443
+logLevel: info
+tlsCertificate:
+  tls.crt:
+  tls.key:
+  ca.crt:
+  tlsSecretLabels:
+tlsCertificateSecretName:
+enableContourHttpProxy: true
+contourHttpProxy:
+  timeout: 0s
+  idleTimeout: 5m
+harborAdminPassword: Harbor12345
+secretKey: wJ7llHXobIGAP1Bb
+database:
+  password: tQL7agTyRFOIunsg
+  shmSizeLimit:
+  maxIdleConns:
+  maxOpenConns:
+exporter:
+  cacheDuration:
+core:
+  replicas: 1
+  secret: gt2VJixwrBmM2ZNL
+  xsrfKey: mOCdT1AzIPI3QW3C52psiv3yCpSGCkT1
+jobservice:
+  replicas: 1
+  secret: yUc7rfKrNqIDYEdo
+registry:
+  replicas: 1
+  secret: ks38Ig8lYeySdNeG
+notary:
+  enabled: true
+trivy:
+  enabled: true
+  replicas: 1
+  gitHubToken: ""
+  skipUpdate: false
+  offlineScan: false
+  timeout:
+persistence:
+  persistentVolumeClaim:
+    registry:
+      existingClaim: ""
+      storageClass: STORAGE_CLASS
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    jobservice:
+      jobLog:
+        existingClaim: ""
+        storageClass: STORAGE_CLASS
+        subPath: ""
+        accessMode: ReadWriteOnce
+        size: 1Gi
+      scanDataExports:
+        existingClaim: ""
+        storageClass: STORAGE_CLASS
+        subPath: ""
+        accessMode: ReadWriteOnce
+        size: 1Gi
+    database:
+      existingClaim: ""
+      storageClass: STORAGE_CLASS
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    redis:
+      existingClaim: ""
+      storageClass: STORAGE_CLASS
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    trivy:
+      existingClaim: ""
+      storageClass: STORAGE_CLASS
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 5Gi
+  imageChartStorage:
+    disableredirect: false
+    type: filesystem
+    filesystem:
+      rootdirectory: /storage
+    azure:
+      accountname: accountname
+      accountkey: base64encodedaccountkey
+      container: containername
+      realm: core.windows.net
+    gcs:
+      bucket: bucketname
+      encodedkey: base64-encoded-json-key-file
+      rootdirectory: null
+      chunksize: 5242880
+    s3:
+      region: us-west-1
+      bucket: bucketname
+      accesskey: null
+      secretkey: null
+      regionendpoint: null
+      encrypt: false
+      keyid: null
+      secure: true
+      skipverify: false
+      v4auth: true
+      chunksize: null
+      rootdirectory: null
+      storageclass: STANDARD
+      multipartcopychunksize: null
+      multipartcopymaxconcurrency: null
+      multipartcopythresholdsize: null
+    swift:
+      authurl: https://storage.myprovider.com/v3/auth
+      username: username
+      password: password
+      container: containername
+      region: null
+      tenant: null
+      tenantid: null
+      domain: null
+      domainid: null
+      trustid: null
+      insecureskipverify: null
+      chunksize: null
+      prefix: null
+      secretkey: null
+      accesskey: null
+      authversion: null
+      endpointtype: null
+      tempurlcontainerkey: null
+      tempurlmethods: null
+    oss:
+      accesskeyid: accesskeyid
+      accesskeysecret: accesskeysecret
+      region: regionname
+      bucket: bucketname
+      endpoint: null
+      internal: null
+      encrypt: null
+      secure: null
+      chunksize: null
+      rootdirectory: null
+proxy:
+  httpProxy:
+  httpsProxy:
+  noProxy: 127.0.0.1,localhost,.local,.internal
+pspNames: null
+caBundleSecretName:
+metrics:
+  enabled: false
+  core:
+    path: /metrics
+    port: 8001
+  registry:
+    path: /metrics
+    port: 8001
+  jobservice:
+    path: /metrics
+    port: 8001
+  exporter:
+    path: /metrics
+    port: 8001
+network:
+  ipFamilies: []
+trace:
+  enabled: false
+  provider: jaeger
+  sample_rate: 1
+  namespace:
+  attributes:
+    application: harbor
+  jaeger:
+    endpoint: http://hostname:14268/api/traces
+    username:
+    password:
+    agent_host:
+    agent_port:
+  otel:
+    endpoint: hostname:4318
+    url_path: /v1/traces
+    compression: false
+    insecure: true
+    timeout: 10
+cache:
+  enabled: false
+  expireHours: 24

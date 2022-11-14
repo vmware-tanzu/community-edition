@@ -1,0 +1,10 @@
+#@data/values
+
+---
+infrastructure_provider: null
+app:
+  deploy:
+  - kapp:
+      config:
+        orphanNamespace: true
+        versioned: true
