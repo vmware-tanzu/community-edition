@@ -60,6 +60,13 @@ antrea:
     multicluster:
       enable: false
       namespace: null
+    nodeIPAM:
+      enableNodeIPAM: false
+      clusterCIDRs: []
+      serviceCIDR: null
+      serviceCIDRv6: null
+      nodeCIDRMaskSizeIPv4: 24
+      nodeCIDRMaskSizeIPv6: 64
     featureGates:
       AntreaProxy: true
       EndpointSlice: false

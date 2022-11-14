@@ -394,23 +394,28 @@ tlsCipherSuites: #@ values.antrea.config.tlsCipherSuites
 #! legacyCRDMirroring: true
 
 nodeIPAM:
-#! Enable the integrated Node IPAM controller within the Antrea controller.
-#!  enableNodeIPAM: #@ values.antrea.config.nodeIPAM
+#@ if values.antrea.config.featureGates.NodeIPAM
+  #! Enable the integrated Node IPAM controller within the Antrea controller.
+  enableNodeIPAM: #@ values.antrea.config.nodeIPAM.enableNodeIPAM
 
-#! CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges.
-#! The CIDRs could be either IPv4 or IPv6. At most one CIDR may be specified for each IP family.
-#! Value ignored when enableNodeIPAM is false.
-#!  clusterCIDRs: []
+  #! CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges.
+  #! The CIDRs could be either IPv4 or IPv6. At most one CIDR may be specified for each IP family.
+  #! Value ignored when enableNodeIPAM is false.
+  clusterCIDRs: #@ values.antrea.config.nodeIPAM.clusterCIDRs
 
-#! CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs.
-#! Value ignored when enableNodeIPAM is false.
-#!  serviceCIDR:
-#!  serviceCIDRv6:
+  #! CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs.
+  #! Value ignored when enableNodeIPAM is false.
+  serviceCIDR: #@ values.antrea.config.nodeIPAM.serviceCIDR
+  serviceCIDRv6: #@ values.antrea.config.nodeIPAM.serviceCIDRv6
 
-#! Mask size for IPv6 Node CIDR in IPv6 or dual-stack cluster. Value ignored when enableNodeIPAM is false
-#! or when IPv6 Pod CIDR is not configured. Valid range is 64 to 126.
-#!  nodeCIDRMaskSizeIPv6: 64
+  #! Mask size for IPv4 Node CIDR in IPv4 or dual-stack cluster. Value ignored when enableNodeIPAM is false
+  #! or when IPv4 Pod CIDR is not configured. Valid range is 16 to 30.
+  nodeCIDRMaskSizeIPv4: #@ values.antrea.config.nodeIPAM.nodeCIDRMaskSizeIPv4
 
+  #! Mask size for IPv6 Node CIDR in IPv6 or dual-stack cluster. Value ignored when enableNodeIPAM is false
+  #! or when IPv6 Pod CIDR is not configured. Valid range is 64 to 126.
+  nodeCIDRMaskSizeIPv6: #@ values.antrea.config.nodeCIDRMaskSizeIPv6
+#@ end
 
 ipsecCSRSigner:
 #@ if values.antrea.config.featureGates.IPsecCertAuth:
