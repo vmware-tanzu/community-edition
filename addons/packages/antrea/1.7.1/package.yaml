@@ -34,44 +34,44 @@ spec:
       properties:
         infraProvider:
           type: string
-          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
           default: vsphere
+          description: The cloud provider in use. One of the following options => aws, azure, vsphere, docker
         nodeSelector:
           nullable: true
-          description: NodeSelector configuration applied to all the deployments
           default: null
+          description: NodeSelector configuration applied to all the deployments
         deployment:
           type: object
           additionalProperties: false
           properties:
             updateStrategy:
               type: string
+              default: null
               nullable: true
               description: Update strategy of deployments
-              default: null
             rollingUpdate:
               type: object
               additionalProperties: false
               properties:
                 maxUnavailable:
                   type: integer
+                  default: null
                   nullable: true
                   description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
-                  default: null
                 maxSurge:
                   type: integer
+                  default: null
                   nullable: true
                   description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
-                  default: null
         daemonset:
           type: object
           additionalProperties: false
           properties:
             updateStrategy:
               type: string
+              default: null
               nullable: true
               description: Update strategy of daemonsets
-              default: null
         antrea:
           type: object
           additionalProperties: false
@@ -99,12 +99,12 @@ spec:
                   properties:
                     enabled:
                       type: boolean
-                      description: Enable NodePortLocal feature.
                       default: false
+                      description: Enable NodePortLocal feature.
                     portRange:
                       type: string
-                      description: Provide the port range used by NodePortLocal.
                       default: ""
+                      description: Provide the port range used by NodePortLocal.
                 antreaProxy:
                   type: object
                   additionalProperties: false
@@ -112,8 +112,8 @@ spec:
                   properties:
                     proxyAll:
                       type: boolean
-                      description: ProxyAll tells antrea-agent to proxy all Service traffic.
                       default: false
+                      description: ProxyAll tells antrea-agent to proxy all Service traffic.
                     nodePortAddresses:
                       type: array
                       description: Specifies the host IPv4/IPv6 addresses for NodePort.
@@ -130,8 +130,8 @@ spec:
                       default: []
                     proxyLoadBalancerIPs:
                       type: boolean
-                      description: Load-balance traffic destined to the External IPs of LoadBalancer services.
                       default: false
+                      description: Load-balance traffic destined to the External IPs of LoadBalancer services.
                 flowExporter:
                   type: object
                   additionalProperties: false
@@ -139,30 +139,30 @@ spec:
                   properties:
                     collectorAddress:
                       type: string
-                      description: Provide the IPFIX collector address as a string.
                       default: ""
+                      description: Provide the IPFIX collector address as a string.
                     pollInterval:
                       type: string
-                      description: Provide flow poll interval as a duration string.
                       default: ""
+                      description: Provide flow poll interval as a duration string.
                     activeFlowTimeout:
                       type: string
-                      description: Provide the active flow export timeout.
                       default: ""
+                      description: Provide the active flow export timeout.
                     idleFlowTimeout:
                       type: string
-                      description: Provide the idle flow export timeout.
                       default: ""
+                      description: Provide the idle flow export timeout.
                 kubeAPIServerOverride:
                   type: string
+                  default: null
                   nullable: true
                   description: Provide the address of Kubernetes apiserver.
-                  default: null
                 transportInterface:
                   type: string
+                  default: null
                   nullable: true
                   description: The name of the interface on Node which is used for tunneling or routing the traffic.
-                  default: null
                 transportInterfaceCIDRs:
                   type: array
                   description: The network CIDRs of the interface on Node which is used for tunneling or routing the traffic.
@@ -172,12 +172,12 @@ spec:
                   default: []
                 tunnelType:
                   type: string
-                  description: Tunnel protocols used for encapsulating traffic across Nodes. One of the following options => geneve, vxlan, gre, stt
                   default: none
+                  description: Tunnel protocols used for encapsulating traffic across Nodes. One of the following options => geneve, vxlan, gre, stt
                 trafficEncryptionMode:
                   type: string
-                  description: Determines how tunnel traffic is encrypted. One of the following options => none, ipsec, wireGuard
                   default: none
+                  description: Determines how tunnel traffic is encrypted. One of the following options => none, ipsec, wireGuard
                 wireGuard:
                   type: object
                   additionalProperties: false
@@ -185,56 +185,56 @@ spec:
                   properties:
                     port:
                       type: integer
-                      description: The port for WireGuard to receive traffic.
                       default: 51820
+                      description: The port for WireGuard to receive traffic.
                 enableUsageReporting:
                   type: boolean
-                  description: Enable usage reporting (telemetry) to VMware.
                   default: false
+                  description: Enable usage reporting (telemetry) to VMware.
                 serviceCIDR:
                   type: string
+                  default: null
                   nullable: true
                   description: ClusterIP CIDR range for IPv4 Services
-                  default: null
                 serviceCIDRv6:
                   type: string
+                  default: null
                   nullable: true
                   description: ClusterIP CIDR range for IPv6 Services
-                  default: null
                 trafficEncapMode:
                   type: string
-                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
                   default: encap
+                  description: The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly
                 noSNAT:
                   type: boolean
-                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
                   default: false
+                  description: Flag to enable/disable SNAT for the egress traffic from a Pod to the external network
                 disableUdpTunnelOffload:
                   type: boolean
-                  description: Disable UDP tunnel offload feature on default NIC
                   default: false
+                  description: Disable UDP tunnel offload feature on default NIC
                 defaultMTU:
                   type: string
+                  default: null
                   nullable: true
                   description: Default MTU to use for the host gateway interface and the network interface of each Pod
-                  default: null
                 tlsCipherSuites:
                   type: string
-                  description: List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used
                   default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+                  description: List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used
                 enableBridgingMode:
                   type: boolean
-                  description: Enable bridging mode of Pod network on Nodes.
                   default: false
+                  description: Enable bridging mode of Pod network on Nodes.
                 disableTXChecksumOffload:
                   type: boolean
-                  description: Disable TX checksum offloading for container network interfaces
                   default: false
+                  description: Disable TX checksum offloading for container network interfaces
                 dnsServerOverride:
                   type: string
+                  default: null
                   nullable: true
                   description: Provide the address of DNS server, to override the kube-dns service
-                  default: null
                 multicastInterfaces:
                   type: array
                   description: The names of the interfaces on Nodes that are used to forward multicast traffic.
@@ -249,8 +249,8 @@ spec:
                   properties:
                     igmpQueryInterval:
                       type: string
-                      description: The interval at which the antrea-agent sends IGMP queries to Pods.
                       default: 125s
+                      description: The interval at which the antrea-agent sends IGMP queries to Pods.
                 ipsec:
                   type: object
                   additionalProperties: false
@@ -258,8 +258,8 @@ spec:
                   properties:
                     authenticationMode:
                       type: string
-                      description: The authentication mode of IPsec tunnel
                       default: psk
+                      description: The authentication mode of IPsec tunnel
                 ipsecCSRSigner:
                   type: object
                   additionalProperties: false
@@ -267,12 +267,12 @@ spec:
                   properties:
                     autoApprove:
                       type: boolean
-                      description: Determines the auto-approve policy of Antrea CSR signer for IPsec certificates management.
                       default: true
+                      description: Determines the auto-approve policy of Antrea CSR signer for IPsec certificates management.
                     selfSignedCA:
                       type: boolean
-                      description: Indicates whether to use auto-generated self-signed CA certificate.
                       default: true
+                      description: Indicates whether to use auto-generated self-signed CA certificate.
                 multicluster:
                   type: object
                   additionalProperties: false
@@ -280,13 +280,47 @@ spec:
                   properties:
                     enable:
                       type: boolean
-                      description: Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
                       default: false
+                      description: Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
                     namespace:
                       type: string
+                      default: null
                       nullable: true
                       description: The Namespace where Antrea Multi-cluster Controller is running.Default is antrea-agent's Namespace
+                nodeIPAM:
+                  type: object
+                  additionalProperties: false
+                  description: NodeIPAM related configurations
+                  properties:
+                    enableNodeIPAM:
+                      type: boolean
+                      default: false
+                      description: Enable the integrated Node IPAM controller within the Antrea controller.
+                    clusterCIDRs:
+                      type: array
+                      description: CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges
+                      items:
+                        type: string
+                        default: ""
+                      default: []
+                    serviceCIDR:
+                      type: string
                       default: null
+                      nullable: true
+                      description: CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs.
+                    serviceCIDRv6:
+                      type: string
+                      default: null
+                      nullable: true
+                      description: CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs.
+                    nodeCIDRMaskSizeIPv4:
+                      type: integer
+                      default: 24
+                      description: Mask size for IPv4 Node CIDR in IPv4 or dual-stack cluster.
+                    nodeCIDRMaskSizeIPv6:
+                      type: integer
+                      default: 24
+                      description: Mask size for IPv6 Node CIDR in IPv6 or dual-stack cluster.
                 featureGates:
                   type: object
                   additionalProperties: false
@@ -294,85 +328,85 @@ spec:
                   properties:
                     AntreaProxy:
                       type: boolean
-                      description: Flag to enable/disable antrea proxy
                       default: true
+                      description: Flag to enable/disable antrea proxy
                     EndpointSlice:
                       type: boolean
-                      description: Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect
                       default: false
+                      description: Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect
                     AntreaTraceflow:
                       type: boolean
-                      description: Flag to enable/disable antrea traceflow
                       default: true
+                      description: Flag to enable/disable antrea traceflow
                     NodePortLocal:
                       type: boolean
-                      description: Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort
                       default: true
+                      description: Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort
                     AntreaPolicy:
                       type: boolean
-                      description: Flag to enable/disable antrea policy
                       default: true
+                      description: Flag to enable/disable antrea policy
                     FlowExporter:
                       type: boolean
-                      description: Flag to enable/disable flow exporter
                       default: false
+                      description: Flag to enable/disable flow exporter
                     NetworkPolicyStats:
                       type: boolean
-                      description: Flag to enable/disable network policy stats
                       default: false
+                      description: Flag to enable/disable network policy stats
                     Egress:
                       type: boolean
-                      description: Flag to enable/disable SNAT IPs of Pod egress traffic
                       default: true
+                      description: Flag to enable/disable SNAT IPs of Pod egress traffic
                     AntreaIPAM:
                       type: boolean
-                      description: Flag to enable/disable flexible IPAM mode
                       default: false
+                      description: Flag to enable/disable flexible IPAM mode
                     ServiceExternalIP:
                       type: boolean
-                      description: Flag to enable/disable managing external IPs for Load balancers services
                       default: false
+                      description: Flag to enable/disable managing external IPs for Load balancers services
                     Multicast:
                       type: boolean
-                      description: Flag to enable/disable multicast traffic
                       default: false
+                      description: Flag to enable/disable multicast traffic
                     Multicluster:
                       type: boolean
-                      description: Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.This feature is supported only with encap mode.
                       default: false
+                      description: Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.This feature is supported only with encap mode.
                     SecondaryNetwork:
                       type: boolean
-                      description: Enable support for provisioning secondary network interfaces for Pods (using Pod annotations).
                       default: false
+                      description: Enable support for provisioning secondary network interfaces for Pods (using Pod annotations).
                     TrafficControl:
                       type: boolean
-                      description: Enable mirroring or redirecting the traffic Pods send or receive.
                       default: false
+                      description: Enable mirroring or redirecting the traffic Pods send or receive.
                     IPsecCertAuth:
                       type: boolean
-                      description: Enable certificated-based authentication for IPsec.
                       default: false
+                      description: Enable certificated-based authentication for IPsec.
                     NodeIPAM:
                       type: boolean
-                      description: Run Kubernetes NodeIPAMController with Antrea.
                       default: false
+                      description: Run Kubernetes NodeIPAMController with Antrea.
             image:
               type: object
               additionalProperties: false
               properties:
                 repository:
                   type: string
-                  description: The repository of antrea image
                   default: ""
+                  description: The repository of antrea image
                 path:
                   type: string
-                  description: The path of image
                   default: ""
+                  description: The path of image
                 tag:
                   type: string
-                  description: The image tag
                   default: ""
+                  description: The image tag
                 pullPolicy:
                   type: string
-                  description: The pull policy of image
                   default: IfNotPresent
+                  description: The pull policy of image

@@ -35,6 +35,11 @@ The following configuration values can be set to customize the antrea installati
 | `antrea.config.ipsec.authenticationMode`         | Optional          | The authentication mode of IPsec tunnel. Default: `psk`                                                                 |
 | `antrea.config.ipsecCSRSigner.autoApprove`       | Optional          | Determines the auto-approve policy of Antrea CSR signer for IPsec certificates. Default: true                           |
 | `antrea.config.ipsecCSRSigner.selfSignedCA`      | Optional          | Indicates whether to use auto-generated self-signed CA certificate. Default: true                                       |
+| `antrea.config.nodeIPAM.enableNodeIPAM`          | Optional          | Enable the integrated Node IPAM controller within the Antrea controller.                                                |
+| `antrea.config.nodeIPAM.clusterCIDRs`            | Optional          | CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges.                                                               |
+| `antrea.config.kubeAPIServerOverride`            | Optional          | Provide the address of Kubernetes apiserver. Default: nil                                                               |
+| `antrea.config.kubeAPIServerOverride`            | Optional          | Provide the address of Kubernetes apiserver. Default: nil                                                               |
+| `antrea.config.kubeAPIServerOverride`            | Optional          | Provide the address of Kubernetes apiserver. Default: nil                                                               |
 | `antrea.config.kubeAPIServerOverride`            | Optional          | Provide the address of Kubernetes apiserver. Default: nil                                                               |
 | `antrea.config.transportInterface`               | Optional          | The name of the interface on Node which is used for tunneling or routing the traffic. Default: empty                    |
 | `antrea.config.transportInterfaceCIDRs`          | Optional          | The network CIDRs of the interface on Node which is used for tunneling or routing the traffic. Default: empty           |

@@ -394,7 +394,7 @@ tlsCipherSuites: #@ values.antrea.config.tlsCipherSuites
 #! legacyCRDMirroring: true
 
 nodeIPAM:
-#@ if values.antrea.config.featureGates.NodeIPAM
+#@ if values.antrea.config.featureGates.NodeIPAM:
   #! Enable the integrated Node IPAM controller within the Antrea controller.
   enableNodeIPAM: #@ values.antrea.config.nodeIPAM.enableNodeIPAM
 

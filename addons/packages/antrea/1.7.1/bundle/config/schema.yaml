@@ -125,6 +125,23 @@ antrea:
       #@schema/desc "The Namespace where Antrea Multi-cluster Controller is running.Default is antrea-agent's Namespace"
       #@schema/nullable
       namespace: ""
+    #@schema/desc "NodeIPAM related configurations"
+    nodeIPAM:
+      #@schema/desc "Enable the integrated Node IPAM controller within the Antrea controller."
+      enableNodeIPAM: false
+      #@schema/desc "CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges"
+      clusterCIDRs:
+        - ""
+      #@schema/desc "CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs."
+      #@schema/nullable
+      serviceCIDR: ""
+      #@schema/desc "CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs."
+      #@schema/nullable
+      serviceCIDRv6: ""
+      #@schema/desc "Mask size for IPv4 Node CIDR in IPv4 or dual-stack cluster."
+      nodeCIDRMaskSizeIPv4: 24
+      #@schema/desc "Mask size for IPv6 Node CIDR in IPv6 or dual-stack cluster."
+      nodeCIDRMaskSizeIPv6: 24
     #@schema/desc "FeatureGates is a map of feature names to flags that enable or disable experimental features"
     featureGates:
       #@schema/desc "Flag to enable/disable antrea proxy"
