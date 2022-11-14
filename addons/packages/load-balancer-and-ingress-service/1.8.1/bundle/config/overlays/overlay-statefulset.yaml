@@ -269,13 +269,6 @@ spec:
                   name: avi-k8s-config
                   key: enableMCI
 #@ end
-          resources:
-            limits:
-              cpu: #@ values.loadBalancerAndIngressService.config.resources.limits.cpu
-              memory: #@ values.loadBalancerAndIngressService.config.resources.limits.memory
-            requests:
-              cpu: #@ values.loadBalancerAndIngressService.config.resources.request.cpu
-              memory: #@ values.loadBalancerAndIngressService.config.resources.request.memory
           livenessProbe:
             httpGet:
               port:  #@ values.loadBalancerAndIngressService.config.ako_settings.api_server_port

@@ -93,13 +93,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          resources:
-            limits:
-              cpu: 350m
-              memory: 400Mi
-            requests:
-              cpu: 200m
-              memory: 300Mi
           livenessProbe:
             httpGet:
               path: /api/status

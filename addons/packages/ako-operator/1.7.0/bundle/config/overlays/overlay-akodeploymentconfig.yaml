@@ -1,0 +1,119 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:json", "json")
+
+#@overlay/match by=overlay.subset({"kind": "AKODeploymentConfig", "metadata": {"name": "install-ako-for-all"}})
+---
+#@overlay/replace
+apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
+kind: AKODeploymentConfig
+metadata:
+    name: install-ako-for-all
+spec:
+#@ if values.akoOperator.config.avi_labels != '""':
+    #@overlay/match missing_ok=True
+    clusterSelector:
+        matchLabels: #@ json.decode(values.akoOperator.config.avi_labels)
+#@ end
+#@ if values.akoOperator.config.avi_controller_version != "":
+    #@overlay/match missing_ok=True
+    controllerVersion: #@ values.akoOperator.config.avi_controller_version
+#@ end
+    cloudName: #@ values.akoOperator.config.avi_cloud_name
+    serviceEngineGroup: #@ values.akoOperator.config.avi_service_engine_group
+    controller: #@ values.akoOperator.config.avi_controller
+    adminCredentialRef:
+        name: #@ values.akoOperator.config.avi_admin_credential_name
+        namespace: #@ values.akoOperator.namespace
+    certificateAuthorityRef:
+        name: #@ values.akoOperator.config.avi_ca_name
+        namespace: #@ values.akoOperator.namespace
+    dataNetwork:
+        name: #@ values.akoOperator.config.avi_data_network
+        cidr: #@ values.akoOperator.config.avi_data_network_cidr
+    controlPlaneNetwork:
+        name: #@ values.akoOperator.config.avi_control_plane_network
+        cidr: #@ values.akoOperator.config.avi_control_plane_network_cidr
+    extraConfigs:
+#@ if values.akoOperator.config.avi_cni_plugin:
+#@overlay/match missing_ok=True
+        cniPlugin: #@ values.akoOperator.config.avi_cni_plugin
+#@ end
+        disableStaticRouteSync: #@ values.akoOperator.config.avi_disable_static_route_sync
+        ingress:
+            disableIngressClass: #@ values.akoOperator.config.avi_disable_ingress_class
+            defaultIngressController: #@ values.akoOperator.config.avi_ingress_default_ingress_controller
+#@ if values.akoOperator.config.avi_ingress_shard_vs_size != "":
+            #@overlay/match missing_ok=True
+            shardVSSize: #@ values.akoOperator.config.avi_ingress_shard_vs_size
+#@ end
+#@ if values.akoOperator.config.avi_ingress_service_type != "":
+            #@overlay/match missing_ok=True
+            serviceType: #@ values.akoOperator.config.avi_ingress_service_type
+#@ end
+#@ if values.akoOperator.config.avi_ingress_node_network_list != '""':
+            #@overlay/match missing_ok=True
+            nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
+#@ end
+#@ if values.akoOperator.config.avi_nsxt_t1_lr:
+        #@overlay/match missing_ok=True
+        networksConfig:
+            nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "AKODeploymentConfig", "metadata": {"name": "install-ako-for-management-cluster"}})
+---
+#@overlay/replace
+apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
+kind: AKODeploymentConfig
+metadata:
+    name: install-ako-for-management-cluster
+spec:
+    clusterSelector:
+        matchLabels:
+            cluster-role.tkg.tanzu.vmware.com/management: ""
+#@ if values.akoOperator.config.avi_controller_version != "":
+    #@overlay/match missing_ok=True
+    controllerVersion: #@ values.akoOperator.config.avi_controller_version
+#@ end
+    dataNetwork:
+        name: #@ values.akoOperator.config.avi_management_cluster_vip_network_name
+        cidr: #@ values.akoOperator.config.avi_management_cluster_vip_network_cidr
+    controlPlaneNetwork:
+        name: #@ values.akoOperator.config.avi_management_cluster_control_plane_vip_network_name
+        cidr: #@ values.akoOperator.config.avi_management_cluster_control_plane_vip_network_cidr
+    cloudName: #@ values.akoOperator.config.avi_cloud_name
+    serviceEngineGroup: #@ values.akoOperator.config.avi_management_cluster_service_engine_group
+    controller: #@ values.akoOperator.config.avi_controller
+    adminCredentialRef:
+        name: #@ values.akoOperator.config.avi_admin_credential_name
+        namespace: #@ values.akoOperator.namespace
+    certificateAuthorityRef:
+        name: #@ values.akoOperator.config.avi_ca_name
+        namespace: #@ values.akoOperator.namespace
+    extraConfigs:
+#@ if values.akoOperator.config.avi_cni_plugin:
+#@overlay/match missing_ok=True
+        cniPlugin: #@ values.akoOperator.config.avi_cni_plugin
+#@ end
+        disableStaticRouteSync: #@ values.akoOperator.config.avi_disable_static_route_sync
+        ingress:
+            disableIngressClass: #@ values.akoOperator.config.avi_disable_ingress_class
+            defaultIngressController: #@ values.akoOperator.config.avi_ingress_default_ingress_controller
+#@ if values.akoOperator.config.avi_ingress_shard_vs_size != "":
+            #@overlay/match missing_ok=True
+            shardVSSize: #@ values.akoOperator.config.avi_ingress_shard_vs_size
+#@ end
+#@ if values.akoOperator.config.avi_ingress_service_type != "":
+            #@overlay/match missing_ok=True
+            serviceType: #@ values.akoOperator.config.avi_ingress_service_type
+#@ end
+#@ if values.akoOperator.config.avi_ingress_node_network_list != '""':
+            #@overlay/match missing_ok=True
+            nodeNetworkList: #@ json.decode(values.akoOperator.config.avi_ingress_node_network_list)
+#@ end
+#@ if values.akoOperator.config.avi_nsxt_t1_lr:
+        #@overlay/match missing_ok=True
+        networksConfig:
+            nsxtT1LR: #@ values.akoOperator.config.avi_nsxt_t1_lr
+#@ end

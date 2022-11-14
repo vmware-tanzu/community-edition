@@ -60,7 +60,7 @@ data:
 #@ end
 #@ if values.loadBalancerAndIngressService.config.ako_settings.ip_family:
   #@overlay/match missing_ok=True
-  ipFamily: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.ip_family).lower()
+  ipFamily: #@ "{}".format(values.loadBalancerAndIngressService.config.ako_settings.ip_family)
 #@ end
 #@ if values.loadBalancerAndIngressService.config.controller_settings.tenant_name:
   #@overlay/match missing_ok=True
