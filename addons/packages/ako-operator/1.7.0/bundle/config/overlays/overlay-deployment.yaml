@@ -40,7 +40,7 @@ spec:
             - --metrics-addr=:8080
           command:
             - /manager
-          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.6.0_vmware.1
+          image: projects-stg.registry.vmware.com/tkg/ako-operator:v1.7.0_vmware.1
           name: manager
           ports:
             - containerPort: 9443
