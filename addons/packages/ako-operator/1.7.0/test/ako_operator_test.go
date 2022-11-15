@@ -67,7 +67,7 @@ var _ = Describe("AKO Operator Ytt Templates", func() {
 		output       string
 		yttRenderErr error
 
-		configDir = filepath.Join(repo.RootDir(), "addons/packages/ako-operator/1.6.0/bundle/config")
+		configDir = filepath.Join(repo.RootDir(), "addons/packages/ako-operator/1.7.0/bundle/config")
 
 		file01AKODeploymentConfig = filepath.Join(configDir, "upstream/akooperator/akodeploymentconfig.yaml")
 		file02AVIInfrasettings    = filepath.Join(configDir, "upstream/akooperator/aviinfrasettings.yaml")

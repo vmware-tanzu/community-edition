@@ -1,6 +1,6 @@
 # Load Balancer Operator
 
-This package reconciles Cluster API objects and manages the lifecycles of [AVI Kubernetes Operator (AKO)](https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes/tree/release-1.6.0) using [ako-operator](https://github.com/vmware-samples/load-balancer-operator-for-kubernetes).
+This package reconciles Cluster API objects and manages the lifecycles of [AVI Kubernetes Operator (AKO)](https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes/tree/release-1.7.0) using [ako-operator](https://github.com/vmware-samples/load-balancer-operator-for-kubernetes).
 
 ## Components
 
@@ -10,7 +10,7 @@ This package reconciles Cluster API objects and manages the lifecycles of [AVI K
 
 ## Supported Providers
 
-The following tables shows the providers this package can work with. Other cloud provider support will be added  
+The following tables shows the providers this package can work with. Other cloud provider support will be added
 in the future.
 
 | AWS  |  Azure  | vSphere  | Docker |
@@ -55,7 +55,7 @@ Refer to [next section](#configuration-values) for a detailed list of configurat
 ```shell
 tanzu package install ako-operator --values-file values.yaml \
   --package-name ako-operator.community.tanzu.vmware.com \
-  --version 1.6.0 --namespace tkg-system
+  --version 1.7.0 --namespace tkg-system
 ```
 
 Verify the ako-operator app has reconciled successfully in the management cluster, by asserting the following grep is non-empty.
@@ -78,7 +78,7 @@ tanzu package installed delete ako-operator --namespace tkg-system
 
 A sample configuration values file `values.yaml` is provided [here](./bundle/config/values.yaml). You should modify this template
 and customize configurations, especially those related to AVI controller credentials.
-Make sure they are correctly configured for the fields including `avi_controller`, `avi_username/password`, `avi_ca_data_b64` etc.  
+Make sure they are correctly configured for the fields including `avi_controller`, `avi_username/password`, `avi_ca_data_b64` etc.
 
 A minimum configuration values file looks like
 
@@ -140,18 +140,18 @@ The following configuration values can be set to customize the ako-operator inst
 | `avi_management_cluster_control_plane_vip_network_cidr` | Required | describes the cidr of the management cluster control plane network. |
 | `avi_control_plane_endpoint_port`| Optional | describe the port of AVI control plane endpoint |
 
-### Verify your configurations  
+### Verify your configurations
 
-After the package is installed and reconcile successfully, two AKODeploymentConfigs are deployed globally.  
+After the package is installed and reconcile successfully, two AKODeploymentConfigs are deployed globally.
 You can list and inspect them with `kubectl get akodeploymentconfig`. They are the configuration interfaces for the ako-operator.
 In general,
 
 * `install-ako-for-management-cluster` specifies the parameters to deploy AKO statefulset in the management cluster, which
   then provides L4/L7 load balancing for applications.
 * `install-ako-for-all` specifies the parameters to deploy AKO statefulsets and reconcile users in each future workload clusters. The ako-operator
-  passes these parameters to each workload clusters via addon secrets.  
+  passes these parameters to each workload clusters via addon secrets.
 
-In the management cluster, ensure that there is no error level message in the ako-operator manage log.  
+In the management cluster, ensure that there is no error level message in the ako-operator manage log.
 
 ```shell
 # retrieve the pod name of the ako-operator manager

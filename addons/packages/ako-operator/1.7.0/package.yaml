@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: ako-operator.community.tanzu.vmware.com.1.6.0
+  name: ako-operator.community.tanzu.vmware.com.1.7.0
   namespace: ako-operator
 spec:
   refName: ako-operator.community.tanzu.vmware.com
-  version: 1.6.0
-  releaseNotes: "ako-operator 1.6.0"
+  version: 1.7.0
+  releaseNotes: "ako-operator 1.7.0"
   licenses:
     - "UNKNOWN"
   template:
