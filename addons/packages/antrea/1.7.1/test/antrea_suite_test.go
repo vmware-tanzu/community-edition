@@ -41,8 +41,6 @@ type AntreaConfig struct {
 				Multicluster       bool `yaml:"Multicluster"`
 				SecondaryNetwork   bool `yaml:"SecondaryNetwork"`
 				TrafficControl     bool `yaml:"TrafficControl"`
-				IPsecCertAuth      bool `yaml:"IPsecCertAuth"`
-				NodeIPAM           bool `yaml:"NodeIPAM"`
 			} `yaml:"featureGates"`
 			NodePortLocal struct {
 				Enabled   bool   `yaml:"enabled"`
@@ -58,16 +56,9 @@ type AntreaConfig struct {
 				Enable    bool   `yaml:"enable"`
 				Namespace string `yaml:"namespace"`
 			} `yaml:"multicluster"`
-			IPsec struct {
-				AuthenticationMode string `yaml:"authenticationMode"`
-			} `yaml:"ipsec"`
 			Multicast struct {
 				IGMPQueryInterval string `yaml:"igmpQueryInterval"`
 			} `yaml:"multicast"`
-			IPsecCSRSigner struct {
-				AutoApprove  bool `yaml:"autoApprove"`
-				SelfSignedCA bool `yaml:"selfSignedCA"`
-			} `yaml:"ipsecCSRSigner"`
 			KubeAPIServerOverride    string   `yaml:"kubeAPIServerOverride,omitempty"`
 			TransportInterface       string   `yaml:"transportInterface,omitempty"`
 			TransportInterfaceCIDRs  []string `yaml:"transportInterfaceCIDRs,omitempty"`

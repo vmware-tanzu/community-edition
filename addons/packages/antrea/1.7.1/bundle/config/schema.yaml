@@ -108,16 +108,6 @@ antrea:
     multicast:
       #@schema/desc "The interval at which the antrea-agent sends IGMP queries to Pods."
       igmpQueryInterval: "125s"
-    #@schema/desc "IPsec tunnel related configurations."
-    ipsec:
-      #@schema/desc "The authentication mode of IPsec tunnel"
-      authenticationMode: psk
-    #@schema/desc "IPSec CSR signer related configurations"
-    ipsecCSRSigner:
-      #@schema/desc "Determines the auto-approve policy of Antrea CSR signer for IPsec certificates management."
-      autoApprove: true
-      #@schema/desc "Indicates whether to use auto-generated self-signed CA certificate."
-      selfSignedCA: true
     #@schema/desc "Multicluster related configurations"
     multicluster:
       #@schema/desc "Enable Antrea Multi-cluster Gateway to support cross-cluster traffic."
@@ -155,10 +145,6 @@ antrea:
       SecondaryNetwork: false
       #@schema/desc "Enable mirroring or redirecting the traffic Pods send or receive."
       TrafficControl: false
-      #@schema/desc "Enable certificated-based authentication for IPsec."
-      IPsecCertAuth: false
-      #@schema/desc "Run Kubernetes NodeIPAMController with Antrea."
-      NodeIPAM: false
   #! Deprecated. Kept for backward compatibility
   image:
     #@schema/desc "The repository of antrea image"

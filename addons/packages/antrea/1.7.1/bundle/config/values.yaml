@@ -52,11 +52,6 @@ antrea:
     multicastInterfaces: []
     multicast:
       igmpQueryInterval: "125s"
-    ipsec:
-      authenticationMode: "psk"
-    ipsecCSRSigner:
-      autoApprove: true
-      selfSignedCA: true
     multicluster:
       enable: false
       namespace: null
@@ -75,5 +70,4 @@ antrea:
       Multicluster: false
       SecondaryNetwork: false
       TrafficControl: false
-      IPsecCertAuth: false
-      NodeIPAM: false
+

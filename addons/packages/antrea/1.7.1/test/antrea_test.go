@@ -86,8 +86,6 @@ featureGates:
   Multicluster: false
   SecondaryNetwork: false
   TrafficControl: false
-  IPsecCertAuth: false
-ipsec: {}
 multicast: {}
 multicluster: {}
 enableBridgingMode: false
@@ -114,9 +112,6 @@ featureGates:
   ServiceExternalIP: false
   Traceflow: true
   Multicast: false
-  IPsecCertAuth: false
-  NodeIPAM: false
-ipsecCSRSigner: {}
 nodeIPAM: null
 tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
 `))
@@ -277,89 +272,6 @@ tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_
 				Expect(configMap).NotTo(BeNil())
 
 				for _, s := range []string{"Multicluster: true", ns} {
-					Expect(configMap.Data["antrea-agent.conf"]).To(ContainSubstring(s))
-				}
-			})
-		})
-	})
-
-	Describe("Configuring ipsec csr signer ", func() {
-		Context("without feature gate", func() {
-			BeforeEach(func() {
-				values, err = marshalAntreaConfig(fileValuesYaml, func(config *AntreaConfig) {
-					config.Antrea.Config.FeatureGates.IPsecCertAuth = false
-					config.Antrea.Config.IPsecCSRSigner.SelfSignedCA = true
-					config.Antrea.Config.IPsecCSRSigner.AutoApprove = true
-				})
-				Expect(err).NotTo(HaveOccurred())
-			})
-
-			It("ignores the configuration", func() {
-				Expect(err).NotTo(HaveOccurred())
-				configMap := findConfigMapByName(unmarshalConfigMaps(output), configName)
-				Expect(configMap).NotTo(BeNil())
-				Expect(configMap.Data["antrea-controller.conf"]).To(ContainSubstring("IPsecCertAuth: false"))
-				Expect(configMap.Data["antrea-controller.conf"]).ToNot(ContainSubstring("selfSignedCA"))
-				Expect(configMap.Data["antrea-controller.conf"]).ToNot(ContainSubstring("autoApprove"))
-			})
-		})
-
-		Context("with the feature gate enabled", func() {
-			BeforeEach(func() {
-				values, err = marshalAntreaConfig(fileValuesYaml, func(config *AntreaConfig) {
-					config.Antrea.Config.FeatureGates.IPsecCertAuth = true
-					config.Antrea.Config.IPsecCSRSigner.SelfSignedCA = true
-					config.Antrea.Config.IPsecCSRSigner.AutoApprove = true
-				})
-				Expect(err).NotTo(HaveOccurred())
-			})
-
-			It("settings are configured", func() {
-				Expect(err).NotTo(HaveOccurred())
-				configMap := findConfigMapByName(unmarshalConfigMaps(output), configName)
-				Expect(configMap).NotTo(BeNil())
-
-				for _, s := range []string{"IPsecCertAuth: true", "selfSignedCA", "autoApprove"} {
-					Expect(configMap.Data["antrea-controller.conf"]).To(ContainSubstring(s))
-				}
-			})
-		})
-	})
-
-	Describe("Configuring ipsec", func() {
-		authMode := "psk"
-		Context("with other mode", func() {
-			BeforeEach(func() {
-				values, err = marshalAntreaConfig(fileValuesYaml, func(config *AntreaConfig) {
-					config.Antrea.Config.TrafficEncryptionMode = "wireGuard"
-					config.Antrea.Config.IPsec.AuthenticationMode = authMode
-				})
-				Expect(err).NotTo(HaveOccurred())
-			})
-
-			It("ignores the configuration", func() {
-				Expect(err).NotTo(HaveOccurred())
-				configMap := findConfigMapByName(unmarshalConfigMaps(output), configName)
-				Expect(configMap).NotTo(BeNil())
-				Expect(configMap.Data["antrea-agent.conf"]).ToNot(ContainSubstring("authenticationMode: " + authMode))
-			})
-		})
-
-		Context("with the correct mode", func() {
-			BeforeEach(func() {
-				values, err = marshalAntreaConfig(fileValuesYaml, func(config *AntreaConfig) {
-					config.Antrea.Config.TrafficEncryptionMode = ipsecMode
-					config.Antrea.Config.IPsec.AuthenticationMode = authMode
-				})
-				Expect(err).NotTo(HaveOccurred())
-			})
-
-			It("settings are configured", func() {
-				Expect(err).NotTo(HaveOccurred())
-				configMap := findConfigMapByName(unmarshalConfigMaps(output), configName)
-				Expect(configMap).NotTo(BeNil())
-
-				for _, s := range []string{"trafficEncryptionMode: " + ipsecMode, authMode} {
 					Expect(configMap.Data["antrea-agent.conf"]).To(ContainSubstring(s))
 				}
 			})

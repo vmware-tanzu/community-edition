@@ -32,9 +32,6 @@ The following configuration values can be set to customize the antrea installati
 | `antrea.config.multicast.igmpQueryInterval`      | Optional          | The interval at which the antrea-agent sends IGMP queries to Pods. Default: `125s`                                      |
 | `antrea.config.multicluster.enable`              | Optional          | Enable Antrea Multi-cluster Gateway to support cross-cluster traffic. Default: false                                    |
 | `antrea.config.multicluster.namespace`           | Optional          | The Namespace where Antrea Multi-cluster Controller is running. The default is antrea-agent's Namespace. Default: empty |
-| `antrea.config.ipsec.authenticationMode`         | Optional          | The authentication mode of IPsec tunnel. Default: `psk`                                                                 |
-| `antrea.config.ipsecCSRSigner.autoApprove`       | Optional          | Determines the auto-approve policy of Antrea CSR signer for IPsec certificates. Default: true                           |
-| `antrea.config.ipsecCSRSigner.selfSignedCA`      | Optional          | Indicates whether to use auto-generated self-signed CA certificate. Default: true                                       |
 | `antrea.config.kubeAPIServerOverride`            | Optional          | Provide the address of Kubernetes apiserver. Default: nil                                                               |
 | `antrea.config.transportInterface`               | Optional          | The name of the interface on Node which is used for tunneling or routing the traffic. Default: empty                    |
 | `antrea.config.transportInterfaceCIDRs`          | Optional          | The network CIDRs of the interface on Node which is used for tunneling or routing the traffic. Default: empty           |
@@ -66,8 +63,6 @@ The following configuration values can be set to customize the antrea installati
 | `antrea.config.featureGates.Multicluster`        | Optional          | Boolean flag to enable/disable Antrea Multi-cluster Gateway to support cross-cluster traffic                            |
 | `antrea.config.featureGates.SecondaryNetwork`    | Optional          | Boolean flag to enable/disable support for provisioning secondary network interfaces for Pods                           |
 | `antrea.config.featureGates.TrafficControl`      | Optional          | Boolean flag to enable/disable support mirroring or redirecting the traffic Pods send or receive                        |
-| `antrea.config.featureGates.IPsecCertAuth`       | Optional          | Boolean flag to enable/disable support certificated-based authentication for IPsec                                      |
-| `antrea.config.featureGates.NodeIPAM`            | Optional          | Boolean flag to enable/disable run Kubernetes NodeIPAMController with Antrea                                            |
 
 ## Usage Example
 
