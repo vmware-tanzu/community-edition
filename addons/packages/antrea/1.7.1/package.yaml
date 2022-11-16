@@ -251,28 +251,6 @@ spec:
                       type: string
                       description: The interval at which the antrea-agent sends IGMP queries to Pods.
                       default: 125s
-                ipsec:
-                  type: object
-                  additionalProperties: false
-                  description: IPsec tunnel related configurations.
-                  properties:
-                    authenticationMode:
-                      type: string
-                      description: The authentication mode of IPsec tunnel
-                      default: psk
-                ipsecCSRSigner:
-                  type: object
-                  additionalProperties: false
-                  description: IPSec CSR signer related configurations
-                  properties:
-                    autoApprove:
-                      type: boolean
-                      description: Determines the auto-approve policy of Antrea CSR signer for IPsec certificates management.
-                      default: true
-                    selfSignedCA:
-                      type: boolean
-                      description: Indicates whether to use auto-generated self-signed CA certificate.
-                      default: true
                 multicluster:
                   type: object
                   additionalProperties: false
@@ -347,14 +325,6 @@ spec:
                     TrafficControl:
                       type: boolean
                       description: Enable mirroring or redirecting the traffic Pods send or receive.
-                      default: false
-                    IPsecCertAuth:
-                      type: boolean
-                      description: Enable certificated-based authentication for IPsec.
-                      default: false
-                    NodeIPAM:
-                      type: boolean
-                      description: Run Kubernetes NodeIPAMController with Antrea.
                       default: false
             image:
               type: object
