@@ -70,4 +70,3 @@ antrea:
       Multicluster: false
       SecondaryNetwork: false
       TrafficControl: false
-
