@@ -12,7 +12,7 @@ daemonset:
   updateStrategy: null
 vsphereCSI:
   tlsThumbprint: ""
-  namespace: kube-system
+  namespace: vmware-system-csi
   clusterName: null
   server: null
   datacenter: null
