@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/community-edition/addons/packages/ako-operator/1.6.0/test
+module github.com/vmware-tanzu/community-edition/addons/packages/ako-operator/1.7.0/test
 
 go 1.17
 
