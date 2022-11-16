@@ -1,0 +1,100 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: secretgen-controller.community.tanzu.vmware.com.0.9.3
+spec:
+  refName: secretgen-controller.community.tanzu.vmware.com
+  version: 0.9.3
+  releaseNotes: secretgen-controller 0.9.3 https://github.com/vmware-tanzu/carvel-secretgen-controller
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: projects.registry.vmware.com/tce/secretgen-controller@sha256:projects.registry.vmware.com/tce/secretgen-controller@sha256:13139190f154447a3df378cd9300114b02fadfd5d643f87ae83765b545fa5295
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      description: OpenAPIv3 Schema for secretgen-controller
+      properties:
+        nodeSelector:
+          nullable: true
+          default: null
+          description: NodeSelector configuration applied to all the deployments
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              default: null
+              nullable: true
+              description: Update strategy of deployments
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  default: null
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                maxSurge:
+                  type: integer
+                  default: null
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              default: null
+              nullable: true
+              description: Update strategy of daemonsets
+        secretgenController:
+          type: object
+          additionalProperties: false
+          description: Configuration for secretgen-controller
+          properties:
+            namespace:
+              type: string
+              default: secretgen-controller
+              description: The namespace in which to deploy secretgen-controller
+            createNamespace:
+              type: boolean
+              default: true
+              description: Whether to create namespace specified for secretgen-controller
+            image:
+              type: object
+              additionalProperties: false
+              properties:
+                repository:
+                  type: string
+                  default: ""
+                  description: The repository of secretgen-controller image
+                path:
+                  type: string
+                  default: ""
+                  description: The path of image
+                tag:
+                  type: string
+                  default: ""
+                  description: The image tag
+                pullPolicy:
+                  type: string
+                  default: IfNotPresent
+                  description: The pull policy of image
