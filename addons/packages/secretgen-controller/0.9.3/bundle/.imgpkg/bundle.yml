@@ -1,0 +1,6 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: secretgen-controller
+websites:
+- url: https://github.com/vmware-tanzu/carvel-secretgen-controller
