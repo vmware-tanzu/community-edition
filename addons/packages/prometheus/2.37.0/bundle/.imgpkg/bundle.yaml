@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: prometheus
+authors:
+  - name: Sri Ramani Dodda
+    email: dsri@vmware.com
+websites:
+  - url: vmware.com

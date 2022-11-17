@@ -1,0 +1,5 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+
+minimumRequiredVersion: 0.15.0
