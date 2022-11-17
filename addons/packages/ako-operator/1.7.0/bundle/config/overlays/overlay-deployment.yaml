@@ -36,7 +36,8 @@ spec:
       containers:
         #@overlay/match by="name"
         #@overlay/replace
-        - env:
+        - name: manager
+          env:
             - name: avi_control_plane_ha_provider
               value: #@ "{}".format(values.akoOperator.config.avi_control_plane_ha_provider)
             - name: control_plane_endpoint_port
