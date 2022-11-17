@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.12.0
 directories:
-  - path: 0.11.0
+  - path: 0.11.1
     contents:
       - path: .
         githubRelease:
           slug: vmware-tanzu/carvel-secretgen-controller
-          tag: v0.11.0
+          tag: v0.11.1
           assetNames: ["package.yml"]
