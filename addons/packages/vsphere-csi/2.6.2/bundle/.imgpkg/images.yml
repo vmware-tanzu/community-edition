@@ -7,6 +7,8 @@ images:
       - resolved:
           tag: v2.6.2
           url: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.6.2
+      - preresolved:
+          url: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:df421c7928686d63c46beecfaca26eb53c9a27cdd125ead325e5299abfc961f7
   image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:df421c7928686d63c46beecfaca26eb53c9a27cdd125ead325e5299abfc961f7
 - annotations:
     kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.6.2
@@ -14,6 +16,8 @@ images:
       - resolved:
           tag: v2.6.2
           url: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.6.2
+      - preresolved:
+          url: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:ea067f29bd03e2b366a611acd34f313a4cac7773aaae5a82210864496bcc0cd0
   image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:ea067f29bd03e2b366a611acd34f313a4cac7773aaae5a82210864496bcc0cd0
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
@@ -39,6 +43,8 @@ images:
       - resolved:
           tag: v2.5.1
           url: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
   image: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-provisioner:v3.2.1
@@ -46,6 +52,8 @@ images:
       - resolved:
           tag: v3.2.1
           url: k8s.gcr.io/sig-storage/csi-provisioner:v3.2.1
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/csi-provisioner@sha256:4ad5fcdbe7e9147b541a863d74e4d1d519bf435ecda4c7bde5abe237a43f7029
   image: k8s.gcr.io/sig-storage/csi-provisioner@sha256:4ad5fcdbe7e9147b541a863d74e4d1d519bf435ecda4c7bde5abe237a43f7029
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-resizer:v1.4.0
@@ -80,5 +88,7 @@ images:
       - resolved:
           tag: v2.7.0
           url: k8s.gcr.io/sig-storage/livenessprobe:v2.7.0
+      - preresolved:
+          url: k8s.gcr.io/sig-storage/livenessprobe@sha256:933940f13b3ea0abc62e656c1aa5c5b47c04b15d71250413a6b821bd0c58b94e
   image: k8s.gcr.io/sig-storage/livenessprobe@sha256:933940f13b3ea0abc62e656c1aa5c5b47c04b15d71250413a6b821bd0c58b94e
 kind: ImagesLock

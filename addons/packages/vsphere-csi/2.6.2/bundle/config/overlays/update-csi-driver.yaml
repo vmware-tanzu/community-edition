@@ -93,16 +93,6 @@ spec:
             - name: "NO_PROXY"
               value: #@ values.vsphereCSI.no_proxy
             #@ end
-          volumeMounts:
-            #@overlay/append
-            - name: vsphere-config-volume
-              mountPath: /etc/cloud
-              readOnly: true
-      volumes:
-        #@overlay/append
-        - name: vsphere-config-volume
-          secret:
-            secretName: vsphere-config-secret
 
 #@ service_accounts = overlay.subset({"kind": "ServiceAccount", "metadata": {"namespace": "vmware-system-csi"}})
 #@ roles = overlay.subset({"kind": "Role", "metadata": {"namespace": "vmware-system-csi"}})
