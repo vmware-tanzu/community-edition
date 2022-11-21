@@ -681,7 +681,9 @@ rules:
   - run.tanzu.vmware.com
   resources:
   - clusterbootstraps
-  - clusterbootstraps/status  
+  - clusterbootstraps/status
+  - tanzukubernetesreleases
+  - tanzukubernetesreleases/status
   verbs:
   - get
   - list
