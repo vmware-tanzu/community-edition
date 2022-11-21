@@ -80,7 +80,7 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 
 		_, err = utils.Tanzu(nil, "package", "install", packageInstallName,
 			"--namespace", packageInstallNamespace,
-			"--package-name", packageName,
+			"--package", packageName,
 			"--version", utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, version),
 			"--values-file", valuesFilename)
 		Expect(err).NotTo(HaveOccurred())
@@ -185,7 +185,7 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 			Eventually(func() error {
 				_, err = utils.Tanzu(nil, "package", "installed", "update", packageInstallName,
 					"--namespace", packageInstallNamespace,
-					"--package-name", packageName,
+					"--package", packageName,
 					"--version", utils.TanzuPackageAvailableVersionWithVersionSubString(packageName, version),
 					"--values-file", customValuesFilename)
 				return err
