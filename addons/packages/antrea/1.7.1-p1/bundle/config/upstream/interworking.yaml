@@ -1,0 +1,744 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antreaccpadapterinfos.clusterinformation.antrea-interworking.tanzu.vmware.com
+spec:
+  group: clusterinformation.antrea-interworking.tanzu.vmware.com
+  names:
+    kind: AntreaCCPAdapterInfo
+    plural: antreaccpadapterinfos
+    shortNames:
+      - ccpainfo
+    singular: antreaccpadapterinfo
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          type: object
+          x-kubernetes-preserve-unknown-fields: true
+      served: true
+      storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antreampadapterinfos.clusterinformation.antrea-interworking.tanzu.vmware.com
+spec:
+  group: clusterinformation.antrea-interworking.tanzu.vmware.com
+  names:
+    kind: AntreaMPAdapterInfo
+    plural: antreampadapterinfos
+    shortNames:
+      - mpainfo
+    singular: antreampadapterinfo
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          type: object
+          x-kubernetes-preserve-unknown-fields: true
+      served: true
+      storage: true
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vmware-system-antrea
+  labels:
+    app: antrea-interworking
+    openshift.io/run-level: '0'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-id
+  namespace: vmware-system-antrea
+# NOTE: Register job will generate the ConfigMap data like below:
+# data:
+#   cluster-id.conf:
+#     clusterID: A-UUID-String
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antrea-interworking-config
+  namespace: vmware-system-antrea
+data:
+  mp-adapter.conf: |
+    NSXRemoteAuth: false
+    NSXClientAuthCertFile: /etc/antrea/nsx-cert/tls.crt
+    NSXClientAuthKeyFile: /etc/antrea/nsx-cert/tls.key
+    NSXCAFile: ""
+    NSXInsecure: true
+    NSXClientTimeout: 120
+    InventoryBatchSize: 50
+    InventoryBatchPeriod: 5
+    NSXRPCConnType: tnproxy
+    EnableDebugServer: false
+    APIServerPort: 16664
+    DebugServerPort: 16666
+    NSXRPCDebug: false
+    #in second
+    ConditionTimeout: 150
+    #clusterType: kubernetes
+  ccp-adapter.conf: |
+    EnableDebugServer: false
+    APIServerPort: 16665
+    DebugServerPort: 16667
+    NSXRPCDebug: false
+    # Time to wait for realization
+    RealizeTimeoutSeconds: 60
+    # An interval for regularly report latest realization error in background
+    RealizeErrorSyncIntervalSeconds: 600
+    ReconcilerWorkerCount: 8
+    # Average QPS = ReconcilerWorkerCount * ReconcilerQPS
+    ReconcilerQPS: 5.0
+    # Peak QPS =  ReconcilerWorkerCount * ReconcilerBurst
+    ReconcilerBurst: 10
+    # 24 Hours
+    ReconcilerResyncSeconds: 86400
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: antrea-interworking
+  name: register
+  namespace: vmware-system-antrea
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: antrea-interworking
+  name: register
+  namespace: vmware-system-antrea
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - secrets
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+    verbs:
+      - get
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: antrea-interworking
+  name: register
+  namespace: vmware-system-antrea
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: register
+subjects:
+  - kind: ServiceAccount
+    name: register
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: antrea-interworking
+  name: vmware-system-antrea-register
+  namespace: default
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: antrea-interworking
+  name: vmware-system-antrea-register
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: vmware-system-antrea-register
+subjects:
+  - kind: ServiceAccount
+    name: register
+    namespace: vmware-system-antrea
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: antrea-interworking
+  name: interworking
+  namespace: vmware-system-antrea
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antrea-interworking
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - namespaces
+      - pods
+      - services
+      - endpoints
+      - configmaps
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - patch
+  - apiGroups:
+      - clusterinformation.antrea-interworking.tanzu.vmware.com
+    resources:
+      - antreaccpadapterinfos
+      - antreampadapterinfos
+    verbs:
+      - get
+      - watch
+      - list
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resourceNames:
+      - extension-apiserver-authentication
+      - bootstrap-config
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+      - patch
+  - apiGroups:
+      - crd.antrea.io
+    resources:
+      - antreaagentinfos
+      - antreacontrollerinfos
+      - egresses
+      - ippools
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+      - ingresses
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - crd.antrea.io
+    resources:
+      - traceflows
+      - traceflows/status
+    verbs:
+      - get
+      - watch
+      - list
+      - update
+      - patch
+      - create
+      - delete
+  - apiGroups:
+      - crd.antrea.io
+    resources:
+      - clusternetworkpolicies
+      - networkpolicies
+      - tiers
+      - clustergroups
+    verbs:
+      - get
+      - watch
+      - list
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - controlplane.antrea.tanzu.vmware.com
+      - controlplane.antrea.io
+    resources:
+      - clustergroupmembers
+      - groupassociations
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - crd.antrea.tanzu.vmware.com
+    resources:
+      - tierentitlementbindings
+      - tierentitlements
+      - nsxregistrations
+    verbs:
+      - get
+      - watch
+      - list
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - stats.antrea.io
+    resources:
+      - antreaclusternetworkpolicystats
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - gateway.networking.k8s.io
+    resources:
+      - gateways
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - config.openshift.io
+    resources:
+      - networks
+    verbs:
+      - get
+      - watch
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antrea-interworking
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: antrea-interworking
+subjects:
+  - kind: ServiceAccount
+    name: interworking
+    namespace: vmware-system-antrea
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antrea-interworking-supportbundle
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/log
+      - nodes
+      - configmaps
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+      - replicasets
+      - daemonsets
+    verbs:
+      - list
+  - apiGroups:
+      - system.antrea.io
+    resources:
+      - supportbundles
+    verbs:
+      - get
+      - create
+  - apiGroups:
+      - system.antrea.io
+    resources:
+      - controllerinfos
+      - supportbundles/download
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: antrea-interworking
+  name: antrea-interworking-supportbundle
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: antrea-interworking-supportbundle
+subjects:
+  - kind: ServiceAccount
+    name: interworking
+    namespace: vmware-system-antrea
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: register
+  labels:
+    app: antrea-interworking
+    component: register
+  namespace: vmware-system-antrea
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      containers:
+        - name: register
+          image: antrea-interworking/interworking-photon:0.7.1
+          imagePullPolicy: IfNotPresent
+          command: [ "/usr/local/bin/cluster-registry" ]
+          args:
+            - register
+            - --logtostderr=false
+            - --log_dir=/var/log/interworking
+            - --alsologtostderr
+            - --log_file_max_size=5
+            - --log_file_max_num=4
+          volumeMounts:
+            - mountPath: /etc/antrea
+              name: projected-configs
+              readOnly: true
+            - mountPath: /var/log/interworking
+              name: host-var-log-interworking
+      restartPolicy: OnFailure
+      serviceAccountName: register
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - name: host-var-log-interworking
+          hostPath:
+            path: /var/log/interworking
+            type: DirectoryOrCreate
+        - name: projected-configs
+          projected:
+            sources:
+              - configMap:
+                  name: bootstrap-config
+                  items:
+                    - key: bootstrap.conf
+                      path: bootstrap.conf
+              - configMap:
+                  name: cluster-id
+                  items:
+                    - key: cluster-id.conf
+                      path: cluster-id.conf
+                  optional: true
+              - secret:
+                  name: nsx-cert
+                  items:
+                    - key: tls.crt
+                      path: nsx-cert/tls.crt
+                    - key: tls.key
+                      path: nsx-cert/tls.key
+                  optional: true
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+  backoffLimit: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: antrea-interworking
+    component: interworking
+  name: interworking
+  namespace: vmware-system-antrea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: antrea-interworking
+      component: interworking
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: antrea-interworking
+        component: interworking
+    spec:
+      containers:
+        - name: election-runner
+          command:
+            - /usr/local/bin/election-runner
+          args:
+            - --id=$(POD_NAME)
+            - --namespace=vmware-system-antrea
+            - --ttl=60s
+            - --logtostderr=false
+            - --log_dir=/var/log/interworking/election-runner
+            - --alsologtostderr
+            - --log_file_max_size=5
+            - --log_file_max_num=2
+            - --v=4
+          image: antrea-interworking/interworking-photon:0.7.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          volumeMounts:
+            - mountPath: /var/run/antrea-interworking
+              name: host-var-run-antrea-interworking
+            - mountPath: /var/log/interworking
+              name: host-var-log-interworking
+        - name: mp-adapter
+          command:
+            - /usr/local/bin/election-watcher
+          args:
+            - --cmd=mp-adapter
+            - --args=--bootstrap-config,/etc/antrea/bootstrap.conf,--config,/etc/antrea/mp-adapter.conf,--cluster-id-config,/etc/antrea/cluster-id.conf,--logtostderr=false,--log_dir=/var/log/interworking/mp-adapter,--alsologtostderr,--log_file_max_size=25,--log_file_max_num=4,--v=4
+            - --logtostderr=false
+            - --log_dir=/var/log/interworking/mp-adapter
+            - --alsologtostderr
+            - --log_file_max_size=5
+            - --log_file_max_num=2
+            - --v=4
+          image: antrea-interworking/interworking-photon:0.7.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONTAINER_NAME
+              value: mp-adapter
+          livenessProbe:
+            httpGet:
+              host: localhost
+              path: /livez
+              port: api
+              scheme: HTTPS
+            initialDelaySeconds: 90
+            timeoutSeconds: 15
+            periodSeconds: 60
+            failureThreshold: 3
+          ports:
+            - name: api
+              containerPort: 16664
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/antrea
+              name: projected-configs
+              readOnly: true
+            - mountPath: /var/run/vmware
+              name: var-run-vmware
+              readOnly: true
+            - mountPath: /var/run/antrea-interworking
+              name: host-var-run-antrea-interworking
+            - mountPath: /var/log/interworking
+              name: host-var-log-interworking
+            - mountPath: /etc/vmware/nsx
+              name: etc-vmware-nsx
+          resources:
+            limits:
+              memory: "4096Mi"
+            requests:
+              memory: "256Mi"
+        - name: tn-proxy
+          command:
+            - /usr/local/bin/election-watcher
+          args:
+            - --cmd=tn-proxy-init.sh
+            - --logtostderr=false
+            - --log_dir=/var/log/interworking/tn-proxy
+            - --alsologtostderr
+            - --log_file_max_size=25
+            - --log_file_max_num=4
+            - --logChild=true
+          image: antrea-interworking/interworking-photon:0.7.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: CONTAINER_NAME
+              value: tn-proxy
+          volumeMounts:
+            - mountPath: /var/run/vmware
+              name: var-run-vmware
+            - mountPath: /etc/vmware/nsx
+              name: etc-vmware-nsx
+            - mountPath: /var/run/antrea-interworking
+              name: host-var-run-antrea-interworking
+            - mountPath: /etc/antrea
+              name: projected-configs
+              readOnly: true
+            - mountPath: /var/log/interworking
+              name: host-var-log-interworking
+        - name: ccp-adapter
+          command:
+            - /usr/local/bin/election-watcher
+          args:
+            - --cmd=ccp-adapter
+            - --args=--config,/etc/antrea/ccp-adapter.conf,--cluster-id-config,/etc/antrea/cluster-id.conf,--logtostderr=false,--log_dir=/var/log/interworking/ccp-adapter,--alsologtostderr,--log_file_max_size=25,--log_file_max_num=4,--v=4
+            - --logtostderr=false
+            - --log_dir=/var/log/interworking/ccp-adapter
+            - --alsologtostderr
+            - --log_file_max_size=5
+            - --log_file_max_num=2
+            - --v=4
+          image: antrea-interworking/interworking-photon:0.7.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: CONTAINER_NAME
+              value: ccp-adapter
+          volumeMounts:
+            - mountPath: /var/run/vmware
+              name: var-run-vmware
+            - mountPath: /var/lib/vmware
+              name: var-lib-vmware
+            - mountPath: /var/run/antrea-interworking
+              name: host-var-run-antrea-interworking
+            - mountPath: /etc/antrea
+              name: projected-configs
+              readOnly: true
+            - mountPath: /var/log/interworking
+              name: host-var-log-interworking
+          resources:
+            limits:
+              memory: "4096Mi"
+            requests:
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              host: localhost
+              path: /livez
+              port: api
+              scheme: HTTPS
+            timeoutSeconds: 15
+            periodSeconds: 60
+            failureThreshold: 3
+          ports:
+            - name: api
+              containerPort: 16665
+              protocol: TCP
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: system-cluster-critical
+      serviceAccountName: interworking
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+      volumes:
+        - hostPath:
+            path: /var/run/antrea-interworking
+            type: DirectoryOrCreate
+          name: host-var-run-antrea-interworking
+        - hostPath:
+            path: /var/log/interworking
+            type: DirectoryOrCreate
+          name: host-var-log-interworking
+        - name: projected-configs
+          projected:
+            sources:
+              - configMap:
+                  name: antrea-interworking-config
+                  items:
+                    - key: mp-adapter.conf
+                      path: mp-adapter.conf
+                    - key: ccp-adapter.conf
+                      path: ccp-adapter.conf
+              - configMap:
+                  name: bootstrap-config
+                  items:
+                    - key: bootstrap.conf
+                      path: bootstrap.conf
+              - configMap:
+                  name: cluster-id
+                  items:
+                    - key: cluster-id.conf
+                      path: cluster-id.conf
+                  optional: true
+              - secret:
+                  name: nsx-cert
+                  items:
+                    - key: tls.crt
+                      path: nsx-cert/tls.crt
+                    - key: tls.key
+                      path: nsx-cert/tls.key
+        - name: etc-vmware-nsx
+          emptyDir: { }
+        - name: var-run-vmware
+          emptyDir: { }
+        - name: var-lib-vmware
+          emptyDir: { }

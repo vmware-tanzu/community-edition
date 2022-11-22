@@ -1,0 +1,110 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+
+---
+infraProvider: vsphere
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+
+antrea:
+  config:
+    egress:
+      exceptCIDRs: []
+    nodePortLocal:
+      enabled: true
+      portRange: 61000-62000
+    antreaProxy:
+      proxyAll: false
+      nodePortAddresses: []
+      skipServices: []
+      proxyLoadBalancerIPs: false
+    flowExporter:
+      collectorAddress: "flow-aggregator.flow-aggregator.svc:4739:tls"
+      pollInterval: "5s"
+      activeFlowTimeout: "30s"
+      idleFlowTimeout: "15s"
+    kubeAPIServerOverride: null
+    transportInterface: null
+    transportInterfaceCIDRs: []
+    tunnelType: geneve
+    trafficEncryptionMode: none
+    wireGuard:
+      port: 51820
+    serviceCIDR: 10.96.0.0/12
+    serviceCIDRv6: null
+    enableUsageReporting: false
+    trafficEncapMode: encap
+    noSNAT: false
+    disableUdpTunnelOffload: false
+    #! Setting defaultMTU to null since antrea-agent will discover the MTU of the Node's primary interface and
+    #! also adjust MTU to accommodate for tunnel encapsulation overhead.
+    defaultMTU: null
+    tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+    enableBridgingMode: false
+    disableTXChecksumOffload: false
+    dnsServerOverride: null
+    multicastInterfaces: []
+    multicast:
+      igmpQueryInterval: "125s"
+    multicluster:
+      enable: false
+      namespace: null
+    featureGates:
+      AntreaProxy: true
+      EndpointSlice: false
+      AntreaTraceflow: true
+      NodePortLocal: true
+      AntreaPolicy: true
+      FlowExporter: false
+      NetworkPolicyStats: false
+      Egress: true
+      AntreaIPAM: false
+      ServiceExternalIP: false
+      Multicast: false
+      Multicluster: false
+      SecondaryNetwork: false
+      TrafficControl: false
+
+antrea_nsx:
+  enable: false
+
+antrea_interworking:
+  config:
+    nsxCert: ZHVtbXlBZG1pbg==
+    nsxKey: ZHVtbXlQYXNzd29yZA==
+    nsxUser: ZHVtbXlBZG1pbg==
+    nsxPassword: ZHVtbXlQYXNzd29yZA==
+    clusterName: dummyClusterName
+    NSXManagers: []
+    vpcPath: ""
+    mp_adapter_conf:
+      NSXClientTimeout: 120
+      InventoryBatchSize: 50
+      InventoryBatchPeriod: 5
+      EnableDebugServer: false
+      APIServerPort: 16664
+      DebugServerPort: 16666
+      NSXRPCDebug: false
+      ConditionTimeout: 150
+    ccp_adapter_conf:
+      EnableDebugServer: false
+      APIServerPort: 16665
+      DebugServerPort: 16667
+      NSXRPCDebug: false
+      #! Time to wait for realization
+      RealizeTimeoutSeconds: 60
+      #! An interval for regularly report latest realization error in background
+      RealizeErrorSyncIntervalSeconds: 600
+      ReconcilerWorkerCount: 8
+      #! Average QPS = ReconcilerWorkerCount * ReconcilerQPS
+      ReconcilerQPS: 5.0
+      #! Peak QPS =  ReconcilerWorkerCount * ReconcilerBurst
+      ReconcilerBurst: 10
+      #! 24 Hours
+      ReconcilerResyncSeconds: 86400

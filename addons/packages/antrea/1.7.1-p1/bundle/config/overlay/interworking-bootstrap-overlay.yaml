@@ -1,0 +1,28 @@
+#! interworking-bootstrap-overlay.yaml
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("/values.star", "values")
+
+#! Antrea-interworking-bootstrap-config-secret
+#@overlay/match by=overlay.subset({"kind":"Secret","metadata":{"name": "nsx-cert"}})
+#@ if/end values.antrea_nsx.enable:
+---
+kind: Secret
+data:
+  tls.crt: #@ values.antrea_interworking.config.nsxCert
+  tls.key: #@ values.antrea_interworking.config.nsxKey
+
+#@ def antrea_interworking_bootstrap_conf():
+clusterName: #@ values.antrea_interworking.config.clusterName
+NSXManagers: #@ values.antrea_interworking.config.NSXManagers
+vpcPath: #@ values.antrea_interworking.config.vpcPath
+#@ end
+
+#! Antrea-interworking-bootstrap-config
+#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "bootstrap-config"}})
+#@ if/end values.antrea_nsx.enable:
+---
+kind: ConfigMap
+data:
+  bootstrap.conf: #@ yaml.encode(antrea_interworking_bootstrap_conf())
