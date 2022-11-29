@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/vmware-tanzu/carvel-secretgen-controller@sha256:0525a4b3340536bccfcf5f6a1346c1e2548eb71110c34602ac3e8bdd460f69a5
+  image: ghcr.io/vmware-tanzu/carvel-secretgen-controller@sha256:0525a4b3340536bccfcf5f6a1346c1e2548eb71110c34602ac3e8bdd460f69a5
+kind: ImagesLock
