@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
-      tag: v0.11.1
-      url: https://api.github.com/repos/vmware-tanzu/carvel-secretgen-controller/releases/82430980
+      tag: v0.11.2
+      url: https://api.github.com/repos/vmware-tanzu/carvel-secretgen-controller/releases/84486674
     path: .
-  path: 0.11.1
+  path: 0.11.2
 kind: LockConfig
