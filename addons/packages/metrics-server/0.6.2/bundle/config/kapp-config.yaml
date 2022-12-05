@@ -1,0 +1,13 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+rebaseRules:
+  - path: [spec, caBundle]
+    type: remove
+    resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: apiregistration.k8s.io/v1beta1, kind: APIService}
+      - apiVersionKindMatcher: {apiVersion: apiregistration.k8s.io/v1, kind: APIService}
+  - path: [ spec, selector, matchLabels, kapp.k14s.io/app ]
+    type: copy
+    sources: [ existing ]
+    resourceMatchers:
+      - apiVersionKindMatcher: { apiVersion: apps/v1, kind: Deployment }
