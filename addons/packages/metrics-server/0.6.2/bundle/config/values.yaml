@@ -1,0 +1,24 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+namespace: kube-system
+nodeSelector: null
+deployment:
+  updateStrategy: null
+  rollingUpdate:
+    maxUnavailable: null
+    maxSurge: null
+daemonset:
+  updateStrategy: null
+metricsServer:
+  namespace: null
+  createNamespace: true
+  config:
+    securePort: 4443
+    updateStrategy: RollingUpdate
+    args: [] #! Add any command args here
+    probe:
+      failureThreshold: 3
+      periodSeconds: 10
+    apiServiceInsecureTLS: true
+    tolerations: [] #! user can add tolerations

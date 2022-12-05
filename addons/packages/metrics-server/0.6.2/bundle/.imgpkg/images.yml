@@ -1,0 +1,10 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: k8s.gcr.io/metrics-server/metrics-server:v0.6.2
+    kbld.carvel.dev/origins: |
+      - preresolved:
+          url: bitnami/metrics-server@sha256:3fa08f1d89f71d0990f1ff708702d53527e796f4c4ee817e19d408ae79d7eaf3
+  image: bitnami/metrics-server@sha256:3fa08f1d89f71d0990f1ff708702d53527e796f4c4ee817e19d408ae79d7eaf3
+kind: ImagesLock
