@@ -1,0 +1,105 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: httprules.ako.vmware.com
+spec:
+  group: ako.vmware.com
+  names:
+    plural: httprules
+    singular: httprule
+    listKind: HTTPRuleList
+    kind: HTTPRule
+    shortNames:
+    - httprule
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              fqdn:
+                type: string
+              paths:
+                items:
+                  properties:
+                    loadBalancerPolicy:
+                      properties:
+                        algorithm:
+                          enum:
+                          - LB_ALGORITHM_CONSISTENT_HASH
+                          - LB_ALGORITHM_CORE_AFFINITY
+                          - LB_ALGORITHM_FASTEST_RESPONSE
+                          - LB_ALGORITHM_FEWEST_SERVERS
+                          - LB_ALGORITHM_LEAST_CONNECTIONS
+                          - LB_ALGORITHM_LEAST_LOAD
+                          - LB_ALGORITHM_ROUND_ROBIN
+                          type: string
+                        hash:
+                          enum:
+                          - LB_ALGORITHM_CONSISTENT_HASH_CALLID
+                          - LB_ALGORITHM_CONSISTENT_HASH_SOURCE_IP_ADDRESS
+                          - LB_ALGORITHM_CONSISTENT_HASH_SOURCE_IP_ADDRESS_AND_PORT
+                          - LB_ALGORITHM_CONSISTENT_HASH_URI
+                          - LB_ALGORITHM_CONSISTENT_HASH_CUSTOM_HEADER
+                          - LB_ALGORITHM_CONSISTENT_HASH_CUSTOM_STRING
+                          type: string
+                        hostHeader:
+                          type: string
+                      type: object
+                    target:
+                      pattern: ^\/.*$
+                      type: string
+                    healthMonitors:
+                      items:
+                        type: string
+                      type: array
+                    applicationPersistence:
+                      type: string
+                    tls:
+                      properties:
+                        pkiProfile:
+                          type: string
+                        destinationCA:
+                          type: string
+                        sslProfile:
+                          type: string
+                        type:
+                          enum:
+                          - reencrypt
+                          type: string
+                      required:
+                      - type
+                      type: object
+                  required:
+                  - target
+                  type: object
+                type: array
+            required:
+            - fqdn
+            type: object
+          status:
+            properties:
+              error:
+                type: string
+              status:
+                type: string
+            type: object
+        type: object
+    additionalPrinterColumns:
+    - description: fqdn associated with the httprule
+      jsonPath: .spec.fqdn
+      name: HOST
+      type: string
+    - description: status of the httprule object
+      jsonPath: .status.status
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    served: true
+    storage: true
+    subresources:
+      status: {}
