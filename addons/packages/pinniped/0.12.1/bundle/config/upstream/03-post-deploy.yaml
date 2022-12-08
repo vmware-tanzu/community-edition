@@ -61,6 +61,15 @@ metadata:
   name: #@ post_deploy_job_name()
   namespace: #@ pinniped_supervisor_namespace()
 spec:
+  #! We have found that the backoffLimit is not as reliable as current documentation indicates.
+  #! The exponentialBackoff is documented here: https://kubernetes.io/docs/concepts/workloads/controllers/job/#pod-backoff-failure-policy
+  #! In summary, it the pod retry with an exponentialBackoff for upto 6 minutes as a cap, and then continue
+  #! retrying until the maximum backoffLimit.  We are setting a very high backoffLimit as in some environments
+  #! the job may fail and give up before it had the opportunity to succeed.
+  #! We have several alternative future solutions here:
+  #! - transition to a CronJob, or a combination of Job & CronJob
+  #! - transition to a Controller
+  backoffLimit: 50
   template:
     spec:
       serviceAccount: #@ post_deploy_job_sa_name()

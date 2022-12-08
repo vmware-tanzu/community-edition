@@ -2294,6 +2294,7 @@ metadata:
     kapp.k14s.io/update-strategy: always-replace
     pinniped-addon-template/hash: b2efa1da33f6565594b506515be85be1e7d725287a0940639c8ccf65fb4cdf31
 spec:
+  backoffLimit: 50
   template:
     spec:
       serviceAccount: pinniped-post-deploy-job-sa
