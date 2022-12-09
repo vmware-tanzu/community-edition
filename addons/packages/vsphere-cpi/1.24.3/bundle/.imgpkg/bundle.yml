@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: vsphere-cpi
+authors:
+- name: Lubron Zhan
+  email: lzhan@vmware.com
+websites:
+- url: https://github.com/kubernetes/cloud-provider-vsphere

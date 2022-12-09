@@ -1,0 +1,27 @@
+#@ load("/values.star", "values")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:struct", "struct")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:sha256", "sha256")
+
+#@ if values.vsphereCPI.mode == "vsphereParavirtualCPI":
+#@ if values.vsphereCPI.antreaNSXPodRoutingEnabled:
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "guest-cluster-cloud-provider"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by=overlay.all
+        - args:
+          - --controllers=route
+          - --configure-cloud-routes=true
+          - --allocate-node-cidrs=true
+          #! Note: This 'cluster-cidr' value is a workaround for RoutablePod feature.
+          #! Route controller needs to verify whether deleted route is within its authority.
+          #! But Cluster CIDR value is assigned by NCP after the cloud provider is deployed.
+          #! So use this wide range to make sure NCP allocated CIDR is covered in this.
+          - --cluster-cidr=0.0.0.0/0
+#@ end
+#@ end
