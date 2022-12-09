@@ -29,184 +29,264 @@ spec:
       additionalProperties: false
       description: OpenAPIv3 Schema for vsphere-cpi
       properties:
+        nodeSelector:
+          nullable: true
+          description: NodeSelector configuration applied to all the deployments
+          default: null
+        deployment:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of deployments
+              default: null
+            rollingUpdate:
+              type: object
+              additionalProperties: false
+              properties:
+                maxUnavailable:
+                  type: integer
+                  nullable: true
+                  description: The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+                maxSurge:
+                  type: integer
+                  nullable: true
+                  description: The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy
+                  default: null
+        daemonset:
+          type: object
+          additionalProperties: false
+          properties:
+            updateStrategy:
+              type: string
+              nullable: true
+              description: Update strategy of daemonsets
+              default: null
         vsphereCPI:
           type: object
           additionalProperties: false
           description: Configurations for vsphere-cpi
           properties:
+            mode:
+              type: string
+              description: The vSphere mode. Either vsphereCPI or vsphereParavirtualCPI. Default value is vsphereCPI
+              default: vsphereCPI
             tlsThumbprint:
               type: string
-              default: ""
+              nullable: true
               description: The cryptographic thumbprint of the vSphere endpoint's certificate
+              default: null
             server:
               type: string
-              default: ""
+              nullable: true
               description: The IP address or FQDN of the vSphere endpoint
+              default: null
             datacenter:
               type: string
-              default: ""
+              nullable: true
               description: The datacenter in which VMs are created/located
+              default: null
             username:
               type: string
-              default: ""
+              nullable: true
               description: Username used to access a vSphere endpoint
+              default: null
             password:
               type: string
-              default: ""
+              nullable: true
               description: Password used to access a vSphere endpoint
+              default: null
             region:
               type: string
-              default: null
               nullable: true
               description: The region used by vSphere multi-AZ feature
+              default: null
             zone:
               type: string
-              default: null
               nullable: true
               description: The zone used by vSphere multi-AZ feature
+              default: null
             insecureFlag:
               type: boolean
-              default: false
+              nullable: true
               description: The flag that disables TLS peer verification
+              default: null
             ipFamily:
               type: string
-              default: null
               nullable: true
               description: The IP family configuration
+              default: null
             vmInternalNetwork:
               type: string
-              default: null
               nullable: true
               description: Internal VM network name
+              default: null
             vmExternalNetwork:
               type: string
-              default: null
               nullable: true
               description: External VM network name
+              default: null
             vmExcludeInternalNetworkSubnetCidr:
               type: string
-              default: null
               nullable: true
               description: Comma separated list of internal network subnets to exclude from node IP selection.
+              default: null
             vmExcludeExternalNetworkSubnetCidr:
               type: string
-              default: null
               nullable: true
               description: Comma separated list of external network subnets to exclude from node IP selection.
+              default: null
             cloudProviderExtraArgs:
               type: object
               additionalProperties: false
+              nullable: true
+              description: Extra arguments for the cloud-provider-vsphere.
               properties:
                 tls-cipher-suites:
                   type: string
-                  default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
                   description: External arguments for cloud provider
+                  default: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
             nsxt:
               type: object
               additionalProperties: false
+              nullable: true
               properties:
                 podRoutingEnabled:
                   type: boolean
-                  default: false
                   description: A flag that enables pod routing
+                  default: false
                 routes:
                   type: object
                   additionalProperties: false
                   properties:
                     routerPath:
                       type: string
-                      default: ""
                       description: NSX-T T0/T1 logical router path
+                      default: ""
                     clusterCidr:
                       type: string
-                      default: ""
                       description: Cluster CIDR
+                      default: ""
                 username:
                   type: string
-                  default: ""
                   description: The username used to access NSX-T
+                  default: ""
                 password:
                   type: string
-                  default: ""
                   description: The password used to access NSX-T
+                  default: ""
                 host:
                   type: string
-                  default: null
                   nullable: true
                   description: The NSX-T server
+                  default: null
                 insecureFlag:
                   type: string
-                  default: "false"
                   description: (Deprecated. For backward compatibiility. Will be replaced by insecure. If both set, result is insecureFlag || insecure) InsecureFlag is to be set to true if NSX-T uses self-signed cert
+                  default: "false"
                 remoteAuth:
                   type: string
-                  default: "false"
                   description: (Deprecated. For backward compatibiility. Will be replaced by removeAuthEnabled. If both set, result is remoteAuth || remoteAuthEnabled). RemoteAuth is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)
+                  default: "false"
                 insecure:
                   type: boolean
-                  default: false
                   description: Insecure is to be set to true if NSX-T uses self-signed cert
+                  default: false
                 remoteAuthEnabled:
                   type: boolean
-                  default: false
                   description: RemoteAuthEnabled is to be set to true if NSX-T uses remote authentication (authentication done through the vIDM)
+                  default: false
                 vmcAccessToken:
                   type: string
-                  default: ""
                   description: VMCAccessToken is VMC access token for token based authentification
+                  default: ""
                 vmcAuthHost:
                   type: string
-                  default: ""
                   description: VMCAuthHost is VMC verification host for token based authentification
+                  default: ""
                 clientCertKeyData:
                   type: string
-                  default: ""
                   description: Client certificate key for NSX-T
+                  default: ""
                 clientCertData:
                   type: string
-                  default: ""
                   description: Client certificate data for NSX-T
+                  default: ""
                 rootCAData:
                   type: string
-                  default: ""
                   description: The certificate authority for the server certificate for locally signed certificates
+                  default: ""
                 secretName:
                   type: string
-                  default: cloud-provider-vsphere-nsxt-credentials
                   description: The name of secret that stores CPI configuration
+                  default: cloud-provider-vsphere-nsxt-credentials
                 secretNamespace:
                   type: string
-                  default: kube-system
                   description: The namespace of secret that stores CPI configuration
+                  default: kube-system
             http_proxy:
               type: string
-              default: ""
+              nullable: true
               description: HTTP proxy setting
+              default: null
             https_proxy:
               type: string
-              default: ""
+              nullable: true
               description: HTTPS proxy setting
+              default: null
             no_proxy:
               type: string
-              default: ""
+              nullable: true
               description: No-proxy setting
+              default: null
+            clusterAPIVersion:
+              type: string
+              description: 'Used in vsphereParavirtual mode, defines the Cluster API versions. Default: cluster.x-k8s.io/v1beta1.'
+              default: cluster.x-k8s.io/v1beta1
+            clusterKind:
+              type: string
+              description: 'Used in vsphereParavirtual mode, defines the Cluster kind. Default: Cluster.'
+              default: Cluster
+            clusterName:
+              type: string
+              description: 'Used in vsphereParavirtual mode, defines the Cluster name. Default: ''''.'
+              default: ""
+            clusterUID:
+              type: string
+              description: 'Used in vsphereParavirtual mode, defines the Cluster UID. Default: '''''
+              default: ""
+            supervisorMasterEndpointIP:
+              type: string
+              description: 'Used in vsphereParavirtual mode, the endpoint IP of supervisor cluster''s API server. Default: '''''
+              default: ""
+            supervisorMasterPort:
+              type: string
+              description: 'Used in vsphereParavirtual mode, the endpoint port of supervisor cluster''s API server port. Default: '''''
+              default: ""
+            antreaNSXPodRoutingEnabled:
+              type: boolean
+              description: Enable pod routing with Antrea NSX
+              default: false
             image:
               type: object
               additionalProperties: false
               properties:
                 repository:
                   type: string
-                  default: ""
                   description: The repository of CPI image
+                  default: ""
                 path:
                   type: string
-                  default: ""
                   description: The path of image
+                  default: ""
                 tag:
                   type: string
-                  default: ""
                   description: The image tag
+                  default: ""
                 pullPolicy:
                   type: string
-                  default: IfNotPresent
                   description: The pull policy of image
+                  default: ""
