@@ -9,8 +9,8 @@ deployment:
     maxUnavailable: null
     maxSurge: null
 daemonset:
-vsphereCPI:
   updateStrategy: null
+vsphereCPI:
   mode: vsphereCPI
   tlsThumbprint: ""
   server: ""
