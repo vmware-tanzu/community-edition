@@ -1,0 +1,66 @@
+#@ load("/values.star", "values")
+
+#@ if values.vsphereCPI.mode == "vsphereCPI" or not values.vsphereCPI.mode:
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: vsphere-cloud-controller-manager
+  name: vsphere-cloud-controller-manager
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: vsphere-cloud-controller-manager
+  template:
+    metadata:
+      labels:
+        k8s-app: vsphere-cloud-controller-manager
+    spec:
+      priorityClassName: system-node-critical
+      containers:
+        - args:
+            - --v=2
+            - --cloud-provider=vsphere
+            - --cloud-config=/etc/cloud/vsphere.conf
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.23.3
+          imagePullPolicy: IfNotPresent
+          name: vsphere-cloud-controller-manager
+          resources:
+            requests:
+              cpu: 200m
+          volumeMounts:
+            - mountPath: /etc/cloud
+              name: vsphere-config-volume
+              readOnly: true
+      hostNetwork: true
+      serviceAccountName: cloud-controller-manager
+      tolerations:
+        - effect: NoSchedule
+          key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+        - effect: NoSchedule
+          key: node.kubernetes.io/not-ready
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        #! remove once usage of this tolerations is removed from Kuberenetes
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+      volumes:
+        - configMap:
+            name: vsphere-cloud-config
+          name: vsphere-config-volume
+      #! use affinity instead of node selector since node selector only accepts single value
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+            - matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: Exists
+  updateStrategy:
+    type: RollingUpdate
+#@ end
