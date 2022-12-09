@@ -1213,6 +1213,13 @@ rules:
   - create
   - update
 - apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+- apiGroups:
   - apps
   resources:
   - deployments
