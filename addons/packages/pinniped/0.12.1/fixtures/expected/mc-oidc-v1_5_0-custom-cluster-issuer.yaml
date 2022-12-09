@@ -90,8 +90,8 @@ spec:
   - pinnipedca
   ipAddresses: []
   issuerRef:
-    name: pinniped-selfsigned-ca-issuer
-    kind: Issuer
+    name: super-duper-custom-cluster-issuer
+    kind: ClusterIssuer
     group: cert-manager.io
 ---
 apiVersion: cert-manager.io/v1
@@ -145,8 +145,8 @@ metadata:
   namespace: pinniped-supervisor
 type: secrets.pinniped.dev/oidc-client
 stringData:
-  clientID: ""
-  clientSecret: ""
+  clientID: abc
+  clientSecret: 123
 ---
 apiVersion: idp.supervisor.pinniped.dev/v1alpha1
 kind: OIDCIdentityProvider
@@ -156,19 +156,17 @@ metadata:
   annotations:
     kapp.k14s.io/update-strategy: always-replace
 spec:
-  issuer: https://0.0.0.0:30167
+  issuer: https://abc.com
   authorizationConfig:
     additionalScopes:
     - email
     - profile
     - groups
   claims:
-    username: name
+    username: email
     groups: groups
   client:
     secretName: upstream-idp-client-credentials
-  tls:
-    certificateAuthorityData: ca_bundle_data_of_dex_svc
 ---
 apiVersion: authentication.concierge.pinniped.dev/v1alpha1
 kind: JWTAuthenticator
@@ -186,7 +184,7 @@ metadata:
   name: pinniped-supervisor
   namespace: pinniped-supervisor
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: pinniped-supervisor
   ports:
@@ -194,6 +192,7 @@ spec:
     protocol: TCP
     port: 443
     targetPort: 8443
+    nodePort: 31234
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -2283,7 +2282,7 @@ metadata:
   namespace: pinniped-supervisor
   annotations:
     kapp.k14s.io/update-strategy: always-replace
-    pinniped-addon-template/hash: f5118330e9ce7f198d20ff92dac73afd753dad71ec2111a81d9257d3d06dd94a
+    pinniped-addon-template/hash: a13d6fa60a80ed93bc97f089af9efa1e49b3d2acf74c91fa5fd830a0eafe197c
 spec:
   backoffLimit: 50
   template:
