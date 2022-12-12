@@ -26,7 +26,7 @@ var _ = Describe("Contour Ytt Templates", func() {
 		output string
 		err    error
 
-		configDir = filepath.Join(repo.RootDir(), "addons/packages/contour/1.22.0/bundle/config")
+		configDir = filepath.Join(repo.RootDir(), "addons/packages/contour/1.22.3/bundle/config")
 	)
 
 	BeforeEach(func() {
