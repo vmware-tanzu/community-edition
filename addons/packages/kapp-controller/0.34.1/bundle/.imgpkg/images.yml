@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/vmware-tanzu/carvel-kapp-controller@sha256:1fe279b3de84ec71879e34a99617883efa79e3acd4991e6034f26267bd1df33e
+  image: ghcr.io/vmware-tanzu/carvel-kapp-controller@sha256:1fe279b3de84ec71879e34a99617883efa79e3acd4991e6034f26267bd1df33e
+kind: ImagesLock
