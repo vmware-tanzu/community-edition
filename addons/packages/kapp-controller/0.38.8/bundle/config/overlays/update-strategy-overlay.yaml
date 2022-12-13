@@ -1,0 +1,50 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#! We are adding this overlay in the package to accomandate the need from vSphere supervisor cluster:
+#! `deployment.spec.strategy.type` is configured to `RollingUpdate`
+#! `deployment.spec.strategy.rollingUpdate.maxUnavailable` is set to `0`.
+#! `deployment.spec.strategy.rollingUpdate.maxSurge` is set to `1`.
+#! `deployment.spec.template.spec.nodeSelector`is set to target only `Nodes`
+#! `daemonset.spec.updateStrategy.type` is configured to `OnDelete`
+#! This overlay makes configuring the above parameters possible
+#! Reference: https://github.com/vmware-tanzu/tanzu-framework/issues/1850
+
+#@overlay/match expects="0+",by=overlay.subset({"kind":"Deployment"})
+---
+kind: Deployment
+spec:
+  #@ if data.values.deployment.updateStrategy != None:
+  #@overlay/match missing_ok=True
+  strategy:
+    type: #@ data.values.deployment.updateStrategy
+    #@overlay/match missing_ok=True
+    #@ if data.values.deployment.updateStrategy == "RollingUpdate":
+    rollingUpdate:
+      #@ if/end data.values.deployment.rollingUpdate.maxUnavailable != None:
+      maxUnavailable: #@ data.values.deployment.rollingUpdate.maxUnavailable
+      #@ if/end data.values.deployment.rollingUpdate.maxSurge != None:
+      maxSurge: #@ data.values.deployment.rollingUpdate.maxSurge
+    #@ end
+  #@ end
+  #@ if data.values.nodeSelector != None:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      nodeSelector:
+        #@ for key in data.values.nodeSelector:
+        #@overlay/match missing_ok=True
+        #@yaml/text-templated-strings
+        (@= key @): #@ data.values.nodeSelector[key]
+        #@ end
+  #@ end
+
+#@overlay/match expects="0+",by=overlay.subset({"kind":"DaemonSet"})
+---
+kind: DaemonSet
+spec:
+  #@ if data.values.daemonset.updateStrategy:
+  #@overlay/match missing_ok=True
+  updateStrategy:
+    type: #@ data.values.daemonset.updateStrategy
+  #@ end
