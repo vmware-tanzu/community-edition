@@ -1,0 +1,65 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "envoy"}})
+---
+kind: #@ data.values.envoy.workload.type
+spec:
+  #@ if data.values.envoy.workload.type == "Deployment":
+  #@overlay/match missing_ok=True
+  replicas: #@ data.values.envoy.workload.replicas
+  #@overlay/remove
+  updateStrategy:
+  #@overlay/match missing_ok=True
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      #! This value of maxSurge means that during a rolling update
+      #! the new ReplicaSet will be created first.
+      maxSurge: 10%
+  #@ end
+  template:
+    spec:
+      #@ if data.values.envoy.workload.type == "Deployment":
+      #@overlay/match missing_ok=True
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - envoy
+              topologyKey: "kubernetes.io/hostname"
+      #@ end
+      containers:
+      #@overlay/match by=overlay.subset({"name": "envoy"})
+      - args:
+        #@overlay/match by=overlay.subset("--log-level info")
+        - #@ "--log-level " + data.values.envoy.logLevel
+        ports:
+        #@overlay/match by=overlay.subset({"name":"http"})
+        -
+          #@ if data.values.envoy.hostPorts.enable:
+          hostPort: #@ data.values.envoy.hostPorts.http
+          #@ else:
+          #@overlay/remove
+          hostPort: 80
+          #@ end
+        #@overlay/match by=overlay.subset({"name":"https"})
+        -
+          #@ if data.values.envoy.hostPorts.enable:
+          hostPort: #@ data.values.envoy.hostPorts.https
+          #@ else:
+          #@overlay/remove
+          hostPort: 443
+          #@ end
+      #@ if data.values.envoy.hostNetwork:
+      #@overlay/match missing_ok=True
+      hostNetwork: true
+      #@overlay/match missing_ok=True
+      dnsPolicy: ClusterFirstWithHostNet
+      #@ end
+      terminationGracePeriodSeconds: #@ int(data.values.envoy.terminationGracePeriodSeconds)

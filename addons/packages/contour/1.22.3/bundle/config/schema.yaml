@@ -1,0 +1,92 @@
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for Contour 1.22.3"
+
+---
+#@schema/desc "The underlying infrastructure provider. Options are aws, azure, docker and vsphere. This field is not required, but enables better validation and defaulting if provided."
+infrastructureProvider: ""
+
+#@schema/desc "The namespace in which to deploy Contour and Envoy."
+namespace: projectcontour
+
+#@schema/desc "Settings for the Contour component."
+contour:
+  #@schema/desc "The YAML contents of the Contour config file. See https://projectcontour.io/docs/v1.22.3/configuration/#configuration-file for more information."
+  #@schema/type any=True
+  configFileContents: null
+
+  #@schema/desc "How many Contour pod replicas to have."
+  replicas: 2
+
+  #@schema/desc "Whether to enable PROXY protocol for all Envoy listeners."
+  useProxyProtocol: false
+
+  #@schema/desc "The Contour log level. Valid options are 'info' and 'debug'."
+  logLevel: info
+
+#@schema/desc "Settings for the Envoy component."
+envoy:
+  #@schema/desc "Envoy workload settings."
+  workload:
+    #@schema/desc "The type of Kubernetes workload Envoy is deployed as. Options are 'Deployment' or 'DaemonSet'. If not specified, will default to 'DaemonSet'."
+    type: DaemonSet
+    #@schema/desc "The number of Envoy replicas to deploy when 'type' is set to 'Deployment'. If not specified, it will default to '2'."
+    replicas: 2
+
+  #@schema/desc "Envoy service settings."
+  service:
+    #@schema/desc "The type of Kubernetes service to provision for Envoy. If not specified, will default to 'NodePort' for docker and vsphere and 'LoadBalancer' for others."
+    type: ""
+
+    #@schema/desc "The desired load balancer IP. If type is not 'LoadBalancer', this field is ignored. It is up to the cloud provider whether to honor this request. If not specified, then load balancer IP will be assigned by the cloud provider."
+    loadBalancerIP: ""
+
+    #@schema/desc "The external traffic policy for the Envoy service. If type is 'ClusterIP', this field is ignored. Otherwise, defaults to 'Cluster' for vsphere and 'Local' for others."
+    externalTrafficPolicy: ""
+
+    #@schema/desc "Annotations to set on the Envoy service."
+    #@schema/type any=True
+    annotations: null
+
+    #@schema/desc "NodePort settings for the Envoy service. If type is not 'NodePort' or 'LoadBalancer', these settings are ignored."
+    nodePorts:
+      #@schema/desc "The node port number to expose Envoy's HTTP listener on. If not specified, a node port will be auto-assigned by Kubernetes."
+      http: 0
+
+      #@schema/desc "The node port number to expose Envoy's HTTPS listener on. If not specified, a node port will be auto-assigned by Kubernetes."
+      https: 0
+
+    #@schema/desc "AWS-specific settings for the Envoy service. If infrastructure provider is not 'aws', these settings are ignored."
+    aws:
+      #@schema/desc "The type of AWS load balancer to provision. Options are 'classic' and 'nlb'."
+      loadBalancerType: classic
+
+  #@schema/desc "Host port settings for the Envoy pods."
+  hostPorts:
+    #@schema/desc "Whether to enable host ports. If false, http & https are ignored."
+    enable: false
+
+    #@schema/desc "If enable == true, the host port number to expose Envoy's HTTP listener on."
+    http: 80
+
+    #@schema/desc "If enable == true, the host port number to expose Envoy's HTTPS listener on."
+    https: 443
+
+  #@schema/desc "Whether to enable host networking for the Envoy pods."
+  hostNetwork: false
+
+  #@schema/desc "The termination grace period, in seconds, for the Envoy pods."
+  terminationGracePeriodSeconds: 300
+
+  #@schema/desc "The Envoy log level."
+  logLevel: info
+
+#@schema/desc "Settings for the TLS certificates for securing communication between Contour and Envoy."
+certificates:
+  #@schema/desc "Whether to use cert-manager to provision TLS certificates for securing communication between Contour and Envoy. If false, the upstream Contour certgen job will be used to provision certificates. If true, the cert-manager addon must be installed in the cluster."
+  useCertManager: false
+
+  #@schema/desc "If using cert-manager, how long the certificates should be valid for. If useCertManager is false, this field is ignored."
+  duration: 8760h
+
+  #@schema/desc "If using cert-manager, how long before expiration the certificates should be renewed. If useCertManager is false, this field is ignored."
+  renewBefore: 360h
