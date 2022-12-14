@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: csi-oci-node-sa
+ namespace: kube-system
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+ name: csi-oci
+ namespace: kube-system
+rules:
+ - apiGroups: [""]
+   resources: ["events"]
+   verbs: ["get", "list", "watch", "create", "update", "patch"]
+ - apiGroups: [""]
+   resources: ["nodes"]
+   verbs: ["get", "list", "watch"]
+ - apiGroups: ["volume.oci.oracle.com"]
+   resources: ["blockscsiinfos"]
+   verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
+ - apiGroups: [""]
+   resources: ["persistentvolumes"]
+   verbs: ["get", "list", "watch", "create", "delete", "patch"]
+ - apiGroups: [""]
+   resources: ["persistentvolumeclaims"]
+   verbs: ["get", "list", "watch", "update", "create"]
+ - apiGroups: ["storage.k8s.io"]
+   resources: ["storageclasses", "volumeattachments", "volumeattachments/status", "csinodes"]
+   verbs: ["get", "list", "watch", "patch"]
+ - apiGroups: ["coordination.k8s.io"]
+   resources: ["leases"]
+   verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
+ - apiGroups: [""]
+   resources: ["endpoints"]
+   verbs: ["get", "watch", "create", "update"]
+ - apiGroups: [""]
+   resources: ["pods"]
+   verbs: ["get", "list", "watch"]
+ - apiGroups: [""]
+   resources: ["persistentvolumeclaims/status"]
+   verbs: ["patch"]
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+ name: csi-oci-binding
+subjects:
+ - kind: ServiceAccount
+   name: csi-oci-node-sa
+   namespace: kube-system
+roleRef:
+ kind: ClusterRole
+ name: csi-oci
+ apiGroup: rbac.authorization.k8s.io
