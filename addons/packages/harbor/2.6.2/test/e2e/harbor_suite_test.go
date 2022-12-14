@@ -42,9 +42,9 @@ type packageDependency struct {
 }
 
 const (
-	packagePollInterval = "10s"
-	packagePollTimeout  = "20m"
-	provisionerjsonpath = `jsonpath='{.items[0].provisioner}'`
+	packageWaitCheckInterval = "10s"
+	packageWaitTimeout       = "20m"
+	provisionerjsonpath      = `jsonpath='{.items[0].provisioner}'`
 )
 
 var (
@@ -88,11 +88,14 @@ var (
 )
 
 var _ = BeforeSuite(func() {
-	packageInstallNamespace = "default"
+	packageInstallNamespace = "test"
 
 	packageInstallName = "harbor"
 
 	packageComponentsNamespace = "goharbor"
+
+	_, err := utils.Kubectl(nil, "create", "ns", packageInstallNamespace)
+	Expect(err).NotTo(HaveOccurred())
 
 	//storageclass = getStorageClass()
 	storageclass, isDefault = getAvailableStorageClass()
@@ -149,8 +152,8 @@ var _ = AfterSuite(func() {
 	for _, installedPackage := range installedPackages {
 		By(fmt.Sprintf("cleaning up %s addon package", installedPackage))
 		_, err := utils.Tanzu(nil, "package", "installed", "delete", installedPackage,
-			"--poll-interval", packagePollInterval,
-			"--poll-timeout", packagePollTimeout,
+			"--wait-check-interval", packageWaitCheckInterval,
+			"--wait-timeout", packageWaitTimeout,
 			"--namespace", packageInstallNamespace, "--yes")
 		Expect(err).NotTo(HaveOccurred())
 	}
@@ -221,14 +224,16 @@ func hasCSIDriver(provisioner string) bool {
 
 func getKubernetesVersion() string {
 	jsonStr, _ := utils.Kubectl(nil, "version", "-o", "json")
-	versionmap := make(map[string]map[string]string)
+	versionmap := make(map[string]interface{})
 	err := json.Unmarshal([]byte(jsonStr), &versionmap)
 	Expect(err).NotTo(HaveOccurred())
 
 	for k, v := range versionmap {
 		if k == "serverVersion" {
-			fmt.Println("cluster KubernetesVersion:", v["major"]+"."+v["minor"])
-			return v["major"] + "." + v["minor"]
+			serverVersionMap := v.(map[string]interface{})
+			kubernetesVersion := serverVersionMap["major"].(string) + "." + serverVersionMap["minor"].(string)
+			fmt.Println("cluster KubernetesVersion:", kubernetesVersion)
+			return kubernetesVersion
 		}
 	}
 
@@ -348,10 +353,10 @@ func installPackage(name, packageName, version, valuesFilename string) {
 
 	args := []string{
 		"package", "install", name,
-		"--poll-interval", packagePollInterval,
-		"--poll-timeout", packagePollTimeout,
+		"--wait-check-interval", packageWaitCheckInterval,
+		"--wait-timeout", packageWaitTimeout,
 		"--namespace", packageInstallNamespace,
-		"--package-name", packageName,
+		"--package", packageName,
 		"--version", version,
 	}
 
