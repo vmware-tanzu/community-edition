@@ -9,9 +9,7 @@ spec:
   providerName: VMware
   maintainers:
     - name: Steve Kriss
-    - name: Nick Young
     - name: Sunjay Bhatia
-    - name: Nicholas Seemiller
   categories:
     - "ingress"
     - "envoy"
