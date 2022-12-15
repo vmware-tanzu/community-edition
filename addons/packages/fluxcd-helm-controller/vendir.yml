@@ -22,3 +22,13 @@ directories:
           assetNames:
             - "package.yaml"
             - "README.md"
+  - path: 0.21.0+update.1
+    contents:
+      - path: .
+        githubRelease:
+          slug: vmware-tanzu/package-for-helm-controller
+          tag: v0.21.0+update.2
+          disableAutoChecksumValidation: true
+          assetNames:
+            - "package.yaml"
+            - "README.md"
