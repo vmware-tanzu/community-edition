@@ -47,7 +47,7 @@ directories:
       - path: .
         githubRelease:
           slug: vmware-tanzu/package-for-source-controller
-          tag: 0.24.4+update.2
+          tag: v0.24.4+update.2
           disableAutoChecksumValidation: true
           assetNames:
           - "package.yaml"
