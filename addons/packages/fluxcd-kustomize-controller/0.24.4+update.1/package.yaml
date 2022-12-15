@@ -1,0 +1,39 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kustomize-controller.fluxcd.community.tanzu.vmware.com.0.24.4+update.1
+spec:
+  refName: kustomize-controller.fluxcd.community.tanzu.vmware.com
+  version: 0.24.4+update.1
+  releaseNotes: "Adding placeholder secrets for authenticated registeries"
+  capacityRequirementsDescription: ""
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/fluxcd-kustomize-controller-bundle@sha256:ce03a0684412180850e70c7bf33fae9d005d4ad8071228e241a905be0e2da6c8
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      properties:
+        namespace:
+          type: string
+          description: Deployment and service namespace
+          default: kustomize-system
+        limits_cpu:
+          type: string
+          description: Set cpu usage limit
+          default: 1000m
+        limits_memory:
+          type: string
+          description: Set memory usage limit
+          default: 1Gi

@@ -22,3 +22,13 @@ directories:
           assetNames:
           - "package.yaml"
           - "README.md"
+  - path: 0.24.4+update.1
+    contents:
+      - path: .
+        githubRelease:
+          slug: vmware-tanzu/package-for-kustomize-controller
+          tag: v0.24.4+update.2
+          disableAutoChecksumValidation: true
+          assetNames:
+          - "package.yaml"
+          - "README.md"

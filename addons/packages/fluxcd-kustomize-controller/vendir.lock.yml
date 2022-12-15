@@ -10,4 +10,9 @@ directories:
       url: https://api.github.com/repos/vmware-tanzu/package-for-kustomize-controller/releases/71786241
     path: .
   path: 0.24.4
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/vmware-tanzu/package-for-kustomize-controller/releases/86185361
+    path: .
+  path: 0.24.4+update.1
 kind: LockConfig
