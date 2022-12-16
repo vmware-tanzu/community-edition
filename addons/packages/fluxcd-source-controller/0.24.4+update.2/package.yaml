@@ -50,7 +50,7 @@ spec:
     spec:
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/fluxcd-source-controller-bundle@sha256:bae88b10870c679ca9722305bd4443898e39814ca5883b22784286643c199112
+          image: projects.registry.vmware.com/tce/fluxcd-source-controller-bundle@sha256:52ef77aca3212f724d168ced0cbd6c58cc28ec61d62e782008fed78a4c623cff
       template:
       - ytt:
           paths:
