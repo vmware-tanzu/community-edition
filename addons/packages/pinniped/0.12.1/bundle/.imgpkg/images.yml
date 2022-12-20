@@ -9,12 +9,12 @@ images:
           url: docker.io/getpinniped/pinniped-server:v0.12.1
   image: index.docker.io/getpinniped/pinniped-server@sha256:8b4ee3b279d8d1d1f1c65d95f8611a99e00c6d2fbb5dbf974ad76ac4ca563d73
 - annotations:
-    kbld.carvel.dev/id: projects.registry.vmware.com/tce/dex:v2.35.3_vmware.1
+    kbld.carvel.dev/id: projects.registry.vmware.com/tce/dex:v2.35.3_vmware.2
     kbld.carvel.dev/origins: |
       - resolved:
-          tag: v2.35.3_vmware.1
-          url: projects.registry.vmware.com/tce/dex:v2.35.3_vmware.1
-  image: projects.registry.vmware.com/tce/dex@sha256:7ac6e085ad900eb67b3b59d46a01b280560355b20eec8a75de27e632c379523d
+          tag: v2.35.3_vmware.2
+          url: projects.registry.vmware.com/tce/dex:v2.35.3_vmware.2
+  image: projects.registry.vmware.com/tce/dex@sha256:25d6eb8a4e7676d382cf79675f5eadeda64e1067e343c38670041f4e049b35fe
 - annotations:
     kbld.carvel.dev/id: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
     kbld.carvel.dev/origins: |

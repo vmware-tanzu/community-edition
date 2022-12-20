@@ -167,7 +167,7 @@ spec:
         revision: "1"
     spec:
       containers:
-      - image: projects.registry.vmware.com/tce/dex:v2.35.3_vmware.1
+      - image: projects.registry.vmware.com/tce/dex:v2.35.3_vmware.2
         imagePullPolicy: IfNotPresent
         command:
         - /usr/local/bin/dex
