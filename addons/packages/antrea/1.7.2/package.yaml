@@ -13,7 +13,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: projects.registry.vmware.com/tce/antrea@sha256:d1b792115c27ef9690dac5c29c3146c786de368f61cc8a7f10a71cfa18201e08
+          image: projects.registry.vmware.com/tce/antrea@sha256:1053e78fd51c5a4cf8a532974b6324b37a0e1ed23dd71d3684364376fc4acda7
       template:
       - ytt:
           paths:
