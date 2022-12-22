@@ -10,6 +10,12 @@ def validate_pinniped():
   data.values.tkg_cluster_role in ("management", "workload") or assert.fail("tkg_cluster_role must be provided to be either 'management' or 'workload'")
   data.values.infrastructure_provider in ("vsphere", "azure", "aws") or assert.fail("infrastructure_provider must be provided to be either 'vsphere', 'azure' or 'aws'")
   if data.values.identity_management_type:
+    # in TKG 1.7.x+ this is a little misleading.
+    # the clusterbootstrap templating will, if identity_management_type is "none", automatically set
+    # "workload" cluster as the cluster type, even though it is actually a management cluster.  This
+    # gets around this validation.  https://github.com/vmware-tanzu/tanzu-framework/blob/2034adbf9ace3ffa6e869eb73f656c4f34228333/providers/yttcb/pinniped_addon_secret.lib.yaml#L182
+    # TODO: fix this correctly here in the package and then remove the extra branch in the TF code
+    # as it is misleading.
     if is_mgmt_cluster():
       data.values.identity_management_type in ("oidc", "ldap") or assert.fail("identity_management_type for management clusters must be either 'oidc' or 'ldap'")
     end
