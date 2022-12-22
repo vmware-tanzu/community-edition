@@ -1,0 +1,157 @@
+#! schema.yaml
+
+#@data/values-schema
+#@schema/desc "OpenAPIv3 Schema for antrea"
+---
+#@schema/desc "The cloud provider in use. One of the following options => aws, azure, vsphere, docker"
+infraProvider: vsphere
+#@schema/desc "NodeSelector configuration applied to all the deployments"
+#@schema/type any=True
+nodeSelector:
+deployment:
+  #@schema/desc "Update strategy of deployments"
+  #@schema/nullable
+  updateStrategy: ""
+  rollingUpdate:
+    #@schema/desc "The maxUnavailable of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxUnavailable: 1
+    #@schema/desc "The maxSurge of rollingUpdate. Applied only if RollingUpdate is used as updateStrategy"
+    #@schema/nullable
+    maxSurge: 0
+daemonset:
+  #@schema/desc "Update strategy of daemonsets"
+  #@schema/nullable
+  updateStrategy: ""
+antrea:
+  #@schema/desc "Configuration for antrea"
+  config:
+    #@schema/desc "Control SNAT IPs of Pod egress traffic."
+    egress:
+      #@schema/desc "The CIDR ranges to which outbound Pod traffic will not be SNAT'd by Egresses."
+      exceptCIDRs:
+      - ""
+    nodePortLocal:
+      #@schema/desc "Enable NodePortLocal feature."
+      enabled: false
+      #@schema/desc "Provide the port range used by NodePortLocal."
+      portRange: ""
+    #@schema/desc "AntreaProxy related configuration options."
+    antreaProxy:
+      #@schema/desc "ProxyAll tells antrea-agent to proxy all Service traffic."
+      proxyAll: false
+      #@schema/desc "Specifies the host IPv4/IPv6 addresses for NodePort."
+      nodePortAddresses:
+       - ""
+      #@schema/desc "List of Services which should be ignored by AntreaProxy."
+      skipServices:
+        - ""
+      #@schema/desc "Load-balance traffic destined to the External IPs of LoadBalancer services."
+      proxyLoadBalancerIPs: false
+    #@schema/desc "FlowExporter related configuration options."
+    flowExporter:
+      #@schema/desc "Provide the IPFIX collector address as a string."
+      collectorAddress: ""
+      #@schema/desc "Provide flow poll interval as a duration string."
+      pollInterval: ""
+      #@schema/desc "Provide the active flow export timeout."
+      activeFlowTimeout: ""
+      #@schema/desc "Provide the idle flow export timeout."
+      idleFlowTimeout: ""
+    #@schema/desc "Provide the address of Kubernetes apiserver."
+    #@schema/nullable
+    kubeAPIServerOverride: ""
+    #@schema/desc "The name of the interface on Node which is used for tunneling or routing the traffic."
+    #@schema/nullable
+    transportInterface: ""
+    #@schema/desc "The network CIDRs of the interface on Node which is used for tunneling or routing the traffic."
+    transportInterfaceCIDRs:
+      - ""
+    #@schema/desc "Tunnel protocols used for encapsulating traffic across Nodes. One of the following options => geneve, vxlan, gre, stt"
+    tunnelType: none
+    #@schema/desc "Determines how tunnel traffic is encrypted. One of the following options => none, ipsec, wireGuard"
+    trafficEncryptionMode: none
+    #@schema/desc "WireGuard related configurations."
+    wireGuard:
+      #@schema/desc "The port for WireGuard to receive traffic."
+      port: 51820
+    #@schema/desc "Enable usage reporting (telemetry) to VMware."
+    enableUsageReporting: false
+    #@schema/desc "ClusterIP CIDR range for IPv4 Services"
+    #@schema/nullable
+    serviceCIDR: 10.96.0.0/12
+    #@schema/desc "ClusterIP CIDR range for IPv6 Services"
+    #@schema/nullable
+    serviceCIDRv6: ""
+    #@schema/desc "The traffic encapsulation mode. One of the following options => encap, noEncap, hybrid, networkPolicyOnly"
+    trafficEncapMode: encap
+    #@schema/desc "Flag to enable/disable SNAT for the egress traffic from a Pod to the external network"
+    noSNAT: false
+    #@schema/desc "Disable UDP tunnel offload feature on default NIC"
+    disableUdpTunnelOffload: false
+    #@schema/desc "Default MTU to use for the host gateway interface and the network interface of each Pod"
+    #@schema/nullable
+    defaultMTU: ""
+    #@schema/desc "List of allowed cipher suites. If omitted, the default Go Cipher Suites will be used"
+    tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+    #@schema/desc "Enable bridging mode of Pod network on Nodes."
+    enableBridgingMode: false
+    #@schema/desc "Disable TX checksum offloading for container network interfaces"
+    disableTXChecksumOffload: false
+    #@schema/desc "Provide the address of DNS server, to override the kube-dns service"
+    #@schema/nullable
+    dnsServerOverride: ""
+    #@schema/desc "The names of the interfaces on Nodes that are used to forward multicast traffic."
+    multicastInterfaces:
+      - ""
+    #@schema/desc "Multicast related configuration options"
+    multicast:
+      #@schema/desc "The interval at which the antrea-agent sends IGMP queries to Pods."
+      igmpQueryInterval: "125s"
+    #@schema/desc "Multicluster related configurations"
+    multicluster:
+      #@schema/desc "Enable Antrea Multi-cluster Gateway to support cross-cluster traffic."
+      enable: false
+      #@schema/desc "The Namespace where Antrea Multi-cluster Controller is running.Default is antrea-agent's Namespace"
+      #@schema/nullable
+      namespace: ""
+    #@schema/desc "FeatureGates is a map of feature names to flags that enable or disable experimental features"
+    featureGates:
+      #@schema/desc "Flag to enable/disable antrea proxy"
+      AntreaProxy: true
+      #@schema/desc "Flag to enable/disable EndpointSlice support in AntreaProxy. If AntreaProxy is not enabled, this flag will not take effect"
+      EndpointSlice: false
+      #@schema/desc "Flag to enable/disable antrea traceflow"
+      AntreaTraceflow: true
+      #@schema/desc "Flag to enable/disable NodePortLocal feature to make the pods reachable externally through NodePort"
+      NodePortLocal: true
+      #@schema/desc "Flag to enable/disable antrea policy"
+      AntreaPolicy: true
+      #@schema/desc "Flag to enable/disable flow exporter"
+      FlowExporter: false
+      #@schema/desc "Flag to enable/disable network policy stats"
+      NetworkPolicyStats: false
+      #@schema/desc "Flag to enable/disable SNAT IPs of Pod egress traffic"
+      Egress: true
+      #@schema/desc "Flag to enable/disable flexible IPAM mode"
+      AntreaIPAM: false
+      #@schema/desc "Flag to enable/disable managing external IPs for Load balancers services"
+      ServiceExternalIP: false
+      #@schema/desc "Flag to enable/disable multicast traffic"
+      Multicast: false
+      #@schema/desc "Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.This feature is supported only with encap mode."
+      Multicluster: false
+      #@schema/desc "Enable support for provisioning secondary network interfaces for Pods (using Pod annotations)."
+      SecondaryNetwork: false
+      #@schema/desc "Enable mirroring or redirecting the traffic Pods send or receive."
+      TrafficControl: false
+  #! Deprecated. Kept for backward compatibility
+  image:
+    #@schema/desc "The repository of antrea image"
+    repository: ""
+    #@schema/desc "The path of image"
+    path: ""
+    #@schema/desc "The image tag"
+    tag: ""
+    #@schema/desc "The pull policy of image"
+    pullPolicy: IfNotPresent
