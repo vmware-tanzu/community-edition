@@ -13,12 +13,12 @@ daemonset:
 vsphereCSI:
   tlsThumbprint: ""
   namespace: vmware-system-csi
-  clusterName: null
-  server: null
-  datacenter: null
-  publicNetwork: null
-  username: null
-  password: null
+  clusterName: cluster1
+  server: 10.161.140.18
+  datacenter: VSAN-DC
+  publicNetwork: VM Network
+  username: Administrator@vsphere.local
+  password: Admin!23
   region: null
   zone: null
   insecureFlag: True
