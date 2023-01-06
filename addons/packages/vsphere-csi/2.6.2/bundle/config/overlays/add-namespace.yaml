@@ -1,4 +1,4 @@
-#@ load("/values.star", "values") 
+#@ load("/values.star", "values")
 
 ---
 apiVersion: v1
