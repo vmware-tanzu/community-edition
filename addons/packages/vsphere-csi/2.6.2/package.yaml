@@ -12,7 +12,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: projects.registry.vmware.com/tce/vsphere-csi@sha256:539dd4cd84d93182bc478c1f204c3d7eb4d06233acd35f22cfbb68c9d1bd23ae
+            image: sabu-persistence-service-docker-local.artifactory.eng.vmware.com/nbarge/vsphere-csi@sha256:c582844fdb674bab287b2d647f4115b6f792c68116383b0e107fcf6ed8cad1dd
       template:
         - ytt:
             paths:
