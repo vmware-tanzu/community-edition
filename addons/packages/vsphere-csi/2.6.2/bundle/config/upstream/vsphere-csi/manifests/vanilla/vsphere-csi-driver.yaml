@@ -596,7 +596,7 @@ spec:
               valueFrom:
                 fieldRef:
                   apiVersion: v1
-                  fieldPath: spec.nodeName
+                  fieldPath: spec.nodeName          
             - name: CSI_ENDPOINT
               value: 'unix://C:\\csi\\csi.sock'
             - name: MAX_VOLUMES_PER_NODE
@@ -621,13 +621,13 @@ spec:
             - name: plugin-dir
               mountPath: 'C:\csi'
             - name: pods-mount-dir
-              mountPath: 'C:\var\lib\kubelet'
+              mountPath: 'C:\var\lib\kubelet'   
             - name: csi-proxy-volume-v1
               mountPath: \\.\pipe\csi-proxy-volume-v1
             - name: csi-proxy-filesystem-v1
               mountPath: \\.\pipe\csi-proxy-filesystem-v1
             - name: csi-proxy-disk-v1
-              mountPath: \\.\pipe\csi-proxy-disk-v1
+              mountPath: \\.\pipe\csi-proxy-disk-v1    
             - name: csi-proxy-system-v1alpha1
               mountPath: \\.\pipe\csi-proxy-system-v1alpha1
           ports:
