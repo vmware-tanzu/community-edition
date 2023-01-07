@@ -9,8 +9,6 @@ images:
           url: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.6.2
       - preresolved:
           url: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:df421c7928686d63c46beecfaca26eb53c9a27cdd125ead325e5299abfc961f7
-      - preresolved:
-          url: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:df421c7928686d63c46beecfaca26eb53c9a27cdd125ead325e5299abfc961f7
   image: gcr.io/cloud-provider-vsphere/csi/release/driver@sha256:df421c7928686d63c46beecfaca26eb53c9a27cdd125ead325e5299abfc961f7
 - annotations:
     kbld.carvel.dev/id: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.6.2
@@ -18,8 +16,6 @@ images:
       - resolved:
           tag: v2.6.2
           url: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.6.2
-      - preresolved:
-          url: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:ea067f29bd03e2b366a611acd34f313a4cac7773aaae5a82210864496bcc0cd0
       - preresolved:
           url: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:ea067f29bd03e2b366a611acd34f313a4cac7773aaae5a82210864496bcc0cd0
   image: gcr.io/cloud-provider-vsphere/csi/release/syncer@sha256:ea067f29bd03e2b366a611acd34f313a4cac7773aaae5a82210864496bcc0cd0
@@ -31,8 +27,6 @@ images:
           url: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
       - preresolved:
           url: k8s.gcr.io/sig-storage/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
   image: k8s.gcr.io/sig-storage/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0
@@ -40,8 +34,6 @@ images:
       - resolved:
           tag: v2.5.0
           url: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:4fd21f36075b44d1a423dfb262ad79202ce54e95f5cbc4622a6c1c38ab287ad6
       - preresolved:
           url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:4fd21f36075b44d1a423dfb262ad79202ce54e95f5cbc4622a6c1c38ab287ad6
   image: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:4fd21f36075b44d1a423dfb262ad79202ce54e95f5cbc4622a6c1c38ab287ad6
@@ -53,8 +45,6 @@ images:
           url: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
       - preresolved:
           url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
   image: k8s.gcr.io/sig-storage/csi-node-driver-registrar@sha256:0103eee7c35e3e0b5cd8cdca9850dc71c793cdeb6669d8be7a89440da2d06ae4
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-provisioner:v3.2.1
@@ -62,8 +52,6 @@ images:
       - resolved:
           tag: v3.2.1
           url: k8s.gcr.io/sig-storage/csi-provisioner:v3.2.1
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/csi-provisioner@sha256:4ad5fcdbe7e9147b541a863d74e4d1d519bf435ecda4c7bde5abe237a43f7029
       - preresolved:
           url: k8s.gcr.io/sig-storage/csi-provisioner@sha256:4ad5fcdbe7e9147b541a863d74e4d1d519bf435ecda4c7bde5abe237a43f7029
   image: k8s.gcr.io/sig-storage/csi-provisioner@sha256:4ad5fcdbe7e9147b541a863d74e4d1d519bf435ecda4c7bde5abe237a43f7029
@@ -75,8 +63,6 @@ images:
           url: k8s.gcr.io/sig-storage/csi-resizer:v1.4.0
       - preresolved:
           url: k8s.gcr.io/sig-storage/csi-resizer@sha256:9ebbf9f023e7b41ccee3d52afe39a89e3ddacdbb69269d583abfc25847cfd9e4
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/csi-resizer@sha256:9ebbf9f023e7b41ccee3d52afe39a89e3ddacdbb69269d583abfc25847cfd9e4
   image: k8s.gcr.io/sig-storage/csi-resizer@sha256:9ebbf9f023e7b41ccee3d52afe39a89e3ddacdbb69269d583abfc25847cfd9e4
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/csi-snapshotter:v5.0.1
@@ -84,8 +70,6 @@ images:
       - resolved:
           tag: v5.0.1
           url: k8s.gcr.io/sig-storage/csi-snapshotter:v5.0.1
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/csi-snapshotter@sha256:89e900a160a986a1a7a4eba7f5259e510398fa87ca9b8a729e7dec59e04c7709
       - preresolved:
           url: k8s.gcr.io/sig-storage/csi-snapshotter@sha256:89e900a160a986a1a7a4eba7f5259e510398fa87ca9b8a729e7dec59e04c7709
   image: k8s.gcr.io/sig-storage/csi-snapshotter@sha256:89e900a160a986a1a7a4eba7f5259e510398fa87ca9b8a729e7dec59e04c7709
@@ -97,8 +81,6 @@ images:
           url: k8s.gcr.io/sig-storage/livenessprobe:v2.6.0
       - preresolved:
           url: k8s.gcr.io/sig-storage/livenessprobe@sha256:406f59599991916d2942d8d02f076d957ed71b541ee19f09fc01723a6e6f5932
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/livenessprobe@sha256:406f59599991916d2942d8d02f076d957ed71b541ee19f09fc01723a6e6f5932
   image: k8s.gcr.io/sig-storage/livenessprobe@sha256:406f59599991916d2942d8d02f076d957ed71b541ee19f09fc01723a6e6f5932
 - annotations:
     kbld.carvel.dev/id: k8s.gcr.io/sig-storage/livenessprobe:v2.7.0
@@ -106,8 +88,6 @@ images:
       - resolved:
           tag: v2.7.0
           url: k8s.gcr.io/sig-storage/livenessprobe:v2.7.0
-      - preresolved:
-          url: k8s.gcr.io/sig-storage/livenessprobe@sha256:933940f13b3ea0abc62e656c1aa5c5b47c04b15d71250413a6b821bd0c58b94e
       - preresolved:
           url: k8s.gcr.io/sig-storage/livenessprobe@sha256:933940f13b3ea0abc62e656c1aa5c5b47c04b15d71250413a6b821bd0c58b94e
   image: k8s.gcr.io/sig-storage/livenessprobe@sha256:933940f13b3ea0abc62e656c1aa5c5b47c04b15d71250413a6b821bd0c58b94e
