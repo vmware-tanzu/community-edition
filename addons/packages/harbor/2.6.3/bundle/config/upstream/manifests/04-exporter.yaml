@@ -1,0 +1,123 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "harbor-exporter-env"
+  labels:
+    app: "harbor"
+  namespace: harbor
+data:
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,harbor-exporter,127.0.0.1,localhost,.local,.internal"
+  LOG_LEVEL: "info"
+  HARBOR_EXPORTER_PORT: "8001"
+  HARBOR_EXPORTER_METRICS_PATH: "/metrics"
+  HARBOR_EXPORTER_METRICS_ENABLED: "true"
+  HARBOR_EXPORTER_CACHE_TIME: "23"
+  HARBOR_EXPORTER_CACHE_CLEAN_INTERVAL: "14400"
+  HARBOR_METRIC_NAMESPACE: harbor
+  HARBOR_METRIC_SUBSYSTEM: exporter
+  HARBOR_REDIS_URL: "redis://harbor-redis:6379/1"
+  HARBOR_REDIS_NAMESPACE: harbor_job_service_namespace
+  HARBOR_REDIS_TIMEOUT: "3600"
+  HARBOR_SERVICE_SCHEME: "https"
+  HARBOR_SERVICE_HOST: "harbor-core"
+  HARBOR_SERVICE_PORT: "443"
+  HARBOR_DATABASE_HOST: "harbor-database"
+  HARBOR_DATABASE_PORT: "5432"
+  HARBOR_DATABASE_USERNAME: "postgres"
+  HARBOR_DATABASE_DBNAME: "registry"
+  HARBOR_DATABASE_SSLMODE: "disable"
+  HARBOR_DATABASE_MAX_IDLE_CONNS: "100"
+  HARBOR_DATABASE_MAX_OPEN_CONNS: "900"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-exporter
+  labels:
+    app: "harbor"
+    component: exporter
+  namespace: harbor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: "harbor"
+      component: exporter
+  template:
+    metadata:
+      labels:
+        app: "harbor"
+        component: exporter
+    spec:
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+        - name: exporter
+          image: projects.registry.vmware.com/tce/harbor/harbor-exporter:v2.6.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8001
+            initialDelaySeconds: 300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          args: ["-log-level", "info"]
+          envFrom:
+            - configMapRef:
+                name: "harbor-exporter-env"
+            - secretRef:
+                name: "harbor-exporter"
+          env:
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: core-internal-certs
+              mountPath: /etc/harbor/ssl/core
+              #! There are some metric data are collectd from harbor core.
+              #! When internal TLS is enabled, the Exporter need the CA file to collect these data.
+      volumes:
+        - name: config
+          secret:
+            secretName: "harbor-exporter"
+        - name: core-internal-certs
+          secret:
+            secretName: harbor-core-internal-tls
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-exporter
+  labels:
+    app: "harbor"
+  namespace: harbor
+type: Opaque
+data:
+  HARBOR_ADMIN_PASSWORD: "SGFyYm9yMTIzNDU="
+  HARBOR_DATABASE_PASSWORD: "Y2hhbmdlaXQ="
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "harbor-exporter"
+  labels:
+    app: "harbor"
+  namespace: harbor
+spec:
+  ports:
+    - name: https-metrics
+      port: 8001
+  selector:
+    app: "harbor"
+    component: exporter

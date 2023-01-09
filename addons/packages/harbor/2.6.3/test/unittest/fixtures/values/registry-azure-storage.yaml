@@ -1,0 +1,10 @@
+#@data/values
+---
+persistence:
+  imageChartStorage:
+    type: azure
+    azure:
+      accountname: azure-accountname
+      accountkey: YXp1cmUtYWNjb3VudGtleQo=
+      container: azure-containername
+      realm: azure.core.windows.net

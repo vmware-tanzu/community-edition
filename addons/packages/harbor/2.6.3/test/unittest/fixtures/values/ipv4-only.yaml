@@ -1,0 +1,4 @@
+#@data/values
+---
+network:
+  ipFamilies: ["IPv4"]
