@@ -1,0 +1,7 @@
+#@ load("/values.star", "values")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ values.vsphereCSI.namespace
