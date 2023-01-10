@@ -1,0 +1,13 @@
+#@data/values
+---
+harborAdminPassword: Harbor12345
+secretKey: -the-secret-key-
+core:
+  secret: the-secret-of-the-core
+  xsrfKey: -xsrf-key-must-be-32-characters-
+jobservice:
+  secret: the-secret-of-the-jobservice
+registry:
+  secret: the-secret-of-the-registry
+database:
+  password: password

@@ -1,0 +1,7 @@
+namespace: projectcontour
+
+envoy:
+  service:
+    type: LoadBalancer
+  hostPorts:
+    enable: true
