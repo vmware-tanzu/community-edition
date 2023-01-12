@@ -1,0 +1,8 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"grafana"}})
+#@overlay/match-child-defaults missing_ok=True
+---
+data:
+  grafana.ini: #@ data.values.grafana.config.grafana_ini
