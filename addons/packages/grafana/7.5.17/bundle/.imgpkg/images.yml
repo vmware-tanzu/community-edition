@@ -7,7 +7,7 @@ images:
       - resolved:
           tag: 7.5.17
           url: grafana/grafana:7.5.17
-  image: index.docker.io/grafana/grafana@sha256:9b7b1d9a1deadbe6fed74416d58db47f8af31b5cee214cfb659f89e6dda3f716
+  image: index.docker.io/grafana/grafana@sha256:15abb652aa82eeb9f45589278b34ae6ef0e96f74c389cadde31831eb0b1ce228
 - annotations:
     kbld.carvel.dev/id: kiwigrid/k8s-sidecar:1.15.6
     kbld.carvel.dev/origins: |
