@@ -194,7 +194,7 @@ spec:
     spec:
       fetch:
         - imgpkgBundle:
-            image: index.docker.io/swordphilic/grafana-package@sha256:dbdb0139e03a8c085a690a55f410c6d485390b4ed3f826639886e5065e78c02d
+            image: projects.registry.vmware.com/tce/grafana@sha256:ba6d1057166943abd82e4ecc8f582d7937da52df302b6f33efd0df26db5ce37f
       template:
         - ytt:
             paths:
