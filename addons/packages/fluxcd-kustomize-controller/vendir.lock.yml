@@ -2,17 +2,26 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
+      tag: v0.21.1
       url: https://api.github.com/repos/vmware-tanzu/package-for-kustomize-controller/releases/63976199
     path: .
   path: 0.21.1
 - contents:
   - githubRelease:
+      tag: v0.24.4+update.1
       url: https://api.github.com/repos/vmware-tanzu/package-for-kustomize-controller/releases/71786241
     path: .
   path: 0.24.4
 - contents:
   - githubRelease:
+      tag: v0.24.4+update.2
       url: https://api.github.com/repos/vmware-tanzu/package-for-kustomize-controller/releases/86185361
     path: .
   path: 0.24.4+update.1
+- contents:
+  - githubRelease:
+      tag: v0.32.0
+      url: https://api.github.com/repos/vmware-tanzu/package-for-kustomize-controller/releases/90321762
+    path: .
+  path: 0.32.0
 kind: LockConfig

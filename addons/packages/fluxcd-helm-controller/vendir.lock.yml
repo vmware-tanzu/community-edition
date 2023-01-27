@@ -2,17 +2,26 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
+      tag: v0.17.2
       url: https://api.github.com/repos/vmware-tanzu/package-for-helm-controller/releases/65763468
     path: .
   path: 0.17.2
 - contents:
   - githubRelease:
+      tag: v0.21.0+update.1
       url: https://api.github.com/repos/vmware-tanzu/package-for-helm-controller/releases/71784442
     path: .
   path: 0.21.0
 - contents:
   - githubRelease:
+      tag: v0.21.0+update.2
       url: https://api.github.com/repos/vmware-tanzu/package-for-helm-controller/releases/86196766
     path: .
   path: 0.21.0+update.1
+- contents:
+  - githubRelease:
+      tag: v0.28.1
+      url: https://api.github.com/repos/vmware-tanzu/package-for-helm-controller/releases/90401503
+    path: .
+  path: 0.28.1
 kind: LockConfig
