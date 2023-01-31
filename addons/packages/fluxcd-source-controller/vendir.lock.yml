@@ -2,27 +2,38 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
+      tag: v0.21.2
       url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/61458219
     path: .
   path: 0.21.2
 - contents:
   - githubRelease:
+      tag: v0.21.5
       url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/64883267
     path: .
   path: 0.21.5
 - contents:
   - githubRelease:
+      tag: v0.24.4
       url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/67757600
     path: .
   path: 0.24.4
 - contents:
   - githubRelease:
+      tag: 0.24.4+update.1
       url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/69482958
     path: .
   path: 0.24.4+update.1
 - contents:
   - githubRelease:
+      tag: v0.24.4+update.2
       url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/86329342
     path: .
   path: 0.24.4+update.2
+- contents:
+  - githubRelease:
+      tag: v0.33.0
+      url: https://api.github.com/repos/vmware-tanzu/package-for-source-controller/releases/90321463
+    path: .
+  path: 0.33.0
 kind: LockConfig

@@ -1,0 +1,48 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: helm-controller.fluxcd.community.tanzu.vmware.com.0.28.1
+spec:
+  refName: helm-controller.fluxcd.community.tanzu.vmware.com
+  version: 0.28.1
+  releaseNotes: "Adding placeholder secrets for authenticated registeries"
+  releasedAt: "2022-12-22T13:30:00Z"
+  capacityRequirementsDescription: ""
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/fluxcd-helm-controller-bundle@sha256:d1c8304893803640c5a464e4e28dc236018a398005bb6e83f15ed399ede45fae
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      properties:
+        namespace:
+          type: string
+          description: Deployment and service namespace
+          default: helm-system
+        limits_cpu:
+          type: string
+          description: Set cpu usuage limit
+          default: 1000m
+        limits_memory:
+          type: string
+          description: Set memory usuage limit
+          default: 1Gi
+        no_cross_namespace_refs:
+          type: boolean
+          description: Set references between custom resources
+          default: false
+        default_service_account:
+          type: string
+          description: Default service account used for impersonation
+          default: ""

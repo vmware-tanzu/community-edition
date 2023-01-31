@@ -1,0 +1,51 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kustomize-controller.fluxcd.community.tanzu.vmware.com.0.32.0
+spec:
+  refName: kustomize-controller.fluxcd.community.tanzu.vmware.com
+  version: 0.32.0
+  releasedAt: "2022-12-20T07:37:00Z"
+  capacityRequirementsDescription: ""
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/fluxcd-kustomize-controller-bundle@sha256:600ebbb6a1668e61f273971257275ee02f9a1552965e4e162c92ad65972829e0
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      properties:
+        namespace:
+          type: string
+          description: Deployment and service namespace
+          default: kustomize-system
+        limits_cpu:
+          type: string
+          description: Set cpu usage limit
+          default: 1000m
+        limits_memory:
+          type: string
+          description: Set memory usage limit
+          default: 1Gi
+        no_cross_namespace_refs:
+          type: boolean
+          description: Set references between custom resources
+          default: false
+        default_service_account:
+          type: string
+          description: Default service account used for impersonation
+          default: ""
+        no_remote_bases:
+          type: boolean
+          description: Disallow remote bases usage in Kustomize overlays
+          default: false
