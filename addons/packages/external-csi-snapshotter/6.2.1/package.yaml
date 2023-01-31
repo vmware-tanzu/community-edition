@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: external-csi-snapshotter.community.tanzu.vmware.com.6.2.1
+spec:
+  refName: external-csi-snapshotter.community.tanzu.vmware.com
+  version: 6.2.1
+  releaseNotes: external-csi-snapshotter 6.2.1 https://github.com/kubernetes-csi/external-snapshotter/releases/tag/v6.2.1
+  licenses:
+  - Apache 2.0
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: harbor-repo.vmware.com/dkinni/tce/external-csi-snapshotter@sha256:9c3e0f301cacf878beec8db14671a3a24f0809e6584f6508a684a79a9a95bae8
+      template:
+      - ytt:
+          paths:
+          - config/
+      - kbld:
+          paths:
+          - '-'
+          - .imgpkg/images.yml
+      deploy:
+      - kapp: {}

@@ -1,0 +1,18 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: registry.k8s.io/sig-storage/snapshot-controller:v6.2.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v6.2.1
+          url: registry.k8s.io/sig-storage/snapshot-controller:v6.2.1
+  image: registry.k8s.io/sig-storage/snapshot-controller@sha256:98bab4eaf23c5bf75ada9deb7f8c55bd5fc13a48fbb3e658079fc37693375957
+- annotations:
+    kbld.carvel.dev/id: registry.k8s.io/sig-storage/snapshot-validation-webhook:v6.2.1
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: v6.2.1
+          url: registry.k8s.io/sig-storage/snapshot-validation-webhook:v6.2.1
+  image: registry.k8s.io/sig-storage/snapshot-validation-webhook@sha256:615938f2eaf52336c2ecb3028e5ecfedaa539307e14499da5a4b8c5cbd432750
+kind: ImagesLock

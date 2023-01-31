@@ -1,0 +1,109 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: snapshot-validation-service
+  namespace: kube-system
+spec:
+  selector:
+    app: snapshot-validation
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 9884
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app: snapshot-validation
+  name: kube-system-snapshot-validation-serving-cert
+  namespace: kube-system
+spec:
+  dnsNames:
+    - snapshot-validation-service.kube-system.svc
+    - snapshot-validation-service.kube-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: kube-system-snapshot-validation-selfsigned-issuer
+  secretName: kube-system-snapshot-validation-webhook-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app: snapshot-validation
+  name: kube-system-snapshot-validation-selfsigned-issuer
+  namespace: kube-system
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validation-webhook.snapshot.storage.k8s.io
+  labels:
+    app: snapshot-validation
+  annotations:
+    cert-manager.io/inject-ca-from: kube-system/kube-system-snapshot-validation-serving-cert
+webhooks:
+  - name: validation-webhook.snapshot.storage.k8s.io
+    rules:
+      - apiGroups:   ["snapshot.storage.k8s.io"]
+        apiVersions: ["v1", "v1beta1"]
+        operations:  ["CREATE", "UPDATE"]
+        resources:   ["volumesnapshots", "volumesnapshotcontents", "volumesnapshotclasses"]
+        scope:       "*"
+    clientConfig:
+      service:
+        namespace: kube-system
+        name: snapshot-validation-service
+        path: "/volumesnapshot"
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+    failurePolicy: Ignore
+    timeoutSeconds: 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snapshot-validation-deployment
+  namespace: kube-system
+  labels:
+    app: snapshot-validation
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: snapshot-validation
+  template:
+    metadata:
+      labels:
+        app: snapshot-validation
+    spec:
+      containers:
+        - name: snapshot-validation
+          image: registry.k8s.io/sig-storage/snapshot-validation-webhook:v6.2.1
+          imagePullPolicy: IfNotPresent
+          args: ['--tls-cert-file=/tmp/k8s-webhook-server/serving-certs/tls.crt', '--tls-private-key-file=/tmp/k8s-webhook-server/serving-certs/tls.key', '--port=9884']
+          ports:
+            - containerPort: 9884
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /tmp/k8s-webhook-server/serving-certs
+              readOnly: true
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ''
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      hostNetwork: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            defaultMode: 420
+            secretName: kube-system-snapshot-validation-webhook-service-cert

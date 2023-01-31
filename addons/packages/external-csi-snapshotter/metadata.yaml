@@ -1,0 +1,13 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: PackageMetadata
+metadata:
+  name: external-csi-snapshotter.community.tanzu.vmware.com
+spec:
+  displayName: "external-csi-snapshotter"
+  longDescription: "CSI Snapshot components- snapshot-controller and snapshot-validation-deployment"
+  shortDescription: "CSI Snapshot components"
+  providerName: VMware
+  maintainers:
+    - name: "Deepak Kinni"
+  categories:
+    - "container storage interface"
