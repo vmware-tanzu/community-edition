@@ -1,0 +1,38 @@
+#@data/values
+---
+imageInfo:
+  imageRepository: projects-stg.registry.vmware.com/tkg
+  imagePullPolicy: IfNotPresent
+  images:
+    tkgPinnipedPostDeployImage:
+      imagePath: tkg-pinniped-post-deploy
+      tag: v0.4.1_vmware.1
+    pinnipedImage:
+      imagePath: pinniped
+      tag: v0.4.1_vmware.1
+infrastructure_provider: vsphere #! required, valid values are [vsphere, aws, azure]
+tkg_cluster_role: management #! required
+custom_cluster_issuer: "" #! provide if user wants to use a custom ClusterIssuer for both Pinniped and Dex certificates
+custom_tls_secret: custom-tls-certificate #! provide if user wants to use a custom TLS secret for both Pinniped and Dex, will override the ClusterIssuer above if specified, user should create secret with the smae name in both "tanzu-system-auth" and "pinniped-supervisor" namespaces.
+http_proxy: ""
+https_proxy: ""
+no_proxy: ""
+identity_management_type: oidc #! required, valid values are [oidc, ldap]
+pinniped:
+  cert_duration: 2160h #! required
+  cert_renew_before: 360h #! required
+  supervisor_svc_endpoint: "https://0.0.0.0:31234" #! Do not change. Will be updated by post-deployment job. This is used to configure jwtAuthenticator
+  supervisor_ca_bundle_data: "ca_bundle_data_of_supervisor_svc" #! Do not change. Will be updated by post-deployment job. This is used to configure jwtAuthenticator to communicate with supervisor svc
+  supervisor_svc_external_ip: "0.0.0.0" #! provide if the node IP or LB IP of Pinniped supervisor service is known, otherwise leave it as is. e.g. 10.165.123.84
+  supervisor_svc_external_dns: null #! provide if the LB DNS of Pinniped supervisor service is known, otherwise leave it as is. e.g pinniped-svc.us-west-2a.com
+  upstream_oidc_client_id: "0oxxxxxxd6" #! The client id used to talk to upstream IDP
+  upstream_oidc_client_secret: "_7Pxxxxxxa1v" #! The client secret used to talk to upstream IDP
+  upstream_oidc_issuer_url: "https://dev-xxxxxx.okta.com" #! This is the upstream oidc issuer url. e.g https://endpoint-points-to-dex:5443
+  upstream_oidc_tls_ca_data: "" #! This tls ca data is used to communicate with upstream_oidc_issuer_url
+  upstream_oidc_additional_scopes: #! required, list of additional scopes to request in token response
+    - email
+    - profile
+    - groups
+  upstream_oidc_claims: #! required, name/value pairs that contain information about a user, as well meta-information about the OIDC service
+    username: name
+    groups: groups

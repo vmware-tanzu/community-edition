@@ -1,0 +1,63 @@
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("helpers.lib.yaml", "labels", "pinnipedDevAPIGroupWithPrefix")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"federationdomains.config.supervisor.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("federationdomains.config.supervisor")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"oidcidentityproviders.idp.supervisor.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("oidcidentityproviders.idp.supervisor")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"ldapidentityproviders.idp.supervisor.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("ldapidentityproviders.idp.supervisor")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"activedirectoryidentityproviders.idp.supervisor.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("activedirectoryidentityproviders.idp.supervisor")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"oidcclients.config.supervisor.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("oidcclients.config.supervisor")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+  versions:
+    #@overlay/match by=overlay.all, expects="1+"
+    - schema:
+        openAPIV3Schema:
+          #@overlay/match by=overlay.subset({"metadata":{"type":"object"}}), expects=1
+          properties:
+            metadata:
+              #@overlay/match missing_ok=True
+              properties:
+                name:
+                  pattern: ^client\.oauth\.pinniped\.dev-
+                  type: string

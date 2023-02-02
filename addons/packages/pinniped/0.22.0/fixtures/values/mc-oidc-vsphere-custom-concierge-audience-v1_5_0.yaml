@@ -1,0 +1,14 @@
+#@data/values
+
+#! Notes:
+#! - the management cluster should ignore a provided pinniped.concierge.audience value. The audience
+#!   customization feature is specifically for workload clusters.
+#! - relevance: pinniped-package 0.12.1+
+#!   older pinniped packages will ignore this value.
+---
+infrastructure_provider: vsphere
+tkg_cluster_role: management
+identity_management_type: oidc
+pinniped:
+  concierge:
+    audience: "tiny angry kittens TINY ANGRY KITTENS!!! 😾 😸 😾 😸"

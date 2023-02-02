@@ -1,0 +1,41 @@
+#@data/values
+---
+#! Notes:
+#! - minimal values given to pass the templating stage, this likely does not represent a full valid config
+#! - deployments (dex, supervisor, concierge) should honor both the updateStrategy as well as the nodeSelector
+#! - post-deploy job should honor the nodeSelector
+deployment:
+  updateStrategy: RollingUpdate #! RollingUpdate is only option that will trigger this in the deployment
+  rollingUpdate:
+    maxUnavailable: 1111
+    maxSurge: 9999
+nodeSelector:
+    race: "halfling"
+    class: ranger
+    level: 5
+infrastructure_provider: vsphere
+tkg_cluster_role: management
+identity_management_type: ldap
+dex:
+  config:
+    connector: ldap
+    ldap:
+      host: some-ldap-idp.com
+      userSearch:
+        baseDN: CN=Users,DC=what,DC=ever
+      groupSearch:
+        baseDN: CN=groups,DC=what,DC=ever
+  dns:
+    vsphere:
+      dnsNames:
+      - tkg-dex.com
+      ipAddresses:
+      - 0.0.0.0
+    aws:
+      dnsNames:
+      - tkg-dex.com
+      DEX_SVC_LB_HOSTNAME: example.com
+    azure:
+      dnsNames:
+      - tkg-dex.com
+      DEX_SVC_LB_HOSTNAME: dex.example.com

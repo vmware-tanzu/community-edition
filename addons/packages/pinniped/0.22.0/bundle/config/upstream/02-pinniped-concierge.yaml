@@ -1,0 +1,25 @@
+#! Load ytt libs
+#@ load("/values.star", "render_on_mgmt_cluster", "render_on_workload_cluster")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("/libs/constants.lib.yaml", "pinniped_concierge_namespace")
+
+#! export vendored contour bundle as a var
+#@ pinniped_concierge_lib = library.get("concierge")
+
+#! define a map for values to be passed to vendored contour lib
+#@ def pinniped_concierge_values():
+namespace: #@ pinniped_concierge_namespace()
+
+image_repo: docker.io/getpinniped/pinniped-server
+image_tag: v0.22.0
+
+https_proxy: #@ data.values.https_proxy
+no_proxy: #@ data.values.no_proxy
+#@ end
+
+#@ if render_on_mgmt_cluster() or render_on_workload_cluster():
+#! render yaml from vendored lib with data values
+--- #@ template.replace(pinniped_concierge_lib.with_data_values(pinniped_concierge_values()).eval())
+#@ end

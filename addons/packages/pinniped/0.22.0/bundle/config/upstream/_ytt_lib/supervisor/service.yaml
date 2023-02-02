@@ -1,0 +1,115 @@
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("helpers.lib.yaml", "labels", "deploymentPodLabel", "namespace", "defaultResourceName", "defaultResourceNameWithSuffix")
+
+#@ if hasattr(data.values, "service_http_nodeport_port"):
+#@   assert.fail('value "service_http_nodeport_port" has been renamed to "deprecated_service_http_nodeport_port" and will be removed in a future release')
+#@ end
+#@ if hasattr(data.values, "service_http_nodeport_nodeport"):
+#@   assert.fail('value "service_http_nodeport_nodeport" has been renamed to "deprecated_service_http_nodeport_nodeport" and will be removed in a future release')
+#@ end
+#@ if hasattr(data.values, "service_http_loadbalancer_port"):
+#@   assert.fail('value "service_http_loadbalancer_port" has been renamed to "deprecated_service_http_loadbalancer_port" and will be removed in a future release')
+#@ end
+#@ if hasattr(data.values, "service_http_clusterip_port"):
+#@   assert.fail('value "service_http_clusterip_port" has been renamed to "deprecated_service_http_clusterip_port" and will be removed in a future release')
+#@ end
+
+#@ if data.values.deprecated_service_http_nodeport_port or data.values.service_https_nodeport_port:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ defaultResourceNameWithSuffix("nodeport")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  #! prevent kapp from altering the selector of our services to match kubectl behavior
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: NodePort
+  selector: #@ deploymentPodLabel()
+  ports:
+    #@ if data.values.deprecated_service_http_nodeport_port:
+    - name: http
+      protocol: TCP
+      port: #@ data.values.deprecated_service_http_nodeport_port
+      targetPort: 8080
+      #@ if data.values.deprecated_service_http_nodeport_nodeport:
+      nodePort: #@ data.values.deprecated_service_http_nodeport_nodeport
+      #@ end
+    #@ end
+    #@ if data.values.service_https_nodeport_port:
+    - name: https
+      protocol: TCP
+      port: #@ data.values.service_https_nodeport_port
+      targetPort: 8443
+      #@ if data.values.service_https_nodeport_nodeport:
+      nodePort: #@ data.values.service_https_nodeport_nodeport
+      #@ end
+    #@ end
+#@ end
+
+#@ if data.values.deprecated_service_http_clusterip_port or data.values.service_https_clusterip_port:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ defaultResourceNameWithSuffix("clusterip")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  #! prevent kapp from altering the selector of our services to match kubectl behavior
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector: #@ deploymentPodLabel()
+  ports:
+    #@ if data.values.deprecated_service_http_clusterip_port:
+    - name: http
+      protocol: TCP
+      port: #@ data.values.deprecated_service_http_clusterip_port
+      targetPort: 8080
+    #@ end
+    #@ if data.values.service_https_clusterip_port:
+    - name: https
+      protocol: TCP
+      port: #@ data.values.service_https_clusterip_port
+      targetPort: 8443
+    #@ end
+#@ end
+
+#@ if data.values.deprecated_service_http_loadbalancer_port or data.values.service_https_loadbalancer_port:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ defaultResourceNameWithSuffix("loadbalancer")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  #! prevent kapp from altering the selector of our services to match kubectl behavior
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: LoadBalancer
+  selector: #@ deploymentPodLabel()
+  #@ if data.values.service_loadbalancer_ip:
+  loadBalancerIP: #@ data.values.service_loadbalancer_ip
+  #@ end
+  ports:
+    #@ if data.values.deprecated_service_http_loadbalancer_port:
+    - name: http
+      protocol: TCP
+      port: #@ data.values.deprecated_service_http_loadbalancer_port
+      targetPort: 8080
+    #@ end
+    #@ if data.values.service_https_loadbalancer_port:
+    - name: https
+      protocol: TCP
+      port: #@ data.values.service_https_loadbalancer_port
+      targetPort: 8443
+    #@ end
+#@ end

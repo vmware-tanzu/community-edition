@@ -1,0 +1,360 @@
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
+#@ load("helpers.lib.yaml", "defaultLabel", "labels", "deploymentPodLabel", "namespace", "defaultResourceName", "defaultResourceNameWithSuffix", "getAndValidateLogLevel", "pinnipedDevAPIGroupWithPrefix")
+#@ load("@ytt:template", "template")
+
+#@ if not data.values.into_namespace:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.namespace
+  labels:
+    _: #@ template.replace(labels())
+    #! When deploying onto a cluster which has PSAs enabled by default for namespaces,
+    #! effectively disable them for this namespace. The kube-cert-agent Deployment's pod
+    #! created by the Concierge in this namespace needs to be able to perform privileged
+    #! actions. The regular Concierge pod containers created by the Deployment below do
+    #! not need special privileges and are marked as such in their securityContext settings.
+    pod-security.kubernetes.io/enforce: privileged
+#@ end
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ defaultResourceName()
+  namespace: #@ namespace()
+  labels: #@ labels()
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ defaultResourceNameWithSuffix("kube-cert-agent")
+  namespace: #@ namespace()
+  labels: #@ labels()
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  annotations:
+    #! we need to create this service account before we create the secret
+    kapp.k14s.io/change-group: "impersonation-proxy.concierge.pinniped.dev/serviceaccount"
+secrets: #! make sure the token controller does not create any other secrets
+- name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: #@ defaultResourceNameWithSuffix("config")
+  namespace: #@ namespace()
+  labels: #@ labels()
+data:
+  #! If names.apiService is changed in this ConfigMap, must also change name of the ClusterIP Service resource below.
+  #@yaml/text-templated-strings
+  pinniped.yaml: |
+    discovery:
+      url: (@= data.values.discovery_url or "null" @)
+    api:
+      servingCertificate:
+        durationSeconds: (@= str(data.values.api_serving_certificate_duration_seconds) @)
+        renewBeforeSeconds: (@= str(data.values.api_serving_certificate_renew_before_seconds) @)
+    apiGroupSuffix: (@= data.values.api_group_suffix @)
+    # aggregatedAPIServerPort may be set here, although other YAML references to the default port (10250) may also need to be updated
+    # impersonationProxyServerPort may be set here, although other YAML references to the default port (8444) may also need to be updated
+    names:
+      servingCertificateSecret: (@= defaultResourceNameWithSuffix("api-tls-serving-certificate") @)
+      credentialIssuer: (@= defaultResourceNameWithSuffix("config") @)
+      apiService: (@= defaultResourceNameWithSuffix("api") @)
+      impersonationLoadBalancerService: (@= defaultResourceNameWithSuffix("impersonation-proxy-load-balancer") @)
+      impersonationClusterIPService: (@= defaultResourceNameWithSuffix("impersonation-proxy-cluster-ip") @)
+      impersonationTLSCertificateSecret: (@= defaultResourceNameWithSuffix("impersonation-proxy-tls-serving-certificate") @)
+      impersonationCACertificateSecret: (@= defaultResourceNameWithSuffix("impersonation-proxy-ca-certificate") @)
+      impersonationSignerSecret: (@= defaultResourceNameWithSuffix("impersonation-proxy-signer-ca-certificate") @)
+      agentServiceAccount: (@= defaultResourceNameWithSuffix("kube-cert-agent") @)
+    labels: (@= json.encode(labels()).rstrip() @)
+    kubeCertAgent:
+      namePrefix: (@= defaultResourceNameWithSuffix("kube-cert-agent-") @)
+      (@ if data.values.kube_cert_agent_image: @)
+      image: (@= data.values.kube_cert_agent_image @)
+      (@ else: @)
+      (@ if data.values.image_digest: @)
+      image: (@= data.values.image_repo + "@" + data.values.image_digest @)
+      (@ else: @)
+      image: (@= data.values.image_repo + ":" + data.values.image_tag @)
+      (@ end @)
+      (@ end @)
+      (@ if data.values.image_pull_dockerconfigjson: @)
+      imagePullSecrets:
+        - image-pull-secret
+      (@ end @)
+    (@ if data.values.log_level or data.values.deprecated_log_format: @)
+    log:
+      (@ if data.values.log_level: @)
+      level: (@= getAndValidateLogLevel() @)
+      (@ end @)
+      (@ if data.values.deprecated_log_format: @)
+      format: (@= data.values.deprecated_log_format @)
+      (@ end @)
+    (@ end @)
+---
+#@ if data.values.image_pull_dockerconfigjson and data.values.image_pull_dockerconfigjson != "":
+apiVersion: v1
+kind: Secret
+metadata:
+  name: image-pull-secret
+  namespace: #@ namespace()
+  labels: #@ labels()
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: #@ data.values.image_pull_dockerconfigjson
+#@ end
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: #@ defaultResourceName()
+  namespace: #@ namespace()
+  labels: #@ labels()
+spec:
+  replicas: #@ data.values.replicas
+  selector:
+    #! In hindsight, this should have been deploymentPodLabel(), but this field is immutable so changing it would break upgrades.
+    matchLabels: #@ defaultLabel()
+  template:
+    metadata:
+      labels:
+        #! This has always included defaultLabel(), which is used by this Deployment's selector.
+        _: #@ template.replace(defaultLabel())
+        #! More recently added the more unique deploymentPodLabel() so Services can select these Pods more specifically
+        #! without accidentally selecting any other Deployment's Pods, especially the kube cert agent Deployment's Pods.
+        _: #@ template.replace(deploymentPodLabel())
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+    spec:
+      securityContext:
+        runAsUser: #@ data.values.run_as_user
+        runAsGroup: #@ data.values.run_as_group
+      serviceAccountName: #@ defaultResourceName()
+      #@ if data.values.image_pull_dockerconfigjson and data.values.image_pull_dockerconfigjson != "":
+      imagePullSecrets:
+        - name: image-pull-secret
+      #@ end
+      containers:
+        - name: #@ defaultResourceName()
+          #@ if data.values.image_digest:
+          image:  #@ data.values.image_repo + "@" + data.values.image_digest
+          #@ else:
+          image: #@ data.values.image_repo + ":" + data.values.image_tag
+          #@ end
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ "ALL" ]
+            #! seccompProfile was introduced in Kube v1.19. Using it on an older Kube version will result in a
+            #! kubectl validation error when installing via `kubectl apply`, which can be ignored using kubectl's
+            #! `--validate=false` flag. Note that installing via `kapp` does not complain about this validation error.
+            seccompProfile:
+              type: "RuntimeDefault"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          command:
+            - pinniped-concierge
+            - --config=/etc/config/pinniped.yaml
+            - --downward-api-path=/etc/podinfo
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+            - name: podinfo
+              mountPath: /etc/podinfo
+              readOnly: true
+            - name: impersonation-proxy
+              mountPath: /var/run/secrets/impersonation-proxy.concierge.pinniped.dev/serviceaccount
+              readOnly: true
+          env:
+            #@ if data.values.https_proxy:
+            - name: HTTPS_PROXY
+              value: #@ data.values.https_proxy
+            #@ end
+            #@ if data.values.https_proxy and data.values.no_proxy:
+            - name: NO_PROXY
+              value: #@ data.values.no_proxy
+            #@ end
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10250
+              scheme: HTTPS
+            initialDelaySeconds: 2
+            timeoutSeconds: 15
+            periodSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10250
+              scheme: HTTPS
+            initialDelaySeconds: 2
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 100Mi
+        - name: config-volume
+          configMap:
+            name: #@ defaultResourceNameWithSuffix("config")
+        - name: impersonation-proxy
+          secret:
+            secretName: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+            items: #! make sure our pod does not start until the token controller has a chance to populate the secret
+              - key: token
+                path: token
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
+              - path: "name"
+                fieldRef:
+                  fieldPath: metadata.name
+              - path: "namespace"
+                fieldRef:
+                  fieldPath: metadata.namespace
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/master #! Allow running on master nodes too (name deprecated by kubernetes 1.20).
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane #! The new name for these nodes as of Kubernetes 1.24.
+          effect: NoSchedule
+      #! "system-cluster-critical" cannot be used outside the kube-system namespace until Kubernetes >= 1.17,
+      #! so we skip setting this for now (see https://github.com/kubernetes/kubernetes/issues/60596).
+      #!priorityClassName: system-cluster-critical
+      #! This will help make sure our multiple pods run on different nodes, making
+      #! our deployment "more" "HA".
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels: #@ deploymentPodLabel()
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  #! If name is changed, must also change names.apiService in the ConfigMap above and spec.service.name in the APIService below.
+  name: #@ defaultResourceNameWithSuffix("api")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  #! prevent kapp from altering the selector of our services to match kubectl behavior
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector: #@ deploymentPodLabel()
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 10250
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ defaultResourceNameWithSuffix("proxy")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  #! prevent kapp from altering the selector of our services to match kubectl behavior
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector: #@ deploymentPodLabel()
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 8444
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: #@ pinnipedDevAPIGroupWithPrefix("v1alpha1.login.concierge")
+  labels: #@ labels()
+spec:
+  version: v1alpha1
+  group: #@ pinnipedDevAPIGroupWithPrefix("login.concierge")
+  groupPriorityMinimum: 9900
+  versionPriority: 15
+  #! caBundle: Do not include this key here. Starts out null, will be updated/owned by the golang code.
+  service:
+    name: #@ defaultResourceNameWithSuffix("api")
+    namespace: #@ namespace()
+    port: 443
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: #@ pinnipedDevAPIGroupWithPrefix("v1alpha1.identity.concierge")
+  labels: #@ labels()
+spec:
+  version: v1alpha1
+  group: #@ pinnipedDevAPIGroupWithPrefix("identity.concierge")
+  groupPriorityMinimum: 9900
+  versionPriority: 15
+  #! caBundle: Do not include this key here. Starts out null, will be updated/owned by the golang code.
+  service:
+    name: #@ defaultResourceNameWithSuffix("api")
+    namespace: #@ namespace()
+    port: 443
+---
+apiVersion: #@ pinnipedDevAPIGroupWithPrefix("config.concierge") + "/v1alpha1"
+kind: CredentialIssuer
+metadata:
+  name: #@ defaultResourceNameWithSuffix("config")
+  labels: #@ labels()
+spec:
+  impersonationProxy:
+    mode: #@ data.values.impersonation_proxy_spec.mode
+    #@ if data.values.impersonation_proxy_spec.external_endpoint:
+    externalEndpoint: #@ data.values.impersonation_proxy_spec.external_endpoint
+    #@ end
+    service:
+      type: #@ data.values.impersonation_proxy_spec.service.type
+      #@ if data.values.impersonation_proxy_spec.service.load_balancer_ip:
+      loadBalancerIP: #@ data.values.impersonation_proxy_spec.service.load_balancer_ip
+      #@ end
+      annotations: #@ data.values.impersonation_proxy_spec.service.annotations
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  annotations:
+    #! wait until the SA exists to create this secret so that the token controller does not delete it
+    #! we have this secret at the end so that kubectl will create the service account first
+    kapp.k14s.io/change-rule: "upsert after upserting impersonation-proxy.concierge.pinniped.dev/serviceaccount"
+    kubernetes.io/service-account.name: #@ defaultResourceNameWithSuffix("impersonation-proxy")
+type: kubernetes.io/service-account-token

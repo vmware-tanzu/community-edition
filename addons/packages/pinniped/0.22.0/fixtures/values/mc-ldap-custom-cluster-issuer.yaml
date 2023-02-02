@@ -1,0 +1,113 @@
+#@data/values
+---
+infrastructure_provider: vsphere
+tkg_cluster_role: management
+custom_cluster_issuer: muggles
+custom_tls_secret: ""
+http_proxy: ""
+https_proxy: ""
+no_proxy: ""
+identity_management_type: ldap
+pinniped:
+  cert_duration: 2160h
+  cert_renew_before: 360h
+  supervisor_svc_endpoint: https://0.0.0.0:31234
+  supervisor_ca_bundle_data: ca_bundle_data_of_supervisor_svc
+  supervisor_svc_external_ip: 0.0.0.0
+  supervisor_svc_external_dns: null
+  upstream_oidc_client_id: ""
+  upstream_oidc_client_secret: ""
+  upstream_oidc_issuer_url: https://0.0.0.0:30167
+  upstream_oidc_tls_ca_data: ca_bundle_data_of_dex_svc
+  upstream_oidc_additional_scopes:
+    - email
+    - profile
+    - groups
+  upstream_oidc_claims:
+    username: name
+    groups: groups
+dex:
+  app: dex
+  create_namespace: true
+  namespace: tanzu-system-auth
+  organization: vmware
+  commonname: tkg-dex
+  config:
+    connector: ldap
+    frontend:
+      theme: tkg
+    web:
+      https: 0.0.0.0:5556
+      tlsCert: /etc/dex/tls/tls.crt
+      tlsKey: /etc/dex/tls/tls.key
+    expiry:
+      signingKeys: 90m
+      idTokens: 5m
+      authRequests: 90m
+      deviceRequests: 5m
+    logger:
+      level: info
+      format: json
+    staticClients:
+      - id: pinniped
+        redirectURIs:
+          - https://0.0.0.0/callback
+        name: pinniped
+        secret: dummyvalue
+    ldap:
+      host: some-ldap-idp.com
+      insecureNoSSL: false
+      startTLS: null
+      rootCA: null
+      rootCAData: null
+      bindDN: CN=marshmallow,CN=Users,DC=what,DC=ever
+      BIND_PW_ENV_VAR: zelda
+      usernamePrompt: LDAP Username
+      insecureSkipVerify: false
+      userSearch:
+        baseDN: CN=Users,DC=what,DC=ever
+        filter: (objectClass=person)
+        username: cn
+        idAttr: dn
+        emailAttr: mail
+        nameAttr: dc
+        scope: sub
+      groupSearch:
+        baseDN: CN=groups,DC=what,DC=ever
+        filter: (objectClass=group)
+        nameAttr: cn
+        scope: sub
+        userMatchers:
+          - userAttr: dn
+            groupAttr: member
+    oauth2:
+      skipApprovalScreen: true
+      responseTypes:
+        - code
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
+    enablePasswordDB: false
+  service:
+    name: dexsvc
+    type: null
+  deployment:
+    replicas: 1
+  certificate:
+    duration: 2160h
+    renewBefore: 360h
+  dns:
+    vsphere:
+      dnsNames:
+        - tkg-dex.com
+      ipAddresses:
+        - 0.0.0.0
+    aws:
+      dnsNames:
+        - tkg-dex.com
+      DEX_SVC_LB_HOSTNAME: example.com
+    azure:
+      dnsNames:
+        - tkg-dex.com
+      DEX_SVC_LB_HOSTNAME: dex.example.com

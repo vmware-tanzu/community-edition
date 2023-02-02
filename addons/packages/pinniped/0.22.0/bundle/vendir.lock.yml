@@ -1,0 +1,27 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #1385 from vmware-tanzu/update_kube_deps_0.26.1...'
+      sha: e6a18978d1fcb2f4615a71cd066e8e3c1e1aa65d
+      tags:
+      - v0.22.0
+    path: _ytt_lib/supervisor
+  - git:
+      commitTitle: 'Merge pull request #1385 from vmware-tanzu/update_kube_deps_0.26.1...'
+      sha: e6a18978d1fcb2f4615a71cd066e8e3c1e1aa65d
+      tags:
+      - v0.22.0
+    path: _ytt_lib/concierge
+  - manual: {}
+    path: 01-pinniped-supervisor.yaml
+  - manual: {}
+    path: 02-pinniped-concierge.yaml
+  - manual: {}
+    path: 03-post-deploy.yaml
+  - manual: {}
+    path: 04-pinniped-info-rbac.yaml
+  - manual: {}
+    path: 05-cluster-info-rbac.yaml
+  path: config/upstream
+kind: LockConfig

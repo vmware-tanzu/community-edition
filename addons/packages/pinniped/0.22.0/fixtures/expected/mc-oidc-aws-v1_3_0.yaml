@@ -1,0 +1,2820 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pinniped-kapp-config
+  labels:
+    kapp.k14s.io/config: ""
+data:
+  config.yml: |
+    apiVersion: kapp.k14s.io/v1alpha1
+    kind: Config
+    rebaseRules:
+    - paths:
+      - [spec, issuer]
+      - [spec, tls]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - andMatcher:
+          matchers:
+          - apiVersionKindMatcher: {apiVersion: idp.supervisor.pinniped.dev/v1alpha1, kind: OIDCIdentityProvider}
+          - hasNamespaceMatcher:
+              names: [pinniped-supervisor]
+    - path: [spec, issuer]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - andMatcher:
+          matchers:
+          - apiVersionKindMatcher: {apiVersion: config.supervisor.pinniped.dev/v1alpha1, kind: FederationDomain}
+          - hasNamespaceMatcher:
+              names: [pinniped-supervisor]
+    - paths:
+      - [spec, audience]
+      - [spec, claims]
+      - [spec, issuer]
+      - [spec, tls]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: authentication.concierge.pinniped.dev/v1alpha1, kind: JWTAuthenticator}
+    - path: [data]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: tanzu-system-auth, name: dex}
+    - path: [spec]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Certificate, namespace: pinniped-supervisor, name: pinniped-cert}
+    - path: [spec]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Certificate, namespace: tanzu-system-auth, name: dex-cert}
+    - path: [data]
+      type: copy
+      sources: [existing, new]
+      resourceMatchers:
+      - kindNamespaceNameMatcher: {kind: Secret, namespace: pinniped-supervisor, name: upstream-idp-client-credentials}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: pinniped-selfsigned-ca-issuer
+  namespace: pinniped-supervisor
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pinniped-ca
+  namespace: pinniped-supervisor
+spec:
+  secretName: pinniped-ca-key-pair
+  duration: 87600h
+  renewBefore: 360h
+  organization:
+  - vmware
+  commonName: tkg-pinniped
+  isCA: true
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - pinnipedca
+  ipAddresses: []
+  issuerRef:
+    name: pinniped-selfsigned-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: pinniped-ca-issuer
+  namespace: pinniped-supervisor
+spec:
+  ca:
+    secretName: pinniped-ca-key-pair
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pinniped-cert
+  namespace: pinniped-supervisor
+spec:
+  secretName: pinniped-supervisor-default-tls-certificate
+  duration: 2160h
+  renewBefore: 360h
+  organization:
+  - vmware
+  commonName: tkg-pinniped
+  isCA: false
+  keySize: 2048
+  keyAlgorithm: rsa
+  keyEncoding: pkcs1
+  usages:
+  - server auth
+  - client auth
+  dnsNames: []
+  ipAddresses:
+  - 0.0.0.0
+  issuerRef:
+    name: pinniped-ca-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: config.supervisor.pinniped.dev/v1alpha1
+kind: FederationDomain
+metadata:
+  name: pinniped-federation-domain
+  namespace: pinniped-supervisor
+spec:
+  issuer: https://0.0.0.0:31234
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: upstream-idp-client-credentials
+  namespace: pinniped-supervisor
+type: secrets.pinniped.dev/oidc-client
+stringData:
+  clientID: ""
+  clientSecret: ""
+---
+apiVersion: idp.supervisor.pinniped.dev/v1alpha1
+kind: OIDCIdentityProvider
+metadata:
+  name: upstream-oidc-identity-provider
+  namespace: pinniped-supervisor
+  annotations:
+    kapp.k14s.io/update-strategy: always-replace
+spec:
+  issuer: https://0.0.0.0:30167
+  authorizationConfig:
+    additionalScopes:
+    - email
+    - profile
+    - groups
+  claims:
+    username: name
+    groups: groups
+  client:
+    secretName: upstream-idp-client-credentials
+  tls:
+    certificateAuthorityData: ca_bundle_data_of_dex_svc
+---
+apiVersion: authentication.concierge.pinniped.dev/v1alpha1
+kind: JWTAuthenticator
+metadata:
+  name: tkg-jwt-authenticator
+spec:
+  audience: https://0.0.0.0:31234
+  issuer: https://0.0.0.0:31234
+  tls:
+    certificateAuthorityData: ca_bundle_data_of_supervisor_svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+spec:
+  type: LoadBalancer
+  selector:
+    app: pinniped-supervisor
+  ports:
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 8443
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: federationdomains.config.supervisor.pinniped.dev
+  labels:
+    app: pinniped-supervisor
+spec:
+  group: config.supervisor.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    kind: FederationDomain
+    listKind: FederationDomainList
+    plural: federationdomains
+    singular: federationdomain
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.issuer
+      name: Issuer
+      type: string
+    - jsonPath: .status.status
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: FederationDomain describes the configuration of an OIDC provider.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec of the OIDC provider.
+            properties:
+              issuer:
+                description: "Issuer is the OIDC Provider's issuer, per the OIDC Discovery Metadata document, as well as the identifier that it will use for the iss claim in issued JWTs. This field will also be used as the base URL for any endpoints used by the OIDC Provider (e.g., if your issuer is https://example.com/foo, then your authorization endpoint will look like https://example.com/foo/some/path/to/auth/endpoint). \n See https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.3 for more information."
+                minLength: 1
+                type: string
+              tls:
+                description: TLS configures how this FederationDomain is served over Transport Layer Security (TLS).
+                properties:
+                  secretName:
+                    description: "SecretName is an optional name of a Secret in the same namespace, of type `kubernetes.io/tls`, which contains the TLS serving certificate for the HTTPS endpoints served by this FederationDomain. When provided, the TLS Secret named here must contain keys named `tls.crt` and `tls.key` that contain the certificate and private key to use for TLS. \n Server Name Indication (SNI) is an extension to the Transport Layer Security (TLS) supported by all major browsers. \n SecretName is required if you would like to use different TLS certificates for issuers of different hostnames. SNI requests do not include port numbers, so all issuers with the same DNS hostname must use the same SecretName value even if they have different port numbers. \n SecretName is not required when you would like to use only the HTTP endpoints (e.g. when the HTTP listener is configured to listen on loopback interfaces or UNIX domain sockets for traffic from a service mesh sidecar). It is also not required when you would like all requests to this OIDC Provider's HTTPS endpoints to use the default TLS certificate, which is configured elsewhere. \n When your Issuer URL's host is an IP address, then this field is ignored. SNI does not work for IP addresses."
+                    type: string
+                type: object
+            required:
+            - issuer
+            type: object
+          status:
+            description: Status of the OIDC provider.
+            properties:
+              lastUpdateTime:
+                description: LastUpdateTime holds the time at which the Status was last updated. It is a pointer to get around some undesirable behavior with respect to the empty metav1.Time value (see https://github.com/kubernetes/kubernetes/issues/86811).
+                format: date-time
+                type: string
+              message:
+                description: Message provides human-readable details about the Status.
+                type: string
+              secrets:
+                description: Secrets contains information about this OIDC Provider's secrets.
+                properties:
+                  jwks:
+                    description: JWKS holds the name of the corev1.Secret in which this OIDC Provider's signing/verification keys are stored. If it is empty, then the signing/verification keys are either unknown or they don't exist.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                  stateEncryptionKey:
+                    description: StateSigningKey holds the name of the corev1.Secret in which this OIDC Provider's key for encrypting state parameters is stored.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                  stateSigningKey:
+                    description: StateSigningKey holds the name of the corev1.Secret in which this OIDC Provider's key for signing state parameters is stored.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                  tokenSigningKey:
+                    description: TokenSigningKey holds the name of the corev1.Secret in which this OIDC Provider's key for signing tokens is stored.
+                    properties:
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
+                        type: string
+                    type: object
+                type: object
+              status:
+                description: Status holds an enum that describes the state of this OIDC Provider. Note that this Status can represent success or failure.
+                enum:
+                - Success
+                - Duplicate
+                - Invalid
+                - SameIssuerHostMustUseSameSecret
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: oidcclients.config.supervisor.pinniped.dev
+  labels:
+    app: pinniped-supervisor
+spec:
+  group: config.supervisor.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    kind: OIDCClient
+    listKind: OIDCClientList
+    plural: oidcclients
+    singular: oidcclient
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.allowedScopes[?(@ == "pinniped:request-audience")]
+      name: Privileged Scopes
+      type: string
+    - jsonPath: .status.totalClientSecrets
+      name: Client Secrets
+      type: integer
+    - jsonPath: .status.phase
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: OIDCClient describes the configuration of an OIDC client.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+            properties:
+              name:
+                pattern: ^client\.oauth\.pinniped\.dev-
+                type: string
+          spec:
+            description: Spec of the OIDC client.
+            properties:
+              allowedGrantTypes:
+                description: "allowedGrantTypes is a list of the allowed grant_type param values that should be accepted during OIDC flows with this client. \n Must only contain the following values: - authorization_code: allows the client to perform the authorization code grant flow, i.e. allows the webapp to authenticate users. This grant must always be listed. - refresh_token: allows the client to perform refresh grants for the user to extend the user's session. This grant must be listed if allowedScopes lists offline_access. - urn:ietf:params:oauth:grant-type:token-exchange: allows the client to perform RFC8693 token exchange, which is a step in the process to be able to get a cluster credential for the user. This grant must be listed if allowedScopes lists pinniped:request-audience."
+                items:
+                  enum:
+                  - authorization_code
+                  - refresh_token
+                  - urn:ietf:params:oauth:grant-type:token-exchange
+                  type: string
+                minItems: 1
+                type: array
+                x-kubernetes-list-type: set
+              allowedRedirectURIs:
+                description: allowedRedirectURIs is a list of the allowed redirect_uri param values that should be accepted during OIDC flows with this client. Any other uris will be rejected. Must be a URI with the https scheme, unless the hostname is 127.0.0.1 or ::1 which may use the http scheme. Port numbers are not required for 127.0.0.1 or ::1 and are ignored when checking for a matching redirect_uri.
+                items:
+                  pattern: ^https://.+|^http://(127\.0\.0\.1|\[::1\])(:\d+)?/
+                  type: string
+                minItems: 1
+                type: array
+                x-kubernetes-list-type: set
+              allowedScopes:
+                description: "allowedScopes is a list of the allowed scopes param values that should be accepted during OIDC flows with this client. \n Must only contain the following values: - openid: The client is allowed to request ID tokens. ID tokens only include the required claims by default (iss, sub, aud, exp, iat). This scope must always be listed. - offline_access: The client is allowed to request an initial refresh token during the authorization code grant flow. This scope must be listed if allowedGrantTypes lists refresh_token. - pinniped:request-audience: The client is allowed to request a new audience value during a RFC8693 token exchange, which is a step in the process to be able to get a cluster credential for the user. openid, username and groups scopes must be listed when this scope is present. This scope must be listed if allowedGrantTypes lists urn:ietf:params:oauth:grant-type:token-exchange. - username: The client is allowed to request that ID tokens contain the user's username. Without the username scope being requested and allowed, the ID token will not contain the user's username. - groups: The client is allowed to request that ID tokens contain the user's group membership, if their group membership is discoverable by the Supervisor. Without the groups scope being requested and allowed, the ID token will not contain groups."
+                items:
+                  enum:
+                  - openid
+                  - offline_access
+                  - username
+                  - groups
+                  - pinniped:request-audience
+                  type: string
+                minItems: 1
+                type: array
+                x-kubernetes-list-type: set
+            required:
+            - allowedGrantTypes
+            - allowedRedirectURIs
+            - allowedScopes
+            type: object
+          status:
+            description: Status of the OIDC client.
+            properties:
+              conditions:
+                description: conditions represent the observations of an OIDCClient's current state.
+                items:
+                  description: Condition status of a resource (mirrored from the metav1.Condition type added in Kubernetes 1.19). In a future API version we can switch to using the upstream type. See https://github.com/kubernetes/apimachinery/blob/v0.19.0/pkg/apis/meta/v1/types.go#L1353-L1413.
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              phase:
+                default: Pending
+                description: phase summarizes the overall status of the OIDCClient.
+                enum:
+                - Pending
+                - Ready
+                - Error
+                type: string
+              totalClientSecrets:
+                description: totalClientSecrets is the current number of client secrets that are detected for this OIDCClient.
+                format: int32
+                type: integer
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pinniped-supervisor-static-config
+  namespace: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+data:
+  pinniped.yaml: |
+    apiGroupSuffix: pinniped.dev
+    names:
+      defaultTLSCertificateSecret: pinniped-supervisor-default-tls-certificate
+      apiService: pinniped-supervisor-api
+    labels:
+      app: pinniped-supervisor
+    insecureAcceptExternalUnencryptedHttpRequests: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pinniped-supervisor
+  template:
+    metadata:
+      labels:
+        app: pinniped-supervisor
+        deployment.pinniped.dev: supervisor
+    spec:
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+      serviceAccountName: pinniped-supervisor
+      containers:
+      - name: pinniped-supervisor
+        image: docker.io/getpinniped/pinniped-server:v0.22.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - pinniped-supervisor
+        - /etc/podinfo
+        - /etc/config/pinniped.yaml
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+          readOnly: true
+        - name: podinfo
+          mountPath: /etc/podinfo
+          readOnly: true
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        env: []
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 2
+          timeoutSeconds: 15
+          periodSeconds: 10
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 2
+          timeoutSeconds: 3
+          periodSeconds: 10
+          failureThreshold: 3
+      volumes:
+      - name: config-volume
+        configMap:
+          name: pinniped-supervisor-static-config
+      - name: podinfo
+        downwardAPI:
+          items:
+          - path: labels
+            fieldRef:
+              fieldPath: metadata.labels
+          - path: namespace
+            fieldRef:
+              fieldPath: metadata.namespace
+          - path: name
+            fieldRef:
+              fieldPath: metadata.name
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  deployment.pinniped.dev: supervisor
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinniped-supervisor-api
+  namespace: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector:
+    deployment.pinniped.dev: supervisor
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 10250
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.clientsecret.supervisor.pinniped.dev
+  labels:
+    app: pinniped-supervisor
+spec:
+  version: v1alpha1
+  group: clientsecret.supervisor.pinniped.dev
+  groupPriorityMinimum: 9900
+  versionPriority: 15
+  service:
+    name: pinniped-supervisor-api
+    namespace: pinniped-supervisor
+    port: 443
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: activedirectoryidentityproviders.idp.supervisor.pinniped.dev
+  labels:
+    app: pinniped-supervisor
+spec:
+  group: idp.supervisor.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    - pinniped-idp
+    - pinniped-idps
+    kind: ActiveDirectoryIdentityProvider
+    listKind: ActiveDirectoryIdentityProviderList
+    plural: activedirectoryidentityproviders
+    singular: activedirectoryidentityprovider
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.host
+      name: Host
+      type: string
+    - jsonPath: .status.phase
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ActiveDirectoryIdentityProvider describes the configuration of an upstream Microsoft Active Directory identity provider.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec for configuring the identity provider.
+            properties:
+              bind:
+                description: Bind contains the configuration for how to provide access credentials during an initial bind to the ActiveDirectory server to be allowed to perform searches and binds to validate a user's credentials during a user's authentication attempt.
+                properties:
+                  secretName:
+                    description: SecretName contains the name of a namespace-local Secret object that provides the username and password for an Active Directory bind user. This account will be used to perform LDAP searches. The Secret should be of type "kubernetes.io/basic-auth" which includes "username" and "password" keys. The username value should be the full dn (distinguished name) of your bind account, e.g. "cn=bind-account,ou=users,dc=example,dc=com". The password must be non-empty.
+                    minLength: 1
+                    type: string
+                required:
+                - secretName
+                type: object
+              groupSearch:
+                description: GroupSearch contains the configuration for searching for a user's group membership in ActiveDirectory.
+                properties:
+                  attributes:
+                    description: Attributes specifies how the group's information should be read from each ActiveDirectory entry which was found as the result of the group search.
+                    properties:
+                      groupName:
+                        description: GroupName specifies the name of the attribute in the Active Directory entries whose value shall become a group name in the user's list of groups after a successful authentication. The value of this field is case-sensitive and must match the case of the attribute name returned by the ActiveDirectory server in the user's entry. E.g. "cn" for common name. Distinguished names can be used by specifying lower-case "dn". Optional. When not specified, this defaults to a custom field that looks like "sAMAccountName@domain", where domain is constructed from the domain components of the group DN.
+                        type: string
+                    type: object
+                  base:
+                    description: Base is the dn (distinguished name) that should be used as the search base when searching for groups. E.g. "ou=groups,dc=example,dc=com". Optional, when not specified it will be based on the result of a query for the defaultNamingContext (see https://docs.microsoft.com/en-us/windows/win32/adschema/rootdse). The default behavior searches your entire domain for groups. It may make sense to specify a subtree as a search base if you wish to exclude some groups for security reasons or to make searches faster.
+                    type: string
+                  filter:
+                    description: Filter is the ActiveDirectory search filter which should be applied when searching for groups for a user. The pattern "{}" must occur in the filter at least once and will be dynamically replaced by the dn (distinguished name) of the user entry found as a result of the user search. E.g. "member={}" or "&(objectClass=groupOfNames)(member={})". For more information about ActiveDirectory filters, see https://ldap.com/ldap-filters. Note that the dn (distinguished name) is not an attribute of an entry, so "dn={}" cannot be used. Optional. When not specified, the default will act as if the filter were specified as "(&(objectClass=group)(member:1.2.840.113556.1.4.1941:={})". This searches nested groups by default. Note that nested group search can be slow for some Active Directory servers. To disable it, you can set the filter to "(&(objectClass=group)(member={})"
+                    type: string
+                  skipGroupRefresh:
+                    description: "The user's group membership is refreshed as they interact with the supervisor to obtain new credentials (as their old credentials expire).  This allows group membership changes to be quickly reflected into Kubernetes clusters.  Since group membership is often used to bind authorization policies, it is important to keep the groups observed in Kubernetes clusters in-sync with the identity provider. \n In some environments, frequent group membership queries may result in a significant performance impact on the identity provider and/or the supervisor. The best approach to handle performance impacts is to tweak the group query to be more performant, for example by disabling nested group search or by using a more targeted group search base. \n If the group search query cannot be made performant and you are willing to have group memberships remain static for approximately a day, then set skipGroupRefresh to true.  This is an insecure configuration as authorization policies that are bound to group membership will not notice if a user has been removed from a particular group until their next login. \n This is an experimental feature that may be removed or significantly altered in the future.  Consumers of this configuration should carefully read all release notes before upgrading to ensure that the meaning of this field has not changed."
+                    type: boolean
+                type: object
+              host:
+                description: 'Host is the hostname of this Active Directory identity provider, i.e., where to connect. For example: ldap.example.com:636.'
+                minLength: 1
+                type: string
+              tls:
+                description: TLS contains the connection settings for how to establish the connection to the Host.
+                properties:
+                  certificateAuthorityData:
+                    description: X.509 Certificate Authority (base64-encoded PEM bundle). If omitted, a default set of system roots will be trusted.
+                    type: string
+                type: object
+              userSearch:
+                description: UserSearch contains the configuration for searching for a user by name in Active Directory.
+                properties:
+                  attributes:
+                    description: Attributes specifies how the user's information should be read from the ActiveDirectory entry which was found as the result of the user search.
+                    properties:
+                      uid:
+                        description: UID specifies the name of the attribute in the ActiveDirectory entry which whose value shall be used to uniquely identify the user within this ActiveDirectory provider after a successful authentication. Optional, when empty this defaults to "objectGUID".
+                        type: string
+                      username:
+                        description: Username specifies the name of the attribute in Active Directory entry whose value shall become the username of the user after a successful authentication. Optional, when empty this defaults to "userPrincipalName".
+                        type: string
+                    type: object
+                  base:
+                    description: Base is the dn (distinguished name) that should be used as the search base when searching for users. E.g. "ou=users,dc=example,dc=com". Optional, when not specified it will be based on the result of a query for the defaultNamingContext (see https://docs.microsoft.com/en-us/windows/win32/adschema/rootdse). The default behavior searches your entire domain for users. It may make sense to specify a subtree as a search base if you wish to exclude some users or to make searches faster.
+                    type: string
+                  filter:
+                    description: Filter is the search filter which should be applied when searching for users. The pattern "{}" must occur in the filter at least once and will be dynamically replaced by the username for which the search is being run. E.g. "mail={}" or "&(objectClass=person)(uid={})". For more information about LDAP filters, see https://ldap.com/ldap-filters. Note that the dn (distinguished name) is not an attribute of an entry, so "dn={}" cannot be used. Optional. When not specified, the default will be '(&(objectClass=person)(!(objectClass=computer))(!(showInAdvancedViewOnly=TRUE))(|(sAMAccountName={}")(mail={})(userPrincipalName={})(sAMAccountType=805306368))' This means that the user is a person, is not a computer, the sAMAccountType is for a normal user account, and is not shown in advanced view only (which would likely mean its a system created service account with advanced permissions). Also, either the sAMAccountName, the userPrincipalName, or the mail attribute matches the input username.
+                    type: string
+                type: object
+            required:
+            - host
+            type: object
+          status:
+            description: Status of the identity provider.
+            properties:
+              conditions:
+                description: Represents the observations of an identity provider's current state.
+                items:
+                  description: Condition status of a resource (mirrored from the metav1.Condition type added in Kubernetes 1.19). In a future API version we can switch to using the upstream type. See https://github.com/kubernetes/apimachinery/blob/v0.19.0/pkg/apis/meta/v1/types.go#L1353-L1413.
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              phase:
+                default: Pending
+                description: Phase summarizes the overall status of the ActiveDirectoryIdentityProvider.
+                enum:
+                - Pending
+                - Ready
+                - Error
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: ldapidentityproviders.idp.supervisor.pinniped.dev
+  labels:
+    app: pinniped-supervisor
+spec:
+  group: idp.supervisor.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    - pinniped-idp
+    - pinniped-idps
+    kind: LDAPIdentityProvider
+    listKind: LDAPIdentityProviderList
+    plural: ldapidentityproviders
+    singular: ldapidentityprovider
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.host
+      name: Host
+      type: string
+    - jsonPath: .status.phase
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: LDAPIdentityProvider describes the configuration of an upstream Lightweight Directory Access Protocol (LDAP) identity provider.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec for configuring the identity provider.
+            properties:
+              bind:
+                description: Bind contains the configuration for how to provide access credentials during an initial bind to the LDAP server to be allowed to perform searches and binds to validate a user's credentials during a user's authentication attempt.
+                properties:
+                  secretName:
+                    description: SecretName contains the name of a namespace-local Secret object that provides the username and password for an LDAP bind user. This account will be used to perform LDAP searches. The Secret should be of type "kubernetes.io/basic-auth" which includes "username" and "password" keys. The username value should be the full dn (distinguished name) of your bind account, e.g. "cn=bind-account,ou=users,dc=example,dc=com". The password must be non-empty.
+                    minLength: 1
+                    type: string
+                required:
+                - secretName
+                type: object
+              groupSearch:
+                description: GroupSearch contains the configuration for searching for a user's group membership in the LDAP provider.
+                properties:
+                  attributes:
+                    description: Attributes specifies how the group's information should be read from each LDAP entry which was found as the result of the group search.
+                    properties:
+                      groupName:
+                        description: GroupName specifies the name of the attribute in the LDAP entries whose value shall become a group name in the user's list of groups after a successful authentication. The value of this field is case-sensitive and must match the case of the attribute name returned by the LDAP server in the user's entry. E.g. "cn" for common name. Distinguished names can be used by specifying lower-case "dn". Optional. When not specified, the default will act as if the GroupName were specified as "dn" (distinguished name).
+                        type: string
+                    type: object
+                  base:
+                    description: Base is the dn (distinguished name) that should be used as the search base when searching for groups. E.g. "ou=groups,dc=example,dc=com". When not specified, no group search will be performed and authenticated users will not belong to any groups from the LDAP provider. Also, when not specified, the values of Filter and Attributes are ignored.
+                    type: string
+                  filter:
+                    description: Filter is the LDAP search filter which should be applied when searching for groups for a user. The pattern "{}" must occur in the filter at least once and will be dynamically replaced by the dn (distinguished name) of the user entry found as a result of the user search. E.g. "member={}" or "&(objectClass=groupOfNames)(member={})". For more information about LDAP filters, see https://ldap.com/ldap-filters. Note that the dn (distinguished name) is not an attribute of an entry, so "dn={}" cannot be used. Optional. When not specified, the default will act as if the Filter were specified as "member={}".
+                    type: string
+                  skipGroupRefresh:
+                    description: "The user's group membership is refreshed as they interact with the supervisor to obtain new credentials (as their old credentials expire).  This allows group membership changes to be quickly reflected into Kubernetes clusters.  Since group membership is often used to bind authorization policies, it is important to keep the groups observed in Kubernetes clusters in-sync with the identity provider. \n In some environments, frequent group membership queries may result in a significant performance impact on the identity provider and/or the supervisor. The best approach to handle performance impacts is to tweak the group query to be more performant, for example by disabling nested group search or by using a more targeted group search base. \n If the group search query cannot be made performant and you are willing to have group memberships remain static for approximately a day, then set skipGroupRefresh to true.  This is an insecure configuration as authorization policies that are bound to group membership will not notice if a user has been removed from a particular group until their next login. \n This is an experimental feature that may be removed or significantly altered in the future.  Consumers of this configuration should carefully read all release notes before upgrading to ensure that the meaning of this field has not changed."
+                    type: boolean
+                type: object
+              host:
+                description: 'Host is the hostname of this LDAP identity provider, i.e., where to connect. For example: ldap.example.com:636.'
+                minLength: 1
+                type: string
+              tls:
+                description: TLS contains the connection settings for how to establish the connection to the Host.
+                properties:
+                  certificateAuthorityData:
+                    description: X.509 Certificate Authority (base64-encoded PEM bundle). If omitted, a default set of system roots will be trusted.
+                    type: string
+                type: object
+              userSearch:
+                description: UserSearch contains the configuration for searching for a user by name in the LDAP provider.
+                properties:
+                  attributes:
+                    description: Attributes specifies how the user's information should be read from the LDAP entry which was found as the result of the user search.
+                    properties:
+                      uid:
+                        description: UID specifies the name of the attribute in the LDAP entry which whose value shall be used to uniquely identify the user within this LDAP provider after a successful authentication. E.g. "uidNumber" or "objectGUID". The value of this field is case-sensitive and must match the case of the attribute name returned by the LDAP server in the user's entry. Distinguished names can be used by specifying lower-case "dn".
+                        minLength: 1
+                        type: string
+                      username:
+                        description: Username specifies the name of the attribute in the LDAP entry whose value shall become the username of the user after a successful authentication. This would typically be the same attribute name used in the user search filter, although it can be different. E.g. "mail" or "uid" or "userPrincipalName". The value of this field is case-sensitive and must match the case of the attribute name returned by the LDAP server in the user's entry. Distinguished names can be used by specifying lower-case "dn". When this field is set to "dn" then the LDAPIdentityProviderUserSearch's Filter field cannot be blank, since the default value of "dn={}" would not work.
+                        minLength: 1
+                        type: string
+                    type: object
+                  base:
+                    description: Base is the dn (distinguished name) that should be used as the search base when searching for users. E.g. "ou=users,dc=example,dc=com".
+                    minLength: 1
+                    type: string
+                  filter:
+                    description: Filter is the LDAP search filter which should be applied when searching for users. The pattern "{}" must occur in the filter at least once and will be dynamically replaced by the username for which the search is being run. E.g. "mail={}" or "&(objectClass=person)(uid={})". For more information about LDAP filters, see https://ldap.com/ldap-filters. Note that the dn (distinguished name) is not an attribute of an entry, so "dn={}" cannot be used. Optional. When not specified, the default will act as if the Filter were specified as the value from Attributes.Username appended by "={}". When the Attributes.Username is set to "dn" then the Filter must be explicitly specified, since the default value of "dn={}" would not work.
+                    type: string
+                type: object
+            required:
+            - host
+            type: object
+          status:
+            description: Status of the identity provider.
+            properties:
+              conditions:
+                description: Represents the observations of an identity provider's current state.
+                items:
+                  description: Condition status of a resource (mirrored from the metav1.Condition type added in Kubernetes 1.19). In a future API version we can switch to using the upstream type. See https://github.com/kubernetes/apimachinery/blob/v0.19.0/pkg/apis/meta/v1/types.go#L1353-L1413.
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              phase:
+                default: Pending
+                description: Phase summarizes the overall status of the LDAPIdentityProvider.
+                enum:
+                - Pending
+                - Ready
+                - Error
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: oidcidentityproviders.idp.supervisor.pinniped.dev
+  labels:
+    app: pinniped-supervisor
+spec:
+  group: idp.supervisor.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    - pinniped-idp
+    - pinniped-idps
+    kind: OIDCIdentityProvider
+    listKind: OIDCIdentityProviderList
+    plural: oidcidentityproviders
+    singular: oidcidentityprovider
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.issuer
+      name: Issuer
+      type: string
+    - jsonPath: .status.phase
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: OIDCIdentityProvider describes the configuration of an upstream OpenID Connect identity provider.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec for configuring the identity provider.
+            properties:
+              authorizationConfig:
+                description: AuthorizationConfig holds information about how to form the OAuth2 authorization request parameters to be used with this OIDC identity provider.
+                properties:
+                  additionalAuthorizeParameters:
+                    description: additionalAuthorizeParameters are extra query parameters that should be included in the authorize request to your OIDC provider in the authorization request during an OIDC Authorization Code Flow. By default, no extra parameters are sent. The standard parameters that will be sent are "response_type", "scope", "client_id", "state", "nonce", "code_challenge", "code_challenge_method", and "redirect_uri". These parameters cannot be included in this setting. Additionally, the "hd" parameter cannot be included in this setting at this time. The "hd" parameter is used by Google's OIDC provider to provide a hint as to which "hosted domain" the user should use during login. However, Pinniped does not yet support validating the hosted domain in the resulting ID token, so it is not yet safe to use this feature of Google's OIDC provider with Pinniped. This setting does not influence the parameters sent to the token endpoint in the Resource Owner Password Credentials Grant. The Pinniped Supervisor requires that your OIDC provider returns refresh tokens to the Supervisor from the authorization flows. Some OIDC providers may require a certain value for the "prompt" parameter in order to properly request refresh tokens. See the documentation of your OIDC provider's authorization endpoint for its requirements for what to include in the request in order to receive a refresh token in the response, if anything. If your provider requires the prompt parameter to request a refresh token, then include it here. Also note that most providers also require a certain scope to be requested in order to receive refresh tokens. See the additionalScopes setting for more information about using scopes to request refresh tokens.
+                    items:
+                      description: Parameter is a key/value pair which represents a parameter in an HTTP request.
+                      properties:
+                        name:
+                          description: The name of the parameter. Required.
+                          minLength: 1
+                          type: string
+                        value:
+                          description: The value of the parameter.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - name
+                    x-kubernetes-list-type: map
+                  additionalScopes:
+                    description: 'additionalScopes are the additional scopes that will be requested from your OIDC provider in the authorization request during an OIDC Authorization Code Flow and in the token request during a Resource Owner Password Credentials Grant. Note that the "openid" scope will always be requested regardless of the value in this setting, since it is always required according to the OIDC spec. By default, when this field is not set, the Supervisor will request the following scopes: "openid", "offline_access", "email", and "profile". See https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims for a description of the "profile" and "email" scopes. See https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess for a description of the "offline_access" scope. This default value may change in future versions of Pinniped as the standard evolves, or as common patterns used by providers who implement the standard in the ecosystem evolve. By setting this list to anything other than an empty list, you are overriding the default value, so you may wish to include some of "offline_access", "email", and "profile" in your override list. If you do not want any of these scopes to be requested, you may set this list to contain only "openid". Some OIDC providers may also require a scope to get access to the user''s group membership, in which case you may wish to include it in this list. Sometimes the scope to request the user''s group membership is called "groups", but unfortunately this is not specified in the OIDC standard. Generally speaking, you should include any scopes required to cause the appropriate claims to be the returned by your OIDC provider in the ID token or userinfo endpoint results for those claims which you would like to use in the oidcClaims settings to determine the usernames and group memberships of your Kubernetes users. See your OIDC provider''s documentation for more information about what scopes are available to request claims. Additionally, the Pinniped Supervisor requires that your OIDC provider returns refresh tokens to the Supervisor from these authorization flows. For most OIDC providers, the scope required to receive refresh tokens will be "offline_access". See the documentation of your OIDC provider''s authorization and token endpoints for its requirements for what to include in the request in order to receive a refresh token in the response, if anything. Note that it may be safe to send "offline_access" even to providers which do not require it, since the provider may ignore scopes that it does not understand or require (see https://datatracker.ietf.org/doc/html/rfc6749#section-3.3). In the unusual case that you must avoid sending the "offline_access" scope, then you must override the default value of this setting. This is required if your OIDC provider will reject the request when it includes "offline_access" (e.g. GitLab''s OIDC provider).'
+                    items:
+                      type: string
+                    type: array
+                  allowPasswordGrant:
+                    description: allowPasswordGrant, when true, will allow the use of OAuth 2.0's Resource Owner Password Credentials Grant (see https://datatracker.ietf.org/doc/html/rfc6749#section-4.3) to authenticate to the OIDC provider using a username and password without a web browser, in addition to the usual browser-based OIDC Authorization Code Flow. The Resource Owner Password Credentials Grant is not officially part of the OIDC specification, so it may not be supported by your OIDC provider. If your OIDC provider supports returning ID tokens from a Resource Owner Password Credentials Grant token request, then you can choose to set this field to true. This will allow end users to choose to present their username and password to the kubectl CLI (using the Pinniped plugin) to authenticate to the cluster, without using a web browser to log in as is customary in OIDC Authorization Code Flow. This may be convenient for users, especially for identities from your OIDC provider which are not intended to represent a human actor, such as service accounts performing actions in a CI/CD environment. Even if your OIDC provider supports it, you may wish to disable this behavior by setting this field to false when you prefer to only allow users of this OIDCIdentityProvider to log in via the browser-based OIDC Authorization Code Flow. Using the Resource Owner Password Credentials Grant means that the Pinniped CLI and Pinniped Supervisor will directly handle your end users' passwords (similar to LDAPIdentityProvider), and you will not be able to require multi-factor authentication or use the other web-based login features of your OIDC provider during Resource Owner Password Credentials Grant logins. allowPasswordGrant defaults to false.
+                    type: boolean
+                type: object
+              claims:
+                description: Claims provides the names of token claims that will be used when inspecting an identity from this OIDC identity provider.
+                properties:
+                  additionalClaimMappings:
+                    additionalProperties:
+                      type: string
+                    description: AdditionalClaimMappings allows for additional arbitrary upstream claim values to be mapped into the "additionalClaims" claim of the ID tokens generated by the Supervisor. This should be specified as a map of new claim names as the keys, and upstream claim names as the values. These new claim names will be nested under the top-level "additionalClaims" claim in ID tokens generated by the Supervisor when this OIDCIdentityProvider was used for user authentication. These claims will be made available to all clients. This feature is not required to use the Supervisor to provide authentication for Kubernetes clusters, but can be used when using the Supervisor for other authentication purposes. When this map is empty or the upstream claims are not available, the "additionalClaims" claim will be excluded from the ID tokens generated by the Supervisor.
+                    type: object
+                  groups:
+                    description: Groups provides the name of the ID token claim or userinfo endpoint response claim that will be used to ascertain the groups to which an identity belongs. By default, the identities will not include any group memberships when this setting is not configured.
+                    type: string
+                  username:
+                    description: Username provides the name of the ID token claim or userinfo endpoint response claim that will be used to ascertain an identity's username. When not set, the username will be an automatically constructed unique string which will include the issuer URL of your OIDC provider along with the value of the "sub" (subject) claim from the ID token.
+                    type: string
+                type: object
+              client:
+                description: OIDCClient contains OIDC client information to be used used with this OIDC identity provider.
+                properties:
+                  secretName:
+                    description: SecretName contains the name of a namespace-local Secret object that provides the clientID and clientSecret for an OIDC client. If only the SecretName is specified in an OIDCClient struct, then it is expected that the Secret is of type "secrets.pinniped.dev/oidc-client" with keys "clientID" and "clientSecret".
+                    type: string
+                required:
+                - secretName
+                type: object
+              issuer:
+                description: Issuer is the issuer URL of this OIDC identity provider, i.e., where to fetch /.well-known/openid-configuration.
+                minLength: 1
+                pattern: ^https://
+                type: string
+              tls:
+                description: TLS configuration for discovery/JWKS requests to the issuer.
+                properties:
+                  certificateAuthorityData:
+                    description: X.509 Certificate Authority (base64-encoded PEM bundle). If omitted, a default set of system roots will be trusted.
+                    type: string
+                type: object
+            required:
+            - client
+            - issuer
+            type: object
+          status:
+            description: Status of the identity provider.
+            properties:
+              conditions:
+                description: Represents the observations of an identity provider's current state.
+                items:
+                  description: Condition status of a resource (mirrored from the metav1.Condition type added in Kubernetes 1.19). In a future API version we can switch to using the upstream type. See https://github.com/kubernetes/apimachinery/blob/v0.19.0/pkg/apis/meta/v1/types.go#L1353-L1413.
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              phase:
+                default: Pending
+                description: Phase summarizes the overall status of the OIDCIdentityProvider.
+                enum:
+                - Pending
+                - Ready
+                - Error
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+- apiGroups:
+  - config.supervisor.pinniped.dev
+  resources:
+  - federationdomains
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.supervisor.pinniped.dev
+  resources:
+  - federationdomains/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - config.supervisor.pinniped.dev
+  resources:
+  - oidcclients
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.supervisor.pinniped.dev
+  resources:
+  - oidcclients/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - oidcidentityproviders
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - oidcidentityproviders/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - ldapidentityproviders
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - ldapidentityproviders/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - activedirectoryidentityproviders
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - activedirectoryidentityproviders/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  - deployments
+  verbs:
+  - get
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - update
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+subjects:
+- kind: ServiceAccount
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+roleRef:
+  kind: Role
+  name: pinniped-supervisor
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-supervisor-extension-apiserver-authentication-reader
+  namespace: kube-system
+  labels:
+    app: pinniped-supervisor
+subjects:
+- kind: ServiceAccount
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+roleRef:
+  kind: Role
+  name: extension-apiserver-authentication-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+subjects:
+- kind: ServiceAccount
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+roleRef:
+  kind: ClusterRole
+  name: system:auth-delegator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pinniped-supervisor-aggregated-api-server
+  labels:
+    app: pinniped-supervisor
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  - mutatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - flowcontrol.apiserver.k8s.io
+  resources:
+  - flowschemas
+  - prioritylevelconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-supervisor-aggregated-api-server
+  labels:
+    app: pinniped-supervisor
+subjects:
+- kind: ServiceAccount
+  name: pinniped-supervisor
+  namespace: pinniped-supervisor
+roleRef:
+  kind: ClusterRole
+  name: pinniped-supervisor-aggregated-api-server
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: jwtauthenticators.authentication.concierge.pinniped.dev
+  labels:
+    app: pinniped-concierge
+spec:
+  group: authentication.concierge.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    - pinniped-authenticator
+    - pinniped-authenticators
+    kind: JWTAuthenticator
+    listKind: JWTAuthenticatorList
+    plural: jwtauthenticators
+    singular: jwtauthenticator
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.issuer
+      name: Issuer
+      type: string
+    - jsonPath: .spec.audience
+      name: Audience
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: "JWTAuthenticator describes the configuration of a JWT authenticator. \n Upon receiving a signed JWT, a JWTAuthenticator will performs some validation on it (e.g., valid signature, existence of claims, etc.) and extract the username and groups from the token."
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec for configuring the authenticator.
+            properties:
+              audience:
+                description: Audience is the required value of the "aud" JWT claim.
+                minLength: 1
+                type: string
+              claims:
+                description: Claims allows customization of the claims that will be mapped to user identity for Kubernetes access.
+                properties:
+                  groups:
+                    description: Groups is the name of the claim which should be read to extract the user's group membership from the JWT token. When not specified, it will default to "groups".
+                    type: string
+                  username:
+                    description: Username is the name of the claim which should be read to extract the username from the JWT token. When not specified, it will default to "username".
+                    type: string
+                type: object
+              issuer:
+                description: Issuer is the OIDC issuer URL that will be used to discover public signing keys. Issuer is also used to validate the "iss" JWT claim.
+                minLength: 1
+                pattern: ^https://
+                type: string
+              tls:
+                description: TLS configuration for communicating with the OIDC provider.
+                properties:
+                  certificateAuthorityData:
+                    description: X.509 Certificate Authority (base64-encoded PEM bundle). If omitted, a default set of system roots will be trusted.
+                    type: string
+                type: object
+            required:
+            - audience
+            - issuer
+            type: object
+          status:
+            description: Status of the authenticator.
+            properties:
+              conditions:
+                description: Represents the observations of the authenticator's current state.
+                items:
+                  description: Condition status of a resource (mirrored from the metav1.Condition type added in Kubernetes 1.19). In a future API version we can switch to using the upstream type. See https://github.com/kubernetes/apimachinery/blob/v0.19.0/pkg/apis/meta/v1/types.go#L1353-L1413.
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: webhookauthenticators.authentication.concierge.pinniped.dev
+  labels:
+    app: pinniped-concierge
+spec:
+  group: authentication.concierge.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    - pinniped-authenticator
+    - pinniped-authenticators
+    kind: WebhookAuthenticator
+    listKind: WebhookAuthenticatorList
+    plural: webhookauthenticators
+    singular: webhookauthenticator
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.endpoint
+      name: Endpoint
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: WebhookAuthenticator describes the configuration of a webhook authenticator.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec for configuring the authenticator.
+            properties:
+              endpoint:
+                description: Webhook server endpoint URL.
+                minLength: 1
+                pattern: ^https://
+                type: string
+              tls:
+                description: TLS configuration.
+                properties:
+                  certificateAuthorityData:
+                    description: X.509 Certificate Authority (base64-encoded PEM bundle). If omitted, a default set of system roots will be trusted.
+                    type: string
+                type: object
+            required:
+            - endpoint
+            type: object
+          status:
+            description: Status of the authenticator.
+            properties:
+              conditions:
+                description: Represents the observations of the authenticator's current state.
+                items:
+                  description: Condition status of a resource (mirrored from the metav1.Condition type added in Kubernetes 1.19). In a future API version we can switch to using the upstream type. See https://github.com/kubernetes/apimachinery/blob/v0.19.0/pkg/apis/meta/v1/types.go#L1353-L1413.
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+    kapp.k14s.io/update-strategy: fallback-on-replace
+  creationTimestamp: null
+  name: credentialissuers.config.concierge.pinniped.dev
+  labels:
+    app: pinniped-concierge
+spec:
+  group: config.concierge.pinniped.dev
+  names:
+    categories:
+    - pinniped
+    kind: CredentialIssuer
+    listKind: CredentialIssuerList
+    plural: credentialissuers
+    singular: credentialissuer
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.impersonationProxy.mode
+      name: ProxyMode
+      type: string
+    - jsonPath: .status.strategies[?(@.status == "Success")].type
+      name: DefaultStrategy
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: CredentialIssuer describes the configuration and status of the Pinniped Concierge credential issuer.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec describes the intended configuration of the Concierge.
+            properties:
+              impersonationProxy:
+                description: ImpersonationProxy describes the intended configuration of the Concierge impersonation proxy.
+                properties:
+                  externalEndpoint:
+                    description: "ExternalEndpoint describes the HTTPS endpoint where the proxy will be exposed. If not set, the proxy will be served using the external name of the LoadBalancer service or the cluster service DNS name. \n This field must be non-empty when spec.impersonationProxy.service.type is \"None\"."
+                    type: string
+                  mode:
+                    description: 'Mode configures whether the impersonation proxy should be started: - "disabled" explicitly disables the impersonation proxy. This is the default. - "enabled" explicitly enables the impersonation proxy. - "auto" enables or disables the impersonation proxy based upon the cluster in which it is running.'
+                    enum:
+                    - auto
+                    - enabled
+                    - disabled
+                    type: string
+                  service:
+                    default:
+                      type: LoadBalancer
+                    description: Service describes the configuration of the Service provisioned to expose the impersonation proxy to clients.
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: Annotations specifies zero or more key/value pairs to set as annotations on the provisioned Service.
+                        type: object
+                      loadBalancerIP:
+                        description: LoadBalancerIP specifies the IP address to set in the spec.loadBalancerIP field of the provisioned Service. This is not supported on all cloud providers.
+                        maxLength: 255
+                        minLength: 1
+                        type: string
+                      type:
+                        default: LoadBalancer
+                        description: "Type specifies the type of Service to provision for the impersonation proxy. \n If the type is \"None\", then the \"spec.impersonationProxy.externalEndpoint\" field must be set to a non-empty value so that the Concierge can properly advertise the endpoint in the CredentialIssuer's status."
+                        enum:
+                        - LoadBalancer
+                        - ClusterIP
+                        - None
+                        type: string
+                    type: object
+                required:
+                - mode
+                - service
+                type: object
+            required:
+            - impersonationProxy
+            type: object
+          status:
+            description: CredentialIssuerStatus describes the status of the Concierge.
+            properties:
+              kubeConfigInfo:
+                description: Information needed to form a valid Pinniped-based kubeconfig using this credential issuer. This field is deprecated and will be removed in a future version.
+                properties:
+                  certificateAuthorityData:
+                    description: The K8s API server CA bundle.
+                    minLength: 1
+                    type: string
+                  server:
+                    description: The K8s API server URL.
+                    minLength: 1
+                    pattern: ^https://|^http://
+                    type: string
+                required:
+                - certificateAuthorityData
+                - server
+                type: object
+              strategies:
+                description: List of integration strategies that were attempted by Pinniped.
+                items:
+                  description: CredentialIssuerStrategy describes the status of an integration strategy that was attempted by Pinniped.
+                  properties:
+                    frontend:
+                      description: Frontend describes how clients can connect using this strategy.
+                      properties:
+                        impersonationProxyInfo:
+                          description: ImpersonationProxyInfo describes the parameters for the impersonation proxy on this Concierge. This field is only set when Type is "ImpersonationProxy".
+                          properties:
+                            certificateAuthorityData:
+                              description: CertificateAuthorityData is the base64-encoded PEM CA bundle of the impersonation proxy.
+                              minLength: 1
+                              type: string
+                            endpoint:
+                              description: Endpoint is the HTTPS endpoint of the impersonation proxy.
+                              minLength: 1
+                              pattern: ^https://
+                              type: string
+                          required:
+                          - certificateAuthorityData
+                          - endpoint
+                          type: object
+                        tokenCredentialRequestInfo:
+                          description: TokenCredentialRequestAPIInfo describes the parameters for the TokenCredentialRequest API on this Concierge. This field is only set when Type is "TokenCredentialRequestAPI".
+                          properties:
+                            certificateAuthorityData:
+                              description: CertificateAuthorityData is the base64-encoded Kubernetes API server CA bundle.
+                              minLength: 1
+                              type: string
+                            server:
+                              description: Server is the Kubernetes API server URL.
+                              minLength: 1
+                              pattern: ^https://|^http://
+                              type: string
+                          required:
+                          - certificateAuthorityData
+                          - server
+                          type: object
+                        type:
+                          description: Type describes which frontend mechanism clients can use with a strategy.
+                          enum:
+                          - TokenCredentialRequestAPI
+                          - ImpersonationProxy
+                          type: string
+                      required:
+                      - type
+                      type: object
+                    lastUpdateTime:
+                      description: When the status was last checked.
+                      format: date-time
+                      type: string
+                    message:
+                      description: Human-readable description of the current status.
+                      minLength: 1
+                      type: string
+                    reason:
+                      description: Reason for the current status.
+                      enum:
+                      - Listening
+                      - Pending
+                      - Disabled
+                      - ErrorDuringSetup
+                      - CouldNotFetchKey
+                      - CouldNotGetClusterInfo
+                      - FetchedKey
+                      type: string
+                    status:
+                      description: Status of the attempted integration strategy.
+                      enum:
+                      - Success
+                      - Error
+                      type: string
+                    type:
+                      description: Type of integration attempted.
+                      enum:
+                      - KubeClusterSigningCertificate
+                      - ImpersonationProxy
+                      type: string
+                  required:
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            required:
+            - strategies
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+    pod-security.kubernetes.io/enforce: privileged
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-concierge-kube-cert-agent
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-concierge-impersonation-proxy
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+  annotations:
+    kapp.k14s.io/change-group: impersonation-proxy.concierge.pinniped.dev/serviceaccount
+secrets:
+- name: pinniped-concierge-impersonation-proxy
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pinniped-concierge-config
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+data:
+  pinniped.yaml: "discovery:\n  url: null\napi:\n  servingCertificate:\n    durationSeconds: 2592000\n    renewBeforeSeconds: 2160000\napiGroupSuffix: pinniped.dev\n# aggregatedAPIServerPort may be set here, although other YAML references to the default port (10250) may also need to be updated\n# impersonationProxyServerPort may be set here, although other YAML references to the default port (8444) may also need to be updated\nnames:\n  servingCertificateSecret: pinniped-concierge-api-tls-serving-certificate\n  credentialIssuer: pinniped-concierge-config\n  apiService: pinniped-concierge-api\n  impersonationLoadBalancerService: pinniped-concierge-impersonation-proxy-load-balancer\n  impersonationClusterIPService: pinniped-concierge-impersonation-proxy-cluster-ip\n  impersonationTLSCertificateSecret: pinniped-concierge-impersonation-proxy-tls-serving-certificate\n  impersonationCACertificateSecret: pinniped-concierge-impersonation-proxy-ca-certificate\n  impersonationSignerSecret: pinniped-concierge-impersonation-proxy-signer-ca-certificate\n  agentServiceAccount: pinniped-concierge-kube-cert-agent\nlabels: {\"app\":\"pinniped-concierge\"}\nkubeCertAgent:\n  namePrefix: pinniped-concierge-kube-cert-agent-\n  \n  \n  image: docker.io/getpinniped/pinniped-server:v0.22.0\n  \n  \n  \n\n"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pinniped-concierge
+  template:
+    metadata:
+      labels:
+        app: pinniped-concierge
+        deployment.pinniped.dev: concierge
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+    spec:
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+      serviceAccountName: pinniped-concierge
+      containers:
+      - name: pinniped-concierge
+        image: docker.io/getpinniped/pinniped-server:v0.22.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        command:
+        - pinniped-concierge
+        - --config=/etc/config/pinniped.yaml
+        - --downward-api-path=/etc/podinfo
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: config-volume
+          mountPath: /etc/config
+          readOnly: true
+        - name: podinfo
+          mountPath: /etc/podinfo
+          readOnly: true
+        - name: impersonation-proxy
+          mountPath: /var/run/secrets/impersonation-proxy.concierge.pinniped.dev/serviceaccount
+          readOnly: true
+        env: []
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10250
+            scheme: HTTPS
+          initialDelaySeconds: 2
+          timeoutSeconds: 15
+          periodSeconds: 10
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10250
+            scheme: HTTPS
+          initialDelaySeconds: 2
+          timeoutSeconds: 3
+          periodSeconds: 10
+          failureThreshold: 3
+      volumes:
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi
+      - name: config-volume
+        configMap:
+          name: pinniped-concierge-config
+      - name: impersonation-proxy
+        secret:
+          secretName: pinniped-concierge-impersonation-proxy
+          items:
+          - key: token
+            path: token
+      - name: podinfo
+        downwardAPI:
+          items:
+          - path: labels
+            fieldRef:
+              fieldPath: metadata.labels
+          - path: name
+            fieldRef:
+              fieldPath: metadata.name
+          - path: namespace
+            fieldRef:
+              fieldPath: metadata.namespace
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  deployment.pinniped.dev: concierge
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinniped-concierge-api
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector:
+    deployment.pinniped.dev: concierge
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 10250
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinniped-concierge-proxy
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector:
+    deployment.pinniped.dev: concierge
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 8444
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.login.concierge.pinniped.dev
+  labels:
+    app: pinniped-concierge
+spec:
+  version: v1alpha1
+  group: login.concierge.pinniped.dev
+  groupPriorityMinimum: 9900
+  versionPriority: 15
+  service:
+    name: pinniped-concierge-api
+    namespace: pinniped-concierge
+    port: 443
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.identity.concierge.pinniped.dev
+  labels:
+    app: pinniped-concierge
+spec:
+  version: v1alpha1
+  group: identity.concierge.pinniped.dev
+  groupPriorityMinimum: 9900
+  versionPriority: 15
+  service:
+    name: pinniped-concierge-api
+    namespace: pinniped-concierge
+    port: 443
+---
+apiVersion: config.concierge.pinniped.dev/v1alpha1
+kind: CredentialIssuer
+metadata:
+  name: pinniped-concierge-config
+  labels:
+    app: pinniped-concierge
+spec:
+  impersonationProxy:
+    mode: auto
+    service:
+      type: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "4000"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pinniped-concierge-impersonation-proxy
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+  annotations:
+    kapp.k14s.io/change-rule: upsert after upserting impersonation-proxy.concierge.pinniped.dev/serviceaccount
+    kubernetes.io/service-account.name: pinniped-concierge-impersonation-proxy
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pinniped-concierge-aggregated-api-server
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  - mutatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - flowcontrol.apiserver.k8s.io
+  resources:
+  - flowschemas
+  - prioritylevelconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - security.openshift.io
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
+  resourceNames:
+  - nonroot
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - list
+- apiGroups:
+  - config.concierge.pinniped.dev
+  resources:
+  - credentialissuers
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+- apiGroups:
+  - config.concierge.pinniped.dev
+  resources:
+  - credentialissuers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - authentication.concierge.pinniped.dev
+  resources:
+  - jwtauthenticators
+  - webhookauthenticators
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-aggregated-api-server
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+roleRef:
+  kind: ClusterRole
+  name: pinniped-concierge-aggregated-api-server
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pinniped-concierge-impersonation-proxy
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - users
+  - groups
+  - serviceaccounts
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - impersonate
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-impersonation-proxy
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge-impersonation-proxy
+  namespace: pinniped-concierge
+roleRef:
+  kind: ClusterRole
+  name: pinniped-concierge-impersonation-proxy
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pinniped-concierge-kube-cert-agent
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-kube-cert-agent
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge-kube-cert-agent
+  namespace: pinniped-concierge
+roleRef:
+  kind: Role
+  name: pinniped-concierge-kube-cert-agent
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pinniped-concierge-aggregated-api-server
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - delete
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - update
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-aggregated-api-server
+  namespace: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+roleRef:
+  kind: Role
+  name: pinniped-concierge-aggregated-api-server
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pinniped-concierge-kube-system-pod-read
+  namespace: kube-system
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-kube-system-pod-read
+  namespace: kube-system
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+roleRef:
+  kind: Role
+  name: pinniped-concierge-kube-system-pod-read
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pinniped-concierge-pre-authn-apis
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - login.concierge.pinniped.dev
+  resources:
+  - tokencredentialrequests
+  verbs:
+  - create
+  - list
+- apiGroups:
+  - identity.concierge.pinniped.dev
+  resources:
+  - whoamirequests
+  verbs:
+  - create
+  - list
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-pre-authn-apis
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: system:unauthenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: pinniped-concierge-pre-authn-apis
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+roleRef:
+  kind: ClusterRole
+  name: system:auth-delegator
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-extension-apiserver-authentication-reader
+  namespace: kube-system
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+roleRef:
+  kind: Role
+  name: extension-apiserver-authentication-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-cluster-info-lister-watcher
+  namespace: kube-public
+  labels:
+    app: pinniped-concierge
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - list
+  - watch
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-concierge-cluster-info-lister-watcher
+  namespace: kube-public
+  labels:
+    app: pinniped-concierge
+subjects:
+- kind: ServiceAccount
+  name: pinniped-concierge
+  namespace: pinniped-concierge
+roleRef:
+  kind: Role
+  name: pinniped-concierge-cluster-info-lister-watcher
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pinniped-supervisor
+  labels:
+    app: pinniped-supervisor
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-post-deploy-job-sa
+  namespace: pinniped-supervisor
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tkg-pinniped-post-deploy-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  - services
+  - pods
+  verbs:
+  - get
+  - list
+  - delete
+  - create
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - cert-manager.io
+  resources:
+  - certificates
+  verbs:
+  - get
+  - list
+  - delete
+  - create
+  - update
+- apiGroups:
+  - config.supervisor.pinniped.dev
+  resources:
+  - federationdomains
+  verbs:
+  - get
+  - list
+  - delete
+  - create
+  - update
+- apiGroups:
+  - authentication.concierge.pinniped.dev
+  resources:
+  - jwtauthenticators
+  verbs:
+  - get
+  - list
+  - delete
+  - create
+  - update
+- apiGroups:
+  - idp.supervisor.pinniped.dev
+  resources:
+  - oidcidentityproviders
+  verbs:
+  - get
+  - list
+  - update
+  - create
+  - delete
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tkg-pinniped-post-deploy-cluster-role-binding
+subjects:
+- kind: ServiceAccount
+  name: pinniped-post-deploy-job-sa
+  namespace: pinniped-supervisor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tkg-pinniped-post-deploy-cluster-role
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pinniped-post-deploy-job
+  namespace: pinniped-supervisor
+  annotations:
+    kapp.k14s.io/update-strategy: always-replace
+    pinniped-addon-template/hash: ec372c2e3299a543f2477ff430ed93c4d60e6cc8008186f4591062488d0911f5
+spec:
+  backoffLimit: 50
+  template:
+    spec:
+      serviceAccount: pinniped-post-deploy-job-sa
+      restartPolicy: Never
+      containers:
+      - name: pinniped-post-deploy
+        image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
+        imagePullPolicy: IfNotPresent
+        command:
+        - /tkg-pinniped-post-deploy-job
+        - --supervisor-namespace=pinniped-supervisor
+        - --concierge-namespace=pinniped-concierge
+        - --supervisor-svc-name=pinniped-supervisor
+        - --federationdomain-name=pinniped-federation-domain
+        - --jwtauthenticator-name=tkg-jwt-authenticator
+        - --supervisor-cert-name=pinniped-cert
+        - --custom-tls-secret=
+        - --is-dex-required=False
+        - --concierge-is-cluster-scoped=true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pinniped-post-deploy-controller-sa
+  namespace: pinniped-supervisor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pinniped-post-deploy-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - clusters
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped-post-deploy-controller
+subjects:
+- kind: ServiceAccount
+  name: pinniped-post-deploy-controller-sa
+  namespace: pinniped-supervisor
+roleRef:
+  kind: ClusterRole
+  name: pinniped-post-deploy-controller
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: pinniped-post-deploy-controller
+  namespace: pinniped-supervisor
+spec:
+  selector:
+    matchLabels:
+      app: pinniped-post-deploy-controller
+  template:
+    metadata:
+      labels:
+        app: pinniped-post-deploy-controller
+    spec:
+      serviceAccountName: pinniped-post-deploy-controller-sa
+      containers:
+      - image: projects.registry.vmware.com/tce/tanzu_core/addons/tkg-pinniped-post-deploy:v1.3.1
+        name: pinniped-post-deploy-controller
+        command:
+        - /tkg-pinniped-post-deploy-controller
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped:view-pinnipedinfo
+  namespace: kube-public
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - pinniped-info
+  resources:
+  - configmaps
+  verbs:
+  - get
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pinniped:view-pinnipedinfo
+  namespace: kube-public
+subjects:
+- kind: User
+  apiGroup: rbac.authorization.k8s.io
+  name: system:anonymous
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pinniped:view-pinnipedinfo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-info-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-info-reader
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-info-reader
+rules:
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - clusters
+  verbs:
+  - get
+- apiGroups:
+  - infrastructure.cluster.x-k8s.io
+  resources:
+  - awsclusters
+  - vsphereclusters
+  - azureclusters
+  verbs:
+  - get

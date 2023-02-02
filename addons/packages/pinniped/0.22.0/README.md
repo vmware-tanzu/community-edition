@@ -13,6 +13,10 @@ See `bundle/config/values.yaml` for descriptions of the configuration values.
 |-------| ------- |
 | `custom_cluster_issuer` |  |
 | `custom_tls_secret` |  |
+| `daemonset.updateStrategy` |  `<nil>`  |
+| `deployment.rollingUpdate.maxSurge` |  `<nil>`  |
+| `deployment.rollingUpdate.maxUnavailable` |  `<nil>`  |
+| `deployment.updateStrategy` |  `<nil>`  |
 | `dex.app` |  `dex`  |
 | `dex.certificate.duration` |  `2160h`  |
 | `dex.certificate.renewBefore` |  `360h`  |
@@ -103,8 +107,10 @@ See `bundle/config/values.yaml` for descriptions of the configuration values.
 | `imageInfo.images.tkgPinnipedPostDeployImage.tag` |  `v0.4.1_vmware.1`  |
 | `infrastructure_provider` |  `<nil>`  |
 | `no_proxy` |  |
+| `nodeSelector` |  `<nil>`  |
 | `pinniped.cert_duration` |  `2160h`  |
 | `pinniped.cert_renew_before` |  `360h`  |
+| `pinniped.concierge.audience` |  `<nil>`  |
 | `pinniped.image.name` |  `DEPRECATED`  |
 | `pinniped.image.pull_policy` |  `DEPRECATED`  |
 | `pinniped.image.repository` |  `DEPRECATED`  |
@@ -113,6 +119,8 @@ See `bundle/config/values.yaml` for descriptions of the configuration values.
 | `pinniped.post_deploy_job_image.pull_policy` |  `DEPRECATED`  |
 | `pinniped.post_deploy_job_image.repository` |  `DEPRECATED`  |
 | `pinniped.post_deploy_job_image.tag` |  `DEPRECATED`  |
+| `pinniped.supervisor.service.name` |  `pinniped-supervisor`  |
+| `pinniped.supervisor.service.type` |  `<nil>`  |
 | `pinniped.supervisor_ca_bundle_data` |  `ca_bundle_data_of_pinniped_supervisor_svc`  |
 | `pinniped.supervisor_svc_endpoint` |  `https://0.0.0.0:31234`  |
 | `pinniped.supervisor_svc_external_dns` |  `<nil>`  |
@@ -136,7 +144,7 @@ See bundle/examples directory for example configurations of the Pinniped package
 Build the templates using `oidc` or `ldap` overlay:
 
 ```bash
-cd addons/packages/pinniped/0.4.3/bundle
+cd addons/packages/pinniped/0.22.0/bundle
 ytt -f config -f examples/mc-oidc.yaml
 ```
 
@@ -145,7 +153,7 @@ ytt -f config -f examples/mc-oidc.yaml
 `kbld` will generate the `bundle/.imgpkg/images.yml` file via the following:
 
 ```bash
-cd addons/packages/pinniped/0.4.3/bundle
+cd addons/packages/pinniped/0.22.0/bundle
 ytt -f config/ -f examples/mc-ldap.yaml | kbld -f kbld-config.yaml -f - --imgpkg-lock-output .imgpkg/images.yml
 ```
 

@@ -1,0 +1,27 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: pinniped.community.tanzu.vmware.com.0.22.0
+spec:
+  refName: pinniped.community.tanzu.vmware.com
+  version: 0.22.0
+  releaseNotes: "pinniped 0.22.0 https://github.com/vmware-tanzu/pinniped/releases/tag/v0.22.0"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/pinniped@sha256:6e4227bd3b4d0492c7359224ad7b261dd31ca264f11e9a15a355f52867456563
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - kbld-config.yaml
+              - .imgpkg/images.yml
+      deploy:
+        - kapp:
+            rawOptions: ["--dangerous-allow-empty-list-of-resources=true"]

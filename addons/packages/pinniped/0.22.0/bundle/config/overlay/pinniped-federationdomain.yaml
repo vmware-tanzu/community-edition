@@ -1,0 +1,14 @@
+#@ load("/values.star", "render_on_mgmt_cluster")
+#@ load("@ytt:data", "data")
+#@ load("/libs/constants.lib.yaml", "pinniped_supervisor_namespace")
+
+#@ if render_on_mgmt_cluster():
+---
+apiVersion: config.supervisor.pinniped.dev/v1alpha1
+kind: FederationDomain
+metadata:
+  name: pinniped-federation-domain
+  namespace: #@ pinniped_supervisor_namespace()
+spec:
+  issuer: #@ data.values.pinniped.supervisor_svc_endpoint
+#@ end

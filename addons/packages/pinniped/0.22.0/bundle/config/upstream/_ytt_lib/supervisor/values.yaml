@@ -1,0 +1,133 @@
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@data/values
+---
+
+app_name: pinniped-supervisor
+
+#! Creates a new namespace statically in yaml with the given name and installs the app into that namespace.
+namespace: pinniped-supervisor
+#! If specified, assumes that a namespace of the given name already exists and installs the app into that namespace.
+#! If both `namespace` and `into_namespace` are specified, then only `into_namespace` is used.
+into_namespace: #! e.g. my-preexisting-namespace
+
+#! All resources created statically by yaml at install-time and all resources created dynamically
+#! by controllers at runtime will be labelled with `app: $app_name` and also with the labels
+#! specified here. The value of `custom_labels` must be a map of string keys to string values.
+#! The app can be uninstalled either by:
+#! 1. Deleting the static install-time yaml resources including the static namespace, which will cascade and also delete
+#!    resources that were dynamically created by controllers at runtime
+#! 2. Or, deleting all resources by label, which does not assume that there was a static install-time yaml namespace.
+custom_labels: {} #! e.g. {myCustomLabelName: myCustomLabelValue, otherCustomLabelName: otherCustomLabelValue}
+
+#! Specify how many replicas of the Pinniped server to run.
+replicas: 2
+
+#! Specify either an image_digest or an image_tag. If both are given, only image_digest will be used.
+image_repo: projects.registry.vmware.com/pinniped/pinniped-server
+image_digest: #! e.g. sha256:f3c4fdfd3ef865d4b97a1fd295d94acc3f0c654c46b6f27ffad5cf80216903c8
+image_tag: latest
+
+#! Specifies a secret to be used when pulling the above `image_repo` container image.
+#! Can be used when the above image_repo is a private registry.
+#! Typically the value would be the output of: kubectl create secret docker-registry x --docker-server=https://example.io --docker-username="USERNAME" --docker-password="PASSWORD" --dry-run=client -o json | jq -r '.data[".dockerconfigjson"]'
+#! Optional.
+image_pull_dockerconfigjson: #! e.g. {"auths":{"https://registry.example.com":{"username":"USERNAME","password":"PASSWORD","auth":"BASE64_ENCODED_USERNAME_COLON_PASSWORD"}}}
+
+#! Specify how to expose the Supervisor app's HTTPS port as a Service.
+#! Typically, you would set a value for only one of the following service types.
+#! Setting any of these values means that a Service of that type will be created. They are all optional.
+#! Note that all port numbers should be numbers (not strings), i.e. use ytt's `--data-value-yaml` instead of `--data-value`.
+#! Several of these values have been deprecated and will be removed in a future release. Their names have been changed to
+#! mark them as deprecated and to make it obvious upon upgrade to anyone who was using them that they have been deprecated.
+deprecated_service_http_nodeport_port: #! will be removed in a future release; when specified, creates a NodePort Service with this `port` value, with port 8080 as its `targetPort`; e.g. 31234
+deprecated_service_http_nodeport_nodeport: #! will be removed in a future release; the `nodePort` value of the NodePort Service, optional when `deprecated_service_http_nodeport_port` is specified; e.g. 31234
+deprecated_service_http_loadbalancer_port: #! will be removed in a future release; when specified, creates a LoadBalancer Service with this `port` value, with port 8080 as its `targetPort`; e.g. 8443
+deprecated_service_http_clusterip_port: #! will be removed in a future release; when specified, creates a ClusterIP Service with this `port` value, with port 8080 as its `targetPort`; e.g. 8443
+service_https_nodeport_port: #! when specified, creates a NodePort Service with this `port` value, with port 8443 as its `targetPort`; e.g. 31243
+service_https_nodeport_nodeport: #! the `nodePort` value of the NodePort Service, optional when `service_https_nodeport_port` is specified; e.g. 31243
+service_https_loadbalancer_port: #! when specified, creates a LoadBalancer Service with this `port` value, with port 8443 as its `targetPort`; e.g. 8443
+service_https_clusterip_port: #! when specified, creates a ClusterIP Service with this `port` value, with port 8443 as its `targetPort`; e.g. 8443
+#! The `loadBalancerIP` value of the LoadBalancer Service.
+#! Ignored unless service_https_loadbalancer_port is provided.
+#! Optional.
+service_loadbalancer_ip: #! e.g. 1.2.3.4
+
+#! Specify the verbosity of logging: info ("nice to know" information), debug (developer information), trace (timing information),
+#! or all (kitchen sink). Do not use trace or all on production systems, as credentials may get logged.
+log_level: #! By default, when this value is left unset, only warnings and errors are printed. There is no way to suppress warning and error logs.
+#! Specify the format of logging: json (for machine parsable logs) and text (for legacy klog formatted logs).
+#! By default, when this value is left unset, logs are formatted in json.
+#! This configuration is deprecated and will be removed in a future release at which point logs will always be formatted as json.
+deprecated_log_format:
+
+run_as_user: 65532 #! run_as_user specifies the user ID that will own the process, see the Dockerfile for the reasoning behind this choice
+run_as_group: 65532 #! run_as_group specifies the group ID that will own the process, see the Dockerfile for the reasoning behind this choice
+
+#! Specify the API group suffix for all Pinniped API groups. By default, this is set to
+#! pinniped.dev, so Pinniped API groups will look like foo.pinniped.dev,
+#! authentication.concierge.pinniped.dev, etc. As an example, if this is set to tuna.io, then
+#! Pinniped API groups will look like foo.tuna.io. authentication.concierge.tuna.io, etc.
+api_group_suffix: pinniped.dev
+
+#! Set the standard golang HTTPS_PROXY and NO_PROXY environment variables on the Supervisor containers.
+#! These will be used when the Supervisor makes backend-to-backend calls to upstream identity providers using HTTPS,
+#! e.g. when the Supervisor fetches discovery documents, JWKS keys, and tokens from an upstream OIDC Provider.
+#! The Supervisor never makes insecure HTTP calls, so there is no reason to set HTTP_PROXY.
+#! Optional.
+https_proxy: #! e.g. http://proxy.example.com
+no_proxy: "$(KUBERNETES_SERVICE_HOST),169.254.169.254,127.0.0.1,localhost,.svc,.cluster.local" #! do not proxy Kubernetes endpoints
+
+#! Control the HTTP and HTTPS listeners of the Supervisor.
+#!
+#! The schema of this config is as follows:
+#!
+#! endpoints:
+#!   https:
+#!     network: tcp | unix | disabled
+#!     address: host:port when network=tcp or /pinniped_socket/socketfile.sock when network=unix
+#!   http:
+#!     network: same as above
+#!     address: same as above, except that when network=tcp then the address is only allowed to bind to loopback interfaces
+#!
+#! Setting network to disabled turns off that particular listener.
+#! See https://pkg.go.dev/net#Listen and https://pkg.go.dev/net#Dial for a description of what can be
+#! specified in the address parameter based on the given network parameter.  To aid in the use of unix
+#! domain sockets, a writable empty dir volume is mounted at /pinniped_socket when network is set to "unix."
+#!
+#! The current defaults are:
+#!
+#! endpoints:
+#!   https:
+#!     network: tcp
+#!     address: :8443
+#!   http:
+#!     network: disabled
+#!
+#! These defaults mean: For HTTPS listening, bind to all interfaces using TCP on port 8443.
+#! Disable HTTP listening by default.
+#!
+#! The HTTP listener can only be bound to loopback interfaces. This allows the listener to accept
+#! traffic from within the pod, e.g. from a service mesh sidecar. The HTTP listener should not be
+#! used to accept traffic from outside the pod, since that would mean that the network traffic could be
+#! transmitted unencrypted. The HTTPS listener should be used instead to accept traffic from outside the pod.
+#! Ingresses and load balancers that terminate TLS connections should re-encrypt the data and route traffic
+#! to the HTTPS listener. Unix domain sockets may also be used for integrations with service meshes.
+#!
+#! Changing the HTTPS port number must be accompanied by matching changes to the service and deployment
+#! manifests. Changes to the HTTPS listener must be coordinated with the deployment health checks.
+#!
+#! Optional.
+endpoints:
+
+#! Optionally override the validation on the endpoints.http value which checks that only loopback interfaces are used.
+#! When deprecated_insecure_accept_external_unencrypted_http_requests is true, the HTTP listener is allowed to bind to any
+#! interface, including interfaces that are listening for traffic from outside the pod. This value is being introduced
+#! to ease the transition to the new loopback interface validation for the HTTP port for any users who need more time
+#! to change their ingress strategy to avoid using plain HTTP into the Supervisor pods.
+#! This value is immediately deprecated upon its introduction. It will be removed in some future release, at which time
+#! traffic from outside the pod will need to be sent to the HTTPS listener instead, with no simple workaround available.
+#! Allowed values are true (boolean), "true" (string), false (boolean), and "false" (string). The default is false.
+#! Optional.
+deprecated_insecure_accept_external_unencrypted_http_requests: false

@@ -1,0 +1,3 @@
+#! Yes, this file is empty.
+#!
+#! It is because when we set identity_management_type: none, we expect no resources to get generated.

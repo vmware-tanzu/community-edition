@@ -1,0 +1,17 @@
+#@data/values
+---
+#! Notes:
+#! - deployments (dex, supervisor, concierge) should honor both the updateStrategy as well as the nodeSelector
+#! - post-deploy job should honor the nodeSelector
+deployment:
+  updateStrategy: RollingUpdate #! RollingUpdate is only option that will trigger this in the deployment
+  rollingUpdate:
+    maxUnavailable: 1111
+    maxSurge: 9999
+nodeSelector:
+    race: "wood elf"
+    class: paladin
+    level: 6
+infrastructure_provider: vsphere
+tkg_cluster_role: management
+identity_management_type: oidc

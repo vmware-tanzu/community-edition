@@ -1,0 +1,88 @@
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ load("@ytt:template", "template")
+
+#@ def defaultResourceName():
+#@   return data.values.app_name
+#@ end
+
+#@ def defaultResourceNameWithSuffix(suffix):
+#@   return data.values.app_name + "-" + suffix
+#@ end
+
+#@ def pinnipedDevAPIGroupWithPrefix(prefix):
+#@   return prefix + "." + data.values.api_group_suffix
+#@ end
+
+#@ def namespace():
+#@   if data.values.into_namespace:
+#@     return data.values.into_namespace
+#@   else:
+#@     return data.values.namespace
+#@   end
+#@ end
+
+#@ def defaultLabel():
+app: #@ data.values.app_name
+#@ end
+
+#@ def deploymentPodLabel():
+deployment.pinniped.dev: supervisor
+#@ end
+
+#@ def labels():
+_: #@ template.replace(defaultLabel())
+_: #@ template.replace(data.values.custom_labels)
+#@ end
+
+#@ def getAndValidateLogLevel():
+#@   log_level = data.values.log_level
+#@   if log_level != "info" and log_level != "debug" and log_level != "trace" and log_level != "all":
+#@     fail("log_level '" + log_level + "' is invalid")
+#@   end
+#@   return log_level
+#@ end
+
+#@ def getPinnipedConfigMapData():
+#@   config = {
+#@     "apiGroupSuffix": data.values.api_group_suffix,
+#@     "names": {
+#@       "defaultTLSCertificateSecret": defaultResourceNameWithSuffix("default-tls-certificate"),
+#@       "apiService": defaultResourceNameWithSuffix("api"),
+#@     },
+#@     "labels": labels(),
+#@     "insecureAcceptExternalUnencryptedHttpRequests": data.values.deprecated_insecure_accept_external_unencrypted_http_requests
+#@   }
+#@   if data.values.log_level or data.values.deprecated_log_format:
+#@     config["log"] = {}
+#@   end
+#@   if data.values.log_level:
+#@     config["log"]["level"] = getAndValidateLogLevel()
+#@   end
+#@   if data.values.deprecated_log_format:
+#@     config["log"]["format"] = data.values.deprecated_log_format
+#@   end
+#@   if data.values.endpoints:
+#@     config["endpoints"] = data.values.endpoints
+#@   end
+#@   return config
+#@ end
+
+#@ def getattr_safe(val, *args):
+#@   out = None
+#@   for arg in args:
+#@     if not hasattr(val, arg):
+#@       return None
+#@     end
+#@     out = getattr(val, arg)
+#@     val = out
+#@   end
+#@   return out
+#@ end
+
+#@ def hasUnixNetworkEndpoint():
+#@   return getattr_safe(data.values.endpoints, "http",  "network") == "unix" or \
+#@          getattr_safe(data.values.endpoints, "https", "network") == "unix"
+#@ end
