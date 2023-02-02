@@ -3,8 +3,8 @@
 
 #! Between Pinniped v0.12.1 and v0.22.0, the Supervisor's pod CPU limit was increased
 #! from 100m to 1000m to accommodate bcrypt hashing for secrets of dynamic clients.
-#! Dynamic clients are only a hidden feature for the TCE package, we will reset the
-#! limit here.
+#!
+#! To make use of dynamic clients, please increase the supervisor pod CPU limit.
 
 #@overlay/match expects="0+",by=overlay.subset({"kind":"Deployment","metadata":{"name":"pinniped-supervisor"}})
 ---
