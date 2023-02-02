@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 	"text/template"
 	"time"
@@ -28,17 +29,19 @@ func main() {
 	generatorName := os.Args[1]
 	tmplPath := os.Args[2]
 	valuesPath := os.Args[3]
+	version := os.Args[4]
 
 	tmpl := template.Must(template.ParseFiles(tmplPath))
-	tmplData := buildTmplData(generatorName, valuesPath)
+	tmplData := buildTmplData(generatorName, valuesPath, version)
 	err := tmpl.Execute(os.Stdout, tmplData)
 	checkErr(err, "execute template")
 }
 
 type Data struct {
-	GeneratorName string
-	Date          string
-	Values        []*Value
+	GeneratorName       string
+	Date                string
+	Values              []*Value
+	BundleDirForVersion string
 }
 
 type Value struct {
@@ -48,11 +51,12 @@ type Value struct {
 	Default     string
 }
 
-func buildTmplData(generatorName, valuesPath string) *Data {
+func buildTmplData(generatorName, valuesPath, version string) *Data {
 	return &Data{
-		GeneratorName: generatorName,
-		Date:          time.Now().Format(time.RFC1123),
-		Values:        getValues(valuesPath),
+		GeneratorName:       generatorName,
+		Date:                time.Now().Format(time.RFC1123),
+		Values:              getValues(valuesPath),
+		BundleDirForVersion: filepath.Join("addons", "packages", "pinniped", version, "bundle"),
 	}
 }
 

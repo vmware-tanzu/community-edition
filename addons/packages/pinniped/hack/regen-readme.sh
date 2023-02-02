@@ -22,9 +22,10 @@ popd >/dev/null
 # For each version of the package, generate the README.
 for version_dir in "$MY_DIR"/../*; do
   if [[ "$(basename "$version_dir")" =~ [0-9]+.[0-9]+.[0-9]+ ]]; then
+    version="$(basename "$version_dir")"
     version_readme="${version_dir}/README.md"
     pushd "$version_dir" >/dev/null
-      "$GEN_README" "$ME" "${MY_DIR}/readme.tmpl" "${version_dir}/bundle/config/values.yaml" >"$version_readme"
+      "$GEN_README" "$ME" "${MY_DIR}/readme.tmpl" "${version_dir}/bundle/config/values.yaml" "${version}" >"$version_readme"
     popd >/dev/null
   fi
 done
