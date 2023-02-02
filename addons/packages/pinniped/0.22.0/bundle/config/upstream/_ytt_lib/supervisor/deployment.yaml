@@ -1,9 +1,19 @@
-#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
 #! SPDX-License-Identifier: Apache-2.0
 
 #@ load("@ytt:data", "data")
-#@ load("@ytt:json", "json")
-#@ load("helpers.lib.yaml", "defaultLabel", "labels", "deploymentPodLabel", "namespace", "defaultResourceName", "defaultResourceNameWithSuffix", "getAndValidateLogLevel")
+#@ load("@ytt:yaml", "yaml")
+#@ load("helpers.lib.yaml",
+#@   "defaultLabel",
+#@   "labels",
+#@   "deploymentPodLabel",
+#@   "namespace",
+#@   "defaultResourceName",
+#@   "defaultResourceNameWithSuffix",
+#@   "pinnipedDevAPIGroupWithPrefix",
+#@   "getPinnipedConfigMapData",
+#@   "hasUnixNetworkEndpoint",
+#@  )
 #@ load("@ytt:template", "template")
 
 #@ if not data.values.into_namespace:
@@ -30,14 +40,7 @@ metadata:
   labels: #@ labels()
 data:
   #@yaml/text-templated-strings
-  pinniped.yaml: |
-    apiGroupSuffix: (@= data.values.api_group_suffix @)
-    names:
-      defaultTLSCertificateSecret: (@= defaultResourceNameWithSuffix("default-tls-certificate") @)
-    labels: (@= json.encode(labels()).rstrip() @)
-    (@ if data.values.log_level: @)
-    logLevel: (@= getAndValidateLogLevel() @)
-    (@ end @)
+  pinniped.yaml: #@ yaml.encode(getPinnipedConfigMapData())
 ---
 #@ if data.values.image_pull_dockerconfigjson and data.values.image_pull_dockerconfigjson != "":
 apiVersion: v1
@@ -93,12 +96,37 @@ spec:
             - /etc/config/pinniped.yaml
           securityContext:
             readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ "ALL" ]
+            #! seccompProfile was introduced in Kube v1.19. Using it on an older Kube version will result in a
+            #! kubectl validation error when installing via `kubectl apply`, which can be ignored using kubectl's
+            #! `--validate=false` flag. Note that installing via `kapp` does not complain about this validation error.
+            seccompProfile:
+              type: "RuntimeDefault"
           resources:
             requests:
-              cpu: "100m"
+              #! If OIDCClient CRs are being used, then the Supervisor needs enough CPU to run expensive bcrypt
+              #! operations inside the implementation of the token endpoint for any authcode flows performed by those
+              #! clients, so for that use case administrators may wish to increase the requests.cpu value to more
+              #! closely align with their anticipated needs. Increasing this value will cause Kubernetes to give more
+              #! available CPU to this process during times of high CPU contention. By default, don't ask for too much
+              #! because that would make it impossible to install the Pinniped Supervisor on small clusters.
+              #! Aside from performing bcrypts at the token endpoint for those clients, the Supervisor is not a
+              #! particularly CPU-intensive process.
+              cpu: "100m" #! by default, request one-tenth of a CPU
               memory: "128Mi"
             limits:
-              cpu: "100m"
+              #! By declaring a CPU limit that is not equal to the CPU request value, the Supervisor will be classified
+              #! by Kubernetes to have "burstable" quality of service.
+              #! See https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/#create-a-pod-that-gets-assigned-a-qos-class-of-burstable
+              #! If OIDCClient CRs are being used, and lots of simultaneous users have active sessions, then it is hard
+              #! pre-determine what the CPU limit should be for that use case. Guessing too low would cause the
+              #! pod's CPU usage to be throttled, resulting in poor performance. Guessing too high would allow clients
+              #! to cause the usage of lots of CPU resources. Administrators who have a good sense of anticipated usage
+              #! patterns may choose to set the requests.cpu and limits.cpu differently from these defaults.
+              cpu: "1000m" #! by default, throttle each pod's usage at 1 CPU
               memory: "128Mi"
           volumeMounts:
             - name: config-volume
@@ -107,9 +135,12 @@ spec:
             - name: podinfo
               mountPath: /etc/podinfo
               readOnly: true
+            #@ if hasUnixNetworkEndpoint():
+            - name: socket
+              mountPath: /pinniped_socket
+              readOnly: false  #! writable to allow for socket use
+            #@ end
           ports:
-            - containerPort: 8080
-              protocol: TCP
             - containerPort: 8443
               protocol: TCP
           env:
@@ -124,8 +155,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 8080
-              scheme: HTTP
+              port: 8443
+              scheme: HTTPS
             initialDelaySeconds: 2
             timeoutSeconds: 15
             periodSeconds: 10
@@ -133,8 +164,8 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 8080
-              scheme: HTTP
+              port: 8443
+              scheme: HTTPS
             initialDelaySeconds: 2
             timeoutSeconds: 3
             periodSeconds: 10
@@ -155,6 +186,10 @@ spec:
               - path: "name"
                 fieldRef:
                   fieldPath: metadata.name
+        #@ if hasUnixNetworkEndpoint():
+        - name: socket
+          emptyDir: {}
+        #@ end
       #! This will help make sure our multiple pods run on different nodes, making
       #! our deployment "more" "HA".
       affinity:
@@ -165,3 +200,37 @@ spec:
                 labelSelector:
                   matchLabels: #@ deploymentPodLabel()
                 topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  #! If name is changed, must also change names.apiService in the ConfigMap above and spec.service.name in the APIService below.
+  name: #@ defaultResourceNameWithSuffix("api")
+  namespace: #@ namespace()
+  labels: #@ labels()
+  #! prevent kapp from altering the selector of our services to match kubectl behavior
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+  type: ClusterIP
+  selector: #@ deploymentPodLabel()
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 10250
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: #@ pinnipedDevAPIGroupWithPrefix("v1alpha1.clientsecret.supervisor")
+  labels: #@ labels()
+spec:
+  version: v1alpha1
+  group: #@ pinnipedDevAPIGroupWithPrefix("clientsecret.supervisor")
+  groupPriorityMinimum: 9900
+  versionPriority: 15
+  #! caBundle: Do not include this key here. Starts out null, will be updated/owned by the golang code.
+  service:
+    name: #@ defaultResourceNameWithSuffix("api")
+    namespace: #@ namespace()
+    port: 443

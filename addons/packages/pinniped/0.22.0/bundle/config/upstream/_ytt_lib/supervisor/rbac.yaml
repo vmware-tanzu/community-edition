@@ -1,4 +1,4 @@
-#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
 #! SPDX-License-Identifier: Apache-2.0
 
 #@ load("@ytt:data", "data")
@@ -23,6 +23,14 @@ rules:
   - apiGroups:
       - #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
     resources: [federationdomains/status]
+    verbs: [get, patch, update]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+    resources: [oidcclients]
+    verbs: [get, list, watch]
+  - apiGroups:
+      - #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+    resources: [oidcclients/status]
     verbs: [get, patch, update]
   - apiGroups:
       - #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
@@ -73,4 +81,72 @@ subjects:
 roleRef:
   kind: Role
   name: #@ defaultResourceName()
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permissions for a special configmap of CA bundles that is needed by aggregated api servers
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("extension-apiserver-authentication-reader")
+  namespace: kube-system
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: Role
+  name: extension-apiserver-authentication-reader
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permissions for subjectaccessreviews, tokenreview that is needed by aggregated api servers
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceName()
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: ClusterRole
+  name: system:auth-delegator
+  apiGroup: rbac.authorization.k8s.io
+
+#! Give permission to various cluster-scoped objects
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  labels: #@ labels()
+rules:
+  - apiGroups: [ "" ]
+    resources: [ namespaces ]
+    verbs: [ get, list, watch ]
+  - apiGroups: [ apiregistration.k8s.io ]
+    resources: [ apiservices ]
+    verbs: [ get, list, patch, update, watch ]
+  - apiGroups: [ admissionregistration.k8s.io ]
+    resources: [ validatingwebhookconfigurations, mutatingwebhookconfigurations ]
+    verbs: [ get, list, watch ]
+  - apiGroups: [ flowcontrol.apiserver.k8s.io ]
+    resources: [ flowschemas, prioritylevelconfigurations ]
+    verbs: [ get, list, watch ]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
+  labels: #@ labels()
+subjects:
+  - kind: ServiceAccount
+    name: #@ defaultResourceName()
+    namespace: #@ namespace()
+roleRef:
+  kind: ClusterRole
+  name: #@ defaultResourceNameWithSuffix("aggregated-api-server")
   apiGroup: rbac.authorization.k8s.io

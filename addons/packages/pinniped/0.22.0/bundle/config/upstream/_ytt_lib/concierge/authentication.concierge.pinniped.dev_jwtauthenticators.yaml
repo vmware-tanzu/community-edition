@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: jwtauthenticators.authentication.concierge.pinniped.dev
 spec:
@@ -24,6 +23,12 @@ spec:
     - jsonPath: .spec.issuer
       name: Issuer
       type: string
+    - jsonPath: .spec.audience
+      name: Audience
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
     name: v1alpha1
     schema:
       openAPIV3Schema:

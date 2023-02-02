@@ -41,7 +41,7 @@ kube_cert_agent_image:
 image_pull_dockerconfigjson: #! e.g. {"auths":{"https://registry.example.com":{"username":"USERNAME","password":"PASSWORD","auth":"BASE64_ENCODED_USERNAME_COLON_PASSWORD"}}}
 
 #! Pinniped will try to guess the right K8s API URL for sharing that information with potential clients.
-#! This settings allows the guess to be overridden.
+#! This setting allows the guess to be overridden.
 #! Optional.
 discovery_url: #! e.g., https://example.com
 
@@ -54,9 +54,13 @@ api_serving_certificate_renew_before_seconds: 2160000
 #! Specify the verbosity of logging: info ("nice to know" information), debug (developer
 #! information), trace (timing information), all (kitchen sink).
 log_level: #! By default, when this value is left unset, only warnings and errors are printed. There is no way to suppress warning and error logs.
+#! Specify the format of logging: json (for machine parsable logs) and text (for legacy klog formatted logs).
+#! By default, when this value is left unset, logs are formatted in json.
+#! This configuration is deprecated and will be removed in a future release at which point logs will always be formatted as json.
+deprecated_log_format:
 
-run_as_user: 1001 #! run_as_user specifies the user ID that will own the process
-run_as_group: 1001 #! run_as_group specifies the group ID that will own the process
+run_as_user: 65532 #! run_as_user specifies the user ID that will own the process, see the Dockerfile for the reasoning behind this choice
+run_as_group: 65532 #! run_as_group specifies the group ID that will own the process, see the Dockerfile for the reasoning behind this choice
 
 #! Specify the API group suffix for all Pinniped API groups. By default, this is set to
 #! pinniped.dev, so Pinniped API groups will look like foo.pinniped.dev,

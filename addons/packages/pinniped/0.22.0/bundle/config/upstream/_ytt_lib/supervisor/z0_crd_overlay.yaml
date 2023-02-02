@@ -1,4 +1,4 @@
-#! Copyright 2020-2021 the Pinniped contributors. All Rights Reserved.
+#! Copyright 2020-2022 the Pinniped contributors. All Rights Reserved.
 #! SPDX-License-Identifier: Apache-2.0
 
 #@ load("@ytt:overlay", "overlay")
@@ -40,3 +40,24 @@ metadata:
   name: #@ pinnipedDevAPIGroupWithPrefix("activedirectoryidentityproviders.idp.supervisor")
 spec:
   group: #@ pinnipedDevAPIGroupWithPrefix("idp.supervisor")
+
+#@overlay/match by=overlay.subset({"kind": "CustomResourceDefinition", "metadata":{"name":"oidcclients.config.supervisor.pinniped.dev"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels: #@ labels()
+  name: #@ pinnipedDevAPIGroupWithPrefix("oidcclients.config.supervisor")
+spec:
+  group: #@ pinnipedDevAPIGroupWithPrefix("config.supervisor")
+  versions:
+    #@overlay/match by=overlay.all, expects="1+"
+    - schema:
+        openAPIV3Schema:
+          #@overlay/match by=overlay.subset({"metadata":{"type":"object"}}), expects=1
+          properties:
+            metadata:
+              #@overlay/match missing_ok=True
+              properties:
+                name:
+                  pattern: ^client\.oauth\.pinniped\.dev-
+                  type: string

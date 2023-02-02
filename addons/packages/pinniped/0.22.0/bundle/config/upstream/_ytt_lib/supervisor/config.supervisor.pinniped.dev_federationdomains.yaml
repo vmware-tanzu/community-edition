@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: federationdomains.config.supervisor.pinniped.dev
 spec:
@@ -18,7 +17,17 @@ spec:
     singular: federationdomain
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.issuer
+      name: Issuer
+      type: string
+    - jsonPath: .status.status
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: FederationDomain describes the configuration of an OIDC provider.
@@ -67,12 +76,13 @@ spec:
                       so all issuers with the same DNS hostname must use the same
                       SecretName value even if they have different port numbers. \n
                       SecretName is not required when you would like to use only the
-                      HTTP endpoints (e.g. when terminating TLS at an Ingress). It
-                      is also not required when you would like all requests to this
-                      OIDC Provider's HTTPS endpoints to use the default TLS certificate,
-                      which is configured elsewhere. \n When your Issuer URL's host
-                      is an IP address, then this field is ignored. SNI does not work
-                      for IP addresses."
+                      HTTP endpoints (e.g. when the HTTP listener is configured to
+                      listen on loopback interfaces or UNIX domain sockets for traffic
+                      from a service mesh sidecar). It is also not required when you
+                      would like all requests to this OIDC Provider's HTTPS endpoints
+                      to use the default TLS certificate, which is configured elsewhere.
+                      \n When your Issuer URL's host is an IP address, then this field
+                      is ignored. SNI does not work for IP addresses."
                     type: string
                 type: object
             required:
