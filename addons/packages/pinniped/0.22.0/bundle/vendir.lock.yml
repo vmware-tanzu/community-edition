@@ -2,14 +2,14 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Make linter happy by deleting unused gocyclo
-      sha: 4d6a2af89419546832adfa8640eef22473e41526
+      commitTitle: 'Merge pull request #1385 from vmware-tanzu/update_kube_deps_0.26.1...'
+      sha: e6a18978d1fcb2f4615a71cd066e8e3c1e1aa65d
       tags:
       - v0.22.0
     path: _ytt_lib/supervisor
   - git:
-      commitTitle: Make linter happy by deleting unused gocyclo
-      sha: 4d6a2af89419546832adfa8640eef22473e41526
+      commitTitle: 'Merge pull request #1385 from vmware-tanzu/update_kube_deps_0.26.1...'
+      sha: e6a18978d1fcb2f4615a71cd066e8e3c1e1aa65d
       tags:
       - v0.22.0
     path: _ytt_lib/concierge
