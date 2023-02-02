@@ -532,7 +532,7 @@ spec:
       serviceAccountName: pinniped-supervisor
       containers:
       - name: pinniped-supervisor
-        image: docker.io/getpinniped/pinniped-server:v0.12.1
+        image: docker.io/getpinniped/pinniped-server:v0.22.0
         imagePullPolicy: IfNotPresent
         command:
         - pinniped-supervisor
@@ -1934,7 +1934,7 @@ metadata:
   labels:
     app: pinniped-concierge
 data:
-  pinniped.yaml: "discovery:\n  url: null\napi:\n  servingCertificate:\n    durationSeconds: 2592000\n    renewBeforeSeconds: 2160000\napiGroupSuffix: pinniped.dev\n# aggregatedAPIServerPort may be set here, although other YAML references to the default port (10250) may also need to be updated\n# impersonationProxyServerPort may be set here, although other YAML references to the default port (8444) may also need to be updated\nnames:\n  servingCertificateSecret: pinniped-concierge-api-tls-serving-certificate\n  credentialIssuer: pinniped-concierge-config\n  apiService: pinniped-concierge-api\n  impersonationLoadBalancerService: pinniped-concierge-impersonation-proxy-load-balancer\n  impersonationClusterIPService: pinniped-concierge-impersonation-proxy-cluster-ip\n  impersonationTLSCertificateSecret: pinniped-concierge-impersonation-proxy-tls-serving-certificate\n  impersonationCACertificateSecret: pinniped-concierge-impersonation-proxy-ca-certificate\n  impersonationSignerSecret: pinniped-concierge-impersonation-proxy-signer-ca-certificate\n  agentServiceAccount: pinniped-concierge-kube-cert-agent\nlabels: {\"app\":\"pinniped-concierge\"}\nkubeCertAgent:\n  namePrefix: pinniped-concierge-kube-cert-agent-\n  \n  \n  image: docker.io/getpinniped/pinniped-server:v0.12.1\n  \n  \n  \n\n"
+  pinniped.yaml: "discovery:\n  url: null\napi:\n  servingCertificate:\n    durationSeconds: 2592000\n    renewBeforeSeconds: 2160000\napiGroupSuffix: pinniped.dev\n# aggregatedAPIServerPort may be set here, although other YAML references to the default port (10250) may also need to be updated\n# impersonationProxyServerPort may be set here, although other YAML references to the default port (8444) may also need to be updated\nnames:\n  servingCertificateSecret: pinniped-concierge-api-tls-serving-certificate\n  credentialIssuer: pinniped-concierge-config\n  apiService: pinniped-concierge-api\n  impersonationLoadBalancerService: pinniped-concierge-impersonation-proxy-load-balancer\n  impersonationClusterIPService: pinniped-concierge-impersonation-proxy-cluster-ip\n  impersonationTLSCertificateSecret: pinniped-concierge-impersonation-proxy-tls-serving-certificate\n  impersonationCACertificateSecret: pinniped-concierge-impersonation-proxy-ca-certificate\n  impersonationSignerSecret: pinniped-concierge-impersonation-proxy-signer-ca-certificate\n  agentServiceAccount: pinniped-concierge-kube-cert-agent\nlabels: {\"app\":\"pinniped-concierge\"}\nkubeCertAgent:\n  namePrefix: pinniped-concierge-kube-cert-agent-\n  \n  \n  image: docker.io/getpinniped/pinniped-server:v0.22.0\n  \n  \n  \n\n"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1962,7 +1962,7 @@ spec:
       serviceAccountName: pinniped-concierge
       containers:
       - name: pinniped-concierge
-        image: docker.io/getpinniped/pinniped-server:v0.12.1
+        image: docker.io/getpinniped/pinniped-server:v0.22.0
         imagePullPolicy: IfNotPresent
         securityContext:
           readOnlyRootFilesystem: true

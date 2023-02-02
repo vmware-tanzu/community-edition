@@ -5,13 +5,13 @@ directories:
       commitTitle: Make linter happy by deleting unused gocyclo
       sha: 4d6a2af89419546832adfa8640eef22473e41526
       tags:
-      - v0.12.1
+      - v0.22.0
     path: _ytt_lib/supervisor
   - git:
       commitTitle: Make linter happy by deleting unused gocyclo
       sha: 4d6a2af89419546832adfa8640eef22473e41526
       tags:
-      - v0.12.1
+      - v0.22.0
     path: _ytt_lib/concierge
   - manual: {}
     path: 01-pinniped-supervisor.yaml

@@ -1,11 +1,11 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: pinniped.community.tanzu.vmware.com.0.12.1
+  name: pinniped.community.tanzu.vmware.com.0.22.0
 spec:
   refName: pinniped.community.tanzu.vmware.com
-  version: 0.12.1
-  releaseNotes: "pinniped 0.12.1 https://github.com/vmware-tanzu/pinniped/releases/tag/v0.12.1"
+  version: 0.22.0
+  releaseNotes: "pinniped 0.22.0 https://github.com/vmware-tanzu/pinniped/releases/tag/v0.22.0"
   licenses:
     - "Apache 2.0"
   template:

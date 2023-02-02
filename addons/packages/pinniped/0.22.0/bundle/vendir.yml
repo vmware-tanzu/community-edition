@@ -1,18 +1,18 @@
 apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.12.1
+minimumRequiredVersion: 0.22.0
 directories:
 - path: config/upstream
   contents:
   - path: _ytt_lib/supervisor
     git:
       url: git@github.com:vmware-tanzu/pinniped.git
-      ref: v0.12.1
+      ref: v0.22.0
     newRootPath: deploy/supervisor
   - path: _ytt_lib/concierge
     git:
       url: git@github.com:vmware-tanzu/pinniped.git
-      ref: v0.12.1
+      ref: v0.22.0
     newRootPath: deploy/concierge
   # We manage the rest of this base YAML ourselves because it is Tanzu-specific.
   - path: 01-pinniped-supervisor.yaml

@@ -1,7 +1,7 @@
 #@data/values
 
 #! Notes:
-#! - the management cluster should ignore a provided pinniped.concierge.audiece value. The audience
+#! - the management cluster should ignore a provided pinniped.concierge.audience value. The audience
 #!   customization feature is specifically for workload clusters.
 #! - relevance: pinniped-package 0.12.1+
 #!   older pinniped packages will ignore this value.
