@@ -1,5 +1,4 @@
 #@data/values
-#@overlay/match-child-defaults missing_ok=True
 
 #! Notes:
 #! - the management cluster should ignore a provided pinniped.concierge.audiece value. The audience

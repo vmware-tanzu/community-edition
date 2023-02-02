@@ -1,5 +1,4 @@
 #@data/values
-#@overlay/match-child-defaults missing_ok=True
 ---
 infrastructure_provider: vsphere
 tkg_cluster_role: workload

@@ -1,5 +1,4 @@
 #@data/values
-#@overlay/match-child-defaults missing_ok=True
 
 #! Notes:
 #! - the workload cluster should honor a provided pinniped.concierge.audiece value. The audience
