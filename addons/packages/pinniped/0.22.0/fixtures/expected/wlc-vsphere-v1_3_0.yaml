@@ -81,7 +81,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.8.0
     kapp.k14s.io/update-strategy: fallback-on-replace
   creationTimestamp: null
   name: jwtauthenticators.authentication.concierge.pinniped.dev
@@ -104,6 +104,12 @@ spec:
     - jsonPath: .spec.issuer
       name: Issuer
       type: string
+    - jsonPath: .spec.audience
+      name: Audience
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
     name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -213,7 +219,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.8.0
     kapp.k14s.io/update-strategy: fallback-on-replace
   creationTimestamp: null
   name: webhookauthenticators.authentication.concierge.pinniped.dev
@@ -236,6 +242,9 @@ spec:
     - jsonPath: .spec.endpoint
       name: Endpoint
       type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
     name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -330,7 +339,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.8.0
     kapp.k14s.io/update-strategy: fallback-on-replace
   creationTimestamp: null
   name: credentialissuers.config.concierge.pinniped.dev
@@ -347,7 +356,17 @@ spec:
     singular: credentialissuer
   scope: Cluster
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.impersonationProxy.mode
+      name: ProxyMode
+      type: string
+    - jsonPath: .status.strategies[?(@.status == "Success")].type
+      name: DefaultStrategy
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: CredentialIssuer describes the configuration and status of the Pinniped Concierge credential issuer.
@@ -529,6 +548,7 @@ metadata:
   name: pinniped-concierge
   labels:
     app: pinniped-concierge
+    pod-security.kubernetes.io/enforce: privileged
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -566,7 +586,7 @@ metadata:
   labels:
     app: pinniped-concierge
 data:
-  pinniped.yaml: "discovery:\n  url: null\napi:\n  servingCertificate:\n    durationSeconds: 2592000\n    renewBeforeSeconds: 2160000\napiGroupSuffix: pinniped.dev\nnames:\n  servingCertificateSecret: pinniped-concierge-api-tls-serving-certificate\n  credentialIssuer: pinniped-concierge-config\n  apiService: pinniped-concierge-api\n  impersonationLoadBalancerService: pinniped-concierge-impersonation-proxy-load-balancer\n  impersonationClusterIPService: pinniped-concierge-impersonation-proxy-cluster-ip\n  impersonationTLSCertificateSecret: pinniped-concierge-impersonation-proxy-tls-serving-certificate\n  impersonationCACertificateSecret: pinniped-concierge-impersonation-proxy-ca-certificate\n  impersonationSignerSecret: pinniped-concierge-impersonation-proxy-signer-ca-certificate\n  agentServiceAccount: pinniped-concierge-kube-cert-agent\nlabels: {\"app\":\"pinniped-concierge\"}\nkubeCertAgent:\n  namePrefix: pinniped-concierge-kube-cert-agent-\n  \n  \n  image: docker.io/getpinniped/pinniped-server:v0.12.1\n  \n  \n  \n\n"
+  pinniped.yaml: "discovery:\n  url: null\napi:\n  servingCertificate:\n    durationSeconds: 2592000\n    renewBeforeSeconds: 2160000\napiGroupSuffix: pinniped.dev\n# aggregatedAPIServerPort may be set here, although other YAML references to the default port (10250) may also need to be updated\n# impersonationProxyServerPort may be set here, although other YAML references to the default port (8444) may also need to be updated\nnames:\n  servingCertificateSecret: pinniped-concierge-api-tls-serving-certificate\n  credentialIssuer: pinniped-concierge-config\n  apiService: pinniped-concierge-api\n  impersonationLoadBalancerService: pinniped-concierge-impersonation-proxy-load-balancer\n  impersonationClusterIPService: pinniped-concierge-impersonation-proxy-cluster-ip\n  impersonationTLSCertificateSecret: pinniped-concierge-impersonation-proxy-tls-serving-certificate\n  impersonationCACertificateSecret: pinniped-concierge-impersonation-proxy-ca-certificate\n  impersonationSignerSecret: pinniped-concierge-impersonation-proxy-signer-ca-certificate\n  agentServiceAccount: pinniped-concierge-kube-cert-agent\nlabels: {\"app\":\"pinniped-concierge\"}\nkubeCertAgent:\n  namePrefix: pinniped-concierge-kube-cert-agent-\n  \n  \n  image: docker.io/getpinniped/pinniped-server:v0.12.1\n  \n  \n  \n\n"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -589,8 +609,8 @@ spec:
         scheduler.alpha.kubernetes.io/critical-pod: ""
     spec:
       securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
+        runAsUser: 65532
+        runAsGroup: 65532
       serviceAccountName: pinniped-concierge
       containers:
       - name: pinniped-concierge
@@ -598,6 +618,13 @@ spec:
         imagePullPolicy: IfNotPresent
         securityContext:
           readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
         resources:
           requests:
             cpu: 100m
@@ -625,7 +652,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8443
+            port: 10250
             scheme: HTTPS
           initialDelaySeconds: 2
           timeoutSeconds: 15
@@ -634,7 +661,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /healthz
-            port: 8443
+            port: 10250
             scheme: HTTPS
           initialDelaySeconds: 2
           timeoutSeconds: 3
@@ -671,6 +698,8 @@ spec:
         operator: Exists
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -697,7 +726,7 @@ spec:
   ports:
   - protocol: TCP
     port: 443
-    targetPort: 8443
+    targetPort: 10250
 ---
 apiVersion: v1
 kind: Service
