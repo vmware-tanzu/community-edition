@@ -33,7 +33,3 @@ vsphereCSI:
   deployment_replicas: 3
   windows_support: false
   netpermissions: null
- 
- 
-
- 
