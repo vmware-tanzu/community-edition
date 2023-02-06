@@ -11,7 +11,7 @@ cluster-id = (@=values.vsphereCSI.namespace @)/(@=values.vsphereCSI.clusterName 
 (@ if hasattr(values.vsphereCSI, "netpermissions"): -@)
 (@ if values.vsphereCSI.netpermissions: -@)
 (@ for np in values.vsphereCSI.netpermissions: -@)
-[NetPermission (@=np @)]
+[NetPermission "(@=np @)"]
 (@ if hasattr(values.vsphereCSI.netpermissions[np], "ips"): -@)
 ips = "(@=values.vsphereCSI.netpermissions[np]["ips"] @)"
 (@ end -@)
