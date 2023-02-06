@@ -32,24 +32,7 @@ vsphereCSI:
   no_proxy: ""
   deployment_replicas: 3
   windows_support: false
-  netpermissions:
-    netpermission_A:
-      ip: "*"
-      permissions: READ_WRITE
-      rootsquash: false
-    netpermission_B:
-      ip: "10.20.20.0/24"
-      permissions: READ_ONLY
-      rootsquash: true
-    netpermission_C:
-      ip: "10.30.30.0/24"
-      permissions: NO_ACCESS
-    netpermission_D:
-      ip: "10.30.10.0/24" 
-      rootsquash: true
-    netpermission_E:
-      ip: "10.30.1.0/24"
-
+  netpermissions: null
  
  
 

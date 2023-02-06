@@ -8,72 +8,32 @@ thumbprint = "(@=values.vsphereCSI.tlsThumbprint @)"
 (@ end -@)
 cluster-id = (@=values.vsphereCSI.namespace @)/(@=values.vsphereCSI.clusterName @)
 
+(@ if hasattr(values.vsphereCSI, "netpermissions"): -@)
 (@ if values.vsphereCSI.netpermissions: -@)
-(@ if values.vsphereCSI.netpermissions.netpermission_A: -@)
-[NetPermissions "A"]
-if (@ if values.vsphereCSI.netpermissions.netpermission_A.ips: -@)
-ips = (@=values.vsphereCSI.netpermissions.netpermission_A.ips @)
+(@ for np in values.vsphereCSI.netpermissions: -@)
+[NetPermission (@=np @)]
+(@ if hasattr(values.vsphereCSI.netpermissions[np], "ips"): -@)
+ips = "(@=values.vsphereCSI.netpermissions[np]["ips"] @)"
 (@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_A.permissions: -@)
-permissions = (@=values.vsphereCSI.netpermissions.netpermission_A.permissions @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_A.rootsquash: -@)
-rootsquash = (@=values.vsphereCSI.netpermissions.netpermission_A.rootsquash @)
-(@ end -@)
+(@ if hasattr(values.vsphereCSI.netpermissions[np], "permissions"): -@)
+permissions = "(@=values.vsphereCSI.netpermissions[np]["permissions"] @)"
 (@ end -@)
 
-(@ if values.vsphereCSI.netpermissions.netpermission_B: -@)
-[NetPermissions "B"]
-if (@ if values.vsphereCSI.netpermissions.netpermission_B.ips: -@)
-ips = (@=values.vsphereCSI.netpermissions.netpermission_B.ips @)
+(@ if hasattr(values.vsphereCSI.netpermissions[np], "rootsquash"): -@)
+(@ if values.vsphereCSI.netpermissions[np]["rootsquash"]: -@)
+rootsquash = true
+
+(@ else: -@)
+rootsquash = false
+
 (@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_B.permissions: -@)
-permissions = (@=values.vsphereCSI.netpermissions.netpermission_B.permissions @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_B.rootsquash: -@)
-rootsquash = (@=values.vsphereCSI.netpermissions.netpermission_B.rootsquash @)
-(@ end -@)
+(@ else: -@)
+rootsquash = false
+
 (@ end -@)
 
-(@ if values.vsphereCSI.netpermissions.netpermission_C: -@)
-[NetPermissions "C"]
-if (@ if values.vsphereCSI.netpermissions.netpermission_C.ips: -@)
-ips = (@=values.vsphereCSI.netpermissions.netpermission_C.ips @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_C.permissions: -@)
-permissions = (@=values.vsphereCSI.netpermissions.netpermission_C.permissions @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_C.rootsquash: -@)
-rootsquash = (@=values.vsphereCSI.netpermissions.netpermission_C.rootsquash @)
 (@ end -@)
 (@ end -@)
-
-(@ if values.vsphereCSI.netpermissions.netpermission_D: -@)
-[NetPermissions "D"]
-if (@ if values.vsphereCSI.netpermissions.netpermission_D.ips: -@)
-ips = (@=values.vsphereCSI.netpermissions.netpermission_D.ips @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_D.permissions: -@)
-permissions = (@=values.vsphereCSI.netpermissions.netpermission_D.permissions @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_D.rootsquash: -@)
-rootsquash = (@=values.vsphereCSI.netpermissions.netpermission_D.rootsquash @)
-(@ end -@)
-(@ end -@)
-
-(@ if values.vsphereCSI.netpermissions.netpermission_E: -@)
-[NetPermissions "E"]
-if (@ if values.vsphereCSI.netpermissions.netpermission_E.ips: -@)
-ips = (@=values.vsphereCSI.netpermissions.netpermission_E.ips @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_E.permissions: -@)
-permissions = (@=values.vsphereCSI.netpermissions.netpermission_E.permissions @)
-(@ end -@)
-if (@ if values.vsphereCSI.netpermissions.netpermission_E.rootsquash: -@)
-rootsquash = (@=values.vsphereCSI.netpermissions.netpermission_E.rootsquash @)
-(@ end -@)
-(@ end -@)
-
 (@ end -@)
 
 [VirtualCenter "(@=values.vsphereCSI.server @)"]
