@@ -13,12 +13,12 @@ daemonset:
 vsphereCSI:
   tlsThumbprint: ""
   namespace: vmware-system-csi
-  clusterName: cluster1
-  server: 10.43.242.170
-  datacenter: VSAN-DC
-  publicNetwork: VM Network
-  username: Administrator@vsphere.local
-  password: Admin!23
+  clusterName: null
+  server: null
+  datacenter: null
+  publicNetwork: null
+  username: null
+  password: null
   region: null
   zone: null
   insecureFlag: True
@@ -32,11 +32,7 @@ vsphereCSI:
   no_proxy: ""
   deployment_replicas: 3
   windows_support: false
-  netpermissions:
-    A:
-      ip: "*"
-      permissions: READ_WRITE
-      rootsquash: false
+  netpermissions: null
  
  
 
