@@ -8,6 +8,34 @@ thumbprint = "(@=values.vsphereCSI.tlsThumbprint @)"
 (@ end -@)
 cluster-id = (@=values.vsphereCSI.namespace @)/(@=values.vsphereCSI.clusterName @)
 
+(@ if hasattr(values.vsphereCSI, "netpermissions"): -@)
+(@ if values.vsphereCSI.netpermissions: -@)
+(@ for np in values.vsphereCSI.netpermissions: -@)
+[NetPermission "(@=np @)"]
+(@ if hasattr(values.vsphereCSI.netpermissions[np], "ips"): -@)
+ips = "(@=values.vsphereCSI.netpermissions[np]["ips"] @)"
+(@ end -@)
+(@ if hasattr(values.vsphereCSI.netpermissions[np], "permissions"): -@)
+permissions = "(@=values.vsphereCSI.netpermissions[np]["permissions"] @)"
+(@ end -@)
+
+(@ if hasattr(values.vsphereCSI.netpermissions[np], "rootsquash"): -@)
+(@ if values.vsphereCSI.netpermissions[np]["rootsquash"]: -@)
+rootsquash = true
+
+(@ else: -@)
+rootsquash = false
+
+(@ end -@)
+(@ else: -@)
+rootsquash = false
+
+(@ end -@)
+
+(@ end -@)
+(@ end -@)
+(@ end -@)
+
 [VirtualCenter "(@=values.vsphereCSI.server @)"]
 user = "(@=values.vsphereCSI.username.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t","\\t") @)"
 password = "(@=values.vsphereCSI.password.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t","\\t") @)"
