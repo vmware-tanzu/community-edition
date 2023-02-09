@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: kapp-controller.community.tanzu.vmware.com.0.41.6
+spec:
+  refName: kapp-controller.community.tanzu.vmware.com
+  version: 0.41.6
+  releaseNotes: "kapp-controller 0.41.6 https://github.com/vmware-tanzu/carvel-kapp-controller"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/kapp-controller@sha256:3c279a77afe7401ae2b339d985ddeaf3f797c0e8e9c279bac9f069b341d3460d
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}

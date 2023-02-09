@@ -1,0 +1,9 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - githubRelease:
+      tag: v0.41.6
+      url: https://api.github.com/repos/carvel-dev/kapp-controller/releases/91616717
+    path: kapp-controller.yaml
+  path: config/upstream
+kind: LockConfig

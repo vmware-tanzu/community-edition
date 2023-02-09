@@ -1,0 +1,7 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/carvel-dev/kapp-controller@sha256:b197aba8be9b5634ae2995a8058d1642648e61857960e05f7433d9d793e18a5c
+  image: ghcr.io/carvel-dev/kapp-controller@sha256:b197aba8be9b5634ae2995a8058d1642648e61857960e05f7433d9d793e18a5c
+kind: ImagesLock
