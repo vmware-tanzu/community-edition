@@ -37,6 +37,7 @@ None
 | `vsphereCSI.deployment_replicas` | Optional | The number of replicas of vsphere-csi-controller deployment. Default: `3`. |
 | `vsphereCSI.windows_support` | Optional | Enables CSI Windows support. Default: `false`. |
 | `vsphereCSI.netpermissions` | Optional | Configure CSI netpermissions for file volume. Default: `null`. |
+
 ## Usage Example
 
 To learn more about how to use vSphere CSI refer to [vSphere CSI website](https://github.com/kubernetes-sigs/vsphere-csi-driver)
