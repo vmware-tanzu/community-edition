@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: fix push manifest issue and removing EOL windows versions (#2240)...
+      sha: 215d7bc6e56317010f2fe75b07d32ba484c78d16
+      tags:
+      - v2.6.3
+    path: vsphere-csi
+  path: config/upstream
+kind: LockConfig

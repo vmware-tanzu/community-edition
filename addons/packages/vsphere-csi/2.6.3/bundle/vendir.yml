@@ -1,0 +1,12 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.12.0
+directories:
+- path: config/upstream
+  contents:
+  - path: vsphere-csi
+    git:
+      url: git@github.com:kubernetes-sigs/vsphere-csi-driver.git
+      ref: 215d7bc6e56317010f2fe75b07d32ba484c78d16
+    includePaths:
+      - manifests/vanilla/vsphere-csi-driver.yaml

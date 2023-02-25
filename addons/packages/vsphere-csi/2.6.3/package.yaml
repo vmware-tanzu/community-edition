@@ -1,0 +1,25 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: vsphere-csi.community.tanzu.vmware.com.2.6.3
+spec:
+  refName: vsphere-csi.community.tanzu.vmware.com
+  version: 2.6.3
+  releaseNotes: "vsphere-csi 2.6.3 https://github.com/kubernetes-sigs/vsphere-csi-driver/releases/tag/v2.6.3"
+  licenses:
+    - "Apache 2.0"
+  template:
+    spec:
+      fetch:
+        - imgpkgBundle:
+            image: projects.registry.vmware.com/tce/vsphere-csi@sha256:be18059c5dcef189d0241ac40f7b2b053936e52de69c6bebc30cfa7f5cc4a3e1
+      template:
+        - ytt:
+            paths:
+              - config/
+        - kbld:
+            paths:
+              - "-"
+              - .imgpkg/images.yml
+      deploy:
+        - kapp: {}
