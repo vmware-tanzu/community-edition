@@ -1,0 +1,10 @@
+#@ load("/values.star", "values")
+
+#@ if values.vsphereCSI.namespace != "kube-system":
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ values.vsphereCSI.namespace
+
+#@ end

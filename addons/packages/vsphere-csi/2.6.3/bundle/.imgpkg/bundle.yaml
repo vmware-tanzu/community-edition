@@ -1,0 +1,9 @@
+apiVersion: imgpkg.carvel.dev/v1alpha1
+kind: Bundle
+metadata:
+  name: vsphere-csi
+authors:
+  - name: Nikhil Barge
+    email: nbarge@vmware.com
+websites:
+  - url: https://github.com/kubernetes-sigs/vsphere-csi-driver
