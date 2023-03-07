@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: load-balancer-and-ingress-service.community.tanzu.vmware.com.1.9.1
+  name: load-balancer-and-ingress-service.community.tanzu.vmware.com.1.9.2
   namespace: load-balancer-and-ingress-service
 spec:
   refName: load-balancer-and-ingress-service.community.tanzu.vmware.com
-  version: 1.9.1
-  releaseNotes: "load-balancer-and-ingress-service 1.9.1"
+  version: 1.9.2
+  releaseNotes: "load-balancer-and-ingress-service 1.9.2"
   licenses:
     - "UNKNOWN"
   template:

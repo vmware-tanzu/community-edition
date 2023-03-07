@@ -29,6 +29,7 @@ loadBalancerAndIngressService:
       namespace_selector:
           label_key: ""
           label_value: ""
+      useDefaultSecretsOnly: "false"
     network_settings:
       subnet_ip: 10.193.32.0
       subnet_prefix: 19

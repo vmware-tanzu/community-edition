@@ -11,7 +11,7 @@ metadata:
   namespace: avi-system
   labels:
     app.kubernetes.io/name: ako
-    app.kubernetes.io/version: 1.8.2
+    app.kubernetes.io/version: 1.9.2
 spec:
   replicas: 1
   serviceName: ako
@@ -28,7 +28,7 @@ spec:
       containers:
         - name: ako
           securityContext: {}
-          image: projects-stg.registry.vmware.com/tkg/ako:v1.9.1_vmware.1
+          image: projects-stg.registry.vmware.com/tkg/ako:v1.9.2_vmware.1
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:

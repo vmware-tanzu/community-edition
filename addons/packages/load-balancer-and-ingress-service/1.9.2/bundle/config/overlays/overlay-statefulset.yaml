@@ -269,6 +269,14 @@ spec:
                   name: avi-k8s-config
                   key: enableMCI
 #@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.useDefaultSecretsOnly:
+#@overlay/append
+            - name: USE_DEFAULT_SECRETS_ONLY
+              valueFrom:
+                configMapKeyRef:
+                  name: avi-k8s-config
+                  key: useDefaultSecretsOnly
+#@ end
           livenessProbe:
             httpGet:
               port:  #@ values.loadBalancerAndIngressService.config.ako_settings.api_server_port

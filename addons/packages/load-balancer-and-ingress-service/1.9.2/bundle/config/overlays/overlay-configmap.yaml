@@ -131,3 +131,7 @@ data:
   #@overlay/match missing_ok=True
   enableMCI: #@ values.loadBalancerAndIngressService.config.l7_settings.enable_MCI
 #@ end
+#@ if values.loadBalancerAndIngressService.config.ako_settings.useDefaultSecretsOnly:
+  #@overlay/match missing_ok=True
+  useDefaultSecretsOnly: #@ values.loadBalancerAndIngressService.config.ako_settings.useDefaultSecretsOnly
+#@ end
