@@ -1,12 +1,12 @@
 apiVersion: data.packaging.carvel.dev/v1alpha1
 kind: Package
 metadata:
-  name: antrea.tanzu.vmware.com.1.7.1+tkg.2-zshippable
+  name: antrea.tanzu.vmware.com.1.7.2+tkg.2-zshippable
   namespace: vmware-system-tkg
 spec:
   refName: antrea.tanzu.vmware.com
-  version: 1.7.1+tkg.2-zshippable
-  releaseNotes: antrea 1.7.1 https://github.com/antrea-io/antrea/releases/tag/v1.7.1
+  version: 1.7.2+tkg.2-zshippable
+  releaseNotes: antrea 1.7.2 https://github.com/antrea-io/antrea/releases/tag/v1.7.2
   licenses:
   - Apache 2.0
   template:
@@ -14,7 +14,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.7.1
+          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.14.0
       template:
       - ytt:
           paths:

@@ -103,9 +103,9 @@ var _ = ginkgo.Describe("Antrea-interworking YTT Templates", func() {
 		output    string
 		err       error
 
-		configDir                                  = filepath.Join(repo.RootDir(), "addons/packages/antrea/1.7.1-p1/bundle/config")
+		configDir                                  = filepath.Join(repo.RootDir(), "addons/packages/antrea/1.7.2-p1/bundle/config")
 		fileAntreaInterworkingYaml                 = filepath.Join(configDir, "upstream/interworking.yaml")
-		fileAntreaInterworkingBootstrapYaml        = filepath.Join(configDir, "upstream/bootstrap.yaml")
+		fileAntreaInterworkingBootstrapYaml        = filepath.Join(configDir, "upstream/bootstrap-config.yaml")
 		fileAntreaInterworkingOverlayYaml          = filepath.Join(configDir, "overlay/interworking-overlay.yaml")
 		fileAntreaInterworkingBootstrapOverlayYaml = filepath.Join(configDir, "overlay/interworking-bootstrap-overlay.yaml")
 		fileValuesSchema                           = filepath.Join(configDir, "schema.yaml")

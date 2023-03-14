@@ -3805,7 +3805,7 @@ spec:
       serviceAccountName: antrea-agent
       initContainers:
         - name: antrea-agent-tweaker
-          image: "antrea/antrea-ubuntu:v1.7.1"
+          image: "antrea/antrea-ubuntu:v1.7.2"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -3826,7 +3826,7 @@ spec:
             mountPath: /etc/antrea/antrea-agent-tweaker.conf
             subPath: antrea-agent-tweaker.conf
         - name: install-cni
-          image: "antrea/antrea-ubuntu:v1.7.1"
+          image: "antrea/antrea-ubuntu:v1.7.2"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -3860,7 +3860,7 @@ spec:
             mountPath: /var/run/antrea
       containers:
         - name: antrea-agent
-          image: "antrea/antrea-ubuntu:v1.7.1"
+          image: "antrea/antrea-ubuntu:v1.7.2"
           imagePullPolicy: IfNotPresent
           command: ["antrea-agent"]
           # Log to both "/var/log/antrea/" and stderr (so "kubectl logs" can work).-
@@ -3893,12 +3893,12 @@ spec:
               name: api
               protocol: TCP
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - container_liveness_probe agent
-            initialDelaySeconds: 5
+            httpGet:
+              host: localhost
+              path: /livez
+              port: api
+              scheme: HTTPS
+            initialDelaySeconds: 10
             timeoutSeconds: 5
             periodSeconds: 10
             failureThreshold: 5
@@ -3952,7 +3952,7 @@ spec:
           - name: xtables-lock
             mountPath: /run/xtables.lock
         - name: antrea-ovs
-          image: "antrea/antrea-ubuntu:v1.7.1"
+          image: "antrea/antrea-ubuntu:v1.7.2"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -4068,7 +4068,7 @@ spec:
       serviceAccountName: antrea-controller
       containers:
         - name: antrea-controller
-          image: "antrea/antrea-ubuntu:v1.7.1"
+          image: "antrea/antrea-ubuntu:v1.7.2"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
