@@ -24,7 +24,7 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: "1.17"
         id: go
