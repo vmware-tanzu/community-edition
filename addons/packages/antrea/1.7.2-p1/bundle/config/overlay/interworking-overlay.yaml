@@ -13,6 +13,13 @@ APIServerPort: #@ values.antrea_interworking.config.mp_adapter_conf.APIServerPor
 DebugServerPort: #@ values.antrea_interworking.config.mp_adapter_conf.DebugServerPort
 NSXRPCDebug: #@ values.antrea_interworking.config.mp_adapter_conf.NSXRPCDebug
 ConditionTimeout: #@ values.antrea_interworking.config.mp_adapter_conf.ConditionTimeout
+NSXCAFile: #@ values.antrea_interworking.config.mp_adapter_conf.NSXCAFile
+NSXClientAuthCertFile: #@ values.antrea_interworking.config.mp_adapter_conf.NSXClientAuthCertFile
+NSXClientAuthKeyFile: #@ values.antrea_interworking.config.mp_adapter_conf.NSXClientAuthKeyFile
+NSXRemoteAuth: #@ values.antrea_interworking.config.mp_adapter_conf.NSXRemoteAuth
+NSXInsecure: #@ values.antrea_interworking.config.mp_adapter_conf.NSXInsecure
+NSXRPCConnType: #@ values.antrea_interworking.config.mp_adapter_conf.NSXRPCConnType
+clusterType: #@ values.antrea_interworking.config.mp_adapter_conf.clusterType
 #@ end
 
 

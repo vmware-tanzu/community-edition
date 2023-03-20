@@ -14,7 +14,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.14.0
+          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.20.0
       template:
       - ytt:
           paths:
@@ -379,6 +379,34 @@ spec:
                   additionalProperties: false
                   description: ' '
                   properties:
+                    NSXCAFile:
+                      type: string
+                      description: ' '
+                      default: ""
+                    NSXClientAuthCertFile:
+                      type: string
+                      description: ' '
+                      default: ""
+                    NSXClientAuthKeyFile:
+                      type: string
+                      description: ' '
+                      default: ""
+                    NSXRemoteAuth:
+                      type: boolean
+                      description: ' '
+                      default: false
+                    NSXInsecure:
+                      type: boolean
+                      description: ' '
+                      default: true
+                    NSXRPCConnType:
+                      type: string
+                      description: ' '
+                      default: tnproxy
+                    clusterType:
+                      type: string
+                      description: ' '
+                      default: kubernetes
                     NSXClientTimeout:
                       type: integer
                       description: ' '

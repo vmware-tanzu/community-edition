@@ -84,6 +84,13 @@ antrea_interworking:
     NSXManagers: []
     vpcPath: ""
     mp_adapter_conf:
+      NSXClientAuthCertFile: /etc/antrea/nsx-cert/tls.crt
+      NSXClientAuthKeyFile: /etc/antrea/nsx-cert/tls.key
+      NSXRemoteAuth: false
+      NSXCAFile: ""
+      NSXInsecure: true
+      NSXRPCConnType: tnproxy
+      clusterType: kubernetes
       NSXClientTimeout: 120
       InventoryBatchSize: 50
       InventoryBatchPeriod: 5

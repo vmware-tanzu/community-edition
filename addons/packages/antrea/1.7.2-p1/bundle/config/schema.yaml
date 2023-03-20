@@ -167,6 +167,20 @@ antrea_interworking:
     #@schema/desc " "
     mp_adapter_conf:
       #@schema/desc " "
+      NSXCAFile: ""
+      #@schema/desc " "
+      NSXClientAuthCertFile: ""
+      #@schema/desc " "
+      NSXClientAuthKeyFile: ""
+      #@schema/desc " "
+      NSXRemoteAuth: false
+      #@schema/desc " "
+      NSXInsecure: true
+      #@schema/desc " "
+      NSXRPCConnType: tnproxy
+      #@schema/desc " "
+      clusterType: "kubernetes"
+      #@schema/desc " "
       NSXClientTimeout: 120
       #@schema/desc " "
       InventoryBatchSize: 50

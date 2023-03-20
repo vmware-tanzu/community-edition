@@ -7,7 +7,7 @@ images:
         - resolved:
             tag: v1.7.2
             url: antrea/antrea-ubuntu:v1.7.2
-    image: index.docker.io/antrea/antrea-ubuntu@sha256:4dada06de3361e79b2f6ed69b38f907b9866e794d683a09d5760abfd80ff4ec9
+    image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-photon@sha256:0ed1fdf8dc54b8a8120511580eddf702d45836831caa388b569f2c8ba9538699
   - annotations:
       kbld.carvel.dev/id: antrea-interworking/interworking-photon:0.7.1
       kbld.carvel.dev/origins: |
@@ -15,11 +15,4 @@ images:
             tag: latest
             url: antrea-interworking/interworking-photon:0.7.1
     image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea-interworking/interworking-photon@sha256:fc76bca72254735cb0758a2b1f8f7e9850062db583c8070699496e80bdfea8eb
-  - annotations:
-      kbld.carvel.dev/id: antrea-interworking/bootstrap:0.7.1
-      kbld.carvel.dev/origins: |
-        - resolved:
-            tag: 0.7.1
-            url: antrea-interworking/bootstrap:0.7.1
-    image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea-interworking/bootstrap@sha256:cd5d2df1124658b460cdb1942c90266603a17f5c3fdde96a244c9272d21e627c
 kind: ImagesLock
