@@ -14,7 +14,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.21.0
+          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.23.0
       template:
       - ytt:
           paths:
