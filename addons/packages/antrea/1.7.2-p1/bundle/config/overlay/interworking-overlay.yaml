@@ -45,3 +45,59 @@ kind: ConfigMap
 data:
   mp-adapter.conf: #@ yaml.encode(antrea_interworking_mp_adapter_conf())
   ccp-adapter.conf: #@ yaml.encode(antrea_interworking_ccp_adapter_conf())
+
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"metadata":{"namespace": "vmware-system-antrea"}}), expects=10
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding","metadata":{"name": "antrea-interworking-supportbundle"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding","metadata":{"name": "antrea-interworking"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding","metadata":{"name": "register"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"RoleBinding","metadata":{"name": "vmware-system-antrea-register"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"Role","metadata":{"name": "vmware-system-antrea-register"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"ClusterRole","metadata":{"name": "antrea-interworking"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"ClusterRole","metadata":{"name": "antrea-interworking-supportbundle"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"Namespace","metadata":{"name": "vmware-system-antrea"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition","metadata":{"name": "antreampadapterinfos.clusterinformation.antrea-interworking.tanzu.vmware.com"}})
+#@ if/end values.antrea_nsx.enable == False:
+---
+
+#! Antrea-interworking-config
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition","metadata":{"name": "antreaccpadapterinfos.clusterinformation.antrea-interworking.tanzu.vmware.com"}})
+#@ if/end values.antrea_nsx.enable == False:
+---

@@ -6,9 +6,6 @@ rebaseRules:
   sources: [existing, new]
   resourceMatchers:
   - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: kube-system, name: antrea-ca}
-  - kindNamespaceNameMatcher: {kind: Secret, namespace: vmware-system-antrea, name: nsx-cert}
-  - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: vmware-system-antrea, name: bootstrap-config}
-  - kindNamespaceNameMatcher: {kind: ConfigMap, namespace: vmware-system-antrea, name: antrea-interworking-config}
 
 - path: [spec, caBundle]
   type: copy

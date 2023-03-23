@@ -742,3 +742,16 @@ spec:
           emptyDir: { }
         - name: var-lib-vmware
           emptyDir: { }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: register
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:vmware-system-privileged
+subjects:
+  - kind: ServiceAccount
+    name: register
+    namespace: vmware-system-antrea
