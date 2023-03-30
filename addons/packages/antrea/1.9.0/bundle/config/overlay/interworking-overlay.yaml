@@ -37,16 +37,6 @@ ReconcilerResyncSeconds: #@ values.antrea_interworking.config.ccp_adapter_conf.R
 #@ end
 
 
-#@overlay/match by=overlay.subset({"kind":"Job","metadata":{"name": "register"}})
-#@ if/end values.antrea_nsx.enable:
----
-kind: Job
-metadata:
-  #@overlay/match missing_ok=True
-  annotations:
-    kapp.k14s.io/disable-default-label-scoping-rules: ""
-
-
 #! Antrea-interworking-config
 #@overlay/match by=overlay.subset({"metadata":{"namespace": "vmware-system-antrea"}}), expects=10
 #@ if/end values.antrea_nsx.enable == False:
@@ -96,5 +86,3 @@ metadata:
 #@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition","metadata":{"name": "antreaccpadapterinfos.clusterinformation.antrea-interworking.tanzu.vmware.com"}})
 #@ if/end values.antrea_nsx.enable == False:
 ---
-
-

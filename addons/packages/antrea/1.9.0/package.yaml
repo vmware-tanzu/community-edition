@@ -175,6 +175,14 @@ spec:
                   type: string
                   description: Tunnel protocols used for encapsulating traffic across Nodes. One of the following options => geneve, vxlan, gre, stt
                   default: none
+                tunnelPort:
+                  type: integer
+                  description: TunnelPort is the destination port for UDP and TCP based tunnel protocols (Geneve, VXLAN, and STT).
+                  default: 0
+                tunnelCsum:
+                  type: boolean
+                  description: TunnelCsum determines whether to compute UDP encapsulation header (Geneve or VXLAN) checksums on outgoing packets.
+                  default: false
                 trafficEncryptionMode:
                   type: string
                   description: Determines how tunnel traffic is encrypted. One of the following options => none, ipsec, wireGuard
@@ -327,6 +335,10 @@ spec:
                       type: boolean
                       description: Enable mirroring or redirecting the traffic Pods send or receive.
                       default: false
+                    TopologyAwareHints:
+                      type: boolean
+                      description: Enable TopologyAwareHints in AntreaProxy. This requires AntreaProxy and EndpointSlice to be enabled.
+                      default: false
         antrea_nsx:
           type: object
           additionalProperties: false
@@ -392,14 +404,14 @@ spec:
                       description: ' '
                       items:
                         type: string
-                        default: xxx
+                        default: fake-rest-api
                       default: []
                     nsx-rpc-fwd-proxy:
                       type: array
                       description: ' '
                       items:
                         type: string
-                        default: xxxxxx
+                        default: fake-nsx-rpc-fwd-proxy
                       default: []
                 mp_adapter_conf:
                   type: object
