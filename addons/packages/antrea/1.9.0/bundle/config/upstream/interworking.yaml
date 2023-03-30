@@ -451,7 +451,7 @@ spec:
     spec:
       containers:
         - name: register
-          image: antrea-interworking/interworking-photon:0.7.1
+          image: vmware.io/antrea/interworking:0.9.0
           imagePullPolicy: IfNotPresent
           command: [ "/usr/local/bin/cluster-registry" ]
           args:
@@ -547,7 +547,7 @@ spec:
             - --log_file_max_size=5
             - --log_file_max_num=2
             - --v=4
-          image: antrea-interworking/interworking-photon:0.7.1
+          image: vmware.io/antrea/interworking:0.9.0
           imagePullPolicy: IfNotPresent
           env:
             - name: POD_NAME
@@ -572,7 +572,7 @@ spec:
             - --log_file_max_size=5
             - --log_file_max_num=2
             - --v=4
-          image: antrea-interworking/interworking-photon:0.7.1
+          image: vmware.io/antrea/interworking:0.9.0
           imagePullPolicy: IfNotPresent
           env:
             - name: POD_NAME
@@ -629,7 +629,7 @@ spec:
             - --log_file_max_size=25
             - --log_file_max_num=4
             - --logChild=true
-          image: antrea-interworking/interworking-photon:0.7.1
+          image: vmware.io/antrea/interworking:0.9.0
           imagePullPolicy: IfNotPresent
           env:
             - name: POD_NAME
@@ -675,7 +675,7 @@ spec:
             - --log_file_max_size=5
             - --log_file_max_num=2
             - --v=4
-          image: antrea-interworking/interworking-photon:0.7.1
+          image: vmware.io/antrea/interworking:0.9.0
           imagePullPolicy: IfNotPresent
           env:
             - name: POD_NAME
