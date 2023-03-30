@@ -103,7 +103,7 @@ var _ = ginkgo.Describe("Antrea-interworking YTT Templates", func() {
 		output    string
 		err       error
 
-		configDir                                  = filepath.Join(repo.RootDir(), "addons/packages/antrea/1.7.2-p1/bundle/config")
+		configDir                                  = filepath.Join(repo.RootDir(), "addons/packages/antrea/1.9.0/bundle/config")
 		fileAntreaInterworkingYaml                 = filepath.Join(configDir, "upstream/interworking.yaml")
 		fileAntreaInterworkingBootstrapYaml        = filepath.Join(configDir, "upstream/bootstrap-config.yaml")
 		fileAntreaInterworkingOverlayYaml          = filepath.Join(configDir, "overlay/interworking-overlay.yaml")
@@ -123,50 +123,17 @@ var _ = ginkgo.Describe("Antrea-interworking YTT Templates", func() {
 		output, err = ytt.RenderYTTTemplate(ytt.CommandOptions{}, filePaths, strings.NewReader(values))
 	})
 
-	ginkgo.Context("antrea-interworking default configuration", func() {
+	ginkgo.Context("deafult antrea_nsx is set to false, antrea-interworking default configuration is nil", func() {
 		ginkgo.It("mp-adapter configuration", func() {
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 			configMap := findConfigMapByName(unmarshalConfigMaps(output), interworkingConfigName)
-			gomega.Expect(configMap).NotTo(gomega.BeNil())
-			gomega.Expect(configMap.Data["mp-adapter.conf"]).To(gomega.MatchYAML(`---
-NSXRemoteAuth: false
-NSXClientAuthCertFile: /etc/antrea/nsx-cert/tls.crt
-NSXClientAuthKeyFile: /etc/antrea/nsx-cert/tls.key
-NSXCAFile: ""
-NSXInsecure: true
-NSXClientTimeout: 120
-InventoryBatchSize: 50
-InventoryBatchPeriod: 5
-NSXRPCConnType: tnproxy
-EnableDebugServer: false
-APIServerPort: 16664
-DebugServerPort: 16666
-NSXRPCDebug: false
-#in second
-ConditionTimeout: 150`))
-			gomega.Expect(configMap.Data["ccp-adapter.conf"]).To(gomega.MatchYAML(`---
-EnableDebugServer: false
-APIServerPort: 16665
-DebugServerPort: 16667
-NSXRPCDebug: false
-# Time to wait for realization
-RealizeTimeoutSeconds: 60
-# An interval for regularly report latest realization error in background
-RealizeErrorSyncIntervalSeconds: 600
-ReconcilerWorkerCount: 8
-# Average QPS = ReconcilerWorkerCount * ReconcilerQPS
-ReconcilerQPS: 5.0
-# Peak QPS =  ReconcilerWorkerCount * ReconcilerBurst
-ReconcilerBurst: 10
-# 24 Hours
-ReconcilerResyncSeconds: 86400`))
+			gomega.Expect(configMap).To(gomega.BeNil())
 		})
 	})
 
 	ginkgo.Context("antrea-interworking set antrea_nsx to false", func() {
 		ginkgo.BeforeEach(func() {
 			values, err = marshalAntreaConfig(fileValuesYaml, func(config *AntreaInterworkingConfig) {
-				config.AntreaInterworking.Config.MpAdapterConf.NSXClientTimeout = 100
 				config.AntreaNSX.Enable = false
 			})
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
@@ -174,8 +141,7 @@ ReconcilerResyncSeconds: 86400`))
 		ginkgo.It("renders a ConfigMap with MpAdapterConf configuration", func() {
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 			configMap := findConfigMapByName(unmarshalConfigMaps(output), interworkingConfigName)
-			gomega.Expect(configMap).NotTo(gomega.BeNil())
-			gomega.Expect(configMap.Data["mp-adapter.conf"]).To(gomega.ContainSubstring(`NSXClientTimeout: 120`))
+			gomega.Expect(configMap).To(gomega.BeNil())
 		})
 	})
 
@@ -235,8 +201,7 @@ ReconcilerResyncSeconds: 86400`))
 		ginkgo.It("default bootstrap configuration", func() {
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 			configMap := findConfigMapByName(unmarshalConfigMaps(output), interworkingBootstrapConfigmap)
-			gomega.Expect(configMap).NotTo(gomega.BeNil())
-			gomega.Expect(configMap.Data["bootstrap.conf"]).To(gomega.ContainSubstring(`clusterName: dummyClusterName`))
+			gomega.Expect(configMap).To(gomega.BeNil())
 		})
 	})
 
