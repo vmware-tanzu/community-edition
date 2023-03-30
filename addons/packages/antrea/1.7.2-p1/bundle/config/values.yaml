@@ -33,6 +33,8 @@ antrea:
     transportInterface: null
     transportInterfaceCIDRs: []
     tunnelType: geneve
+    tunnelPort: 0
+    tunnelCsum: false
     trafficEncryptionMode: none
     wireGuard:
       port: 51820
@@ -70,6 +72,7 @@ antrea:
       Multicluster: false
       SecondaryNetwork: false
       TrafficControl: false
+      TopologyAwareHints: false
 
 antrea_nsx:
   enable: false
@@ -83,6 +86,11 @@ antrea_interworking:
     clusterName: dummyClusterName
     NSXManagers: []
     vpcPath: ""
+    bootstrapFrom: Inline
+    bootstrapSupervisorResourceName: dummyClusterName
+    proxyEndpoints:
+      rest-api: [ ]
+      nsx-rpc-fwd-proxy: [ ]
     mp_adapter_conf:
       NSXClientAuthCertFile: /etc/antrea/nsx-cert/tls.crt
       NSXClientAuthKeyFile: /etc/antrea/nsx-cert/tls.key

@@ -1,479 +1,5 @@
 ---
-# Source: antrea/templates/agent/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: antrea-agent
-  namespace: kube-system
-  labels:
-    app: antrea
----
-# Source: antrea/templates/antctl/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: antctl
-  namespace: kube-system
-  labels:
-    app: antrea
----
-# Source: antrea/templates/controller/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: antrea-controller
-  namespace: kube-system
-  labels:
-    app: antrea
----
-# Source: antrea/templates/agent/secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: antrea-agent-service-account-token
-  namespace: kube-system
-  annotations:
-    kubernetes.io/service-account.name: antrea-agent
-type: kubernetes.io/service-account-token
----
-# Source: antrea/templates/antctl/secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: antctl-service-account-token
-  namespace: kube-system
-  annotations:
-    kubernetes.io/service-account.name: antctl
-type: kubernetes.io/service-account-token
----
-# Source: antrea/templates/agent/tweakerconfigmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: antrea-agent-tweaker
-  namespace: kube-system
-  labels:
-    app: antrea
-data:
-  antrea-agent-tweaker.conf: |-
-    # Enable disableUdpTunnelOffload will disable udp tunnel offloading feature on kubernetes node's default interface.
-    # By default, no actions will be taken.
-    disableUdpTunnelOffload: false
----
-# Source: antrea/templates/configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: antrea-config
-  namespace: kube-system
-  labels:
-    app: antrea
-data:
-  antrea-agent.conf: |
-    # FeatureGates is a map of feature names to bools that enable or disable experimental features.
-    featureGates:
-    # Enable AntreaProxy which provides ServiceLB for in-cluster Services in antrea-agent.
-    # It should be enabled on Windows, otherwise NetworkPolicy will not take effect on
-    # Service traffic.
-    #  AntreaProxy: true
-
-    # Enable EndpointSlice support in AntreaProxy. Don't enable this feature unless that EndpointSlice
-    # API version v1beta1 is supported and set as enabled in Kubernetes. If AntreaProxy is not enabled,
-    # this flag will not take effect.
-    #  EndpointSlice: false
-
-    # Enable traceflow which provides packet tracing feature to diagnose network issue.
-    #  Traceflow: true
-
-    # Enable NodePortLocal feature to make the Pods reachable externally through NodePort
-    #  NodePortLocal: true
-
-    # Enable Antrea ClusterNetworkPolicy feature to complement K8s NetworkPolicy for cluster admins
-    # to define security policies which apply to the entire cluster, and Antrea NetworkPolicy
-    # feature that supports priorities, rule actions and externalEntities in the future.
-    #  AntreaPolicy: true
-
-    # Enable flowexporter which exports polled conntrack connections as IPFIX flow records from each
-    # agent to a configured collector.
-    #  FlowExporter: false
-
-    # Enable collecting and exposing NetworkPolicy statistics.
-    #  NetworkPolicyStats: true
-
-    # Enable controlling SNAT IPs of Pod egress traffic.
-    #  Egress: true
-
-    # Enable AntreaIPAM, which can allocate IP addresses from IPPools. AntreaIPAM is required by the
-    # bridging mode and allocates IPs to Pods in bridging mode. It is also required to use Antrea for
-    # IPAM when configuring secondary network interfaces with Multus.
-    #  AntreaIPAM: false
-
-    # Enable multicast traffic. This feature is supported only with noEncap mode.
-    #  Multicast: false
-
-    # Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
-    # This feature is supported only with encap mode.
-    #  Multicluster: false
-
-    # Enable support for provisioning secondary network interfaces for Pods (using
-    # Pod annotations). At the moment, Antrea can only create secondary network
-    # interfaces using SR-IOV VFs on baremetal Nodes.
-    #  SecondaryNetwork: false
-
-    # Enable managing external IPs of Services of LoadBalancer type.
-    #  ServiceExternalIP: false
-
-    # Enable mirroring or redirecting the traffic Pods send or receive.
-    #  TrafficControl: false
-
-    # Enable certificated-based authentication for IPsec.
-    #  IPsecCertAuth: false
-
-    # Name of the OpenVSwitch bridge antrea-agent will create and use.
-    # Make sure it doesn't conflict with your existing OpenVSwitch bridges.
-    ovsBridge: "br-int"
-
-    # Datapath type to use for the OpenVSwitch bridge created by Antrea. Supported values are:
-    # - system
-    # - netdev
-    # 'system' is the default value and corresponds to the kernel datapath. Use 'netdev' to run
-    # OVS in userspace mode. Userspace mode requires the tun device driver to be available.
-    #ovsDatapathType: system
-
-    # Name of the interface antrea-agent will create and use for host <--> pod communication.
-    # Make sure it doesn't conflict with your existing interfaces.
-    hostGateway: "antrea-gw0"
-
-    # Determines how traffic is encapsulated. It has the following options:
-    # encap(default):    Inter-node Pod traffic is always encapsulated and Pod to external network
-    #                    traffic is SNAT'd.
-    # noEncap:           Inter-node Pod traffic is not encapsulated; Pod to external network traffic is
-    #                    SNAT'd if noSNAT is not set to true. Underlying network must be capable of
-    #                    supporting Pod traffic across IP subnets.
-    # hybrid:            noEncap if source and destination Nodes are on the same subnet, otherwise encap.
-    # networkPolicyOnly: Antrea enforces NetworkPolicy only, and utilizes CNI chaining and delegates Pod
-    #                    IPAM and connectivity to the primary CNI.
-    #
-    trafficEncapMode: "encap"
-
-    # Whether or not to SNAT (using the Node IP) the egress traffic from a Pod to the external network.
-    # This option is for the noEncap traffic mode only, and the default value is false. In the noEncap
-    # mode, if the cluster's Pod CIDR is reachable from the external network, then the Pod traffic to
-    # the external network needs not be SNAT'd. In the networkPolicyOnly mode, antrea-agent never
-    # performs SNAT and this option will be ignored; for other modes it must be set to false.
-    noSNAT: false
-
-    # Tunnel protocols used for encapsulating traffic across Nodes. If WireGuard is enabled in trafficEncryptionMode,
-    # this option will not take effect. Supported values:
-    # - geneve (default)
-    # - vxlan
-    # - gre
-    # - stt
-    # Note that "gre" is not supported for IPv6 clusters (IPv6-only or dual-stack clusters).
-    tunnelType: "geneve"
-
-    # Determines how tunnel traffic is encrypted. Currently encryption only works with encap mode.
-    # It has the following options:
-    # - none (default):  Inter-node Pod traffic will not be encrypted.
-    # - ipsec:           Enable IPsec (ESP) encryption for Pod traffic across Nodes. Antrea uses
-    #                    Preshared Key (PSK) for IKE authentication. When IPsec tunnel is enabled,
-    #                    the PSK value must be passed to Antrea Agent through an environment
-    #                    variable: ANTREA_IPSEC_PSK.
-    # - wireGuard:       Enable WireGuard for tunnel traffic encryption.
-    trafficEncryptionMode: "none"
-
-    # Enable bridging mode of Pod network on Nodes, in which the Node's transport interface is connected
-    # to the OVS bridge, and cross-Node/VLAN traffic of AntreaIPAM Pods (Pods whose IP addresses are
-    # allocated by AntreaIPAM from IPPools) is sent to the underlay network, and forwarded/routed by the
-    # underlay network.
-    # This option requires the `AntreaIPAM` feature gate to be enabled. At this moment, it supports only
-    # IPv4 and Linux Nodes, and can be enabled only when `ovsDatapathType` is `system`,
-    # `trafficEncapMode` is `noEncap`, and `noSNAT` is true.
-    enableBridgingMode: false
-
-    # Disable TX checksum offloading for container network interfaces. It's supposed to be set to true when the
-    # datapath doesn't support TX checksum offloading, which causes packets to be dropped due to bad checksum.
-    # It affects Pods running on Linux Nodes only.
-    disableTXChecksumOffload: false
-
-    # Default MTU to use for the host gateway interface and the network interface of each Pod.
-    # If omitted, antrea-agent will discover the MTU of the Node's primary interface and
-    # also adjust MTU to accommodate for tunnel encapsulation overhead (if applicable).
-    defaultMTU: 0
-
-    # wireGuard specifies WireGuard related configurations.
-    wireGuard:
-      # The port for WireGuard to receive traffic.
-      port: 51820
-
-    egress:
-      # exceptCIDRs is the CIDR ranges to which outbound Pod traffic will not be SNAT'd by Egresses.
-      exceptCIDRs:
-
-    # ClusterIP CIDR range for Services. It's required when AntreaProxy is not enabled, and should be
-    # set to the same value as the one specified by --service-cluster-ip-range for kube-apiserver. When
-    # AntreaProxy is enabled, this parameter is not needed and will be ignored if provided.
-    serviceCIDR: ""
-
-    # ClusterIP CIDR range for IPv6 Services. It's required when using kube-proxy to provide IPv6 Service in a Dual-Stack
-    # cluster or an IPv6 only cluster. The value should be the same as the configuration for kube-apiserver specified by
-    # --service-cluster-ip-range. When AntreaProxy is enabled, this parameter is not needed.
-    # No default value for this field.
-    serviceCIDRv6: ""
-
-    # The port for the antrea-agent APIServer to serve on.
-    # Note that if it's set to another value, the `containerPort` of the `api` port of the
-    # `antrea-agent` container must be set to the same value.
-    apiPort: 10350
-
-    # Enable metrics exposure via Prometheus. Initializes Prometheus metrics listener.
-    enablePrometheusMetrics: true
-
-    # Provide the IPFIX collector address as a string with format <HOST>:[<PORT>][:<PROTO>].
-    # HOST can either be the DNS name or the IP of the Flow Collector. For example,
-    # "flow-aggregator.flow-aggregator.svc" can be provided as DNS name to connect
-    # to the Antrea Flow Aggregator service. If IP, it can be either IPv4 or IPv6.
-    # However, IPv6 address should be wrapped with [].
-    # If PORT is empty, we default to 4739, the standard IPFIX port.
-    # If no PROTO is given, we consider "tls" as default. We support "tls", "tcp" and
-    # "udp" protocols. "tls" is used for securing communication between flow exporter and
-    # flow aggregator.
-    flowCollectorAddr: "flow-aggregator.flow-aggregator.svc:4739:tls"
-
-    # Provide flow poll interval as a duration string. This determines how often the
-    # flow exporter dumps connections from the conntrack module. Flow poll interval
-    # should be greater than or equal to 1s (one second).
-    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    flowPollInterval: "5s"
-
-    # Provide the active flow export timeout, which is the timeout after which a flow
-    # record is sent to the collector for active flows. Thus, for flows with a continuous
-    # stream of packets, a flow record will be exported to the collector once the elapsed
-    # time since the last export event is equal to the value of this timeout.
-    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    activeFlowExportTimeout: "5s"
-
-    # Provide the idle flow export timeout, which is the timeout after which a flow
-    # record is sent to the collector for idle flows. A flow is considered idle if no
-    # packet matching this flow has been observed since the last export event.
-    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    idleFlowExportTimeout: "15s"
-
-    nodePortLocal:
-    # Enable NodePortLocal, a feature used to make Pods reachable using port forwarding on the host. To
-    # enable this feature, you need to set "enable" to true, and ensure that the NodePortLocal feature
-    # gate is also enabled (which is the default).
-      enable: true
-    # Provide the port range used by NodePortLocal. When the NodePortLocal feature is enabled, a port
-    # from that range will be assigned whenever a Pod's container defines a specific port to be exposed
-    # (each container can define a list of ports as pod.spec.containers[].ports), and all Node traffic
-    # directed to that port will be forwarded to the Pod.
-      portRange: "61000-62000"
-
-    # Provide the address of Kubernetes apiserver, to override any value provided in kubeconfig or InClusterConfig.
-    # Defaults to "". It must be a host string, a host:port pair, or a URL to the base of the apiserver.
-    kubeAPIServerOverride: ""
-
-    # Provide the address of DNS server, to override the kube-dns service. It's used to resolve hostname in FQDN policy.
-    # Defaults to "". It must be a host string or a host:port pair of the DNS server (e.g. 10.96.0.10, 10.96.0.10:53,
-    # [fd00:10:96::a]:53).
-    dnsServerOverride: ""
-
-    # Comma-separated list of Cipher Suites. If omitted, the default Go Cipher Suites will be used.
-    # https://golang.org/pkg/crypto/tls/#pkg-constants
-    # Note that TLS1.3 Cipher Suites cannot be added to the list. But the apiserver will always
-    # prefer TLS1.3 Cipher Suites whenever possible.
-    tlsCipherSuites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384"
-
-    # TLS min version from: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13.
-    tlsMinVersion: ""
-
-    # The name of the interface on Node which is used for tunneling or routing the traffic across Nodes.
-    # If there are multiple IP addresses configured on the interface, the first one is used. The IP
-    # address used for tunneling or routing traffic to remote Nodes is decided in the following order of
-    # preference (from highest to lowest):
-    # 1. transportInterface
-    # 2. transportInterfaceCIDRs
-    # 3. The Node IP
-    transportInterface: ""
-
-    multicast:
-    # The names of the interfaces on Nodes that are used to forward multicast traffic.
-    # Defaults to transport interface if not set.
-      multicastInterfaces:
-
-    # The interval at which the antrea-agent sends IGMP queries to Pods.
-    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-      igmpQueryInterval: "125s"
-
-    # The network CIDRs of the interface on Node which is used for tunneling or routing the traffic across
-    # Nodes. If there are multiple interfaces configured the same network CIDR, the first one is used. The
-    # IP address used for tunneling or routing traffic to remote Nodes is decided in the following order of
-    # preference (from highest to lowest):
-    # 1. transportInterface
-    # 2. transportInterfaceCIDRs
-    # 3. The Node IP
-    transportInterfaceCIDRs:
-
-    # Option antreaProxy contains AntreaProxy related configuration options.
-    antreaProxy:
-      # ProxyAll tells antrea-agent to proxy all Service traffic, including NodePort, LoadBalancer, and ClusterIP traffic,
-      # regardless of where they come from. Therefore, running kube-proxy is no longer required. This requires the AntreaProxy
-      # feature to be enabled.
-      # Note that this option is experimental. If kube-proxy is removed, option kubeAPIServerOverride must be used to access
-      # apiserver directly.
-      proxyAll: false
-      # A string array of values which specifies the host IPv4/IPv6 addresses for NodePort. Values can be valid IP blocks.
-      # (e.g. 1.2.3.0/24, 1.2.3.4/32). An empty string slice is meant to select all host IPv4/IPv6 addresses.
-      # Note that the option is only valid when proxyAll is true.
-      nodePortAddresses:
-      # An array of string values to specify a list of Services which should be ignored by AntreaProxy (traffic to these
-      # Services will not be load-balanced). Values can be a valid ClusterIP (e.g. 10.11.1.2) or a Service name
-      # with Namespace (e.g. kube-system/kube-dns)
-      skipServices:
-      # When ProxyLoadBalancerIPs is set to false, AntreaProxy no longer load-balances traffic destined to the
-      # External IPs of LoadBalancer Services. This is useful when the external LoadBalancer provides additional
-      # capabilities (e.g. TLS termination) and it is desirable for Pod-to-ExternalIP traffic to be sent to the
-      # external LoadBalancer instead of being load-balanced to an Endpoint directly by AntreaProxy.
-      # Note that setting ProxyLoadBalancerIPs to false usually only makes sense when ProxyAll is set to true and
-      # kube-proxy is removed from the cluser, otherwise kube-proxy will still load-balance this traffic.
-      proxyLoadBalancerIPs: true
-
-    # IPsec tunnel related configurations.
-    ipsec:
-      # The authentication mode of IPsec tunnel. It has the following options:
-      # - psk (default): Use pre-shared key (PSK) for IKE authentication.
-      # - cert:          Use CA-signed certificates for IKE authentication. This option requires the `IPsecCertAuth`
-      #                  feature gate to be enabled.
-      authenticationMode: "psk"
-
-    multicluster:
-    # Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
-    # This feature is supported only with encap mode.
-      enable: false
-    # The Namespace where Antrea Multi-cluster Controller is running.
-    # The default is antrea-agent's Namespace.
-      namespace: ""
-  antrea-cni.conflist: |
-    {
-        "cniVersion":"0.3.0",
-        "name": "antrea",
-        "plugins": [
-            {
-                "type": "antrea",
-                "ipam": {
-                    "type": "host-local"
-                }
-            }
-            ,
-            {
-                "type": "portmap",
-                "capabilities": {"portMappings": true}
-            }
-            ,
-            {
-                "type": "bandwidth",
-                "capabilities": {"bandwidth": true}
-            }
-        ]
-    }
-  antrea-controller.conf: |
-    # FeatureGates is a map of feature names to bools that enable or disable experimental features.
-    featureGates:
-    # Enable traceflow which provides packet tracing feature to diagnose network issue.
-    #  Traceflow: true
-
-    # Enable Antrea ClusterNetworkPolicy feature to complement K8s NetworkPolicy for cluster admins
-    # to define security policies which apply to the entire cluster, and Antrea NetworkPolicy
-    # feature that supports priorities, rule actions and externalEntities in the future.
-    #  AntreaPolicy: true
-
-    # Enable collecting and exposing NetworkPolicy statistics.
-    #  NetworkPolicyStats: true
-
-    # Enable multicast traffic. This feature is supported only with noEncap mode.
-    #  Multicast: false
-
-    # Enable controlling SNAT IPs of Pod egress traffic.
-    #  Egress: true
-
-    # Run Kubernetes NodeIPAMController with Antrea.
-    #  NodeIPAM: false
-
-    # Enable AntreaIPAM, which can allocate IP addresses from IPPools. AntreaIPAM is required by the
-    # bridging mode and allocates IPs to Pods in bridging mode. It is also required to use Antrea for
-    # IPAM when configuring secondary network interfaces with Multus.
-    #  AntreaIPAM: false
-
-    # Enable managing external IPs of Services of LoadBalancer type.
-    #  ServiceExternalIP: false
-
-    # Enable certificated-based authentication for IPsec.
-    #  IPsecCertAuth: false
-
-    # The port for the antrea-controller APIServer to serve on.
-    # Note that if it's set to another value, the `containerPort` of the `api` port of the
-    # `antrea-controller` container must be set to the same value.
-    apiPort: 10349
-
-    # Enable metrics exposure via Prometheus. Initializes Prometheus metrics listener.
-    enablePrometheusMetrics: true
-
-    # Indicates whether to use auto-generated self-signed TLS certificate.
-    # If false, a Secret named "antrea-controller-tls" must be provided with the following keys:
-    #   ca.crt: <CA certificate>
-    #   tls.crt: <TLS certificate>
-    #   tls.key: <TLS private key>
-    selfSignedCert: true
-
-    # Comma-separated list of Cipher Suites. If omitted, the default Go Cipher Suites will be used.
-    # https://golang.org/pkg/crypto/tls/#pkg-constants
-    # Note that TLS1.3 Cipher Suites cannot be added to the list. But the apiserver will always
-    # prefer TLS1.3 Cipher Suites whenever possible.
-    tlsCipherSuites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384"
-
-    # TLS min version from: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13.
-    tlsMinVersion: ""
-
-    nodeIPAM:
-      # Enable the integrated Node IPAM controller within the Antrea controller.
-      enableNodeIPAM: false
-      # CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges.
-      # The CIDRs could be either IPv4 or IPv6. At most one CIDR may be specified for each IP family.
-      # Value ignored when enableNodeIPAM is false.
-      clusterCIDRs:
-      # CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs.
-      # Value ignored when enableNodeIPAM is false.
-      serviceCIDR: ""
-      serviceCIDRv6: ""
-      # Mask size for IPv4 Node CIDR in IPv4 or dual-stack cluster. Value ignored when enableNodeIPAM is false
-      # or when IPv4 Pod CIDR is not configured. Valid range is 16 to 30.
-      nodeCIDRMaskSizeIPv4: 24
-      # Mask size for IPv6 Node CIDR in IPv6 or dual-stack cluster. Value ignored when enableNodeIPAM is false
-      # or when IPv6 Pod CIDR is not configured. Valid range is 64 to 126.
-      nodeCIDRMaskSizeIPv6: 64
-
-    ipsecCSRSigner:
-      # Determines the auto-approve policy of Antrea CSR signer for IPsec certificates management.
-      # If enabled, Antrea will auto-approve the CertificateSingingRequest (CSR) if its subject and x509 extensions
-      # are permitted, and the requestor can be validated. If K8s `BoundServiceAccountTokenVolume` feature is enabled,
-      # the Pod identity will also be validated to provide maximum security.
-      # If set to false, Antrea will not auto-approve CertificateSingingRequests and they need to be approved
-      # manually by `kubectl certificate approve`.
-      autoApprove: true
-      # Indicates whether to use auto-generated self-signed CA certificate.
-      # If false, a Secret named "antrea-ipsec-ca" must be provided with the following keys:
-      #   tls.crt: <CA certificate>
-      #   tls.key: <CA private key>
-      selfSignedCA: true
-
-    # Indicates whether to enable usage reporting or not.
-    enableUsageReporting: false
-
-    # Indicates whether to enable Antrea advanced features or not.
-    enterpriseAntrea: true
----
-# Source: antrea/templates/crds/antreaagentinfo.yaml
+# Source: crds/antreaagentinfo.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -526,8 +52,9 @@ spec:
     kind: AntreaAgentInfo
     shortNames:
       - aai
+
 ---
-# Source: antrea/templates/crds/antreacontrollerinfo.yaml
+# Source: crds/antreacontrollerinfo.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -580,273 +107,9 @@ spec:
     kind: AntreaControllerInfo
     shortNames:
       - aci
+
 ---
-# Source: antrea/templates/crds/clustergroup.yaml
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: clustergroups.crd.antrea.io
-  labels:
-    app: antrea
-spec:
-  group: crd.antrea.io
-  versions:
-    - name: v1alpha2
-      served: true
-      storage: false
-      schema:
-        openAPIV3Schema:
-          type: object
-          properties:
-            spec:
-              type: object
-              properties:
-                childGroups:
-                  type: array
-                  items:
-                    type: string
-                podSelector:
-                  type: object
-                  properties:
-                    matchExpressions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          operator:
-                            enum:
-                              - In
-                              - NotIn
-                              - Exists
-                              - DoesNotExist
-                            type: string
-                          values:
-                            type: array
-                            items:
-                              type: string
-                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                    matchLabels:
-                      x-kubernetes-preserve-unknown-fields: true
-                namespaceSelector:
-                  type: object
-                  properties:
-                    matchExpressions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          operator:
-                            enum:
-                              - In
-                              - NotIn
-                              - Exists
-                              - DoesNotExist
-                            type: string
-                          values:
-                            type: array
-                            items:
-                              type: string
-                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                    matchLabels:
-                      x-kubernetes-preserve-unknown-fields: true
-                externalEntitySelector:
-                  type: object
-                  properties:
-                    matchExpressions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          operator:
-                            enum:
-                              - In
-                              - NotIn
-                              - Exists
-                              - DoesNotExist
-                            type: string
-                          values:
-                            type: array
-                            items:
-                              type: string
-                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                    matchLabels:
-                      x-kubernetes-preserve-unknown-fields: true
-                ipBlock:
-                  type: object
-                  properties:
-                    cidr:
-                      type: string
-                      format: cidr
-                ipBlocks:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      cidr:
-                        type: string
-                        format: cidr
-                serviceReference:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    namespace:
-                      type: string
-            status:
-              type: object
-              properties:
-                conditions:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                      status:
-                        type: string
-                      lastTransitionTime:
-                        type: string
-    - name: v1alpha3
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          properties:
-            spec:
-              type: object
-              properties:
-                childGroups:
-                  type: array
-                  items:
-                    type: string
-                podSelector:
-                  type: object
-                  properties:
-                    matchExpressions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          operator:
-                            enum:
-                              - In
-                              - NotIn
-                              - Exists
-                              - DoesNotExist
-                            type: string
-                          values:
-                            type: array
-                            items:
-                              type: string
-                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                    matchLabels:
-                      x-kubernetes-preserve-unknown-fields: true
-                namespaceSelector:
-                  type: object
-                  properties:
-                    matchExpressions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          operator:
-                            enum:
-                              - In
-                              - NotIn
-                              - Exists
-                              - DoesNotExist
-                            type: string
-                          values:
-                            type: array
-                            items:
-                              type: string
-                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                    matchLabels:
-                      x-kubernetes-preserve-unknown-fields: true
-                externalEntitySelector:
-                  type: object
-                  properties:
-                    matchExpressions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          operator:
-                            enum:
-                              - In
-                              - NotIn
-                              - Exists
-                              - DoesNotExist
-                            type: string
-                          values:
-                            type: array
-                            items:
-                              type: string
-                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                    matchLabels:
-                      x-kubernetes-preserve-unknown-fields: true
-                ipBlocks:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      cidr:
-                        type: string
-                        format: cidr
-                serviceReference:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    namespace:
-                      type: string
-            status:
-              type: object
-              properties:
-                conditions:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                      status:
-                        type: string
-                      lastTransitionTime:
-                        type: string
-      subresources:
-        status: {}
-  conversion:
-    strategy: Webhook
-    webhook:
-      conversionReviewVersions: ["v1", "v1beta1"]
-      clientConfig:
-        service:
-          name: "antrea"
-          namespace: "kube-system"
-          path: "/convert/clustergroup"
-  scope: Cluster
-  names:
-    plural: clustergroups
-    singular: clustergroup
-    kind: ClusterGroup
-    shortNames:
-      - cg
----
-# Source: antrea/templates/crds/clusternetworkpolicy.yaml
+# Source: crds/clusternetworkpolicy.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -964,8 +227,18 @@ spec:
                           namespace:
                             type: string
                         required:
-                        - name
-                        - namespace
+                          - name
+                          - namespace
+                      service:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        required:
+                          - name
+                          - namespace
                 ingress:
                   type: array
                   items:
@@ -1037,8 +310,18 @@ spec:
                                 namespace:
                                   type: string
                               required:
-                              - name
-                              - namespace
+                                - name
+                                - namespace
+                            service:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                namespace:
+                                  type: string
+                              required:
+                                - name
+                                - namespace
                       # Ensure that Action field allows only ALLOW, DROP, REJECT and PASS values
                       action:
                         type: string
@@ -1162,8 +445,8 @@ spec:
                                 namespace:
                                   type: string
                               required:
-                              - name
-                              - namespace
+                                - name
+                                - namespace
                             nodeSelector:
                               type: object
                               properties:
@@ -1263,8 +546,8 @@ spec:
                                 namespace:
                                   type: string
                               required:
-                              - name
-                              - namespace
+                                - name
+                                - namespace
                       # Ensure that Action field allows only ALLOW, DROP, REJECT and PASS values
                       action:
                         type: string
@@ -1392,8 +675,8 @@ spec:
                                 namespace:
                                   type: string
                               required:
-                              - name
-                              - namespace
+                                - name
+                                - namespace
                             nodeSelector:
                               type: object
                               properties:
@@ -1423,8 +706,8 @@ spec:
                         items:
                           type: object
                           required:
-                          - name
-                          - namespace
+                            - name
+                            - namespace
                           properties:
                             name:
                               type: string
@@ -1445,6 +728,21 @@ spec:
                   type: integer
                 desiredNodesRealized:
                   type: integer
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
       subresources:
         status: {}
   scope: Cluster
@@ -1454,8 +752,9 @@ spec:
     kind: ClusterNetworkPolicy
     shortNames:
       - acnp
+
 ---
-# Source: antrea/templates/crds/egress.yaml
+# Source: crds/egress.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1465,111 +764,112 @@ metadata:
 spec:
   group: crd.antrea.io
   versions:
-  - name: v1alpha2
-    served: true
-    storage: true
-    schema:
-      openAPIV3Schema:
-        type: object
-        required:
-        - spec
-        properties:
-          spec:
-            type: object
-            required:
-            - appliedTo
-            anyOf:
-            - required:
-              - egressIP
-            - required:
-              - externalIPPool
-            properties:
-              appliedTo:
-                type: object
-                properties:
-                  podSelector:
-                    type: object
-                    properties:
-                      matchExpressions:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            key:
-                              type: string
-                            operator:
-                              enum:
-                                - In
-                                - NotIn
-                                - Exists
-                                - DoesNotExist
-                              type: string
-                            values:
-                              type: array
-                              items:
+    - name: v1alpha2
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - appliedTo
+              anyOf:
+                - required:
+                    - egressIP
+                - required:
+                    - externalIPPool
+              properties:
+                appliedTo:
+                  type: object
+                  properties:
+                    podSelector:
+                      type: object
+                      properties:
+                        matchExpressions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
                                 type: string
-                                pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                      matchLabels:
-                        x-kubernetes-preserve-unknown-fields: true
-                  namespaceSelector:
-                    type: object
-                    properties:
-                      matchExpressions:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            key:
-                              type: string
-                            operator:
-                              enum:
-                                - In
-                                - NotIn
-                                - Exists
-                                - DoesNotExist
-                              type: string
-                            values:
-                              type: array
-                              items:
+                              operator:
+                                enum:
+                                  - In
+                                  - NotIn
+                                  - Exists
+                                  - DoesNotExist
                                 type: string
-                                pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                      matchLabels:
-                        x-kubernetes-preserve-unknown-fields: true
-              egressIP:
-                type: string
-                oneOf:
-                - format: ipv4
-                - format: ipv6
-              externalIPPool:
-                type: string
-          status:
-            type: object
-            properties:
-              egressNode:
-                type: string
-    additionalPrinterColumns:
-    - description: Specifies the SNAT IP address for the selected workloads.
-      jsonPath: .spec.egressIP
-      name: EgressIP
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    - description: The Owner Node of egress IP
-      jsonPath: .status.egressNode
-      name: Node
-      type: string
-    subresources:
-      status: {}
+                              values:
+                                type: array
+                                items:
+                                  type: string
+                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                        matchLabels:
+                          x-kubernetes-preserve-unknown-fields: true
+                    namespaceSelector:
+                      type: object
+                      properties:
+                        matchExpressions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              operator:
+                                enum:
+                                  - In
+                                  - NotIn
+                                  - Exists
+                                  - DoesNotExist
+                                type: string
+                              values:
+                                type: array
+                                items:
+                                  type: string
+                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                        matchLabels:
+                          x-kubernetes-preserve-unknown-fields: true
+                egressIP:
+                  type: string
+                  oneOf:
+                    - format: ipv4
+                    - format: ipv6
+                externalIPPool:
+                  type: string
+            status:
+              type: object
+              properties:
+                egressNode:
+                  type: string
+      additionalPrinterColumns:
+        - description: Specifies the SNAT IP address for the selected workloads.
+          jsonPath: .spec.egressIP
+          name: EgressIP
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        - description: The Owner Node of egress IP
+          jsonPath: .status.egressNode
+          name: Node
+          type: string
+      subresources:
+        status: {}
   scope: Cluster
   names:
     plural: egresses
     singular: egress
     kind: Egress
     shortNames:
-    - eg
+      - eg
+
 ---
-# Source: antrea/templates/crds/externalentity.yaml
+# Source: crds/externalentity.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1628,8 +928,9 @@ spec:
     kind: ExternalEntity
     shortNames:
       - ee
+
 ---
-# Source: antrea/templates/crds/externalippool.yaml
+# Source: crds/externalippool.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1733,8 +1034,60 @@ spec:
     kind: ExternalIPPool
     shortNames:
       - eip
+
 ---
-# Source: antrea/templates/crds/ippool.yaml
+# Source: crds/externalnode.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    app: antrea
+  name: externalnodes.crd.antrea.io
+spec:
+  group: crd.antrea.io
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - interfaces
+              properties:
+                interfaces:
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  required:
+                    - ips
+                  items:
+                    type: object
+                    properties:
+                      ips:
+                        type: array
+                        minItems: 1
+                        items:
+                          type: string
+                          oneOf:
+                            - format: ipv4
+                            - format: ipv6
+                      name:
+                        type: string
+      served: true
+      storage: true
+  scope: Namespaced
+  names:
+    kind: ExternalNode
+    plural: externalnodes
+    shortNames:
+      - en
+    singular: externalnode
+---
+# Source: crds/ippool.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1761,18 +1114,19 @@ spec:
               properties:
                 ipVersion:
                   type: integer
+                  enum: [ 4, 6 ]
                 ipRanges:
                   items:
                     oneOf:
                       - required:
-                        - cidr
-                        - gateway
-                        - prefixLength
+                          - cidr
+                          - gateway
+                          - prefixLength
                       - required:
-                        - start
-                        - end
-                        - gateway
-                        - prefixLength
+                          - start
+                          - end
+                          - gateway
+                          - prefixLength
                     properties:
                       cidr:
                         format: cidr
@@ -1794,6 +1148,8 @@ spec:
                         type: string
                       prefixLength:
                         type: integer
+                        minimum: 1
+                        maximum: 128
                       vlan:
                         type: integer
                         minimum: 0
@@ -1834,7 +1190,26 @@ spec:
                         type: string
                     type: object
                   type: array
+                usage:
+                  properties:
+                    used:
+                      type: integer
+                    total:
+                      type: integer
+                  type: object
               type: object
+      additionalPrinterColumns:
+        - description: The number of total IPs
+          jsonPath: .status.usage.total
+          name: Total
+          type: integer
+        - description: The number of allocated IPs
+          jsonPath: .status.usage.used
+          name: Used
+          type: integer
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
       subresources:
         status: {}
   scope: Cluster
@@ -1844,8 +1219,9 @@ spec:
     kind: IPPool
     shortNames:
       - ipp
+
 ---
-# Source: antrea/templates/crds/networkpolicy.yaml
+# Source: crds/networkpolicy.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1905,6 +1281,30 @@ spec:
                     type: object
                     # Ensure that Spec.AppliedTo does not allow NamespaceSelector/IPBlock field
                     properties:
+                      externalEntitySelector:
+                        type: object
+                        properties:
+                          matchExpressions:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                operator:
+                                  enum:
+                                    - In
+                                    - NotIn
+                                    - Exists
+                                    - DoesNotExist
+                                  type: string
+                                values:
+                                  type: array
+                                  items:
+                                    type: string
+                                    pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                          matchLabels:
+                            x-kubernetes-preserve-unknown-fields: true
                       podSelector:
                         type: object
                         properties:
@@ -1929,6 +1329,8 @@ spec:
                                     pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
                           matchLabels:
                             x-kubernetes-preserve-unknown-fields: true
+                      group:
+                        type: string
                 ingress:
                   type: array
                   items:
@@ -1966,6 +1368,8 @@ spec:
                                           pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
                                 matchLabels:
                                   x-kubernetes-preserve-unknown-fields: true
+                            group:
+                              type: string
                       # Ensure that Action field allows only ALLOW, DROP, REJECT and PASS values
                       action:
                         type: string
@@ -2120,6 +1524,8 @@ spec:
                                   type: array
                                 matchLabels:
                                   x-kubernetes-preserve-unknown-fields: true
+                            group:
+                              type: string
                       name:
                         type: string
                       enableLogging:
@@ -2161,6 +1567,8 @@ spec:
                                           pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
                                 matchLabels:
                                   x-kubernetes-preserve-unknown-fields: true
+                            group:
+                              type: string
                       # Ensure that Action field allows only ALLOW, DROP, REJECT and PASS values
                       action:
                         type: string
@@ -2319,12 +1727,14 @@ spec:
                                   type: array
                                 matchLabels:
                                   x-kubernetes-preserve-unknown-fields: true
+                            group:
+                              type: string
                       toServices:
                         type: array
                         items:
                           type: object
                           required:
-                          - name
+                            - name
                           properties:
                             name:
                               type: string
@@ -2345,6 +1755,21 @@ spec:
                   type: integer
                 desiredNodesRealized:
                   type: integer
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
       subresources:
         status: {}
   scope: Namespaced
@@ -2354,8 +1779,158 @@ spec:
     kind: NetworkPolicy
     shortNames:
       - anp
+
 ---
-# Source: antrea/templates/crds/tier.yaml
+# Source: crds/supportbundlecollection.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: supportbundlecollections.crd.antrea.io
+spec:
+  group: crd.antrea.io
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - fileServer
+                - authentication
+              anyOf:
+                - required:
+                    - nodes
+                - required:
+                    - externalNodes
+              properties:
+                nodes:
+                  type: object
+                  properties:
+                    nodeNames:
+                      type: array
+                      items:
+                        type: string
+                    nodeSelector:
+                      type: object
+                      properties:
+                        matchExpressions:
+                          items:
+                            properties:
+                              key:
+                                type: string
+                              operator:
+                                enum:
+                                  - In
+                                  - NotIn
+                                  - Exists
+                                  - DoesNotExist
+                                type: string
+                              values:
+                                items:
+                                  type: string
+                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                type: array
+                            type: object
+                          type: array
+                        matchLabels:
+                          x-kubernetes-preserve-unknown-fields: true
+                externalNodes:
+                  type: object
+                  required:
+                    - namespace
+                  properties:
+                    namespace:
+                      type: string
+                    nodeNames:
+                      type: array
+                      items:
+                        type: string
+                    nodeSelector:
+                      type: object
+                      properties:
+                        matchExpressions:
+                          items:
+                            properties:
+                              key:
+                                type: string
+                              operator:
+                                enum:
+                                  - In
+                                  - NotIn
+                                  - Exists
+                                  - DoesNotExist
+                                type: string
+                              values:
+                                items:
+                                  type: string
+                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                type: array
+                            type: object
+                          type: array
+                        matchLabels:
+                          x-kubernetes-preserve-unknown-fields: true
+                expirationMinutes:
+                  type: integer
+                  default: 60
+                sinceTime:
+                  type: string
+                  format: duration
+                fileServer:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                authentication:
+                  type: object
+                  properties:
+                    authType:
+                      type: string
+                      enum: ["BearerToken", "APIKey"]
+                    authSecret:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+            status:
+              type: object
+              properties:
+                collectedNodes:
+                  type: integer
+                desiredNodes:
+                  type: integer
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+      subresources:
+        status: {}
+  scope: Cluster
+  names:
+    plural: supportbundlecollections
+    singular: supportbundlecollection
+    kind: SupportBundleCollection
+    shortNames:
+      - sbc
+
+---
+# Source: crds/tier.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -2398,94 +1973,9 @@ spec:
     kind: Tier
     shortNames:
       - tr
+
 ---
-# Source: antrea/templates/crds/tierentitlement.yaml
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: tierentitlements.crd.antrea.tanzu.vmware.com
-  labels:
-    app: antrea
-spec:
-  group: crd.antrea.tanzu.vmware.com
-  versions:
-    - name: v1alpha1
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          properties:
-            spec:
-              required:
-                - permission
-                - tiers
-              type: object
-              properties:
-                permission:
-                  type: string
-                  enum: ['edit']
-                tiers:
-                  type: array
-                  items:
-                    type: string
-  scope: Cluster
-  names:
-    plural: tierentitlements
-    singular: tierentitlement
-    kind: TierEntitlement
-    shortNames:
-      - te
----
-# Source: antrea/templates/crds/tierentitlementbinding.yml
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: tierentitlementbindings.crd.antrea.tanzu.vmware.com
-  labels:
-    app: antrea
-spec:
-  group: crd.antrea.tanzu.vmware.com
-  versions:
-    - name: v1alpha1
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          properties:
-            spec:
-              required:
-                - tierEntitlement
-                - subjects
-              type: object
-              properties:
-                tierEntitlement:
-                  type: string
-                subjects:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      kind:
-                        type: string
-                        enum: ['User', 'Group', 'ServiceAccount']
-                      apiGroup:
-                        type: string
-                        enum: ['rbac.authorization.k8s.io']
-                      name:
-                        type: string
-                      namespace:
-                        type: string
-  scope: Cluster
-  names:
-    plural: tierentitlementbindings
-    singular: tierentitlementbinding
-    kind: TierEntitlementBinding
-    shortNames:
-      - teb
----
-# Source: antrea/templates/crds/traceflow.yaml
+# Source: crds/traceflow.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -2737,8 +2227,9 @@ spec:
     kind: Traceflow
     shortNames:
       - tf
+
 ---
-# Source: antrea/templates/crds/trafficcontrol.yaml
+# Source: crds/trafficcontrol.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -3022,6 +2513,991 @@ spec:
     kind: TrafficControl
     shortNames:
       - tc
+
+---
+# Source: antrea/templates/agent/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: antrea-agent
+  namespace: kube-system
+  labels:
+    app: antrea
+---
+# Source: antrea/templates/antctl/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: antctl
+  namespace: kube-system
+  labels:
+    app: antrea
+---
+# Source: antrea/templates/controller/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: antrea-controller
+  namespace: kube-system
+  labels:
+    app: antrea
+---
+# Source: antrea/templates/agent/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: antrea-agent-service-account-token
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: antrea-agent
+type: kubernetes.io/service-account-token
+---
+# Source: antrea/templates/antctl/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: antctl-service-account-token
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: antctl
+type: kubernetes.io/service-account-token
+---
+# Source: antrea/templates/agent/tweakerconfigmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: antrea-agent-tweaker
+  namespace: kube-system
+  labels:
+    app: antrea
+data:
+  antrea-agent-tweaker.conf: |-
+    # Enable disableUdpTunnelOffload will disable udp tunnel offloading feature on kubernetes node's default interface.
+    # By default, no actions will be taken.
+    disableUdpTunnelOffload: false
+---
+# Source: antrea/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: antrea-config
+  namespace: kube-system
+  labels:
+    app: antrea
+data:
+  antrea-agent.conf: |
+    # FeatureGates is a map of feature names to bools that enable or disable experimental features.
+    featureGates:
+    # AllAlpha is a global toggle for alpha features. Per-feature key values override the default set by AllAlpha.
+    #  AllAlpha: false
+
+    # AllBeta is a global toggle for beta features. Per-feature key values override the default set by AllBeta.
+    #  AllBeta: false
+
+    # Enable AntreaProxy which provides ServiceLB for in-cluster Services in antrea-agent.
+    # It should be enabled on Windows, otherwise NetworkPolicy will not take effect on
+    # Service traffic.
+    #  AntreaProxy: true
+
+    # Enable EndpointSlice support in AntreaProxy. Don't enable this feature unless that EndpointSlice
+    # API version v1 is supported and set as enabled in Kubernetes. If AntreaProxy is not enabled,
+    # this flag will not take effect.
+    #  EndpointSlice: false
+
+    # Enable TopologyAwareHints in AntreaProxy. This requires AntreaProxy and EndpointSlice to be
+    # enabled, otherwise this flag will not take effect.
+    #  TopologyAwareHints: false
+
+    # Enable traceflow which provides packet tracing feature to diagnose network issue.
+    #  Traceflow: true
+
+    # Enable NodePortLocal feature to make the Pods reachable externally through NodePort
+    #  NodePortLocal: true
+
+    # Enable Antrea ClusterNetworkPolicy feature to complement K8s NetworkPolicy for cluster admins
+    # to define security policies which apply to the entire cluster, and Antrea NetworkPolicy
+    # feature that supports priorities, rule actions and externalEntities in the future.
+    #  AntreaPolicy: true
+
+    # Enable flowexporter which exports polled conntrack connections as IPFIX flow records from each
+    # agent to a configured collector.
+    #  FlowExporter: false
+
+    # Enable collecting and exposing NetworkPolicy statistics.
+    #  NetworkPolicyStats: true
+
+    # Enable controlling SNAT IPs of Pod egress traffic.
+    #  Egress: true
+
+    # Enable AntreaIPAM, which can allocate IP addresses from IPPools. AntreaIPAM is required by the
+    # bridging mode and allocates IPs to Pods in bridging mode. It is also required to use Antrea for
+    # IPAM when configuring secondary network interfaces with Multus.
+    #  AntreaIPAM: false
+
+    # Enable multicast traffic.
+    #  Multicast: false
+
+    # Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
+    # This feature is supported only with encap mode.
+    #  Multicluster: false
+
+    # Enable support for provisioning secondary network interfaces for Pods (using
+    # Pod annotations). At the moment, Antrea can only create secondary network
+    # interfaces using SR-IOV VFs on baremetal Nodes.
+    #  SecondaryNetwork: false
+
+    # Enable managing external IPs of Services of LoadBalancer type.
+    #  ServiceExternalIP: false
+
+    # Enable mirroring or redirecting the traffic Pods send or receive.
+    #  TrafficControl: false
+
+    # Enable certificated-based authentication for IPsec.
+    #  IPsecCertAuth: false
+
+    # Name of the OpenVSwitch bridge antrea-agent will create and use.
+    # Make sure it doesn't conflict with your existing OpenVSwitch bridges.
+    ovsBridge: "br-int"
+
+    # Datapath type to use for the OpenVSwitch bridge created by Antrea. At the moment, the only
+    # supported value is 'system', which corresponds to the kernel datapath.
+    #ovsDatapathType: system
+
+    # Name of the interface antrea-agent will create and use for host <--> pod communication.
+    # Make sure it doesn't conflict with your existing interfaces.
+    hostGateway: "antrea-gw0"
+
+    # Determines how traffic is encapsulated. It has the following options:
+    # encap(default):    Inter-node Pod traffic is always encapsulated and Pod to external network
+    #                    traffic is SNAT'd.
+    # noEncap:           Inter-node Pod traffic is not encapsulated; Pod to external network traffic is
+    #                    SNAT'd if noSNAT is not set to true. Underlying network must be capable of
+    #                    supporting Pod traffic across IP subnets.
+    # hybrid:            noEncap if source and destination Nodes are on the same subnet, otherwise encap.
+    # networkPolicyOnly: Antrea enforces NetworkPolicy only, and utilizes CNI chaining and delegates Pod
+    #                    IPAM and connectivity to the primary CNI.
+    #
+    trafficEncapMode: "encap"
+
+    # Whether or not to SNAT (using the Node IP) the egress traffic from a Pod to the external network.
+    # This option is for the noEncap traffic mode only, and the default value is false. In the noEncap
+    # mode, if the cluster's Pod CIDR is reachable from the external network, then the Pod traffic to
+    # the external network needs not be SNAT'd. In the networkPolicyOnly mode, antrea-agent never
+    # performs SNAT and this option will be ignored; for other modes it must be set to false.
+    noSNAT: false
+
+    # Tunnel protocols used for encapsulating traffic across Nodes. If WireGuard is enabled in trafficEncryptionMode,
+    # this option will not take effect. Supported values:
+    # - geneve (default)
+    # - vxlan
+    # - gre
+    # - stt
+    # Note that "gre" is not supported for IPv6 clusters (IPv6-only or dual-stack clusters).
+    tunnelType: "geneve"
+
+    # TunnelPort is the destination port for UDP and TCP based tunnel protocols (Geneve, VXLAN, and STT).
+    # If zero, it will use the assigned IANA port for the protocol, i.e. 6081 for Geneve, 4789 for VXLAN,
+    # and 7471 for STT.
+    tunnelPort: 0
+
+    # TunnelCsum determines whether to compute UDP encapsulation header (Geneve or VXLAN) checksums on outgoing
+    # packets. For Linux kernel before Mar 2021, UDP checksum must be present to trigger GRO on the receiver for better
+    # performance of Geneve and VXLAN tunnels. The issue has been fixed by
+    # https://github.com/torvalds/linux/commit/89e5c58fc1e2857ccdaae506fb8bc5fed57ee063, thus computing UDP checksum is
+    # no longer necessary.
+    # It should only be set to true when you are using an unpatched Linux kernel and observing poor transfer performance.
+    tunnelCsum: false
+
+    # Determines how tunnel traffic is encrypted. Currently encryption only works with encap mode.
+    # It has the following options:
+    # - none (default):  Inter-node Pod traffic will not be encrypted.
+    # - ipsec:           Enable IPsec (ESP) encryption for Pod traffic across Nodes. Antrea uses
+    #                    Preshared Key (PSK) for IKE authentication. When IPsec tunnel is enabled,
+    #                    the PSK value must be passed to Antrea Agent through an environment
+    #                    variable: ANTREA_IPSEC_PSK.
+    # - wireGuard:       Enable WireGuard for tunnel traffic encryption.
+    trafficEncryptionMode: "none"
+
+    # Enable bridging mode of Pod network on Nodes, in which the Node's transport interface is connected
+    # to the OVS bridge, and cross-Node/VLAN traffic of AntreaIPAM Pods (Pods whose IP addresses are
+    # allocated by AntreaIPAM from IPPools) is sent to the underlay network, and forwarded/routed by the
+    # underlay network.
+    # This option requires the `AntreaIPAM` feature gate to be enabled. At this moment, it supports only
+    # IPv4 and Linux Nodes, and can be enabled only when `ovsDatapathType` is `system`,
+    # `trafficEncapMode` is `noEncap`, and `noSNAT` is true.
+    enableBridgingMode: false
+
+    # Disable TX checksum offloading for container network interfaces. It's supposed to be set to true when the
+    # datapath doesn't support TX checksum offloading, which causes packets to be dropped due to bad checksum.
+    # It affects Pods running on Linux Nodes only.
+    disableTXChecksumOffload: false
+
+    # Default MTU to use for the host gateway interface and the network interface of each Pod.
+    # If omitted, antrea-agent will discover the MTU of the Node's primary interface and
+    # also adjust MTU to accommodate for tunnel encapsulation overhead (if applicable).
+    defaultMTU: 0
+
+    # wireGuard specifies WireGuard related configurations.
+    wireGuard:
+      # The port for WireGuard to receive traffic.
+      port: 51820
+
+    egress:
+      # exceptCIDRs is the CIDR ranges to which outbound Pod traffic will not be SNAT'd by Egresses.
+      exceptCIDRs:
+
+    # ClusterIP CIDR range for Services. It's required when AntreaProxy is not enabled, and should be
+    # set to the same value as the one specified by --service-cluster-ip-range for kube-apiserver. When
+    # AntreaProxy is enabled, this parameter is not needed and will be ignored if provided.
+    serviceCIDR: ""
+
+    # ClusterIP CIDR range for IPv6 Services. It's required when using kube-proxy to provide IPv6 Service in a Dual-Stack
+    # cluster or an IPv6 only cluster. The value should be the same as the configuration for kube-apiserver specified by
+    # --service-cluster-ip-range. When AntreaProxy is enabled, this parameter is not needed.
+    # No default value for this field.
+    serviceCIDRv6: ""
+
+    # The port for the antrea-agent APIServer to serve on.
+    # Note that if it's set to another value, the `containerPort` of the `api` port of the
+    # `antrea-agent` container must be set to the same value.
+    apiPort: 10350
+
+    # Enable metrics exposure via Prometheus. Initializes Prometheus metrics listener.
+    enablePrometheusMetrics: true
+
+    # Provide the IPFIX collector address as a string with format <HOST>:[<PORT>][:<PROTO>].
+    # HOST can either be the DNS name or the IP of the Flow Collector. For example,
+    # "flow-aggregator.flow-aggregator.svc" can be provided as DNS name to connect
+    # to the Antrea Flow Aggregator service. If IP, it can be either IPv4 or IPv6.
+    # However, IPv6 address should be wrapped with [].
+    # If PORT is empty, we default to 4739, the standard IPFIX port.
+    # If no PROTO is given, we consider "tls" as default. We support "tls", "tcp" and
+    # "udp" protocols. "tls" is used for securing communication between flow exporter and
+    # flow aggregator.
+    flowCollectorAddr: "flow-aggregator.flow-aggregator.svc:4739:tls"
+
+    # Provide flow poll interval as a duration string. This determines how often the
+    # flow exporter dumps connections from the conntrack module. Flow poll interval
+    # should be greater than or equal to 1s (one second).
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+    flowPollInterval: "5s"
+
+    # Provide the active flow export timeout, which is the timeout after which a flow
+    # record is sent to the collector for active flows. Thus, for flows with a continuous
+    # stream of packets, a flow record will be exported to the collector once the elapsed
+    # time since the last export event is equal to the value of this timeout.
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+    activeFlowExportTimeout: "5s"
+
+    # Provide the idle flow export timeout, which is the timeout after which a flow
+    # record is sent to the collector for idle flows. A flow is considered idle if no
+    # packet matching this flow has been observed since the last export event.
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+    idleFlowExportTimeout: "15s"
+
+    nodePortLocal:
+    # Enable NodePortLocal, a feature used to make Pods reachable using port forwarding on the host. To
+    # enable this feature, you need to set "enable" to true, and ensure that the NodePortLocal feature
+    # gate is also enabled (which is the default).
+      enable: true
+    # Provide the port range used by NodePortLocal. When the NodePortLocal feature is enabled, a port
+    # from that range will be assigned whenever a Pod's container defines a specific port to be exposed
+    # (each container can define a list of ports as pod.spec.containers[].ports), and all Node traffic
+    # directed to that port will be forwarded to the Pod.
+      portRange: "61000-62000"
+
+    # Provide the address of Kubernetes apiserver, to override any value provided in kubeconfig or InClusterConfig.
+    # Defaults to "". It must be a host string, a host:port pair, or a URL to the base of the apiserver.
+    kubeAPIServerOverride: ""
+
+    # Provide the address of DNS server, to override the kube-dns service. It's used to resolve hostname in FQDN policy.
+    # Defaults to "". It must be a host string or a host:port pair of the DNS server (e.g. 10.96.0.10, 10.96.0.10:53,
+    # [fd00:10:96::a]:53).
+    dnsServerOverride: ""
+
+    # Comma-separated list of Cipher Suites. If omitted, the default Go Cipher Suites will be used.
+    # https://golang.org/pkg/crypto/tls/#pkg-constants
+    # Note that TLS1.3 Cipher Suites cannot be added to the list. But the apiserver will always
+    # prefer TLS1.3 Cipher Suites whenever possible.
+    tlsCipherSuites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384"
+
+    # TLS min version from: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13.
+    tlsMinVersion: ""
+
+    # The name of the interface on Node which is used for tunneling or routing the traffic across Nodes.
+    # If there are multiple IP addresses configured on the interface, the first one is used. The IP
+    # address used for tunneling or routing traffic to remote Nodes is decided in the following order of
+    # preference (from highest to lowest):
+    # 1. transportInterface
+    # 2. transportInterfaceCIDRs
+    # 3. The Node IP
+    transportInterface: ""
+
+    multicast:
+    # The names of the interfaces on Nodes that are used to forward multicast traffic.
+    # Defaults to transport interface if not set.
+      multicastInterfaces:
+
+    # The interval at which the antrea-agent sends IGMP queries to Pods.
+    # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+      igmpQueryInterval: "125s"
+
+    # The network CIDRs of the interface on Node which is used for tunneling or routing the traffic across
+    # Nodes. If there are multiple interfaces configured the same network CIDR, the first one is used. The
+    # IP address used for tunneling or routing traffic to remote Nodes is decided in the following order of
+    # preference (from highest to lowest):
+    # 1. transportInterface
+    # 2. transportInterfaceCIDRs
+    # 3. The Node IP
+    transportInterfaceCIDRs:
+
+    # Option antreaProxy contains AntreaProxy related configuration options.
+    antreaProxy:
+      # ProxyAll tells antrea-agent to proxy all Service traffic, including NodePort, LoadBalancer, and ClusterIP traffic,
+      # regardless of where they come from. Therefore, running kube-proxy is no longer required. This requires the AntreaProxy
+      # feature to be enabled.
+      # Note that this option is experimental. If kube-proxy is removed, option kubeAPIServerOverride must be used to access
+      # apiserver directly.
+      proxyAll: false
+      # A string array of values which specifies the host IPv4/IPv6 addresses for NodePort. Values can be valid IP blocks.
+      # (e.g. 1.2.3.0/24, 1.2.3.4/32). An empty string slice is meant to select all host IPv4/IPv6 addresses.
+      # Note that the option is only valid when proxyAll is true.
+      nodePortAddresses:
+      # An array of string values to specify a list of Services which should be ignored by AntreaProxy (traffic to these
+      # Services will not be load-balanced). Values can be a valid ClusterIP (e.g. 10.11.1.2) or a Service name
+      # with Namespace (e.g. kube-system/kube-dns)
+      skipServices:
+      # When ProxyLoadBalancerIPs is set to false, AntreaProxy no longer load-balances traffic destined to the
+      # External IPs of LoadBalancer Services. This is useful when the external LoadBalancer provides additional
+      # capabilities (e.g. TLS termination) and it is desirable for Pod-to-ExternalIP traffic to be sent to the
+      # external LoadBalancer instead of being load-balanced to an Endpoint directly by AntreaProxy.
+      # Note that setting ProxyLoadBalancerIPs to false usually only makes sense when ProxyAll is set to true and
+      # kube-proxy is removed from the cluser, otherwise kube-proxy will still load-balance this traffic.
+      proxyLoadBalancerIPs: true
+
+    # IPsec tunnel related configurations.
+    ipsec:
+      # The authentication mode of IPsec tunnel. It has the following options:
+      # - psk (default): Use pre-shared key (PSK) for IKE authentication.
+      # - cert:          Use CA-signed certificates for IKE authentication. This option requires the `IPsecCertAuth`
+      #                  feature gate to be enabled.
+      authenticationMode: "psk"
+
+    multicluster:
+    # Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
+    # This feature is supported only with encap mode.
+      enable: false
+    # The Namespace where Antrea Multi-cluster Controller is running.
+    # The default is antrea-agent's Namespace.
+      namespace: ""
+  antrea-cni.conflist: |
+    {
+        "cniVersion":"0.3.0",
+        "name": "antrea",
+        "plugins": [
+            {
+                "type": "antrea",
+                "ipam": {
+                    "type": "host-local"
+                }
+            }
+            ,
+            {
+                "type": "portmap",
+                "capabilities": {"portMappings": true}
+            }
+            ,
+            {
+                "type": "bandwidth",
+                "capabilities": {"bandwidth": true}
+            }
+        ]
+    }
+  antrea-controller.conf: |
+    # FeatureGates is a map of feature names to bools that enable or disable experimental features.
+    featureGates:
+    # AllAlpha is a global toggle for alpha features. Per-feature key values override the default set by AllAlpha.
+    #  AllAlpha: false
+
+    # AllBeta is a global toggle for beta features. Per-feature key values override the default set by AllBeta.
+    #  AllBeta: false
+
+    # Enable traceflow which provides packet tracing feature to diagnose network issue.
+    #  Traceflow: true
+
+    # Enable Antrea ClusterNetworkPolicy feature to complement K8s NetworkPolicy for cluster admins
+    # to define security policies which apply to the entire cluster, and Antrea NetworkPolicy
+    # feature that supports priorities, rule actions and externalEntities in the future.
+    #  AntreaPolicy: true
+
+    # Enable collecting and exposing NetworkPolicy statistics.
+    #  NetworkPolicyStats: true
+
+    # Enable multicast traffic.
+    #  Multicast: false
+
+    # Enable controlling SNAT IPs of Pod egress traffic.
+    #  Egress: true
+
+    # Run Kubernetes NodeIPAMController with Antrea.
+    #  NodeIPAM: false
+
+    # Enable AntreaIPAM, which can allocate IP addresses from IPPools. AntreaIPAM is required by the
+    # bridging mode and allocates IPs to Pods in bridging mode. It is also required to use Antrea for
+    # IPAM when configuring secondary network interfaces with Multus.
+    #  AntreaIPAM: false
+
+    # Enable managing external IPs of Services of LoadBalancer type.
+    #  ServiceExternalIP: false
+
+    # Enable certificated-based authentication for IPsec.
+    #  IPsecCertAuth: false
+
+    # Enable managing ExternalNode for unmanaged VM/BM.
+    #  ExternalNode: false
+
+    # The port for the antrea-controller APIServer to serve on.
+    # Note that if it's set to another value, the `containerPort` of the `api` port of the
+    # `antrea-controller` container must be set to the same value.
+    apiPort: 10349
+
+    # Enable metrics exposure via Prometheus. Initializes Prometheus metrics listener.
+    enablePrometheusMetrics: true
+
+    # Indicates whether to use auto-generated self-signed TLS certificate.
+    # If false, a Secret named "antrea-controller-tls" must be provided with the following keys:
+    #   ca.crt: <CA certificate>
+    #   tls.crt: <TLS certificate>
+    #   tls.key: <TLS private key>
+    selfSignedCert: true
+
+    # Comma-separated list of Cipher Suites. If omitted, the default Go Cipher Suites will be used.
+    # https://golang.org/pkg/crypto/tls/#pkg-constants
+    # Note that TLS1.3 Cipher Suites cannot be added to the list. But the apiserver will always
+    # prefer TLS1.3 Cipher Suites whenever possible.
+    tlsCipherSuites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384"
+
+    # TLS min version from: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13.
+    tlsMinVersion: ""
+
+    nodeIPAM:
+      # Enable the integrated Node IPAM controller within the Antrea controller.
+      enableNodeIPAM: false
+      # CIDR ranges for Pods in cluster. String array containing single CIDR range, or multiple ranges.
+      # The CIDRs could be either IPv4 or IPv6. At most one CIDR may be specified for each IP family.
+      # Value ignored when enableNodeIPAM is false.
+      clusterCIDRs:
+      # CIDR ranges for Services in cluster. It is not necessary to specify it when there is no overlap with clusterCIDRs.
+      # Value ignored when enableNodeIPAM is false.
+      serviceCIDR: ""
+      serviceCIDRv6: ""
+      # Mask size for IPv4 Node CIDR in IPv4 or dual-stack cluster. Value ignored when enableNodeIPAM is false
+      # or when IPv4 Pod CIDR is not configured. Valid range is 16 to 30.
+      nodeCIDRMaskSizeIPv4: 24
+      # Mask size for IPv6 Node CIDR in IPv6 or dual-stack cluster. Value ignored when enableNodeIPAM is false
+      # or when IPv6 Pod CIDR is not configured. Valid range is 64 to 126.
+      nodeCIDRMaskSizeIPv6: 64
+
+    ipsecCSRSigner:
+      # Determines the auto-approve policy of Antrea CSR signer for IPsec certificates management.
+      # If enabled, Antrea will auto-approve the CertificateSingingRequest (CSR) if its subject and x509 extensions
+      # are permitted, and the requestor can be validated. If K8s `BoundServiceAccountTokenVolume` feature is enabled,
+      # the Pod identity will also be validated to provide maximum security.
+      # If set to false, Antrea will not auto-approve CertificateSingingRequests and they need to be approved
+      # manually by `kubectl certificate approve`.
+      autoApprove: true
+      # Indicates whether to use auto-generated self-signed CA certificate.
+      # If false, a Secret named "antrea-ipsec-ca" must be provided with the following keys:
+      #   tls.crt: <CA certificate>
+      #   tls.key: <CA private key>
+      selfSignedCA: true
+
+    # Indicates whether to enable usage reporting or not.
+    enableUsageReporting: false
+
+    # Indicates whether to enable Antrea advanced features or not.
+    enterpriseAntrea: true
+---
+# Source: antrea/templates/crds/clustergroup.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: clustergroups.crd.antrea.io
+  labels:
+    app: antrea
+spec:
+  group: crd.antrea.io
+  versions:
+    - name: v1alpha2
+      served: true
+      storage: false
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                childGroups:
+                  type: array
+                  items:
+                    type: string
+                podSelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                namespaceSelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                externalEntitySelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                ipBlock:
+                  type: object
+                  properties:
+                    cidr:
+                      type: string
+                      format: cidr
+                ipBlocks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cidr:
+                        type: string
+                        format: cidr
+                serviceReference:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+    - name: v1alpha3
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                childGroups:
+                  type: array
+                  items:
+                    type: string
+                podSelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                namespaceSelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                externalEntitySelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                              pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                ipBlocks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cidr:
+                        type: string
+                        format: cidr
+                serviceReference:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+      subresources:
+        status: {}
+  conversion:
+    strategy: Webhook
+    webhook:
+      conversionReviewVersions: ["v1", "v1beta1"]
+      clientConfig:
+        service:
+          name: "antrea"
+          namespace: "kube-system"
+          path: "/convert/clustergroup"
+  scope: Cluster
+  names:
+    plural: clustergroups
+    singular: clustergroup
+    kind: ClusterGroup
+    shortNames:
+      - cg
+---
+# Source: antrea/templates/crds/group.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: groups.crd.antrea.io
+spec:
+  group: crd.antrea.io
+  versions:
+    - name: v1alpha3
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                childGroups:
+                  type: array
+                  items:
+                    type: string
+                podSelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                namespaceSelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                externalEntitySelector:
+                  type: object
+                  properties:
+                    matchExpressions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          operator:
+                            enum:
+                              - In
+                              - NotIn
+                              - Exists
+                              - DoesNotExist
+                            type: string
+                          values:
+                            type: array
+                            items:
+                              type: string
+                    matchLabels:
+                      x-kubernetes-preserve-unknown-fields: true
+                ipBlocks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cidr:
+                        type: string
+                        format: cidr
+                serviceReference:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+      subresources:
+        status: {}
+  scope: Namespaced
+  names:
+    plural: groups
+    singular: group
+    kind: Group
+    shortNames:
+      - grp
+---
+# Source: antrea/templates/crds/tierentitlement.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tierentitlements.crd.antrea.tanzu.vmware.com
+  labels:
+    app: antrea
+spec:
+  group: crd.antrea.tanzu.vmware.com
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              required:
+                - permission
+                - tiers
+              type: object
+              properties:
+                permission:
+                  type: string
+                  enum: ['edit']
+                tiers:
+                  type: array
+                  items:
+                    type: string
+  scope: Cluster
+  names:
+    plural: tierentitlements
+    singular: tierentitlement
+    kind: TierEntitlement
+    shortNames:
+      - te
+---
+# Source: antrea/templates/crds/tierentitlementbinding.yml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tierentitlementbindings.crd.antrea.tanzu.vmware.com
+  labels:
+    app: antrea
+spec:
+  group: crd.antrea.tanzu.vmware.com
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              required:
+                - tierEntitlement
+                - subjects
+              type: object
+              properties:
+                tierEntitlement:
+                  type: string
+                subjects:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      kind:
+                        type: string
+                        enum: ['User', 'Group', 'ServiceAccount']
+                      apiGroup:
+                        type: string
+                        enum: ['rbac.authorization.k8s.io']
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+  scope: Cluster
+  names:
+    plural: tierentitlementbindings
+    singular: tierentitlementbinding
+    kind: TierEntitlementBinding
+    shortNames:
+      - teb
 ---
 # Source: antrea/templates/agent/clusterrole.yaml
 kind: ClusterRole
@@ -3083,9 +3559,7 @@ rules:
       - antreaagentinfos
     verbs:
       - get
-      - create
       - update
-      - delete
   - apiGroups:
       - controlplane.antrea.io
     resources:
@@ -3207,7 +3681,7 @@ rules:
       - list
       - watch
   - apiGroups:
-    - certificates.k8s.io
+      - certificates.k8s.io
     resources:
       - certificatesigningrequests
     verbs:
@@ -3216,21 +3690,21 @@ rules:
       - list
       - create
   - apiGroups:
-    - multicluster.crd.antrea.io
+      - multicluster.crd.antrea.io
     resources:
-    - gateways
+      - gateways
     verbs:
-    - get
-    - list
-    - watch
+      - get
+      - list
+      - watch
   - apiGroups:
-    - multicluster.crd.antrea.io
+      - multicluster.crd.antrea.io
     resources:
-    - clusterinfoimports
+      - clusterinfoimports
     verbs:
-    - get
-    - list
-    - watch
+      - get
+      - list
+      - watch
 ---
 # Source: antrea/templates/antctl/clusterrole.yaml
 kind: ClusterRole
@@ -3461,29 +3935,29 @@ rules:
       - get
       - update
   - apiGroups:
-    - certificates.k8s.io
+      - certificates.k8s.io
     resources:
-    - certificatesigningrequests
+      - certificatesigningrequests
     verbs:
-    - get
-    - list
-    - watch
+      - get
+      - list
+      - watch
   - apiGroups:
-    - certificates.k8s.io
+      - certificates.k8s.io
     resources:
-    - certificatesigningrequests/approval
-    - certificatesigningrequests/status
+      - certificatesigningrequests/approval
+      - certificatesigningrequests/status
     verbs:
-    - update
+      - update
   - apiGroups:
-    - certificates.k8s.io
+      - certificates.k8s.io
     resources:
-    - signers
+      - signers
     resourceNames:
-    - antrea.io/antrea-agent-ipsec-tunnel
+      - antrea.io/antrea-agent-ipsec-tunnel
     verbs:
-    - approve
-    - sign
+      - approve
+      - sign
   - apiGroups:
       - crd.antrea.io
     resources:
@@ -3499,6 +3973,7 @@ rules:
       - antreaagentinfos
     verbs:
       - list
+      - create
       - delete
   - apiGroups:
       - crd.antrea.io
@@ -3550,6 +4025,7 @@ rules:
     resources:
       - externalentities
       - clustergroups
+      - groups
     verbs:
       - get
       - watch
@@ -3562,6 +4038,7 @@ rules:
       - crd.antrea.io
     resources:
       - clustergroups/status
+      - groups/status
     verbs:
       - update
   - apiGroups:
@@ -3590,6 +4067,15 @@ rules:
       - ippools/status
     verbs:
       - update
+      - patch
+  - apiGroups:
+      - crd.antrea.io
+    resources:
+      - externalnodes
+    verbs:
+      - get
+      - watch
+      - list
   - apiGroups:
       - apps
     resources:
@@ -3619,9 +4105,9 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
 rules:
-- apiGroups: ["crd.antrea.io"]
-  resources: ["clusternetworkpolicies", "networkpolicies"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["crd.antrea.io"]
+    resources: ["clusternetworkpolicies", "networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 # Source: antrea/templates/crds-rbac/clusterroles.yaml
 kind: ClusterRole
@@ -3633,9 +4119,9 @@ metadata:
     # Add these permissions to the "view" default role.
     rbac.authorization.k8s.io/aggregate-to-view: "true"
 rules:
-- apiGroups: ["crd.antrea.io"]
-  resources: ["clusternetworkpolicies", "networkpolicies"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: ["crd.antrea.io"]
+    resources: ["clusternetworkpolicies", "networkpolicies"]
+    verbs: ["get", "list", "watch"]
 ---
 # Source: antrea/templates/crds-rbac/clusterroles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -3648,9 +4134,9 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
 rules:
-- apiGroups: ["crd.antrea.io"]
-  resources: ["traceflows"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["crd.antrea.io"]
+    resources: ["traceflows"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 # Source: antrea/templates/crds-rbac/clusterroles.yaml
 kind: ClusterRole
@@ -3662,9 +4148,9 @@ metadata:
     # Add these permissions to the "view" default role.
     rbac.authorization.k8s.io/aggregate-to-view: "true"
 rules:
-- apiGroups: ["crd.antrea.io"]
-  resources: ["traceflows"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: ["crd.antrea.io"]
+    resources: ["traceflows"]
+    verbs: ["get", "list", "watch"]
 ---
 # Source: antrea/templates/crds-rbac/clusterroles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -3677,9 +4163,9 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
 rules:
-- apiGroups: ["crd.antrea.io"]
-  resources: ["clustergroups"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["crd.antrea.io"]
+    resources: ["clustergroups"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 # Source: antrea/templates/crds-rbac/clusterroles.yaml
 kind: ClusterRole
@@ -3691,9 +4177,9 @@ metadata:
     # Add these permissions to the "view" default role.
     rbac.authorization.k8s.io/aggregate-to-view: "true"
 rules:
-- apiGroups: ["crd.antrea.io"]
-  resources: ["clustergroups"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: ["crd.antrea.io"]
+    resources: ["clustergroups"]
+    verbs: ["get", "list", "watch"]
 ---
 # Source: antrea/templates/agent/clusterrolebinding.yaml
 kind: ClusterRoleBinding
@@ -3784,7 +4270,7 @@ spec:
         kubectl.kubernetes.io/default-container: antrea-agent
         # Automatically restart Pods with a RollingUpdate if the ConfigMap changes
         # See https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
-        checksum/config: ea61360cc22dff22cc94fba060568c110d5bac03638203b7f0ec04282129d6e5
+        checksum/config: ee2e9a832afaaf5f44ea0095d47e03dfcb1dbf8d9a879784244a078fd501b21d
         checksum/tweaker-config: 2d2c4693a82ee4f18de916ab3a50276d064eb8058a673f7e6b7719b9e5c21190
       labels:
         app: antrea
@@ -3805,7 +4291,7 @@ spec:
       serviceAccountName: antrea-agent
       initContainers:
         - name: antrea-agent-tweaker
-          image: "antrea/antrea-ubuntu:v1.7.2"
+          image: "antrea/antrea-ubuntu:v1.9.0"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -3822,11 +4308,11 @@ spec:
               add:
                 - NET_ADMIN
           volumeMounts:
-          - name: antrea-agent-tweaker-config
-            mountPath: /etc/antrea/antrea-agent-tweaker.conf
-            subPath: antrea-agent-tweaker.conf
+            - name: antrea-agent-tweaker-config
+              mountPath: /etc/antrea/antrea-agent-tweaker.conf
+              subPath: antrea-agent-tweaker.conf
         - name: install-cni
-          image: "antrea/antrea-ubuntu:v1.7.2"
+          image: "antrea/antrea-ubuntu:v1.9.0"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -3843,24 +4329,24 @@ spec:
             - name: SKIP_CNI_BINARIES
               value: ""
           volumeMounts:
-          - name: antrea-config
-            mountPath: /etc/antrea/antrea-cni.conflist
-            subPath: antrea-cni.conflist
-            readOnly: true
-          - name: host-cni-conf
-            mountPath: /host/etc/cni/net.d
-          - name: host-cni-bin
-            mountPath: /host/opt/cni/bin
-          # For loading the OVS kernel module.
-          - name: host-lib-modules
-            mountPath: /lib/modules
-            readOnly: true
-          # For changing the default permissions of the run directory.
-          - name: host-var-run-antrea
-            mountPath: /var/run/antrea
+            - name: antrea-config
+              mountPath: /etc/antrea/antrea-cni.conflist
+              subPath: antrea-cni.conflist
+              readOnly: true
+            - name: host-cni-conf
+              mountPath: /host/etc/cni/net.d
+            - name: host-cni-bin
+              mountPath: /host/opt/cni/bin
+            # For loading the OVS kernel module.
+            - name: host-lib-modules
+              mountPath: /lib/modules
+              readOnly: true
+            # For changing the default permissions of the run directory.
+            - name: host-var-run-antrea
+              mountPath: /var/run/antrea
       containers:
         - name: antrea-agent
-          image: "antrea/antrea-ubuntu:v1.7.2"
+          image: "antrea/antrea-ubuntu:v1.9.0"
           imagePullPolicy: IfNotPresent
           command: ["antrea-agent"]
           # Log to both "/var/log/antrea/" and stderr (so "kubectl logs" can work).-
@@ -3920,39 +4406,39 @@ spec:
             # antrea-agent needs to perform sysctl configuration.
             privileged: true
           volumeMounts:
-          - name: antrea-config
-            mountPath: /etc/antrea/antrea-agent.conf
-            subPath: antrea-agent.conf
-            readOnly: true
-          - name: host-var-run-antrea
-            mountPath: /var/run/antrea
-          - name: host-var-run-antrea
-            mountPath: /var/run/openvswitch
-            subPath: openvswitch
-          # host-local IPAM stores allocated IP addresses as files in /var/lib/cni/networks/$NETWORK_NAME.
-          # Mount a sub-directory of host-var-run-antrea to it for persistence of IP allocation.
-          - name: host-var-run-antrea
-            mountPath: /var/lib/cni
-            subPath: cni
-          # We need to mount both the /proc directory and the /var/run/netns directory so that
-          # antrea-agent can open the network namespace path when setting up Pod
-          # networking. Different container runtimes may use /proc or /var/run/netns when invoking
-          # the CNI commands. Docker uses /proc and containerd uses /var/run/netns.
-          - name: host-var-log-antrea
-            mountPath: /var/log/antrea
-          - name: host-proc
-            mountPath: /host/proc
-            readOnly: true
-          - name: host-var-run-netns
-            mountPath: /host/var/run/netns
-            readOnly: true
-            # When a container is created, a mount point for the network namespace is added under
-            # /var/run/netns on the host, which needs to be propagated to the antrea-agent container.
-            mountPropagation: HostToContainer
-          - name: xtables-lock
-            mountPath: /run/xtables.lock
+            - name: antrea-config
+              mountPath: /etc/antrea/antrea-agent.conf
+              subPath: antrea-agent.conf
+              readOnly: true
+            - name: host-var-run-antrea
+              mountPath: /var/run/antrea
+            - name: host-var-run-antrea
+              mountPath: /var/run/openvswitch
+              subPath: openvswitch
+            # host-local IPAM stores allocated IP addresses as files in /var/lib/cni/networks/$NETWORK_NAME.
+            # Mount a sub-directory of host-var-run-antrea to it for persistence of IP allocation.
+            - name: host-var-run-antrea
+              mountPath: /var/lib/cni
+              subPath: cni
+            # We need to mount both the /proc directory and the /var/run/netns directory so that
+            # antrea-agent can open the network namespace path when setting up Pod
+            # networking. Different container runtimes may use /proc or /var/run/netns when invoking
+            # the CNI commands. Docker uses /proc and containerd uses /var/run/netns.
+            - name: host-var-log-antrea
+              mountPath: /var/log/antrea
+            - name: host-proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: host-var-run-netns
+              mountPath: /host/var/run/netns
+              readOnly: true
+              # When a container is created, a mount point for the network namespace is added under
+              # /var/run/netns on the host, which needs to be propagated to the antrea-agent container.
+              mountPropagation: HostToContainer
+            - name: xtables-lock
+              mountPath: /run/xtables.lock
         - name: antrea-ovs
-          image: "antrea/antrea-ubuntu:v1.7.2"
+          image: "antrea/antrea-ubuntu:v1.9.0"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -3982,12 +4468,12 @@ spec:
             periodSeconds: 10
             failureThreshold: 5
           volumeMounts:
-          - name: host-var-run-antrea
-            mountPath: /var/run/openvswitch
-            subPath: openvswitch
-          - name: host-var-log-antrea
-            mountPath: /var/log/openvswitch
-            subPath: openvswitch
+            - name: host-var-run-antrea
+              mountPath: /var/run/openvswitch
+              subPath: openvswitch
+            - name: host-var-log-antrea
+              mountPath: /var/log/openvswitch
+              subPath: openvswitch
       volumes:
         - name: antrea-config
           configMap:
@@ -4049,7 +4535,7 @@ spec:
       annotations:
         # Automatically restart Pod if the ConfigMap changes
         # See https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
-        checksum/config: ea61360cc22dff22cc94fba060568c110d5bac03638203b7f0ec04282129d6e5
+        checksum/config: ee2e9a832afaaf5f44ea0095d47e03dfcb1dbf8d9a879784244a078fd501b21d
       labels:
         app: antrea
         component: antrea-controller
@@ -4068,7 +4554,7 @@ spec:
       serviceAccountName: antrea-controller
       containers:
         - name: antrea-controller
-          image: "antrea/antrea-ubuntu:v1.7.2"
+          image: "antrea/antrea-ubuntu:v1.9.0"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -4303,6 +4789,21 @@ webhooks:
         resources: ["clustergroups"]
         scope: "Cluster"
     admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+    timeoutSeconds: 5
+  - name: "groupvalidator.antrea.io"
+    clientConfig:
+      service:
+        name: "antrea"
+        namespace: "kube-system"
+        path: "/validate/group"
+    rules:
+      - operations: [ "CREATE", "UPDATE" ]
+        apiGroups: [ "crd.antrea.io" ]
+        apiVersions: [ "v1alpha3" ]
+        resources: [ "groups" ]
+        scope: "Namespaced"
+    admissionReviewVersions: [ "v1", "v1beta1" ]
     sideEffects: None
     timeoutSeconds: 5
   - name: "externalippoolvalidator.antrea.io"

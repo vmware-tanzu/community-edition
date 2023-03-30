@@ -142,6 +142,14 @@ rules:
     verbs:
       - get
       - delete
+  - apiGroups:
+      - policy
+    resourceNames:
+      - vmware-system-privileged
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -350,6 +358,14 @@ rules:
       - get
       - watch
       - list
+  - apiGroups:
+      - policy
+    resourceNames:
+      - vmware-system-privileged
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -635,6 +651,18 @@ spec:
               readOnly: true
             - mountPath: /var/log/interworking
               name: host-var-log-interworking
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - nsx-appctl -t /var/run/vmware/nsx-proxy/nsx-proxy-cli get/aph-conn-status
+                  | grep CONNECTED
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
         - name: ccp-adapter
           command:
             - /usr/local/bin/election-watcher

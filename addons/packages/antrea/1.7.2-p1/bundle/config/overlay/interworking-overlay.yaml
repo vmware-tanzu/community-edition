@@ -37,25 +37,6 @@ ReconcilerResyncSeconds: #@ values.antrea_interworking.config.ccp_adapter_conf.R
 #@ end
 
 
-#! Antrea-interworking-config
-#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "antrea-interworking-config"}})
-#@ if/end values.antrea_nsx.enable:
----
-kind: ConfigMap
-data:
-  mp-adapter.conf: #@ yaml.encode(antrea_interworking_mp_adapter_conf())
-  ccp-adapter.conf: #@ yaml.encode(antrea_interworking_ccp_adapter_conf())
-
-#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name": "interworking"}})
-#@ if/end values.antrea_nsx.enable:
----
-kind: Deployment
-metadata:
-  #@overlay/match missing_ok=True
-  annotations:
-    kapp.k14s.io/disable-default-label-scoping-rules: ""
-
-
 #@overlay/match by=overlay.subset({"kind":"Job","metadata":{"name": "register"}})
 #@ if/end values.antrea_nsx.enable:
 ---
@@ -78,11 +59,6 @@ metadata:
 
 #! Antrea-interworking-config
 #@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding","metadata":{"name": "antrea-interworking"}})
-#@ if/end values.antrea_nsx.enable == False:
----
-
-#! Antrea-interworking-config
-#@overlay/match by=overlay.subset({"kind":"ClusterRoleBinding","metadata":{"name": "register"}})
 #@ if/end values.antrea_nsx.enable == False:
 ---
 

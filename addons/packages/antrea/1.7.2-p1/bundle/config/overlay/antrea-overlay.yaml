@@ -18,6 +18,10 @@ featureGates:
   #! this flag will not take effect.
   EndpointSlice: #@ values.antrea.config.featureGates.EndpointSlice
 
+  #! Enable TopologyAwareHints in AntreaProxy. This requires AntreaProxy and EndpointSlice to be
+  #! enabled, otherwise this flag will not take effect.
+  TopologyAwareHints: #@ values.antrea.config.featureGates.TopologyAwareHints
+
   #! Enable traceflow which provides packet tracing feature to diagnose network issue.
   Traceflow: #@ values.antrea.config.featureGates.AntreaTraceflow
 
@@ -103,6 +107,19 @@ noSNAT: #@ values.antrea.config.noSNAT
 #! - stt
 tunnelType: #@ values.antrea.config.tunnelType
 
+#! TunnelPort is the destination port for UDP and TCP based tunnel protocols (Geneve, VXLAN, and STT).
+#! If zero, it will use the assigned IANA port for the protocol, i.e. 6081 for Geneve, 4789 for VXLAN,
+#! and 7471 for STT.
+tunnelPort: #@ values.antrea.config.tunnelPort
+
+#! TunnelCsum determines whether to compute UDP encapsulation header (Geneve or VXLAN) checksums on outgoing
+#! packets. For Linux kernel before Mar 2021, UDP checksum must be present to trigger GRO on the receiver for better
+#! performance of Geneve and VXLAN tunnels. The issue has been fixed by
+#! https://github.com/torvalds/linux/commit/89e5c58fc1e2857ccdaae506fb8bc5fed57ee063, thus computing UDP checksum is
+#! no longer necessary.
+#! It should only be set to true when you are using an unpatched Linux kernel and observing poor transfer performance.
+tunnelCsum: #@ values.antrea.config.tunnelCsum
+
 #! Determines how tunnel traffic is encrypted. Currently encryption only works with encap mode.
 #! It has the following options:
 #! - none (default):  Inter-node Pod traffic will not be encrypted.
@@ -136,13 +153,13 @@ defaultMTU: #@ values.antrea.config.defaultMTU
 
 #! wireGuard specifies WireGuard related configurations.
 wireGuard:
-#@ if values.antrea.config.wireGuard:
+  #@ if values.antrea.config.wireGuard:
   #!  The port for WireGuard to receive traffic.
   port: #@ values.antrea.config.wireGuard.port
 #@ end
 
 egress:
-#@ if values.antrea.config.featureGates.Egress:
+  #@ if values.antrea.config.featureGates.Egress:
   #! exceptCIDRs is the CIDR ranges to which outbound Pod traffic will not be SNAT'd by Egresses.
   exceptCIDRs: #@ values.antrea.config.egress.exceptCIDRs
 #@ end
@@ -201,7 +218,7 @@ activeFlowExportTimeout: #@ values.antrea.config.flowExporter.activeFlowTimeout
 idleFlowExportTimeout:  #@ values.antrea.config.flowExporter.idleFlowTimeout
 
 nodePortLocal:
-#@ if values.antrea.config.featureGates.NodePortLocal:
+  #@ if values.antrea.config.featureGates.NodePortLocal:
   #! Enable NodePortLocal, a feature used to make Pods reachable using port forwarding on the host. To
   #! enable this feature, you need to set "enable" to true, and ensure that the NodePortLocal feature
   #! gate is also enabled (which is the default).
@@ -245,7 +262,7 @@ tlsCipherSuites: #@ values.antrea.config.tlsCipherSuites
 transportInterface: #@ values.antrea.config.transportInterface
 
 multicast:
-#@ if values.antrea.config.featureGates.Multicast:
+  #@ if values.antrea.config.featureGates.Multicast:
   #! The names of the interfaces on Nodes that are used to forward multicast traffic.
   #! Defaults to transport interface if not set.
   #@ if/end values.antrea.config.multicastInterfaces:
@@ -268,7 +285,7 @@ transportInterfaceCIDRs: #@ values.antrea.config.transportInterfaceCIDRs
 
 #! Option antreaProxy contains AntreaProxy related configuration options.
 antreaProxy:
-#@ if values.antrea.config.featureGates.AntreaProxy:
+  #@ if values.antrea.config.featureGates.AntreaProxy:
   #!  ProxyAll tells antrea-agent to proxy all Service traffic, including NodePort, LoadBalancer, and ClusterIP traffic,
   #!  regardless of where they come from. Therefore, running kube-proxy is no longer required. This requires the AntreaProxy
   #!  feature to be enabled.
@@ -294,7 +311,7 @@ antreaProxy:
 
 
 multicluster:
-#@ if values.antrea.config.featureGates.Multicluster:
+  #@ if values.antrea.config.featureGates.Multicluster:
   #! Enable Antrea Multi-cluster Gateway to support cross-cluster traffic.
   #! This feature is supported only with encap mode.
   enable: #@ values.antrea.config.multicluster.enable

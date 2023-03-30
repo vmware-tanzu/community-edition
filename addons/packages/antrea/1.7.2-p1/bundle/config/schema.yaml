@@ -30,7 +30,7 @@ antrea:
     egress:
       #@schema/desc "The CIDR ranges to which outbound Pod traffic will not be SNAT'd by Egresses."
       exceptCIDRs:
-      - ""
+        - ""
     nodePortLocal:
       #@schema/desc "Enable NodePortLocal feature."
       enabled: false
@@ -42,7 +42,7 @@ antrea:
       proxyAll: false
       #@schema/desc "Specifies the host IPv4/IPv6 addresses for NodePort."
       nodePortAddresses:
-       - ""
+        - ""
       #@schema/desc "List of Services which should be ignored by AntreaProxy."
       skipServices:
         - ""
@@ -69,6 +69,10 @@ antrea:
       - ""
     #@schema/desc "Tunnel protocols used for encapsulating traffic across Nodes. One of the following options => geneve, vxlan, gre, stt"
     tunnelType: none
+    #@schema/desc "TunnelPort is the destination port for UDP and TCP based tunnel protocols (Geneve, VXLAN, and STT)."
+    tunnelPort: 0
+    #@schema/desc "TunnelCsum determines whether to compute UDP encapsulation header (Geneve or VXLAN) checksums on outgoing packets."
+    tunnelCsum: false
     #@schema/desc "Determines how tunnel traffic is encrypted. One of the following options => none, ipsec, wireGuard"
     trafficEncryptionMode: none
     #@schema/desc "WireGuard related configurations."
@@ -145,18 +149,20 @@ antrea:
       SecondaryNetwork: false
       #@schema/desc "Enable mirroring or redirecting the traffic Pods send or receive."
       TrafficControl: false
+      #@schema/desc "Enable TopologyAwareHints in AntreaProxy. This requires AntreaProxy and EndpointSlice to be enabled."
+      TopologyAwareHints: false
 antrea_nsx:
   enable: false
 antrea_interworking:
   #@schema/desc "Configuration for antrea-interworking"
   config:
-    #@schema/desc "echo -n 'dummyAdmin' | base64"
+    #@schema/desc "base64 encoded NSX user name"
     nsxUser: ZHVtbXlBZG1pbg==
-    #@schema/desc " echo -n 'dummyPassword' | base64"
+    #@schema/desc "base64 encoded NSX password"
     nsxPassword: ZHVtbXlQYXNzd29yZA==
-    #@schema/desc "base64 encoded data"
+    #@schema/desc "base64 encoded NSX client certificate data"
     nsxCert: ZHVtbXlBZG1pbg==
-    #@schema/desc "base64 encoded data"
+    #@schema/desc "base64 encoded NSX client key data"
     nsxKey: ZHVtbXlQYXNzd29yZA==
     #@schema/desc " "
     clusterName: dummyClusterName
@@ -164,6 +170,16 @@ antrea_interworking:
     NSXManagers: [dummyNSXIP1]
     #@schema/desc " "
     vpcPath: dummyVPCPath
+    #@schema/desc "bootstrapFrom can be Inline and SupervisorCluster,If SupervisorCluster is set, bootstrapSupervisorResourceName must be set, and clusterName, NSXManagers, vpcPath, ProxyEndpoints will be filled automatically by register job."
+    bootstrapFrom: Inline
+    #@schema/desc "bootstrapSupervisorResourceName is required if bootstrapFrom is SupervisorCluster"
+    bootstrapSupervisorResourceName: dummyClusterName
+    #@schema/desc " "
+    proxyEndpoints:
+      #@schema/desc " "
+      rest-api: [fake-rest-api]
+      #@schema/desc " "
+      nsx-rpc-fwd-proxy: [fake-nsx-rpc-fwd-proxy]
     #@schema/desc " "
     mp_adapter_conf:
       #@schema/desc " "

@@ -14,7 +14,7 @@ spec:
       syncPeriod: 5m
       fetch:
       - imgpkgBundle:
-          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.23.0
+          image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-tkg:v3.24.0
       template:
       - ytt:
           paths:
@@ -345,19 +345,19 @@ spec:
               properties:
                 nsxUser:
                   type: string
-                  description: echo -n 'dummyAdmin' | base64
+                  description: base64 encoded NSX user name
                   default: ZHVtbXlBZG1pbg==
                 nsxPassword:
                   type: string
-                  description: ' echo -n ''dummyPassword'' | base64'
+                  description: base64 encoded NSX password
                   default: ZHVtbXlQYXNzd29yZA==
                 nsxCert:
                   type: string
-                  description: base64 encoded data
+                  description: base64 encoded NSX client certificate data
                   default: ZHVtbXlBZG1pbg==
                 nsxKey:
                   type: string
-                  description: base64 encoded data
+                  description: base64 encoded NSX client key data
                   default: ZHVtbXlQYXNzd29yZA==
                 clusterName:
                   type: string
@@ -374,6 +374,33 @@ spec:
                   type: string
                   description: ' '
                   default: dummyVPCPath
+                bootstrapFrom:
+                  type: string
+                  description: bootstrapFrom can be Inline and SupervisorCluster,If SupervisorCluster is set, bootstrapSupervisorResourceName must be set, and clusterName, NSXManagers, vpcPath, ProxyEndpoints will be filled automatically by register job.
+                  default: Inline
+                bootstrapSupervisorResourceName:
+                  type: string
+                  description: bootstrapSupervisorResourceName is required if bootstrapFrom is SupervisorCluster
+                  default: dummyClusterName
+                proxyEndpoints:
+                  type: object
+                  additionalProperties: false
+                  description: ' '
+                  properties:
+                    rest-api:
+                      type: array
+                      description: ' '
+                      items:
+                        type: string
+                        default: xxx
+                      default: []
+                    nsx-rpc-fwd-proxy:
+                      type: array
+                      description: ' '
+                      items:
+                        type: string
+                        default: xxxxxx
+                      default: []
                 mp_adapter_conf:
                   type: object
                   additionalProperties: false
