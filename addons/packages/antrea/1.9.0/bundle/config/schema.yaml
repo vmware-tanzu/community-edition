@@ -177,9 +177,9 @@ antrea_interworking:
     #@schema/desc " "
     proxyEndpoints:
       #@schema/desc " "
-      rest-api: [fake-rest-api]
+      rest_api: [fakeRestApi]
       #@schema/desc " "
-      nsx-rpc-fwd-proxy: [fake-nsx-rpc-fwd-proxy]
+      nsx_rpc_fwd_proxy: [fakeNsxRpcFwdProxy]
     #@schema/desc " "
     mp_adapter_conf:
       #@schema/desc " "

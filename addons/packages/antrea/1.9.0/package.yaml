@@ -399,19 +399,19 @@ spec:
                   additionalProperties: false
                   description: ' '
                   properties:
-                    rest-api:
+                    rest_api:
                       type: array
                       description: ' '
                       items:
                         type: string
-                        default: fake-rest-api
+                        default: fakeRestApi
                       default: []
-                    nsx-rpc-fwd-proxy:
+                    nsx_rpc_fwd_proxy:
                       type: array
                       description: ' '
                       items:
                         type: string
-                        default: fake-nsx-rpc-fwd-proxy
+                        default: fakeNsxRpcFwdProxy
                       default: []
                 mp_adapter_conf:
                   type: object

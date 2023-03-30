@@ -87,10 +87,10 @@ antrea_interworking:
     NSXManagers: []
     vpcPath: ""
     bootstrapFrom: Inline
-    bootstrapSupervisorResourceName: dummyClusterName
+    bootstrapSupervisorResourceName: fakeBootstrapSupervisorResourceName
     proxyEndpoints:
-      rest-api: [ ]
-      nsx-rpc-fwd-proxy: [ ]
+      rest_api: [ ]
+      nsx_rpc_fwd_proxy: [ ]
     mp_adapter_conf:
       NSXClientAuthCertFile: /etc/antrea/nsx-cert/tls.crt
       NSXClientAuthKeyFile: /etc/antrea/nsx-cert/tls.key
