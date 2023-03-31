@@ -17,6 +17,7 @@ data:
 
 
 #@ def antrea_interworking_bootstrap_conf():
+bootstrapFrom: #@ values.antrea_interworking.config.bootstrapFrom
 #@ if values.antrea_interworking.config.bootstrapFrom == "Inline":
 clusterName: #@ values.antrea_interworking.config.clusterName
 NSXManagers: #@ values.antrea_interworking.config.NSXManagers
