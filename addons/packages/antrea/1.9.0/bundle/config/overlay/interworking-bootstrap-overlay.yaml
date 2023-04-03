@@ -1,0 +1,40 @@
+#! interworking-bootstrap-overlay.yaml
+
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("/values.star", "values")
+
+
+#! Antrea-interworking-bootstrap-config-secret
+#@overlay/match by=overlay.subset({"kind":"Secret","metadata":{"name": "nsx-cert"}})
+#@ if values.antrea_nsx.enable and values.antrea_interworking.config.bootstrapFrom == "Inline":
+---
+kind: Secret
+data:
+  tls.crt: #@ values.antrea_interworking.config.nsxCert
+  tls.key: #@ values.antrea_interworking.config.nsxKey
+#@ end
+
+
+#@ def antrea_interworking_bootstrap_conf():
+bootstrapFrom: #@ values.antrea_interworking.config.bootstrapFrom
+#@ if values.antrea_interworking.config.bootstrapFrom == "Inline":
+clusterName: #@ values.antrea_interworking.config.clusterName
+NSXManagers: #@ values.antrea_interworking.config.NSXManagers
+vpcPath: #@ values.antrea_interworking.config.vpcPath
+proxyEndpoints:
+  rest-api: #@ values.antrea_interworking.config.proxyEndpoints.rest_api
+  nsx-rpc-fwd-proxy: #@ values.antrea_interworking.config.proxyEndpoints.nsx_rpc_fwd_proxy
+#@ end
+#@ if values.antrea_interworking.config.bootstrapFrom == "SupervisorCluster":
+bootstrapSupervisorResourceName: #@ values.antrea_interworking.config.bootstrapSupervisorResourceName
+#@ end
+#@ end
+
+#! Antrea-interworking-bootstrap-config
+#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name": "bootstrap-config"}})
+#@ if/end values.antrea_nsx.enable:
+---
+kind: ConfigMap
+data:
+  bootstrap.conf: #@ yaml.encode(antrea_interworking_bootstrap_conf())

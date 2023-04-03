@@ -1,0 +1,18 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+  - annotations:
+      kbld.carvel.dev/id: antrea/antrea-ubuntu:v1.9.0
+      kbld.carvel.dev/origins: |
+        - resolved:
+            tag: v1.9.0
+            url: antrea/antrea-ubuntu:v1.9.0
+    image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea/antrea-photon@sha256:136e1eefbb3c7cd1d453c691e4c094bae00d55137e16644125037e903655e02b
+  - annotations:
+      kbld.carvel.dev/id: vmware.io/antrea/interworking:0.9.0
+      kbld.carvel.dev/origins: |
+        - resolved:
+            tag: latest
+            url: vmware.io/antrea/interworking:0.9.0
+    image: nsx-ujo-docker-local.artifactory.eng.vmware.com/antrea-interworking/interworking-photon@sha256:0d0783b73ed28a3e3382cb3d921f52faeb86951a80e29f1bc3d0923dacbed7d2
+kind: ImagesLock
